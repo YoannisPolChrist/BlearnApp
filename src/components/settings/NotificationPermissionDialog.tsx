@@ -50,7 +50,7 @@ export default function NotificationPermissionDialog({
   open,
   onOpenChange,
   title = 'Benachrichtigungen einrichten',
-  description = 'Lege fest, ob Blearn dich erinnern darf und welche Bereiche dir Hinweise senden dürfen.',
+  description = 'Lege fest, worüber Blearn dich informieren darf.',
 }: NotificationPermissionDialogProps) {
   const {
     notificationsEnabled,

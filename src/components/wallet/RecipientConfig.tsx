@@ -101,7 +101,7 @@ export default function RecipientConfig({ variants }: Props) {
           <InfoPopover
             compact
             title="Empfänger"
-            description="Diese Kachel bleibt rot, bis die Lightning-Adresse technisch bestätigt wurde. Erst dann gilt sie als sicher genug für echte Strafzahlungen."
+            description="Wird grün, sobald die Lightning-Adresse bestätigt ist."
           />
         </div>
         <span className={`inline-flex items-center gap-1 text-[10px] font-bold ${

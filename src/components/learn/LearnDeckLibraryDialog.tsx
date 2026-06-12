@@ -52,7 +52,7 @@ export default function LearnDeckLibraryDialog({
   onExportDeck,
   onReviewMixChange,
   title = 'Bibliothek',
-  description = 'Wähle dein aktives Deck, starte eine Session oder wechsle mit einem Klick zu einem anderen Paket.',
+  description = 'Aktives Deck wählen, Session starten oder Paket wechseln.',
 }: LearnDeckLibraryDialogProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollHint, setShowScrollHint] = useState(false);

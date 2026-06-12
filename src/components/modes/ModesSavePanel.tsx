@@ -149,7 +149,7 @@ export function ModesSavePanel({
             </p>
             <p className="mt-1 font-semibold leading-relaxed text-foreground/72">
               {isGerman
-                ? 'Die aktuellen Einstellungen sind aktiv. Ändere etwas, wenn du erneut speichern willst.'
+                ? 'Diese Einstellungen sind bereits aktiv.'
                 : 'These settings are already active. Change something if you want to save again.'}
             </p>
           </div>

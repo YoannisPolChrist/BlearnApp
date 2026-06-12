@@ -141,7 +141,7 @@ export default function AlbyConnectionConfigCard({ variants }: Props) {
         <InfoPopover
           compact
           title="Alby Verbindung"
-          description="Hier speicherst du nur die Blearn-spezifische Alby-NWC-Verbindung. Nach erfolgreicher Verbindung bleiben nur kompakte Statusinfos sichtbar."
+          description="Speichert nur die NWC-Verbindung; danach bleiben kompakte Statusinfos."
         />
       </div>
 

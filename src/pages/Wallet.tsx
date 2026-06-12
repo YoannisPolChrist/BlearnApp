@@ -88,10 +88,10 @@ export default function WalletPage() {
         eyebrow: '1',
         title: 'Wallet verbinden und testen',
         description:
-          'Lege zuerst die Alby-Verbindung an und prüfe sie danach live in Blearn. Erst dann ist der Zahlungspfad wirklich bereit.',
+          'Erst Verbindung anlegen, dann live testen – dann ist der Pfad bereit.',
         bullets: [
-          'Nur mit gültiger NWC-Verbindung bekommt dein Strafkonto einen echten Zahlungspfad.',
-          'Speichern allein reicht nicht: der Live-Test bestätigt Wallet, Budget und Erreichbarkeit.',
+          'Ohne gültige NWC-Verbindung gibt es keinen Zahlungspfad.',
+          'Der Live-Test bestätigt Wallet, Budget und Erreichbarkeit.',
           'Sobald Wallet und Live-Test stehen, ist Schritt 1 erledigt.',
         ],
         completed: connectionTestPassed,
@@ -108,10 +108,10 @@ export default function WalletPage() {
         eyebrow: '2',
         title: 'Empfänger verifizieren',
         description:
-          'Der Empfänger wird erst grün, wenn die Lightning-Adresse technisch bestätigt wurde.',
+          'Grün erst nach Bestätigung der Lightning-Adresse.',
         bullets: [
           'Unverifizierte Empfänger halten den Strafmodus bewusst weiter zurück.',
-          'So ist klar sichtbar, dass hier noch ein wichtiger Sicherheitsschritt offen ist.',
+          'Markiert einen offenen Sicherheitsschritt.',
         ],
         completed: recipientVerified,
         icon: UserRoundCheck,
@@ -121,7 +121,7 @@ export default function WalletPage() {
         id: 'penalty',
         eyebrow: '3',
         title: 'Strafbetrag setzen',
-        description: 'Erst mit Wallet, Live-Test, verifiziertem Empfänger und Betrag ist der Strafmodus wirklich produktiv bereit.',
+        description: 'Bereit erst mit Wallet, Live-Test, Empfänger und Betrag.',
         bullets: [
           'Der Betrag wird bewusst direkt in sats gespeichert.',
           'Alte EUR-Werte müssen nach dem Update einmal neu bestätigt werden.',
@@ -251,7 +251,7 @@ export default function WalletPage() {
             open={showSetupGuide}
             onOpenChange={handleSetupGuideOpenChange}
             title="Strafkonto sicher einrichten"
-            description="Beim ersten Versuch führen wir dich direkt im Pop-up durch Wallet, Live-Test, Empfänger und Strafbetrag."
+            description="Der erste Versuch führt dich Schritt für Schritt durchs Setup."
             steps={setupSteps}
             finishLabel={setupMode && !penaltyReady ? 'Setup abschließen' : 'Fertig'}
             onDismiss={dismissSetupGuide}

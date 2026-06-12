@@ -122,8 +122,8 @@ export function LearnTemplatesContent({
           eyebrow: 'Learn Templates',
           title: template.replaceExistingOnImport ? 'Template aktualisiert' : 'Template hinzugefügt',
           description: template.replaceExistingOnImport
-            ? `${template.title} wurde auf den aktuellen APKG-Stand gebracht. (${result.job?.itemCount || 0} Karten)`
-            : `${template.title} wurde deiner Learn-Bibliothek hinzugefügt (${result.job?.itemCount || 0} Karten).`,
+            ? `${template.title} aktualisiert (${result.job?.itemCount || 0} Karten).`
+            : `${template.title} importiert (${result.job?.itemCount || 0} Karten).`,
         });
         
         navigate('/learn?library=1', { replace: true });
@@ -208,7 +208,7 @@ export function LearnTemplatesContent({
             <QuickActionCard
               icon={Sparkles}
               title="Nur echte Standardpakete"
-              description="Persönliche oder schon vorhandene Decks bleiben in der Bibliothek und tauchen hier nicht als Extra-Reste auf."
+              description="Eigene und vorhandene Decks bleiben in der Bibliothek."
               onClick={onOpenLearn}
               tone="accent"
             />
@@ -221,7 +221,7 @@ export function LearnTemplatesContent({
           <SectionHeader
             eyebrow="Template Dashboard"
             title={`${templateCount} Standardpakete für deinen Start`}
-            description="Jedes Paket erscheint genau einmal. Bereits importierte Templates bleiben sichtbar, sind aber klar als schon vorhanden markiert."
+            description="Jedes Paket erscheint genau einmal; Importiertes ist markiert."
           />
 
           <div className="responsive-card-grid">

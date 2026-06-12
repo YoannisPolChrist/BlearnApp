@@ -128,8 +128,8 @@ export function PenaltySetupSection({
 
         <div className={cn('rounded-[1.4rem] border px-4 py-4 text-sm', penaltySetupReady && recipientVerified ? 'surface-success text-success' : 'border-border/70 bg-background/65 text-muted-foreground')}>
           {penaltySetupReady
-            ? 'Wallet, Live-Test, Empfänger und Strafbetrag sind bereit. Nach der Bestätigung kann der Strafmodus live gehen.'
-            : 'Für den Strafmodus fehlen noch Wallet-Setup, Live-Test, verifizierter Empfänger oder ein Betrag in sats.'}
+            ? 'Alles bereit – bestätige, um den Strafmodus zu aktivieren.'
+            : 'Es fehlen noch: Wallet, Live-Test, Empfänger oder Betrag.'}
         </div>
       </GlassCard>
     </motion.section>

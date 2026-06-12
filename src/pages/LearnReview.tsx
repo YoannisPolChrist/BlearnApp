@@ -135,7 +135,7 @@ export default function LearnReviewPage() {
                   </p>
                   <p className="mt-2 text-sm text-foreground/74">
                     {session.isBlockedFlow
-                      ? 'Blearn laedt gerade nur den noetigen Session-Scope, damit die Block-Freigabe stabil starten kann.'
+                      ? 'Lädt den Session-Scope für eine stabile Freigabe …'
                       : 'Deine Lernsession wird aus dem gespeicherten Stand wiederhergestellt.'}
                   </p>
                 </GlassCard>

@@ -103,7 +103,7 @@ export function LearnModeSection({
             <p className="mt-2 text-lg font-black tracking-[-0.03em] text-foreground">{resolvedLearnDeck?.name || t('modes.learnGate.noneSelected')}</p>
             <p className="mt-1 text-xs text-muted-foreground">
               {resolvedLearnDeck
-                ? `${resolvedLearnDeck.dueNowCount} due now · ${resolvedLearnDeck.overdueCount} overdue · ${resolvedLearnDeck.newLeftToday} neu heute`
+                ? `${resolvedLearnDeck.dueNowCount} fällig · ${resolvedLearnDeck.overdueCount} überfällig · ${resolvedLearnDeck.newLeftToday} neu`
                 : t('modes.learnGate.deckHint')}
             </p>
           </div>

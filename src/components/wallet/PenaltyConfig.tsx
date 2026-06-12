@@ -74,7 +74,7 @@ export default function PenaltyConfig({ variants }: Props) {
         <InfoPopover
           compact
           title="Wie wirkt der Strafbetrag?"
-          description={`Der Betrag definiert, wie viel pro erkanntem Verstoß in sats live an deinen Empfänger gesendet wird. Die EUR-Zahl ist nur eine grobe Orientierung. ${APPROX_EURO_REFERENCE_COPY}`}
+          description={`Sats pro Verstoß, live an den Empfänger. ${APPROX_EURO_REFERENCE_COPY}`}
         />
       </div>
 

@@ -48,7 +48,7 @@ function persistOnboardingDismissed() {
 function getErrorMessage(error: string) {
   const lowerDesc = error.toLowerCase();
   if (lowerDesc.includes('too-many-requests') || lowerDesc.includes('too many requests')) {
-    return 'Zu viele Fehlversuche. Bitte versuche es in ein paar Minuten erneut oder setze dein Passwort zurück.';
+    return 'Zu viele Versuche – warte kurz oder setze dein Passwort zurück.';
   }
   return error;
 }
@@ -230,7 +230,7 @@ export function AuthDialog({ suppressPassiveOnboarding = false }: AuthDialogProp
     const resetWasTriggered = await resetPassword(trimmedEmail);
     if (resetWasTriggered) {
       setFormNotice(
-        `Wenn für ${trimmedEmail} ein Konto existiert, wurde eine Mail zum Zurücksetzen gesendet.`,
+        `Falls ein Konto existiert, ist die Reset-Mail unterwegs.`,
       );
     }
   };

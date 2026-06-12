@@ -231,7 +231,7 @@ export default function LearnPage() {
                       description={
                         activeDeck
                           ? `${deckStats.length} Decks sichtbar. ${activeDeck.name} ist aktuell ausgewaehlt.`
-                          : 'Oeffne deine Decks, waehle ein aktives Deck oder exportiere vorhandene Sammlungen.'
+                          : 'Decks öffnen, aktives Deck wählen oder Sammlungen exportieren.'
                       }
                       onClick={() => setLibraryOpen(true)}
                       tone="accent"

@@ -462,3 +462,17 @@ Anforderung (Aktivierung → Pflicht-Zeitfenster, Einstellungen im Fenster unver
 - Geräte-Messungen (Budgets aus 4b.1): Kaltstart, Overlay→erste Karte, Review-Tap-Latenz — NUR auf dem Gerät messbar.
 - Listen-Virtualisierung (Card Browser, 4b.3), React-Profiler-Session, Breathing-Sphere-Mount-Audit.
 - Design (Phase D) ist unverändert KOMPLETT offen — nur der Copy-Ratchet existiert. SyncStatusBadge als Copy-Vorbild.
+
+### Design- & Performance-Update (Runde 4, 2026-06-12)
+
+**Phase D — Kern ohne Bilder umgesetzt (D.2 Copy-Redaktion + D.1 Typografie):**
+- Copy-Wächter-Messfehler behoben: Tailwind-Klassen, JSX-Fragmente und Template-Code zählten als "Erklärtext". Echte Copy-Last vorher: 52 Strings > 80 Zeichen.
+- Vollständige Copy-Redaktion über alle Hotspots (Modes, Setup/Onboarding inkl. App-Tour, Wallet-Seite + -Komponenten, Learn, Settings): 45 Strings nach D.2-Regeln gekürzt — kein "Hier siehst du …", Aktion statt Erklärung, ≤ 80 Zeichen, deutsche Umlaute statt Transliterationen ("Oeffne" → "öffnen"). Ergebnis: Modes 3, Settings 1, Wallet 2, Setup 0, Learn 1, Pages 1. Ratchets final abgesenkt (5/3/4/3/3/4) — Regressionen schlagen ab sofort in CI fehl. 2 Test-Assertions an die neue Copy angepasst.
+- Typografie-Disziplin (max. 1 Serif pro Screen): App war fast konform; einzige Doppelnutzung (Pause.tsx) bereinigt.
+- **[AGENT D — verbleibt, braucht Gerät/Screenshots]:** Listenzeilen-Umbau Modes/Settings, Signature-Ring, Dark-Mode-Abnahme pro Screen, Vorher/Nachher-Screenshots, D.3-Screenreihenfolge.
+
+**Performance (4b.2, Runde 2):**
+- Render-blockierendes Font-@import aus index.css entfernt → paralleles `<link>` + Preconnect in index.html (sequenzielle CSS→@import→Fonts-Kette entfällt beim First Paint).
+- **[AGENT A3/D]:** 172-kB-CSS stammt nicht aus Fonts/Data-URLs (geprüft: 0 kB inline) — Tailwind-Utility-Volumen; Audit lohnt erst nach dem Phase-D-Komponentenumbau.
+
+**GitHub-Push:** Aus dieser Umgebung nicht möglich (kein Schreibzugriff; Push-Versuch dokumentiert fehlgeschlagen mangels Credentials — Zugangsdaten werden hier grundsätzlich nicht gehandhabt). Lokal: `git am blearn-fixes-phase0-bugs.patch && git push origin <branch>`.

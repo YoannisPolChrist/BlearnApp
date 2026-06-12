@@ -322,7 +322,7 @@ describe('modes UI smoke', () => {
     expect(await screen.findByText(/^gespeichert$|^saved$/i)).toBeInTheDocument();
     expect(screen.getByTestId('success-feedback-host')).toHaveAttribute('data-feedback-layout', 'compact');
     expect(screen.queryByTestId('inline-confirmation-badge')).not.toBeInTheDocument();
-    expect(await screen.findByText(/die aktuellen einstellungen sind aktiv/i)).toBeInTheDocument();
+    expect(await screen.findByText(/diese einstellungen sind bereits aktiv/i)).toBeInTheDocument();
     expect((await screen.findAllByText(/reflexion/i)).length).toBeGreaterThan(0);
   }, 12000);
 

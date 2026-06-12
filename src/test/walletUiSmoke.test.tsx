@@ -74,7 +74,7 @@ describe('wallet and learn template UI smoke', () => {
     expect(
       screen.getByText(
         new RegExp(
-          `${template.title} wurde deiner Learn-Bibliothek hinzugefügt|${template.title} wurde deiner Learn-Bibliothek hinzugefÃ¼gt`,
+          `${template.title} importiert`,
           'i',
         ),
       ),

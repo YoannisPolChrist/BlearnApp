@@ -214,7 +214,7 @@ export default function PausePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
               </motion.div>
 
-              <p className="mb-2 font-serif text-lg font-semibold text-foreground">{challenge.name}</p>
+              <p className="mb-2 text-lg font-bold text-foreground">{challenge.name}</p>
               <p className="mb-8 text-center text-sm text-muted-foreground">{challenge.instruction}</p>
 
               {/* Timer */}

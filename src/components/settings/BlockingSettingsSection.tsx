@@ -56,7 +56,7 @@ export function BlockingSettingsSection({
               </p>
               <p className="mt-0.5 text-xs leading-relaxed text-foreground/72">
                 {isGerman
-                  ? 'Die Sperre ist aus einer fr\u00fcheren Aktivierung erhalten geblieben. Du kannst sie jetzt manuell aufheben.'
+                  ? 'Alte Sperre erkannt – du kannst sie jetzt aufheben.'
                   : 'The lock persisted from a previous activation. You can manually release it now.'}
               </p>
               <button

@@ -12,17 +12,27 @@ const MAX_LEN = 80;
 // passes today and blocks any regression. Lower these as Phase D lands;
 // final targets per docs Phase D.2 in comments.
 const BUDGETS = {
-  'src/components/modes': 82, // final target ≤ 10
-  'src/components/settings': 62, // final target ≤ 10
-  'src/components/wallet': 43, // final target ≤ 12
-  'src/components/setup': 53, // final target ≤ 10
-  'src/components/learn': 30, // final target ≤ 12
-  'src/pages': 54, // final target ≤ 20
+  'src/components/modes': 5,
+  'src/components/settings': 3,
+  'src/components/wallet': 4,
+  'src/components/setup': 3,
+  'src/components/learn': 3,
+  'src/pages': 4,
 };
 
 // SVG path data and similar non-copy strings start with drawing commands.
 const NON_COPY_PATTERN = /^[MmLlHhVvCcSsQqTtAaZz][\d\s.,-]/;
 const STRING_PATTERN = /(["'`])((?:\\.|(?!\1).){80,}?)\1/g;
+
+// Tailwind/CSS utility strings are code, not user copy. Heuristic: split by
+// whitespace; if >=70% of tokens look like utility classes (contain -, :,
+// [, / or %), treat the string as a className.
+function looksLikeClassName(value) {
+  const tokens = value.trim().split(/\s+/);
+  if (tokens.length === 0) return false;
+  const utilityTokens = tokens.filter((token) => /[-:[\]/%]|\$\{/.test(token)).length;
+  return utilityTokens / tokens.length >= 0.7;
+}
 
 function collectFiles(dir, files = []) {
   for (const entry of readdirSync(dir)) {
@@ -44,6 +54,11 @@ function countLongStrings(filePath) {
     const value = match[2];
     if (value.length < MAX_LEN) continue;
     if (NON_COPY_PATTERN.test(value)) continue; // SVG path data
+    if (looksLikeClassName(value)) continue; // Tailwind/CSS utility strings
+    // JSX/code fragments the cross-quote regex can capture between
+    // attributes are code, not copy.
+    if (/=>|=\{|<\/|onChange=|onClick=|value=\{/.test(value)) continue;
+    if (/gradient\(/.test(value)) continue; // inline CSS values
     if (/^https?:\/\//.test(value)) continue; // URLs
     if (/^[\w./@-]+$/.test(value)) continue; // import-ish identifiers
     hits.push(value.slice(0, 100));

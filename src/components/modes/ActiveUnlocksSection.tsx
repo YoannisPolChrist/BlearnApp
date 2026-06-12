@@ -27,8 +27,8 @@ export function ActiveUnlocksSection({ activeUnlocks, isGerman, variants }: Acti
             </h2>
             <p className="mt-1 text-sm leading-relaxed text-foreground/72">
               {isGerman
-                ? 'Freigaben enden pro App, Website oder Suchziel separat. Eine neue Freigabe verlängert nur das jeweilige Ziel.'
-                : 'Unlocks expire per app, website, or search target independently. A new unlock only extends that specific target.'}
+                ? 'Jede Freigabe läuft pro Ziel separat ab.'
+                : 'Each unlock expires per target; renewing extends only that one.'}
             </p>
           </div>
           <span className="rounded-full bg-success/12 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-success">

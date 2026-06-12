@@ -20,7 +20,7 @@ export const APP_TOUR_STEPS: AppTourStep[] = [
     emphasisStyle: 'hero',
     spotlightPadding: 18,
     title: 'Hier steuerst du deinen Fokus',
-    description: 'Hier siehst du sofort deinen aktuellen Schutzstatus und gelangst mit einem Tap direkt in deine Modi.',
+    description: 'Dein Schutzstatus auf einen Blick – ein Tap führt zu den Modi.',
   },
   {
     id: 'dashboard-learn',
@@ -30,7 +30,7 @@ export const APP_TOUR_STEPS: AppTourStep[] = [
     highlightTone: 'learn',
     emphasisStyle: 'feature',
     title: 'Freischalten statt nur blockieren',
-    description: 'Mit Learn verdienst du dir Zeitfenster durch Karten und Reviews, statt nur stumpf zu sperren.',
+    description: 'Learn: Zeitfenster durch Reviews verdienen statt nur sperren.',
   },
   {
     id: 'dashboard-focus',
@@ -40,7 +40,7 @@ export const APP_TOUR_STEPS: AppTourStep[] = [
     highlightTone: 'focus',
     emphasisStyle: 'grid',
     title: 'Blearn zeigt dir Wirkung direkt im Alltag',
-      description: 'Diese Karten zeigen dir auf einen Blick, was heute schon besser läuft und wo dein Fokus wirkt.',
+      description: 'Zeigt, was heute besser läuft und wo dein Fokus wirkt.',
   },
   {
     id: 'modes-selector',
@@ -51,7 +51,7 @@ export const APP_TOUR_STEPS: AppTourStep[] = [
     emphasisStyle: 'hero',
     spotlightPadding: 18,
     title: 'Hier wählst du die passende Schutzstufe',
-    description: 'Hier entscheidest du, ob du locker, lernbasiert oder deutlich strenger geschützt werden willst.',
+    description: 'Wähle, wie streng dein Schutz sein soll.',
   },
   {
     id: 'modes-blocking',
@@ -61,7 +61,7 @@ export const APP_TOUR_STEPS: AppTourStep[] = [
     highlightTone: 'modes',
     emphasisStyle: 'feature',
     title: 'Danach ordnest du echte Auslöser zu',
-    description: 'Hier legst du fest, welche Apps oder Seiten von welchem Modus übernommen werden.',
+    description: 'Lege fest, welcher Modus welche Apps und Seiten übernimmt.',
   },
   {
     id: 'learn-hero',
@@ -72,7 +72,7 @@ export const APP_TOUR_STEPS: AppTourStep[] = [
     emphasisStyle: 'hero',
     spotlightPadding: 18,
     title: 'Die Lernzentrale ist dein Freischalt-Motor',
-    description: 'Hier startest du Lernfenster, siehst fällige Karten und hältst deine Pakete in Bewegung.',
+    description: 'Starte Lernfenster und behalte fällige Karten im Blick.',
   },
   {
     id: 'learn-actions',
@@ -82,6 +82,6 @@ export const APP_TOUR_STEPS: AppTourStep[] = [
     highlightTone: 'learn',
     emphasisStyle: 'grid',
     title: 'Bibliothek und Templates decken alles ab',
-    description: 'Bestehende Decks öffnen, Starter importieren oder neue Pakete bauen: alles hängt an diesen Kacheln.',
+    description: 'Decks öffnen, Starter importieren oder neue Pakete bauen.',
   },
 ];

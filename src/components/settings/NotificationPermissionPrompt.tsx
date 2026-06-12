@@ -53,7 +53,7 @@ export default function NotificationPermissionPrompt() {
           setOpen(nextOpen);
         }}
         title="Benachrichtigungen beim Start freigeben"
-        description="Blearn kann dich direkt ab dem Start über Erinnerungen, Learn-Status und wichtige Schutzsignale informieren. Wähle jetzt auch gleich, welche Bereiche aktiv sein sollen."
+        description="Erinnerungen, Learn-Status und Schutzsignale – wähle deine Bereiche."
       />
     </Suspense>
   ) : null;

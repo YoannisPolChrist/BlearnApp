@@ -31,7 +31,7 @@ function getIntroRuntimeErrorMessage(error: unknown) {
     return 'Diese Einrichtung ist nur in der nativen Android-App verfügbar.';
   }
 
-  return 'Die Android-Berechtigungen konnten gerade nicht geprüft werden. Versuche es bitte erneut.';
+  return 'Berechtigungen nicht prüfbar – bitte erneut versuchen.';
 }
 
 function StatusBadge({
@@ -290,7 +290,7 @@ export default function AppIntroDialog() {
         description={options.description}
         statusLabel={statusLabel}
         statusTone={statusTone}
-        hint={!isNative ? 'In der Web-Vorschau kannst du diesen Schritt nur ansehen. Auf Android öffnet Blearn direkt die richtige Systemeinstellung.' : options.hint}
+        hint={!isNative ? 'Web-Vorschau: nur Ansicht. Android öffnet die Einstellung direkt.' : options.hint}
         errorMessage={permissionErrorMessage}
       />
     );
@@ -316,7 +316,7 @@ export default function AppIntroDialog() {
         id: 'value',
         eyebrow: 'Blearn',
         title: 'Block and learn',
-        description: 'Blearn hilft dir, Ablenkungen direkt auf deinem Handy zu stoppen und Fokus wieder aufzubauen.',
+        description: 'Blearn stoppt Ablenkungen auf deinem Handy und baut Fokus auf.',
         bullets: [
           'Die App erkennt, wenn du in ablenkende Apps oder Browser wechselst.',
           'Blearn kann dich sofort stoppen und in einen kurzen Fokus-Flow schicken.',
@@ -338,7 +338,7 @@ export default function AppIntroDialog() {
         ],
         actionLabel: 'Nutzungszugriff öffnen',
         actionStateLabel: 'Nutzungszugriff erteilt',
-        hint: 'Ohne diesen Schritt kann Blearn nicht sehen, wann eine Ablenkungs-App aktiv wird.',
+        hint: 'Nötig, damit Blearn erkennt, wann eine Ablenkungs-App startet.',
         icon: Shield,
         completed: usageCheckpointState === 'granted',
         checkpointState: usageCheckpointState,
@@ -358,7 +358,7 @@ export default function AppIntroDialog() {
         ],
         actionLabel: 'Overlay freigeben',
         actionStateLabel: 'Overlay erteilt',
-        hint: 'Ohne Overlay kann Blearn dich im wichtigen Moment nicht direkt auf dem Handy stoppen.',
+        hint: 'Nötig, damit Blearn dich im entscheidenden Moment stoppen kann.',
         icon: Sparkles,
         completed: overlayCheckpointState === 'granted',
         checkpointState: overlayCheckpointState,
@@ -370,7 +370,7 @@ export default function AppIntroDialog() {
         id: 'accessibility',
         eyebrow: '3',
         title: 'Bedienungshilfe aktivieren',
-        description: 'Damit bleibt der Schutz auf Android auch in kniffligen Browser- und Suchfeld-Situationen stabil.',
+        description: 'Hält den Schutz auch bei Browser- und Suchfeld-Tricks stabil.',
         bullets: [
           'Tippe auf "Bedienungshilfe öffnen".',
           'Aktiviere dort den Dienst für Blearn.',
@@ -378,7 +378,7 @@ export default function AppIntroDialog() {
         ],
         actionLabel: 'Bedienungshilfe öffnen',
         actionStateLabel: 'Bedienungshilfe erteilt',
-        hint: 'Dieser Schritt ergänzt den Schutz, wenn Android Standard-Overlays oder Browser-Suchen sonst umgehen würden.',
+        hint: 'Schließt Lücken bei System-Overlays und Browser-Suchen.',
         icon: Wand2,
         completed: accessibilityCheckpointState === 'granted',
         checkpointState: accessibilityCheckpointState,
@@ -415,7 +415,7 @@ export default function AppIntroDialog() {
       open={isOpen}
       onOpenChange={handleOpenChange}
       title="Blearn starten"
-      description="Zuerst kurz verstehen, was Blearn für dich macht. Danach aktivierst du die nötigen Android-Rechte direkt in der richtigen Reihenfolge."
+      description="Kurzer Überblick, dann aktivierst du die Rechte der Reihe nach."
       steps={steps}
       finishLabel={canFinish ? 'Loslegen' : 'Rechte fehlen noch'}
       onFinish={handleFinish}
