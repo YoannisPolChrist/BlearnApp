@@ -1,0 +1,40 @@
+step=1 tap reveal
+step=2 tap rating=Good 6MO
+step=3 tap reveal
+step=4 tap rating=Good 27D
+step=5 tap reveal
+step=6 tap rating=Good 9MO
+step=7 tap reveal
+step=8 tap rating=Good 8MO
+step=9 tap reveal
+step=10 tap rating=Good 24D
+step=11 tap reveal
+step=12 tap rating=Good 1MO
+step=13 tap reveal
+step=14 tap rating=Good 1MO
+step=15 tap reveal
+step=16 tap rating=Good 19D
+step=17 no-action
+step=18 no-action
+step=19 no-action
+step=20 no-action
+step=21 no-action
+step=22 no-action
+step=23 no-action
+step=24 no-action
+step=25 no-action
+step=26 no-action
+step=27 no-action
+step=28 no-action
+step=29 no-action
+step=30 no-action
+step=31 no-action
+step=32 no-action
+step=33 no-action
+step=34 no-action
+step=35 no-action
+step=36 no-action
+step=37 no-action
+step=38 no-action
+step=39 no-action
+step=40 no-action

@@ -1,0 +1,327 @@
+04-09 02:17:36.196  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:36.247  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x0, deviceId=-1, 38242444, channel '44a363e app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity (server)'
+04-09 02:17:36.252  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x1, deviceId=-1, 38242444, channel '44a363e app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity (server)'
+04-09 02:17:36.337  9898 10138 D Capacitor: Handling local request: https://localhost/blearn-mark.svg
+04-09 02:17:36.383  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:36.383  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:36.455  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:36.455  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:36.456  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:36.456  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:36.456  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:36.456  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:36.673  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:36.776  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:36.776  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:36.935  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:36.935  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:36.936  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:36.936  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:36.936  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:36.936  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:36.936  9898  9898 D BlearnAccessibility: skip: missing package
+04-09 02:17:36.936  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:36.936  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:36.936  9898  9898 D BlearnAccessibility: skip: missing package
+04-09 02:17:36.970  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:37.095  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:37.095  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:37.095  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:37.095  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:37.259  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:37.362  2184  8637 D PerfShielderService: app.blearn.mobile|app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity|542|38243348467493|118|5|15
+04-09 02:17:37.363  7444 26755 W MiuiPerfServiceClient: interceptAndQueuing:9898|app.blearn.mobile|542|118|38243348467493|Slow issue draw commands|15
+04-09 02:17:37.535  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:37.561  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:37.561  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:37.747  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:37.747  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:37.747  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:37.747  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:37.747  9898  9898 D BlearnAccessibility: skip: missing package
+04-09 02:17:37.794  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:38.052  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:38.312  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:38.571  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:38.734  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:38.734  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:38.734  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:38.734  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:38.734  9898  9898 D BlearnAccessibility: skip: missing package
+04-09 02:17:38.829  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:39.088  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:39.165  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:17:39.170  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:17:39.347  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:39.605  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:39.736  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:39.736  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:39.736  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:39.736  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:39.736  9898  9898 D BlearnAccessibility: skip: missing package
+04-09 02:17:39.860  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:40.119  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:40.378  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:40.637  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:40.739  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:40.739  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:40.739  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:40.739  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:40.739  9898  9898 D BlearnAccessibility: skip: missing package
+04-09 02:17:40.897  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:40.949  2184  2876 D WindowManager: Collecting in transition 535: ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} init visibleRequested:true
+04-09 02:17:40.970  8508  8594 I ProcessMonitor: onForegroundInfoChanged: ForegroundInfo{mForegroundPackageName='com.mi.android.globallauncher', mForegroundUid=10082, mForegroundPid=4110, mLastForegroundPackageName='app.blearn.mobile', mLastForegroundUid=10030, mLastForegroundPid=9898, mMultiWindowForegroundPackageName='com.mi.android.globallauncher', mMultiWindowForegroundUid=10082, mFlags=0}
+04-09 02:17:40.972 12404 32386 I GST     : forePkg: com.mi.android.globallauncher, preForePkg: app.blearn.mobile
+04-09 02:17:40.972  9679 15997 D PerfEngineController: ForegroundInfo{mForegroundPackageName='com.mi.android.globallauncher', mForegroundUid=10082, mForegroundPid=4110, mLastForegroundPackageName='app.blearn.mobile', mLastForegroundUid=10030, mLastForegroundPid=9898, mMultiWindowForegroundPackageName='com.mi.android.globallauncher', mMultiWindowForegroundUid=10082, mFlags=0}
+04-09 02:17:40.974  3988 20756 D MiuiBluetoothLatencyMode: ForegroundInfo{mForegroundPackageName='com.mi.android.globallauncher', mForegroundUid=10082, mForegroundPid=4110, mLastForegroundPackageName='app.blearn.mobile', mLastForegroundUid=10030, mLastForegroundPid=9898, mMultiWindowForegroundPackageName='com.mi.android.globallauncher', mMultiWindowForegroundUid=10082, mFlags=0}
+04-09 02:17:40.978  4073  4317 D MiuiFullScreenTaskRepository: addOrUpdateFullScreenTaskInfo taskId=14416, topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}
+04-09 02:17:40.981  8508  8594 I GameBoosterService: onForegroundInfoChanged: Cur=com.mi.android.globallauncher	 last=app.blearn.mobile
+04-09 02:17:40.981  8508  8594 D GameBoosterService: onGameStatusChange foreground:ForegroundInfo{mForegroundPackageName='com.mi.android.globallauncher', mForegroundUid=10082, mForegroundPid=4110, mLastForegroundPackageName='app.blearn.mobile', mLastForegroundUid=10030, mLastForegroundPid=9898, mMultiWindowForegroundPackageName='com.mi.android.globallauncher', mMultiWindowForegroundUid=10082, mFlags=0}
+04-09 02:17:40.988  7377  9067 W AiAiAutofill: On activity pause for ContentSelector{packageName=app.blearn.mobile, activityName=app.blearn.mobile.BlockingOverlayActivity, resourceId=null} completing 0 sessions with 1 remaining.
+04-09 02:17:41.011  8508  8594 I BeautyService: onForegroundInfoChanged: Cur=com.mi.android.globallauncher	 last=app.blearn.mobile
+04-09 02:17:41.031  2184  2507 D WindowManager: Final targets: [Task{ee261fc #1 type=home}, Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay}, WallpaperWindowToken{eaff2a8 token=android.os.BinderProxy@70a9acb}, WallpaperWindowToken{c990fe8 token=android.os.Binder@51ce50b}]
+04-09 02:17:41.045  2184  2507 D WindowManager: Calling onTransitionReady info={id=535 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{ceea0bc Task{ee261fc #1 type=home}}} m=TO_FRONT f=SHOW_WALLPAPER|MOVE_TO_TOP leash=Surface(name=Task=1#45)/@0x2d6a2ef sb=Rect(0, 0 - 2400, 1080) eb=Rect(0, 0 - 2400, 1080) d=0 endFixedRotation=0},{WCT{RemoteToken{6f082ab Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay}}} m=TO_BACK f=NONE leash=Surface(name=Task=14416#5590)/@0x6e919c1 sb=Rect(0, 0 - 2400, 1080) eb=Rect(0, 0 - 2400, 1080) d=0},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=Surface(name=WallpaperWindowToken{eaff2a8 token=android.os.BinderProxy@70a9acb}#53)/@0x4fad66 - rotation-leash#5620)/@0xd573ae3 sb=Rect(0, 0 - 2400, 1080) eb=Rect(0, 0 - 1080, 2400) d=0 r=1->0:-1},{null m=TO_FRONT f=IS_WALLPAPER leash=Surface(name=Surface(name=WallpaperWindowToken{c990fe8 token=android.os.Binder@51ce50b}#60)/@0xae34294 - rotation-leash#5621)/@0xa76ce0 sb=Rect(0, 0 - 2400, 1080) eb=Rect(0, 0 - 1080, 2400) d=0 r=1->0:-1}] noAni=[false] df=[false] mk=[true] nc=[0]}, mToken=Token{5c67e5e TransitionRecord{b24aef3 id=535 type=OPEN flags=0x0}}
+04-09 02:17:41.057  4110  4110 D WindowTransitionCompat: printLeash::taskInfo = TaskInfo{userId=0 taskId=14416 displayId=0 isRunning=true baseIntent=Intent { flg=0x30810000 cmp=app.blearn.mobile/.BlockingOverlayActivity } baseActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} origActivity=null realActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} numActivities=1 lastActiveTime=102532166 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=200 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@fa84fce} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(94, 0 - 0, 0) topActivityInfo=ActivityInfo{a4eeeef app.blearn.mobile.BlockingOverlayActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=true isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityInMiuiSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden mIsCastMode=false mTopActivityMediaSize=null mTopActivityRecordName=ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} mTopActivityOrientation=-2 mTopActivityWindowIsNowVisible=true isTranslucent=true isEmbedded=false shouldBeVisible=false isImmersive=false mBehindAppLockPkg=null mOriginatingUid=0}
+04-09 02:17:41.058  4110  4110 D TransitionUtil: get key :ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}#14416
+04-09 02:17:41.071  4110  4110 I WindowElement5308c91: getClosingWindowAnimParams closingTarget=RemoteAnimationTargetCompat{taskId=14416, mode=1, isTranslucent=false, clipRect=Rect(0, 0 - 0, 0), position=Point(0, 0), sourceContainerBounds=Rect(0, 0 - 2400, 1080), prefixOrderIndex=3, isNotInRecents=false, contentInsets=Rect(0, 0 - 0, 0), activityType=1, packageName=app.blearn.mobile, startBounds=Rect(0, 0 - 2400, 1080), windowType=-1}, closingTargets.homeTarget=RemoteAnimationTargetCompat{taskId=1, mode=0, isTranslucent=false, clipRect=Rect(0, 0 - 0, 0), position=Point(0, 0), sourceContainerBounds=Rect(0, 0 - 2400, 1080), prefixOrderIndex=4, isNotInRecents=false, contentInsets=Rect(0, 0 - 0, 0), activityType=2, packageName=com.mi.android.globallauncher, startBounds=Rect(0, 0 - 2400, 1080), windowType=-1}
+04-09 02:17:41.071  4110  4110 I WindowAnimParamsProvider: getClosingWindowAnimParams closingTarget=RemoteAnimationTargetCompat{taskId=14416, mode=1, isTranslucent=false, clipRect=Rect(0, 0 - 0, 0), position=Point(0, 0), sourceContainerBounds=Rect(0, 0 - 2400, 1080), prefixOrderIndex=3, isNotInRecents=false, contentInsets=Rect(0, 0 - 0, 0), activityType=1, packageName=app.blearn.mobile, startBounds=Rect(0, 0 - 2400, 1080), windowType=-1}, closingTargets.homeTarget=RemoteAnimationTargetCompat{taskId=1, mode=0, isTranslucent=false, clipRect=Rect(0, 0 - 0, 0), position=Point(0, 0), sourceContainerBounds=Rect(0, 0 - 2400, 1080), prefixOrderIndex=4, isNotInRecents=false, contentInsets=Rect(0, 0 - 0, 0), activityType=2, packageName=com.mi.android.globallauncher, startBounds=Rect(0, 0 - 2400, 1080), windowType=-1}, closingTargets.secondTarget=null
+04-09 02:17:41.071  4110  4110 I WindowAnimParamsProvider: getClosingWindowAnimParams target =RemoteAnimationTargetCompat{taskId=14416, mode=1, isTranslucent=false, clipRect=Rect(0, 0 - 0, 0), position=Point(0, 0), sourceContainerBounds=Rect(0, 0 - 2400, 1080), prefixOrderIndex=3, isNotInRecents=false, contentInsets=Rect(0, 0 - 0, 0), activityType=1, packageName=app.blearn.mobile, startBounds=Rect(0, 0 - 2400, 1080), windowType=-1}
+04-09 02:17:41.075  4110  4626 E ActivityManagerWrapper:  mainTaskId=14416   userId=0   windowMode=1   baseIntent=Intent { act=null flag=813760512 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} }
+04-09 02:17:41.075  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:17:41.077  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:17:41.080  4110  4110 I WindowAnimParamsProvider: getClosingWindowAnimParams getClosingShortcutIcon target= RemoteAnimationTargetCompat{taskId=14416, mode=1, isTranslucent=false, clipRect=Rect(0, 0 - 0, 0), position=Point(0, 0), sourceContainerBounds=Rect(0, 0 - 2400, 1080), prefixOrderIndex=3, isNotInRecents=false, contentInsets=Rect(0, 0 - 0, 0), activityType=1, packageName=app.blearn.mobile, startBounds=Rect(0, 0 - 2400, 1080), windowType=-1}
+04-09 02:17:41.090  4110  4110 E ActivityManagerWrapper:  mainTaskId=14416   userId=0   windowMode=1   baseIntent=Intent { act=null flag=813760512 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} }
+04-09 02:17:41.090  4110  4110 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:17:41.093  4110  4110 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:17:41.094  4110  4626 E ActivityManagerWrapper:  mainTaskId=14416   userId=0   windowMode=1   baseIntent=Intent { act=null flag=813760512 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} }
+04-09 02:17:41.094  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:17:41.094  4110  4110 I WindowAnimParamsProvider: getClosingWindowAnimParams getClosingShortcutIcon task after=  [TaskKey{id=14416, stackId=0, baseIntent=Intent { flg=0x30810000 cmp=app.blearn.mobile/.BlockingOverlayActivity }, userId=0, lastActiveTime=102532166, windowingMode=1, isThumbnailBlur=false, isScreening=false, topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}, mHashCode=430390608}, title=Blearn, titleDescription=Blearn, bounds=null, isLaunchTarget=true, isStackTask=true, isSystemApp=false, isDockable=true, baseActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}, isLocked=false, isAccessLocked=false, mNeedHide=false, hasMultipleTasks=false, cti1Key=, cti2Key=] 
+04-09 02:17:41.094  4110  4110 D WindowAnimParamsProvider: getClosingShortcutIcon:CloseShortcutIconUtils.getCloseShortcutIcon  cn=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}   userId=0
+04-09 02:17:41.094  4110  4110 D Launcher: getShowingShortcutIcon, ignore component=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} className, find result=[Item(id=863 type=0)]
+04-09 02:17:41.095  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:17:41.158  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:41.265  9898  9898 D BlearnAccessibility: event: com.mi.android.globallauncher type=32
+04-09 02:17:41.278  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.mi.android.globallauncher
+04-09 02:17:41.417  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:41.676  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:41.783  2184  8702 I SmartPower: app.blearn.mobile/10030(9898): visible->invisible(71045ms) R(become invisible) adj=200.
+04-09 02:17:41.783  2184  8702 I SmartPower: app.blearn.mobile/10030(9898): invisible->background(0ms) R(become background) adj=200.
+04-09 02:17:41.814  2184  4769 D WindowManager: Set the mSyncState to SYNC_STATE_READY: Window{44a363e u0 app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}
+04-09 02:17:41.831  4073  4317 D MiuiFullScreenTaskRepository: addOrUpdateFullScreenTaskInfo taskId=14416, topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}
+04-09 02:17:41.880  4081  4255 I DynamicDDSService: handleMessage(ACTIVITY_SUSPEND{appInfo=app.blearn.mobile isFullScreen=}true)
+04-09 02:17:41.921  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:17:41.925  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:17:41.926  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:17:41.927  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:17:42.057  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:17:42.058  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:17:42.103  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:17:42.117  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:17:42.164  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:17:42.168  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:17:42.187  4110  4626 E ActivityManagerWrapper:  mainTaskId=14416   userId=0   windowMode=1   baseIntent=Intent { act=null flag=813760512 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} }
+04-09 02:17:42.187  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:17:42.193  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:17:42.225  4110  4626 E ActivityManagerWrapper:  mainTaskId=14416   userId=0   windowMode=1   baseIntent=Intent { act=null flag=813760512 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} }
+04-09 02:17:42.225  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:17:42.227  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:17:42.282  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:17:42.294  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:17:42.298  9898  9898 D BlearnAccessibility: resolved target app:com.google.android.keep mode=strict deck=null
+04-09 02:17:42.298  9898  9898 D BlearnAccessibility: show overlay for app:com.google.android.keep
+04-09 02:17:42.298  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:17:42.314  2184  7321 I SmartPower: app.blearn.mobile/10030(9898): background->visible(530ms) R(become visible) adj=200.
+04-09 02:17:42.317  2184  7321 D WindowManager: wms.Input focus has changed to Window{7cf5bd5 u0 app.blearn.mobile} display=0 updateInputWindows = false
+04-09 02:17:42.319  2184  2507 D WindowManager: wms.Focus not requested for window=Window{7cf5bd5 u0 app.blearn.mobile} because it has no surface or is not focusable.
+04-09 02:17:42.321  9898  9898 D BlearnOverlay: overlay shield shown for app:com.google.android.keep mode=strict
+04-09 02:17:42.324  2184  8702 D CoreBackPreview: Window{7cf5bd5 u0 app.blearn.mobile}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@8d6d253, mPriority=0, mIsAnimationCallback=false}
+04-09 02:17:42.330  9898  9898 W p.blearn.mobile: type=1400 audit(0.0:39891): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=2509 scontext=u:r:untrusted_app:s0:c30,c256,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=app.blearn.mobile
+04-09 02:17:42.348  2184  7321 D WindowManager: wms.finishDrawingLocked: mDrawState=COMMIT_DRAW_PENDING Window{7cf5bd5 u0 app.blearn.mobile} in Surface(name=#5644)/@0x6bf0790
+04-09 02:17:42.348  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=32
+04-09 02:17:42.349  2184  2507 I WindowManager: wms.showSurfaceRobustly mWin:Window{7cf5bd5 u0 app.blearn.mobile}
+04-09 02:17:42.352  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:17:42.357  9898  9898 D BlearnAccessibility: skip: overlay_already_visible for app:com.google.android.keep
+04-09 02:17:42.359  9898  9898 D BlearnAccessibility: open intervention from overlay for app:com.google.android.keep
+04-09 02:17:42.383  2184  7321 D WindowManager: Collecting in transition 539: ActivityRecord{d3f679a u0 app.blearn.mobile/.BlockingOverlayActivity init visibleRequested:false
+04-09 02:17:42.383  2184  7321 D MiuiFreeFormManagerService: onStartActivityInner as = Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay} op = null
+04-09 02:17:42.384  2184  7321 D WindowManager: setLockTaskAuth: task=Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay} mLockTaskAuth=LOCK_TASK_AUTH_PINNABLE
+04-09 02:17:42.386  2184  7321 D PerfStubImpl: perfWarmLaunchBoost: app.blearn.mobile, -1, 1
+04-09 02:17:42.387  2184  7321 D WindowManager: Collecting in transition 539: ActivityRecord{d3f679a u0 app.blearn.mobile/.BlockingOverlayActivity t-1} init visibleRequested:false
+04-09 02:17:42.388  2184  7321 I ActivityTaskManager: START u0 {flg=0x30810000 cmp=app.blearn.mobile/.BlockingOverlayActivity (has extras)} with LAUNCH_SINGLE_TASK from uid 10030 from pid 9898 callingPackage app.blearn.mobile (BAL_ALLOW_VISIBLE_WINDOW) result code=2
+04-09 02:17:42.392  4073  4073 I FocusedNotifPromptContr: onTopActivityMayChanged: topActivity=app.blearn.mobile
+04-09 02:17:42.392  4073  4073 I FocusedNotifPromptContr: topActivityMayChanged: topActivity=app.blearn.mobile
+04-09 02:17:42.392  4073  4073 D KeyguardEditorHelper: onTopActivityMayChanged, topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}; mState=IDEL
+04-09 02:17:42.393  4073  4317 D WindowManagerShell: onActivityRestartAttempt: ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}
+04-09 02:17:42.395  2184  8693 D PerfStubImpl: perfWarmLaunchBoost: app.blearn.mobile, -1, 1
+04-09 02:17:42.398  2184  8693 D WindowManager: Collecting in transition 539: ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} init visibleRequested:false
+04-09 02:17:42.403  2184  8693 D WindowManager: Collecting in transition 539: ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} init visibleRequested:true
+04-09 02:17:42.408  2184  8693 I PowerManagerServiceImpl: Acquire wakelock: SCREEN_BRIGHT_WAKE_LOCK        'WindowManager/displayId:0' ON_AFTER_RELEASE (uid=1000 pid=2184 pkg=android ws=WorkSource{10030 app.blearn.mobile})
+04-09 02:17:42.411  2184  8693 I BLASTSyncEngine: SyncGroup 539:  Unfinished container:ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.411  2184  8693 I BLASTSyncEngine: isActivitySyncFinished isSyncFinished false ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.411  4073  4317 D MiuiFullScreenTaskRepository: setFocusedTask taskId=14416, displayId=0, topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}
+04-09 02:17:42.411  4073  4317 D MiuiFullScreenTaskRepository: addOrUpdateFullScreenTaskInfo taskId=14416, topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}
+04-09 02:17:42.412  4073  4317 D MiuiDesktopModeController: onFocusTaskChanged newFocus: TaskInfo{userId=0 taskId=14416 displayId=0 isRunning=true baseIntent=Intent { flg=0x30810000 cmp=app.blearn.mobile/.BlockingOverlayActivity } baseActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} origActivity=null realActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} numActivities=1 lastActiveTime=102533616 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=200 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@a1c8895} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 94 - 0, 0) topActivityInfo=ActivityInfo{801bdaa app.blearn.mobile.BlockingOverlayActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=false isVisibleRequested=true isSleeping=false topActivityInSizeCompat=false topActivityInMiuiSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden mIsCastMode=false mTopActivityMediaSize=null mTopActivityRecordName=ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} mTopActivityOrientation=-1 mTopActivityWindowIsNowVisible=false isTranslucent=false isEmbedded=false shouldBeVisible=true isImmersive=false mBehindAppLockPkg=null mOriginatingUid=0}
+04-09 02:17:42.412  4073  4317 D MiuiFreeformModeController: onFocusTaskChanged taskInfo: TaskInfo{userId=0 taskId=14416 displayId=0 isRunning=true baseIntent=Intent { flg=0x30810000 cmp=app.blearn.mobile/.BlockingOverlayActivity } baseActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} origActivity=null realActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} numActivities=1 lastActiveTime=102533616 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=200 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@a1c8895} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 94 - 0, 0) topActivityInfo=ActivityInfo{801bdaa app.blearn.mobile.BlockingOverlayActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=false isVisibleRequested=true isSleeping=false topActivityInSizeCompat=false topActivityInMiuiSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden mIsCastMode=false mTopActivityMediaSize=null mTopActivityRecordName=ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} mTopActivityOrientation=-1 mTopActivityWindowIsNowVisible=false isTranslucent=false isEmbedded=false shouldBeVisible=true isImmersive=false mBehindAppLockPkg=null mOriginatingUid=0}
+04-09 02:17:42.413  3988 19609 D MiuiBluetoothLatencyMode: ForegroundInfo{mForegroundPackageName='app.blearn.mobile', mForegroundUid=10030, mForegroundPid=9898, mLastForegroundPackageName='com.google.android.keep', mLastForegroundUid=10282, mLastForegroundPid=28028, mMultiWindowForegroundPackageName='app.blearn.mobile', mMultiWindowForegroundUid=10030, mFlags=0}
+04-09 02:17:42.413  8508 11123 I ProcessMonitor: onForegroundInfoChanged: ForegroundInfo{mForegroundPackageName='app.blearn.mobile', mForegroundUid=10030, mForegroundPid=9898, mLastForegroundPackageName='com.google.android.keep', mLastForegroundUid=10282, mLastForegroundPid=28028, mMultiWindowForegroundPackageName='app.blearn.mobile', mMultiWindowForegroundUid=10030, mFlags=0}
+04-09 02:17:42.413  9679 13812 D PerfEngineController: ForegroundInfo{mForegroundPackageName='app.blearn.mobile', mForegroundUid=10030, mForegroundPid=9898, mLastForegroundPackageName='com.google.android.keep', mLastForegroundUid=10282, mLastForegroundPid=28028, mMultiWindowForegroundPackageName='app.blearn.mobile', mMultiWindowForegroundUid=10030, mFlags=0}
+04-09 02:17:42.415 12404 32386 I GST     : forePkg: app.blearn.mobile, preForePkg: com.google.android.keep
+04-09 02:17:42.416  8508 11123 I GameBoosterService: onForegroundInfoChanged: Cur=app.blearn.mobile	 last=com.google.android.keep
+04-09 02:17:42.416  8508 11123 D GameBoosterService: onGameStatusChange foreground:ForegroundInfo{mForegroundPackageName='app.blearn.mobile', mForegroundUid=10030, mForegroundPid=9898, mLastForegroundPackageName='com.google.android.keep', mLastForegroundUid=10282, mLastForegroundPid=28028, mMultiWindowForegroundPackageName='app.blearn.mobile', mMultiWindowForegroundUid=10030, mFlags=0}
+04-09 02:17:42.416  2184  8702 I ImeTracker: app.blearn.mobile:ed97c054: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+04-09 02:17:42.417  2184  8702 I ImeTracker: app.blearn.mobile:ed97c054: onCancelled at PHASE_SERVER_SHOULD_HIDE
+04-09 02:17:42.419  8508 11123 I BeautyService: onForegroundInfoChanged: Cur=app.blearn.mobile	 last=com.google.android.keep
+04-09 02:17:42.429 23840 23840 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1444 onStartInput(EditorInfo{EditorInfo{packageName=app.blearn.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=Bundle[mParcelledData.dataSize=72], hintText=null, hintLocales=[]}}, false)
+04-09 02:17:42.435  2184  2507 I BLASTSyncEngine: SyncGroup 539:  Unfinished container:ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.435  2184  2507 I BLASTSyncEngine: isActivitySyncFinished isSyncFinished false ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.435  9898  9898 D BlearnMainActivity: BlockingOverlayActivity onResume pending navigation for app:com.google.android.keep
+04-09 02:17:42.438  2184  2277 W PackageConfigPersister: App-specific configuration not found for packageName: app.blearn.mobile and userId: 0
+04-09 02:17:42.440  2184  2506 I BLASTSyncEngine: SyncGroup 539:  Unfinished container:ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.440  2184  2506 I BLASTSyncEngine: isActivitySyncFinished isSyncFinished false ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.449  2184  3833 I BLASTSyncEngine: SyncGroup 539:  Unfinished container:ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.449  2184  3833 I BLASTSyncEngine: isActivitySyncFinished isSyncFinished false ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.452  2184  4769 D CoreBackPreview: Window{7cf5bd5 u0 app.blearn.mobile}: Setting back callback null
+04-09 02:17:42.462  2184  8805 I BLASTSyncEngine: SyncGroup 539:  Unfinished container:ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.462  2184  8805 I BLASTSyncEngine: isActivitySyncFinished isSyncFinished false ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.464  2184  4769 W InputManager-JNI: Input channel object '7cf5bd5 app.blearn.mobile (client)' was disposed without first being removed with the input manager!
+04-09 02:17:42.470  2184  4769 I PowerManagerServiceImpl: Release wakelock: SCREEN_BRIGHT_WAKE_LOCK        'WindowManager/displayId:0' ON_AFTER_RELEASE DISABLED ACQ=-62ms (uid=1000 pid=2184 pkg=android ws=WorkSource{10030 app.blearn.mobile})
+04-09 02:17:42.473  2184  4769 I BLASTSyncEngine: SyncGroup 539:  Unfinished container:ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.473  2184  4769 I BLASTSyncEngine: isActivitySyncFinished isSyncFinished false ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.480  2184  4769 I SmartPower: app.blearn.mobile/10030(9898): visible->invisible(167ms) R(become invisible) adj=0.
+04-09 02:17:42.481  2184  4769 I SmartPower: app.blearn.mobile/10030(9898): invisible->background(0ms) R(become background) adj=0.
+04-09 02:17:42.481  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:17:42.483  4073  5386 D MiuiFreeformModeObserver: activityResumed() intent： Intent { cmp=app.blearn.mobile/.BlockingOverlayActivity (has extras) }
+04-09 02:17:42.484  4110  4110 D RecentsImpl: mActivityStateObserver app.blearn.mobile.BlockingOverlayActivity
+04-09 02:17:42.484  4110  4110 W RecentsImpl: onResumed className=app.blearn.mobile.BlockingOverlayActivity   mIsInAnotherPro=false   isKeyguardLocked=false   mIsStatusBarExpansion=false   mSecuritySpaceGuideShown=false
+04-09 02:17:42.489  2184  4769 I BLASTSyncEngine: SyncGroup 539:  Unfinished container:ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.489  2184  4769 I BLASTSyncEngine: isActivitySyncFinished isSyncFinished false ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.495  2184  4769 D WindowManager: wms.Input focus has changed to Window{44a363e u0 app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} display=0 updateInputWindows = true
+04-09 02:17:42.490  9898  9898 W p.blearn.mobile: type=1400 audit(0.0:39892): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=2509 scontext=u:r:untrusted_app:s0:c30,c256,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=app.blearn.mobile
+04-09 02:17:42.499  2184  2507 I BLASTSyncEngine: SyncGroup 539:  Unfinished container:ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.499  2184  2507 I BLASTSyncEngine: isActivitySyncFinished isSyncFinished false ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.505  2184  2507 I BLASTSyncEngine: SyncGroup 539:  Unfinished container:ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.505  2184  2507 I BLASTSyncEngine: isActivitySyncFinished isSyncFinished false ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416}
+04-09 02:17:42.513  2184  8805 D WindowManager: wms.finishDrawingLocked: mDrawState=COMMIT_DRAW_PENDING Window{44a363e u0 app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} in Surface(name=app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity#5649)/@0xf4595ac
+04-09 02:17:42.514  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:42.514  9898  9898 D BlearnAccessibility: skip: own package during handoff
+04-09 02:17:42.515  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=32
+04-09 02:17:42.515  9898  9898 D BlearnAccessibility: skip: own package during handoff
+04-09 02:17:42.515  4110  4626 W RecentsModel: getRunningTask   taskInfo=TaskInfo{userId=0 taskId=14416 displayId=0 isRunning=true baseIntent=Intent { flg=0x30810000 cmp=app.blearn.mobile/.BlockingOverlayActivity } baseActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} origActivity=null realActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} numActivities=1 lastActiveTime=102533735 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=200 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@e753036} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 94 - 0, 0) topActivityInfo=ActivityInfo{c5a2b37 app.blearn.mobile.BlockingOverlayActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=false isVisibleRequested=true isSleeping=false topActivityInSizeCompat=false topActivityInMiuiSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden mIsCastMode=false mTopActivityMediaSize=null mTopActivityRecordName=ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} mTopActivityOrientation=-1 mTopActivityWindowIsNowVisible=false isTranslucent=false isEmbedded=false shouldBeVisible=true isImmersive=false mBehindAppLockPkg=null mOriginatingUid=0}
+04-09 02:17:42.522  2184  2507 I SmartPower: app.blearn.mobile/10030(9898): background->visible(41ms) R(become visible) adj=0.
+04-09 02:17:42.522  2184  2507 I WindowManager: wms.showSurfaceRobustly mWin:Window{44a363e u0 app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}
+04-09 02:17:42.522  2184  2507 D WindowManager: Final targets: [Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay}, Task{8da65c1 #14411 type=standard A=10282:com.google.android.keep}]
+04-09 02:17:42.529  2184  2507 D WindowManager: Calling onTransitionReady info={id=539 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{6f082ab Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay}}} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=14416#5590)/@0x6e919c1 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0 endFixedRotation=1},{WCT{RemoteToken{aa8588f Task{8da65c1 #14411 type=standard A=10282:com.google.android.keep}}} m=TO_BACK f=NONE leash=Surface(name=Task=14411#5341)/@0xc82f6a8 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0}] noAni=[false] df=[false] mk=[true] nc=[0]}, mToken=Token{311c86b TransitionRecord{ac38cb id=539 type=OPEN flags=0x0}}
+04-09 02:17:42.538  4073  4317 D MiuiFullScreenTaskRepository: setFocusedTask taskId=14416, displayId=0, topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}
+04-09 02:17:42.538  4073  4317 D MiuiFullScreenTaskRepository: addOrUpdateFullScreenTaskInfo taskId=14416, topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}
+04-09 02:17:42.541  9898 10194 D BlearnScreenTime: consume_pending_navigation app:com.google.android.keep
+04-09 02:17:42.543  4110  4626 E ActivityManagerWrapper:  mainTaskId=14416   userId=0   windowMode=1   baseIntent=Intent { act=null flag=813760512 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} }
+04-09 02:17:42.543  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:17:42.552  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:17:42.578  4110  4626 W RecentsModel: getRunningTask   taskInfo=TaskInfo{userId=0 taskId=14416 displayId=0 isRunning=true baseIntent=Intent { flg=0x30810000 cmp=app.blearn.mobile/.BlockingOverlayActivity } baseActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} topActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} origActivity=null realActivity=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} numActivities=1 lastActiveTime=102533797 supportsSplitScreenMultiWindow=true supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=200 token=WCT{android.window.IWindowContainerToken$Stub$Proxy@2c6d609} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 94 - 0, 0) topActivityInfo=ActivityInfo{7d6100e app.blearn.mobile.BlockingOverlayActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isSleeping=false topActivityInSizeCompat=false topActivityInMiuiSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden mIsCastMode=false mTopActivityMediaSize=null mTopActivityRecordName=ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} mTopActivityOrientation=-1 mTopActivityWindowIsNowVisible=true isTranslucent=false isEmbedded=false shouldBeVisible=true isImmersive=false mBehindAppLockPkg=null mOriginatingUid=0}
+04-09 02:17:42.596  4110  4626 E ActivityManagerWrapper:  mainTaskId=14416   userId=0   windowMode=1   baseIntent=Intent { act=null flag=813760512 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} }
+04-09 02:17:42.596  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:17:42.599  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:17:42.603  2184  8702 I ImeTracker: app.blearn.mobile:2c68e839: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+04-09 02:17:42.603  2184  8702 I ImeTracker: app.blearn.mobile:2c68e839: onCancelled at PHASE_SERVER_SHOULD_HIDE
+04-09 02:17:42.605 23840 23840 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1444 onStartInput(EditorInfo{EditorInfo{packageName=app.blearn.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=12000000, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=Bundle[mParcelledData.dataSize=72], hintText=null, hintLocales=[]}}, false)
+04-09 02:17:42.607  2184  8816 W PackageConfigPersister: App-specific configuration not found for packageName: app.blearn.mobile and userId: 0
+04-09 02:17:42.610  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:42.610  9898  9898 D BlearnAccessibility: skip: own package during handoff
+04-09 02:17:42.617 12404 12478 I HeavyPackageIdentify: splitMode: false, splitPackages: null, foregroundPkg: app.blearn.mobile
+04-09 02:17:42.617  4110  4110 I TransitionCallback: clear leash = Surface(name=TL_Surface(name=Task=14416#5590)/@0xa7349cc_transition-leash#5624)/@0x2fd9ada, key = ComponentInfo{app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}#14416
+04-09 02:17:42.621  9898 10138 D Capacitor: Handling local request: https://localhost/blearn-mark.svg
+04-09 02:17:42.622  9898 10194 D BlearnScreenTime: blocking_overlay_dismissed
+04-09 02:17:42.626  2184  8702 D WindowManager: Collecting in transition 540: Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay} init visibleRequested:true
+04-09 02:17:42.628  2184  8702 D MiuiFreeFormGestureController: deliverResultForFinishActivity resultTo: null resultFrom: ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416 f}} isInVideoOrGameScene: false intent: Intent { flg=0x30810000 cmp=app.blearn.mobile/.BlockingOverlayActivity (has extras) }
+04-09 02:17:42.628  2184  8702 D WindowManager: Collecting in transition 540: Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay} init visibleRequested:true
+04-09 02:17:42.629  2184  8702 D WindowManager: Collecting in transition 540: ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416 f}} init visibleRequested:true
+04-09 02:17:42.635  2184  2507 D WindowManager: wms.Focus not requested for window=Window{44a363e u0 app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity} because it has no surface or is not focusable.
+04-09 02:17:42.644  9898 10194 D BlearnScreenTime: pending_navigation_completed
+04-09 02:17:42.664  9679 13812 D PerfEngineController: ForegroundInfo{mForegroundPackageName='com.google.android.keep', mForegroundUid=10282, mForegroundPid=28028, mLastForegroundPackageName='app.blearn.mobile', mLastForegroundUid=10030, mLastForegroundPid=9898, mMultiWindowForegroundPackageName='com.google.android.keep', mMultiWindowForegroundUid=10282, mFlags=0}
+04-09 02:17:42.664  3988 19609 D MiuiBluetoothLatencyMode: ForegroundInfo{mForegroundPackageName='com.google.android.keep', mForegroundUid=10282, mForegroundPid=28028, mLastForegroundPackageName='app.blearn.mobile', mLastForegroundUid=10030, mLastForegroundPid=9898, mMultiWindowForegroundPackageName='com.google.android.keep', mMultiWindowForegroundUid=10282, mFlags=0}
+04-09 02:17:42.664 12404 32386 I GST     : forePkg: com.google.android.keep, preForePkg: app.blearn.mobile
+04-09 02:17:42.665  8508 11123 I ProcessMonitor: onForegroundInfoChanged: ForegroundInfo{mForegroundPackageName='com.google.android.keep', mForegroundUid=10282, mForegroundPid=28028, mLastForegroundPackageName='app.blearn.mobile', mLastForegroundUid=10030, mLastForegroundPid=9898, mMultiWindowForegroundPackageName='com.google.android.keep', mMultiWindowForegroundUid=10282, mFlags=0}
+04-09 02:17:42.669  8508 11123 I GameBoosterService: onForegroundInfoChanged: Cur=com.google.android.keep	 last=app.blearn.mobile
+04-09 02:17:42.670  8508 11123 D GameBoosterService: onGameStatusChange foreground:ForegroundInfo{mForegroundPackageName='com.google.android.keep', mForegroundUid=10282, mForegroundPid=28028, mLastForegroundPackageName='app.blearn.mobile', mLastForegroundUid=10030, mLastForegroundPid=9898, mMultiWindowForegroundPackageName='com.google.android.keep', mMultiWindowForegroundUid=10282, mFlags=0}
+04-09 02:17:42.679  8508 11123 I BeautyService: onForegroundInfoChanged: Cur=com.google.android.keep	 last=app.blearn.mobile
+04-09 02:17:42.681  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:17:42.683  7377  9067 W AiAiAutofill: On activity pause for ContentSelector{packageName=app.blearn.mobile, activityName=app.blearn.mobile.BlockingOverlayActivity, resourceId=null} completing 0 sessions with 1 remaining.
+04-09 02:17:42.684  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:17:42.691  2184  2507 D WindowManager: Final targets: [Task{8da65c1 #14411 type=standard A=10282:com.google.android.keep}, Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay}]
+04-09 02:17:42.697  2184  2507 D WindowManager: Calling onTransitionReady info={id=540 t=CLOSE f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{aa8588f Task{8da65c1 #14411 type=standard A=10282:com.google.android.keep}}} m=TO_FRONT f=MOVE_TO_TOP leash=Surface(name=Task=14411#5341)/@0xc82f6a8 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0 endFixedRotation=1},{WCT{RemoteToken{6f082ab Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay}}} m=CLOSE f=NONE leash=Surface(name=Task=14416#5590)/@0x6e919c1 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0}] noAni=[false] df=[false] mk=[true] nc=[0]}, mToken=Token{7770e40 TransitionRecord{5680fc2 id=540 type=CLOSE flags=0x0}}
+04-09 02:17:42.717  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:42.717  2184  8507 I Transition: finishTransition: updateLastSurfacePosition tf=Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay}
+04-09 02:17:42.739  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=32
+04-09 02:17:42.739  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:42.754  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:17:42.754  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:42.776  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:17:42.782  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:17:42.794  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:17:42.795  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:17:42.822  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:17:42.825  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:17:42.827  9898  9898 D BlearnAccessibility: skip: cooldown active for app:com.google.android.keep
+04-09 02:17:42.852  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=32
+04-09 02:17:42.853  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:17:42.855  9898  9898 D BlearnAccessibility: skip: cooldown active for app:com.google.android.keep
+04-09 02:17:42.994  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:43.067  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=32
+04-09 02:17:43.067  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:17:43.078  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:17:43.082  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:17:43.087  9898  9898 D BlearnAccessibility: skip: cooldown active for app:com.google.android.keep
+04-09 02:17:43.182  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:17:43.187  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:17:43.192  9898  9898 D BlearnAccessibility: skip: cooldown active for app:com.google.android.keep
+04-09 02:17:43.254  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:43.283  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:17:43.286  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:17:43.291  9898  9898 D BlearnAccessibility: skip: cooldown active for app:com.google.android.keep
+04-09 02:17:43.514  9898 10194 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 02:17:43.547  2184  8702 I Transition: finishTransition: updateLastSurfacePosition tf=Task{35ef566 #14416 type=standard A=10030:app.blearn.mobile.blockingoverlay}
+04-09 02:17:43.591  2184  8702 I SmartPower: app.blearn.mobile/10030(9898): visible->invisible(1069ms) R(become invisible) adj=200.
+04-09 02:17:43.591  2184  8702 I SmartPower: app.blearn.mobile/10030(9898): invisible->background(1ms) R(become background) adj=200.
+04-09 02:17:43.602  2184  2741 D WindowManager: Set the mSyncState to SYNC_STATE_READY: Window{44a363e u0 app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}
+04-09 02:17:43.647  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:17:43.648  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:17:43.649  9898  9898 D BlearnAccessibility: skip: cooldown active for app:com.google.android.keep
+04-09 02:17:43.663  4081  7166 W DynamicDDSService: appName is not found in cache: app.blearn.mobile
+04-09 02:17:43.666  9898  9898 D BlearnBlockingActivity: onDestroy
+04-09 02:17:43.669  2184  8702 D CoreBackPreview: Window{44a363e u0 app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity}: Setting back callback null
+04-09 02:17:43.677  2184  8702 W InputManager-JNI: Input channel object '44a363e app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity (client)' was disposed without first being removed with the input manager!
+04-09 02:17:43.683  2184  8702 W InputManager-JNI: Input channel object 'Letterbox_left_ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} (client)' was disposed without first being removed with the input manager!
+04-09 02:17:43.683  2184  8702 W InputManager-JNI: Input channel object 'Letterbox_top_ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} (client)' was disposed without first being removed with the input manager!
+04-09 02:17:43.683  2184  8702 W InputManager-JNI: Input channel object 'Letterbox_right_ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} (client)' was disposed without first being removed with the input manager!
+04-09 02:17:43.684  2184  8702 W InputManager-JNI: Input channel object 'Letterbox_bottom_ActivityRecord{b8bfaa8 u0 app.blearn.mobile/.BlockingOverlayActivity t14416} (client)' was disposed without first being removed with the input manager!
+04-09 02:17:43.696  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:17:43.697  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:17:43.721  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:17:43.722  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:17:43.722  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:17:43.727  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:17:43.728  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:17:43.729  9898  9898 D BlearnAccessibility: skip: cooldown active for app:com.google.android.keep
+04-09 02:17:43.864  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:17:43.865  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:17:43.865  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:17:43.899  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:17:43.903  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:17:43.904  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:17:43.965  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:17:43.969  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:17:43.969  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:17:45.739  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /system_ext/app/miuisystem/miuisystem.apk' with 2 weak references
+04-09 02:17:45.740  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /product/priv-app/MiLauncherGlobal/MiLauncherGlobal.apk' with 1 weak references
+04-09 02:17:45.740  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /system_ext/priv-app/MiuiSystemUI/MiuiSystemUI.apk' with 1 weak references
+04-09 02:17:45.741  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '/product/overlay/GmsSystemUIOverlay.apk' with 1 weak references
+04-09 02:17:45.742  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '/product/overlay/SystemUIResCommon_Sys.apk' with 1 weak references
+04-09 02:17:45.742  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '/product/overlay/DevicesOverlay.apk' with 1 weak references
+04-09 02:17:45.742  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '/product/overlay/MccMncOverlay.apk' with 1 weak references
+04-09 02:17:45.742  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~6uKh_ZQMqdV1aJyk5fefrw==/com.google.android.keep-DFHwD7BrqIEBOOv9wIJrog==/base.apk' with 1 weak references
+04-09 02:17:45.742  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~6uKh_ZQMqdV1aJyk5fefrw==/com.google.android.keep-DFHwD7BrqIEBOOv9wIJrog==/split_config.arm64_v8a.apk' with 1 weak references
+04-09 02:17:45.742  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~6uKh_ZQMqdV1aJyk5fefrw==/com.google.android.keep-DFHwD7BrqIEBOOv9wIJrog==/split_config.de.apk' with 1 weak references
+04-09 02:17:45.742  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~6uKh_ZQMqdV1aJyk5fefrw==/com.google.android.keep-DFHwD7BrqIEBOOv9wIJrog==/split_config.xxhdpi.apk' with 1 weak references
+04-09 02:17:46.592  2184  3148 I SmartPower: app.blearn.mobile/10030(9898): background->idle(3001ms) R(become invisible) adj=905.
+04-09 02:17:46.767  2184  3148 I SmartPower: app.blearn.mobile/10030(9898): idle->background(175ms) R(add to whitelist) adj=0.
+04-09 02:17:46.793  9898  9898 D BlearnAccessibility: service connected

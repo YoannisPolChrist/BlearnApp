@@ -1,0 +1,432 @@
+--------- beginning of main
+04-03 06:34:05.624 I/NearbyMediums(16129): No BLE Fast/GATT advertisements found in the latest cycle.
+04-03 06:34:05.624 I/NearbyMediums(16129): Current Tracked Scanning Clients are : {NearbyConnections.EnvironmentMonitor, NearbySharing}
+04-03 06:34:05.625 I/NearbyConnections(16129): Processing lost BlePeripheral BlePeripheral{advertisement=BleAdvertisement { version=2, socketVersion=2, isFast=true, serviceIdHash=null, data=[ 0x23 0x39 0x52 0x4c 0x4f 0x11 0x34 0xe1 0xdd 0x51 0x85 0x15 0xbe 0x01 0xf7 0x0a 0x12 0x2e 0x03 0xda 0x1f 0xd9 0x6a ], deviceToken=[ 0x3c 0xf9 ], rxAdvertisement=null }, dctAdvertisement=null, address=null, psm=0, deviceToken=<ByteString@55105fc size=2 contents="<\371">, isSecondProfile=false, rxInstantConnectionAdv=null}.
+04-03 06:34:05.625 I/NearbyConnections(16129): Lost BleEndpoint for BlePeripheral BlePeripheral{advertisement=BleAdvertisement { version=2, socketVersion=2, isFast=true, serviceIdHash=null, data=[ 0x23 0x39 0x52 0x4c 0x4f 0x11 0x34 0xe1 0xdd 0x51 0x85 0x15 0xbe 0x01 0xf7 0x0a 0x12 0x2e 0x03 0xda 0x1f 0xd9 0x6a ], deviceToken=[ 0x3c 0xf9 ], rxAdvertisement=null }, dctAdvertisement=null, address=null, psm=0, deviceToken=<ByteString@55105fc size=2 contents="<\371">, isSecondProfile=false, rxInstantConnectionAdv=null} (with EndpointId 9RLO and EndpointInfo [ 0x34 0xe1 0xdd 0x51 0x85 0x15 0xbe 0x01 0xf7 0x0a 0x12 0x2e 0x03 0xda 0x1f 0xd9 0x6a ]).
+04-03 06:34:05.625 I/NearbyConnections(16129): ClientProxy(111641486) reporting onEndpointLost(9RLO)
+04-03 06:34:05.626 I/NearbySharing(16129): NearbySharing Internal event EndpointLost(endpointId=9RLO)
+--------- beginning of system
+04-03 06:34:05.785 I/SmartPower: com.android.chrome/10171(18399)( 1984): background->idle(3001ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=915.
+04-03 06:34:05.785 I/SmartPower: com.digibites.accubattery/10422(13543)( 1984): background->idle(3000ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=200.
+04-03 06:34:05.786 I/SmartPower: com.xiaomi.discover/10121(6288)( 1984): background->idle(3000ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=915.
+04-03 06:34:05.786 I/SmartPower: com.facebook.appmanager/10141(19301)( 1984): background->idle(3000ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=915.
+04-03 06:34:05.789 I/SmartPower: com.whatsapp.w4b/10303(8131)( 1984): background->idle(3000ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=915.
+04-03 06:34:05.790 I/SmartPower: com.miui.android.fashiongallery/10229(9178)( 1984): background->idle(3001ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-03 06:34:05.790 I/SmartPower: com.microsoft.teams/10242(10105)( 1984): background->idle(3000ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-03 06:34:05.791 I/SmartPower: fr.leboncoin/10531(10872)( 1984): background->idle(3001ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-03 06:34:05.791 I/SmartPower: com.openai.chatgpt/10400(15857)( 1984): background->idle(3000ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-03 06:34:05.891 I/SmartPower: com.google.android.gms/10163(16219)( 1984): background->idle(3000ms) R(service create com.google.android.gms/.chimera.GmsIntentOperationService) adj=500.
+04-03 06:34:05.997 D/NetworkManagement( 1984): code=699, pkg=com.miui.msa.global
+04-03 06:34:05.998 I/NetdFirewall( 7472): mFirewallReceiver
+04-03 06:34:06.005 D/DynamicService( 3976): PhoneStateListener.onDataActivity: direction=3
+04-03 06:34:06.005 D/DynamicService( 3976): modem or radio power state change,messageType: 128 state: 3
+04-03 06:34:06.005 D/DynamicService( 3976): listeners is null or md controller is disable!!!
+04-03 06:34:06.005 D/DynamicService_WifiBt( 3976): PhoneStateListener.onDataActivity: direction=3
+04-03 06:34:06.005 D/DynamicService_WifiBt( 3976): modem or radio power state change,messageType: 128 state: 3
+04-03 06:34:06.005 D/WifiSarController( 3976): onStateChanged: type = 2, value = 1
+04-03 06:34:06.005 D/NetworkController.MobileSignalController(1)( 3986): notifyListeners: mFeatureRelayData=false
+04-03 06:34:06.007 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:06.081 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-03 06:34:06.081 D/vendor.qti.bluetooth@1.0-ibs_handler( 1107): SerialClockVote: vote for UART CLK ON
+04-03 06:34:06.081 D/vendor.qti.bluetooth@1.0-wake_lock( 1107): Acquire wakelock is acquired 
+04-03 06:34:06.081 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-03 06:34:06.082 I/bt_stack( 4948): [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7c:b3:f1:83:62:0d
+04-03 06:34:06.122 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-03 06:34:06.122 D/vendor.qti.bluetooth@1.0-ibs_handler( 1107): SerialClockVote: vote for UART CLK OFF
+04-03 06:34:06.182 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:06.272 D/vendor.qti.bluetooth@1.0-wake_lock( 1107): Release wakelock is released 
+04-03 06:34:06.387 D/SLM-SRV-SLAService( 1984): checktemp temperature = 30054 temperature_average = 29963 isPerformanceMode = false thermal_enable_slm = true
+04-03 06:34:06.681 W/MIUIInput( 1984): Input event injection from package: null action ACTION_DOWN
+04-03 06:34:06.682 D/MIUIInput( 1984): [MotionEvent] publisher action=0x0, deviceId=-1, 69340831, channel '2b8494d app.blearn.mobile/app.blearn.mobile.MainActivity (server)'
+04-03 06:34:06.682 D/MIUIInput( 1984): [MotionEvent] publisher action=0x4, deviceId=-1, 69340831, channel 'b2cef68 NavigationBar0 (server)'
+04-03 06:34:06.682 D/MIUIInput( 1984): [MotionEvent] publisher action=0x0, deviceId=-1, 69340831, channel '[Gesture Monitor] miui-gesture (server)'
+04-03 06:34:06.684 D/MI-SF   ( 1305): mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 487(328), mIsKeepAutoMode 0
+04-03 06:34:06.684 E/vendor.qti.hardware.perf@2.2-service( 1187): Unknown params
+04-03 06:34:06.684 D/RefreshRateSelector( 1305): fixedMode_group: 0, isFindModeGroup 0
+04-03 06:34:06.684 D/RefreshRateSelector( 1305): find max refresh rate:120, mode Group:0
+04-03 06:34:06.684 I/whetstone.activity( 1984): Power Event callback listener is empty for resId=64
+04-03 06:34:06.684 D/BatteryStatsManagerStub( 1984): notifyEvent for resId=64 used 0ms
+04-03 06:34:06.685 D/RefreshRateSelector( 1305): Touch Boost
+04-03 06:34:06.685 D/MI-SF   ( 1305): mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 487(328), mIsKeepAutoMode 0
+04-03 06:34:06.685 D/RefreshRateSelector( 1305): fixedMode_group: 0, isFindModeGroup 0
+04-03 06:34:06.685 D/RefreshRateSelector( 1305): find max refresh rate:120, mode Group:0
+04-03 06:34:06.692 D/MiuiMultiWindowUtils(20788): freeform resolution args raw data:{  "wide_default":{    "freeform_args": {        "vertical_portrait":{"aspect_ratio":0.626, "original_ratio":0.5643,"original_scale":0.74,"top_margin":0.168,"left_margin":0.484},        "horizontal_portrait":{"aspect_ratio":0.626, "original_ratio":0.5643,"original_scale":0.74,"top_margin":0.1222,"left_margin":0.59745},        "vertical_landscape":{"aspect_ratio":1.6, "original_ratio":1,"original_scale":0.604,"top_margin":0.2596,"left_margin":0.2624},        "horizontal_landscape":{"aspect_ratio":1.6, "original_ratio":1,"original_scale":0.604,"top_margin":0.213,"left_margin":0.3758}    },    "mini_freeform_args":{        "vertical_portrait":{"original_ratio":0.147},        "horizontal_portrait":{"original_ratio":0.147},        "vertical_landscape":{"original_ratio":0.165},        "horizontal_landscape":{"original_ratio":0.165}    }  },  "narrow_default": {    "freeform_args": {        "vertical_portrait":{"aspect_ratio":0.626, "original_ratio":1,"original_scale":0.74,"top_margin":0.0753,"left_margin":-1},        "horizontal_portrait":{"aspect_ratio":0.626, "original_ratio":1,"original_scale":0.5756,"top_margin":-1,"left_margin":0.0753},        "vertical_landscape":{"aspect_ratio":1.6, "original_ratio":0.6847,"original_scale":0.587,"top_margin":0.0753,"left_margin":-1},        "horizontal_landscape":{"aspect_ratio":1.6, "original_ratio":0.6847,"original_scale":0.587,"top_margin":-1,"left_margin":0.0753}    },    "mini_freeform_args":{        "vertical_portrait":{"original_ratio":0.26},        "horizontal_portrait":{"original_ratio":0.26},        "vertical_landscape":{"original_ratio":0.293},        "horizontal_landscape":{"original_ratio":0.293}    }  },  "regular_default": {    "freeform_args": {      "vertical_portrait":{"aspect_ratio":0.625, "original_ratio":1,"original_scale":0.7,"top_margin":0.109,"left_margin":-1},      "horizontal_portrait":{"aspect_ratio":0.6667, "original_ratio":1,"original_scale":0.6102,"top_margin":-1,"left_margin":0.026},      "vertical_landscape":{"aspect_ratio":1.6, "original_ratio":1,"original_scale":0.4244,"top_margin":0.109,"left_margin":-1},      "horizontal_landscape":{"aspect_ratio":1.6, "original_ratio":1,"original_scale":0.4244,"top_margin":-1,"left_margin":0.026}    },    "mini_freeform_args":{      "vertical_portrait":{"original_ratio":0.25},      "horizontal_portrait":{"original_ratio":0.25},      "vertical_landscape":{"original_ratio":0.25},      "horizontal_landscape":{"original_ratio":0.25}    }  },  "pad_default": {    "freeform_args": {      "vertical_portrait":{"aspect_ratio":0.5625, "original_ratio":0.375,"original_scale":0.835,"top_margin":0.049,"left_margin":0.2775},      "horizontal_portrait":{"aspect_ratio":0.5625, "original_ratio":0.375,"original_scale":0.835,"top_margin":-1,"left_margin":0.6525},      "vertical_landscape":{"aspect_ratio":-1, "original_ratio":1,"original_scale":0.468,"top_margin":0.049,"left_margin":-1},      "horizontal_landscape":{"aspect_ratio":-1, "original_ratio":1,"original_scale":0.468,"top_margin":-1,"left_margin":0.4976}    },    "mini_freeform_args":{      "vertical_portrait":{"original_ratio":0.144},      "horizontal_portrait":{"original_ratio":0.144},      "vertical_landscape":{"original_ratio":0.2},      "horizontal_landscape":{"original_ratio":0.2}    }  }}
+04-03 06:34:06.694 D/MiuiMultiWindowUtils(20788): initFreeFormResolutionArgs failed, device is redwood
+04-03 06:34:06.695 D/IS_CTS_MODE(20788): false
+04-03 06:34:06.695 D/MULTI_WINDOW_SWITCH_ENABLED(20788): false
+04-03 06:34:06.696 I/SDM     ( 1177): HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-03 06:34:06.696 I/SDM     ( 1177): HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 0
+04-03 06:34:06.704 W/MIUIInput( 1984): Input event injection from package: null action ACTION_UP
+04-03 06:34:06.705 D/MIUIInput( 1984): [MotionEvent] publisher action=0x1, deviceId=-1, 69340831, channel '2b8494d app.blearn.mobile/app.blearn.mobile.MainActivity (server)'
+04-03 06:34:06.705 D/MIUIInput( 1984): [MotionEvent] publisher action=0x1, deviceId=-1, 69340831, channel '[Gesture Monitor] miui-gesture (server)'
+04-03 06:34:06.707 I/whetstone.activity( 1984): Power Event callback listener is empty for resId=64
+04-03 06:34:06.707 D/BatteryStatsManagerStub( 1984): notifyEvent for resId=64 used 0ms
+04-03 06:34:06.714 D/Capacitor(20788): Handling local request: https://localhost/assets/AppSettings-Cso1-UKZ.js
+04-03 06:34:06.715 D/Capacitor(20788): Handling local request: https://localhost/assets/useManualLearningCloudSync-Cpys3-np.js
+04-03 06:34:06.715 D/Capacitor(20788): Handling local request: https://localhost/assets/firebaseLearningSyncService-DQR90Jqi.js
+04-03 06:34:06.716 D/Capacitor(20788): Handling local request: https://localhost/assets/switch-De5LQofZ.js
+04-03 06:34:06.738 D/Capacitor(20788): Handling local request: https://localhost/favicon.png
+04-03 06:34:06.747 D/RefreshRateSelector( 1305): Touch Boost
+04-03 06:34:06.747 D/MI-SF   ( 1305): mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 487(328), mIsKeepAutoMode 0
+04-03 06:34:06.747 D/RefreshRateSelector( 1305): fixedMode_group: 0, isFindModeGroup 0
+04-03 06:34:06.747 D/RefreshRateSelector( 1305): find max refresh rate:120, mode Group:0
+04-03 06:34:06.751 D/Capacitor(20788): Handling local request: https://localhost/blearn-mark.svg
+04-03 06:34:06.857 I/Capacitor/Console(20788): File:  - Line 349 - Msg: [object Object]
+04-03 06:34:06.857 I/Capacitor/Console(20788): File:  - Line 349 - Msg: [object Object]
+04-03 06:34:06.858 I/Capacitor/Console(20788): File:  - Line 349 - Msg: [object Object]
+04-03 06:34:06.858 I/Capacitor/Console(20788): File:  - Line 349 - Msg: [object Object]
+04-03 06:34:06.858 I/Capacitor/Console(20788): File:  - Line 349 - Msg: [object Object]
+04-03 06:34:06.858 I/Capacitor/Console(20788): File:  - Line 349 - Msg: [object Object]
+04-03 06:34:06.859 V/Capacitor/Plugin(20788): To native (Capacitor plugin): callbackId: 25992396, pluginId: ScreenTime, methodName: hasUsagePermission
+04-03 06:34:06.859 V/Capacitor(20788): callback: 25992396, pluginId: ScreenTime, methodName: hasUsagePermission, methodData: {}
+04-03 06:34:06.859 V/Capacitor/Plugin(20788): To native (Capacitor plugin): callbackId: 25992397, pluginId: ScreenTime, methodName: hasOverlayPermission
+04-03 06:34:06.860 V/Capacitor(20788): callback: 25992397, pluginId: ScreenTime, methodName: hasOverlayPermission, methodData: {}
+04-03 06:34:06.860 V/Capacitor/Plugin(20788): To native (Capacitor plugin): callbackId: 25992398, pluginId: ScreenTime, methodName: hasAccessibilityPermission
+04-03 06:34:06.860 V/Capacitor(20788): callback: 25992398, pluginId: ScreenTime, methodName: hasAccessibilityPermission, methodData: {}
+04-03 06:34:06.861 V/Capacitor/Plugin(20788): To native (Capacitor plugin): callbackId: 25992399, pluginId: ScreenTime, methodName: getWebsiteBlockingStatus
+04-03 06:34:06.861 V/Capacitor(20788): callback: 25992399, pluginId: ScreenTime, methodName: getWebsiteBlockingStatus, methodData: {}
+04-03 06:34:06.861 V/Capacitor/Plugin(20788): To native (Capacitor plugin): callbackId: 25992400, pluginId: ScreenTime, methodName: getMonitoringStatus
+04-03 06:34:06.861 V/Capacitor(20788): callback: 25992400, pluginId: ScreenTime, methodName: getMonitoringStatus, methodData: {}
+04-03 06:34:06.862 V/Capacitor/Plugin(20788): To native (Capacitor plugin): callbackId: 25992401, pluginId: ScreenTime, methodName: getNotificationPermissionState
+04-03 06:34:06.862 V/Capacitor(20788): callback: 25992401, pluginId: ScreenTime, methodName: getNotificationPermissionState, methodData: {}
+04-03 06:34:06.877 I/Capacitor/Console(20788): File:  - Line 333 - Msg: {"granted":true}
+04-03 06:34:06.878 I/Capacitor/Console(20788): File:  - Line 333 - Msg: {"granted":true}
+04-03 06:34:06.878 I/Capacitor/Console(20788): File:  - Line 333 - Msg: {"granted":false}
+04-03 06:34:06.878 I/Capacitor/Console(20788): File:  - Line 333 - Msg: {"available":true,"active":false,"permissionGranted":true}
+04-03 06:34:06.882 I/Capacitor/Console(20788): File:  - Line 333 - Msg: {"monitoringActive":true,"vpnActive":false,"overlayPermission":true,"accessibilityPermission":false,"websiteBlockingAvailable":true,"websiteBlockingEnabled":false,"websiteBlockingPermission":true,"lastTriggerTarget":"com.miui.securitycenter","lastTriggerType":"app","lastTriggerAt":1775170574393,"handoffInProgress":false,"overlayVisible":false,"pendingQueueLength":0,"recentBlockingEvents":[{"stage":"detected","message":"blocking target detected","sessionId":"bb3a0a79-3edf-4fe3-8fd2-317ecd332c29","targetId":"com.android.chrome","targetType":"app","at":1775057516133},{"stage":"queued","message":"navigation queued for blocking flow","sessionId":"bb3a0a79-3edf-4fe3-8fd2-317ecd332c29","targetId":"com.android.chrome","targetType":"app","at":1775057516133},{"stage":"overlay-mounted","message":"blocking flow moved into active handoff","sessionId":"bb3a0a79-3edf-4fe3-8fd2-317ecd332c29","targetId":"com.android.chrome","targetType":"app","at":1775057516706},{"stage":"handoff-complete","message":"blocking flow handoff completed in app shell","sessionId":"bb3a0a79-3edf-4fe3-8fd2-317ecd332c29","targetId":"com.android.chrome","targetType":"app","at":1775057516809},{"stage":"recovered","message":"stale handoff_complete auto-recovered after 31637ms","sessionId":"bb3a0a79-3edf-4fe3-8fd2-317ecd332c29","targetId":"com.android.chrome","targetType":"app","at":1775057548446},{"stage":"detected","message":"blocking target detected","sessionId":"2b28001e-8b09-486d-a441-dcf33ca19da4","targetId":"com.whatnot_mobile","targetType":"app","at":1775057734423},{"stage":"queued","message":"navigation queued for blocking flow","sessionId":"2b28001e-8b09-486d-a441-dcf33ca19da4","targetId":"com.whatnot_mobile","targetType":"app","at":1775057734423},{"stage":"overlay-mounted","message":"blocking flow moved into active handoff","sessionId":"2b28001e-8b09-486d-a441-dcf33ca19da4","targetId":"com.whatnot_mobile","targetType":"app","at":1775057735730},{"stage":"handoff-complete","message":"blocking flow handoff completed in app shell","sessionId":"2b28001e-8b09-486d-a441-dcf33ca19da4","targetId":"com.whatnot_mobile","targetType":"app","at":1775057736016},{"stage":"detected","message":"blocking target detected","sessionId":"22ca0ffd-94f3-448a-b930-e4c8010407b4","targetId":"com.ebay.mobile","targetType":"app","at":1775057739009},{"stage":"queued","message":"navigation queued for blocking flow","sessionId":"22ca0ffd-94f3-448a-b930-e4c8010407b4","targetId":"com.ebay.mobile","targetType":"app","at":1775057739009},{"stage":"recovered","message":"blocking_overlay_destroyed","sessionId":"2b28001e-8b09-486d-a441-dcf33ca19da4","targetId":"com.whatnot_mobile","targetType":"app","at":1775057739081},{"stage":"overlay-mounted","message":"blocking flow moved into active handoff","sessionId":"2b28001e-8b09-486d-a441-dcf33ca19da4","targetId":"com.whatnot_mobile","targetType":"app","at":1775057740083},{"stage":"handoff-complete","message":"blocking flow handoff completed in app shell","sessionId":"2b28001e-8b09-486d-a441-dcf33ca19da4","targetId":"com.whatnot_mobile","targetType":"app","at":1775057740207},{"stage":"recovered","message":"stale handoff_complete auto-recovered after 31423ms","sessionId":"2b28001e-8b09-486d-a441-dcf33ca19da4","targetId":"com.whatnot_mobile","targetType":"app","at":1775057771630},{"stage":"overlay-mounted","message":"blocking flow moved into active handoff","sessionId":"22ca0ffd-94f3-448a-b930-e4c8010407b4","targetId":"com.ebay.mobile","targetType":"app","at":1775057771637},{"stage":"handoff-complete","message":"blocking flow handoff completed in app shell","sessionId":"22ca0ffd-94f3-448a-b930-e4c8010407b4","targetId":"com.ebay.mobile","targetType":"app","at":1775057771662},{"stage":"recovered","message":"stale handoff_complete auto-recovered after 31062ms","sessionId":"22ca0ffd-94f3-448a-b930-e4c8010407b4","targetId":"com.ebay.mobile","targetType":"app","at":1775057802724},{"stage":"detected","message":"blocking target detected","sessionId":"1978d221-fc99-443b-8863-772e1e6ccec8","t
+04-03 06:34:06.883 I/Capacitor/Console(20788): File:  - Line 333 - Msg: {"enabled":true,"state":"granted"}
+04-03 06:34:06.970 E/FileUtils(20788): err write to mi_exception_log
+04-03 06:34:07.011 D/DynamicService( 3976): PhoneStateListener.onDataActivity: direction=0
+04-03 06:34:07.011 D/DynamicService( 3976): modem or radio power state change,messageType: 128 state: 0
+04-03 06:34:07.011 D/DynamicService( 3976): listeners is null or md controller is disable!!!
+04-03 06:34:07.011 D/DynamicService_WifiBt( 3976): PhoneStateListener.onDataActivity: direction=0
+04-03 06:34:07.011 D/DynamicService_WifiBt( 3976): modem or radio power state change,messageType: 128 state: 0
+04-03 06:34:07.011 D/WifiSarController( 3976): onStateChanged: type = 2, value = 0
+04-03 06:34:07.011 D/NetworkController.MobileSignalController(1)( 3986): notifyListeners: mFeatureRelayData=false
+04-03 06:34:07.014 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:07.035 E/FileUtils(20788): err write to mi_exception_log
+04-03 06:34:07.042 I/ExtM    ( 1984): zram userate is low, no need to flush: 34
+04-03 06:34:07.187 E/FileUtils(20788): err write to mi_exception_log
+04-03 06:34:07.187 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:07.241 E/FileUtils(20788): err write to mi_exception_log
+04-03 06:34:07.312 E/FileUtils(20788): err write to mi_exception_log
+04-03 06:34:07.365 E/FileUtils(20788): err write to mi_exception_log
+04-03 06:34:07.462 I/ExtM    ( 1984): zram userate is low, no need to flush: 34
+04-03 06:34:07.500 E/FileUtils(20788): err write to mi_exception_log
+04-03 06:34:07.537 I/Capacitor/Console(20788): File:  - Line 349 - Msg: [object Object]
+04-03 06:34:07.538 V/Capacitor/Plugin(20788): To native (Capacitor plugin): callbackId: 25992402, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-03 06:34:07.538 V/Capacitor(20788): callback: 25992402, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-03 06:34:07.539 D/BlearnScreenTime(20788): consume_pending_navigation_empty
+04-03 06:34:07.540 I/Capacitor/Console(20788): File:  - Line 333 - Msg: undefined
+04-03 06:34:08.097 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-03 06:34:08.097 D/vendor.qti.bluetooth@1.0-ibs_handler( 1107): SerialClockVote: vote for UART CLK ON
+04-03 06:34:08.097 D/vendor.qti.bluetooth@1.0-wake_lock( 1107): Acquire wakelock is acquired 
+04-03 06:34:08.098 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-03 06:34:08.098 I/bt_stack( 4948): [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7c:b3:f1:83:62:0d
+04-03 06:34:08.138 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-03 06:34:08.138 D/vendor.qti.bluetooth@1.0-ibs_handler( 1107): SerialClockVote: vote for UART CLK OFF
+04-03 06:34:08.288 D/vendor.qti.bluetooth@1.0-wake_lock( 1107): Release wakelock is released 
+04-03 06:34:08.629 I/SDM     ( 1177): HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-03 06:34:08.630 I/SDM     ( 1177): HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 2
+04-03 06:34:09.018 D/DynamicService( 3976): PhoneStateListener.onDataActivity: direction=3
+04-03 06:34:09.018 D/DynamicService( 3976): modem or radio power state change,messageType: 128 state: 3
+04-03 06:34:09.018 D/DynamicService( 3976): listeners is null or md controller is disable!!!
+04-03 06:34:09.018 D/DynamicService_WifiBt( 3976): PhoneStateListener.onDataActivity: direction=3
+04-03 06:34:09.018 D/DynamicService_WifiBt( 3976): modem or radio power state change,messageType: 128 state: 3
+04-03 06:34:09.018 D/WifiSarController( 3976): onStateChanged: type = 2, value = 1
+04-03 06:34:09.018 D/NetworkController.MobileSignalController(1)( 3986): notifyListeners: mFeatureRelayData=false
+04-03 06:34:09.020 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:09.121 I/ExtM    ( 1984): zram userate is low, no need to flush: 34
+04-03 06:34:09.190 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:09.676 D/HeapUsage Monitor( 1984): HeapAllocSize : 108MB; monitorSize : 500MB
+04-03 06:34:09.922 I/SmartPower: com.google.android.gms/10163(16219)( 1984): idle->background(4031ms) R(service destroy com.google.android.gms/.chimera.GmsIntentOperationService) adj=500.
+04-03 06:34:10.487 D/MiuiFastConnectService(14908): stopBleScan: scanning: true
+04-03 06:34:10.487 D/BluetoothAdapter(14908): isLeEnabled(): ON
+04-03 06:34:10.487 D/BluetoothAdapter(14908): isLeEnabled(): ON
+04-03 06:34:10.491 D/BtGatt.GattService( 4948): stopScan() - queue size =2
+04-03 06:34:10.492 I/BtGatt.ScanManager( 4948): msg.what = MSG_STOP_BLE_SCAN, msg.arg1 = None
+04-03 06:34:10.492 D/BtGatt.ScanManager( 4948): track LE scan event: callerPackage = [com.xiaomi.bluetooth], scanMode = [0], reportDelayMillis = [0], behavior = [2], scannerId = [7], duration = [59945]
+04-03 06:34:10.492 D/BtGatt.ScanManager( 4948): handling stopping scan  [ScanClient scanModeApp 0 scanModeUsed 0 [appScanStats android.uid.bluetooth:1002]]
+04-03 06:34:10.492 E/BluetoothUtils( 4948): isDeepDozeMode? false
+04-03 06:34:10.493 D/vendor.qti.bluetooth@1.0-ibs_handler( 1107): SerialClockVote: vote for UART CLK ON
+04-03 06:34:10.493 D/BtGatt.GattService( 4948): unregisterScanner() - scannerId=7
+04-03 06:34:10.493 D/vendor.qti.bluetooth@1.0-wake_lock( 1107): Acquire wakelock is acquired 
+04-03 06:34:10.493 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): DeviceWakeUp: Writing IBS_WAKE_IND
+04-03 06:34:10.503 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Received IBS_WAKE_ACK: 0xFC
+04-03 06:34:10.503 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Signal wack_cond_
+04-03 06:34:10.503 D/vendor.qti.bluetooth@1.0-ibs_handler( 1107): DeviceWakeUp: Unblocked from waiting for FC, pthread_cond_timedwait ret = 0
+04-03 06:34:10.503 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-03 06:34:10.503 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-03 06:34:10.504 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=1, availableSpace=56
+04-03 06:34:10.504 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.505 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=1, availableSpace=57
+04-03 06:34:10.505 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.507 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=1, availableSpace=58
+04-03 06:34:10.507 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.508 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=1, availableSpace=59
+04-03 06:34:10.508 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.509 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=1, availableSpace=60
+04-03 06:34:10.509 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.510 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=1, availableSpace=61
+04-03 06:34:10.510 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.510 D/BtGatt.ScanManager( 4948): configureRegularScanParams() - queue=1
+04-03 06:34:10.510 D/BtGatt.ScanManager( 4948): configureRegularScanParams() - ScanSetting LE 1M Scan mode=0 ScanSetting LE Coded Scan mode=-2147483648 mLastConfiguredScanSettingLE1M=0 mLastConfiguredScanSettingLECoded=0 scanPhy=1
+04-03 06:34:10.511 D/BtGatt.ScanManager( 4948): configureRegularScanParams() - queue emtpy, scan stopped
+04-03 06:34:10.511 D/BtGatt.ScanManager( 4948): configureRegularScanParams - scanInterval LE 1M = 660 configureRegularScanParams - scanWindow LE 1M= 66 configureRegularScanParams - scanInterval LE Coded= -2147483648 configureRegularScanParams - scanWindow LE Coded= -2147483648
+04-03 06:34:10.511 D/BtGatt.GattService( 4948): onScanParamSetupCompleted : 0
+04-03 06:34:10.554 D/BluetoothAdapter(14908): isLeEnabled(): ON
+04-03 06:34:10.554 D/MiuiFastConnectService(14908): handleMessage: MSG_START_BLE_SCAN mode: 0
+04-03 06:34:10.554 D/BluetoothAdapter(14908): isLeEnabled(): ON
+04-03 06:34:10.555 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-03 06:34:10.556 D/BtGatt.GattService( 4948): registerScanner() - UUID=562f1256-2d5c-4d18-822e-9607594a1d25
+04-03 06:34:10.557 D/BtGatt.GattService( 4948): onScannerRegistered() - UUID=562f1256-2d5c-4d18-822e-9607594a1d25, scannerId=7, status=0
+04-03 06:34:10.557 D/BluetoothLeScanner(14908): onScannerRegistered() - status=0 scannerId=7 mScannerId=0
+04-03 06:34:10.558 D/BtGatt.GattService( 4948): start scan with filters. callingPackage: com.xiaomi.bluetooth
+04-03 06:34:10.559 D/BtGatt.GattService( 4948): enforcePrivilegedPermissionIfNeeded([BluetoothLeScanFilter [mDeviceName=null, mDeviceAddress=null, mUuid=null, mUuidMask=null, mServiceSolicitationUuid=null, mServiceSolicitationUuidMask=null, mServiceDataUuid=null, mServiceData=null, mServiceDataMask=null, mManufacturerId=911, mManufacturerData=[], mManufacturerDataMask=null, mAdvertisingDataType=-1, mAdvertisingData=null, mAdvertisingDataMask=null, mTransportBlockFilter=null], mOrganizationId=-1, mTDSFlags=-1, mTDSFlagsMask=-1, mWifiNANHash=null], mGroupBasedFiltering=false, BluetoothLeScanFilter [mDeviceName=null, mDeviceAddress=null, mUuid=null, mUuidMask=null, mServiceSolicitationUuid=null, mServiceSolicitationUuidMask=null, mServiceDataUuid=null, mServiceData=null, mServiceDataMask=null, mManufacturerId=65535, mManufacturerData=[77], mManufacturerDataMask=null, mAdvertisingDataType=-1, mAdvertisingData=null, mAdvertisingDataMask=null, mTransportBlockFilter=null], mOrganizationId=-1, mTDSFlags=-1, mTDSFlagsMask=-1, mWifiNANHash=null], mGroupBasedFiltering=false, BluetoothLeScanFilter [mDeviceName=null, mDeviceAddress=null, mUuid=null, mUuidMask=null, mServiceSolicitationUuid=null, mServiceSolicitationUuidMask=null, mServiceDataUuid=0000fe95-0000-1000-8000-00805f9b34fb, mServiceData=[], mServiceDataMask=null, mManufacturerId=-1, mManufacturerData=null, mManufacturerDataMask=null, mAdvertisingDataType=-1, mAdvertisingData=null, mAdvertisingDataMask=null, mTransportBlockFilter=null], mOrganizationId=-1, mTDSFlags=-1, mTDSFlagsMask=-1, mWifiNANHash=null], mGroupBasedFiltering=false, BluetoothLeScanFilter [mDeviceName=null, mDeviceAddress=null, mUuid=null, mUuidMask=null, mServiceSolicitationUuid=null, mServiceSolicitationUuidMask=null, mServiceDataUuid=0000fdaa-0000-1000-8000-00805f9b34fb, mServiceData=[], mServiceDataMask=null, mManufacturerId=-1, mManufacturerData=null, mManufacturerDataMask=null, mAdvertisingDataType=-1, mAdvertisingData=null, mAdvertisingDataMask=null, mTransportBlockFilter=null], mOrganizationId=-1, mTDSFlags=-1, mTDSFlagsMask=-1, mWifiNANHash=null], mGroupBasedFiltering=false, BluetoothLeScanFilter [mDeviceName=null, mDeviceAddress=null, mUuid=null, mUuidMask=null, mServiceSolicitationUuid=null, mServiceSolicitationUuidMask=null, mServiceDataUuid=0000fdee-0000-1000-8000-00805f9b34fb, mServiceData=[1, 1, 1], mServiceDataMask=null, mManufacturerId=-1, mManufacturerData=null, mManufacturerDataMask=null, mAdvertisingDataType=-1, mAdvertisingData=null, mAdvertisingDataMask=null, mTransportBlockFilter=null], mOrganizationId=-1, mTDSFlags=-1, mTDSFlagsMask=-1, mWifiNANHash=null], mGroupBasedFiltering=false, BluetoothLeScanFilter [mDeviceName=null, mDeviceAddress=null, mUuid=null, mUuidMask=null, mServiceSolicitationUuid=null, mServiceSolicitationUuidMask=null, mServiceDataUuid=0000fd2d-0000-1000-8000-00805f9b34fb, mServiceData=[], mServiceDataMask=null, mManufacturerId=-1, mManufacturerData=null, mManufacturerDataMask=null, mAdvertisingDataType=-1, mAdvertisingData=null, mAdvertisingDataMask=null, mTransportBlockFilter=null], mOrganizationId=-1, mTDSFlags=-1, mTDSFlagsMask=-1, mWifiNANHash=null], mGroupBasedFiltering=false])
+04-03 06:34:10.561 W/BluetoothUtils( 4948): callingUid is Process.BLUETOOTH_UID
+04-03 06:34:10.563 D/BtGatt.ScanManager( 4948): startScan()  [ScanClient scanModeApp 0 scanModeUsed 0 [appScanStats android.uid.bluetooth:1002]]
+04-03 06:34:10.563 I/BtGatt.ScanManager( 4948): msg.what = MSG_RECORD_CALLER, msg.arg1 = None
+04-03 06:34:10.563 I/BtGatt.ScanManager( 4948): msg.what = MSG_START_BLE_SCAN, msg.arg1 = None
+04-03 06:34:10.563 D/BtGatt.ScanManager( 4948): handling starting scan
+04-03 06:34:10.564 D/BtGatt.ScanManager( 4948): isAptXLowLatencyModeEnabled: false
+04-03 06:34:10.564 D/BtGatt.ScanManager( 4948): track LE scan event: callerPackage = [com.xiaomi.bluetooth], scanMode = [0], reportDelayMillis = [0], behavior = [1], scannerId = [7], duration = [0]
+04-03 06:34:10.565 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-03 06:34:10.565 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-03 06:34:10.565 D/BtGatt.GattService( 4948): onScanFilterEnableDisabled() - clientIf=7, status=0, action=1
+04-03 06:34:10.565 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.565 D/BtGatt.ScanManager( 4948): configureScanFilters rssiThreshold: -60, 15
+04-03 06:34:10.565 D/BtGatt.ScanManager( 4948): Available Filter size: 58
+04-03 06:34:10.566 D/BtGatt.GattService( 4948): onScanFilterConfig() - clientIf=7, action = 0 status = 0, filterType=0, availableSpace=0
+04-03 06:34:10.566 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.566 D/BtGatt.ScanManager( 4948): configureFilterParamter 500 10000 1 0, deliveryMode=0
+04-03 06:34:10.567 I/bt_stack( 4948): [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete ec:0d:a3:2d:64:2f
+04-03 06:34:10.568 I/bt_stack( 4948): [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete ec:0d:a3:2d:64:2f
+04-03 06:34:10.569 D/BluetoothAdapterService( 4948): getIdentityAddress null retruning EC:0D:A3:2D:64:2F
+04-03 06:34:10.569 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=0, availableSpace=60
+04-03 06:34:10.569 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.570 D/BtGatt.GattService( 4948): onScanFilterConfig() - clientIf=7, action = 0 status = 0, filterType=0, availableSpace=0
+04-03 06:34:10.570 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.570 D/BtGatt.ScanManager( 4948): configureFilterParamter 500 10000 1 0, deliveryMode=0
+04-03 06:34:10.572 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=0, availableSpace=59
+04-03 06:34:10.572 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.573 D/BtGatt.GattService( 4948): onScanFilterConfig() - clientIf=7, action = 0 status = 0, filterType=0, availableSpace=0
+04-03 06:34:10.573 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.573 D/BtGatt.ScanManager( 4948): configureFilterParamter 500 10000 1 0, deliveryMode=0
+04-03 06:34:10.574 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=0, availableSpace=58
+04-03 06:34:10.574 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.575 D/BtGatt.GattService( 4948): onScanFilterConfig() - clientIf=7, action = 0 status = 0, filterType=0, availableSpace=0
+04-03 06:34:10.575 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.575 D/BtGatt.ScanManager( 4948): configureFilterParamter 500 10000 1 0, deliveryMode=0
+04-03 06:34:10.576 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=0, availableSpace=57
+04-03 06:34:10.576 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.577 D/BtGatt.GattService( 4948): onScanFilterConfig() - clientIf=7, action = 0 status = 0, filterType=0, availableSpace=0
+04-03 06:34:10.577 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.577 D/BtGatt.ScanManager( 4948): configureFilterParamter 500 10000 1 0, deliveryMode=0
+04-03 06:34:10.579 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=0, availableSpace=56
+04-03 06:34:10.579 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.579 D/BtGatt.GattService( 4948): onScanFilterConfig() - clientIf=7, action = 0 status = 0, filterType=0, availableSpace=0
+04-03 06:34:10.579 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.579 D/BtGatt.ScanManager( 4948): configureFilterParamter 500 10000 1 0, deliveryMode=0
+04-03 06:34:10.581 D/BtGatt.GattService( 4948): onScanFilterParamsConfigured() - clientIf=7, status=0, action=0, availableSpace=55
+04-03 06:34:10.581 D/BtGatt.ScanManager( 4948): callback done for scannerId - 7 status - 0
+04-03 06:34:10.582 D/BtGatt.ScanManager( 4948): configureRegularScanParams() - queue=2
+04-03 06:34:10.582 D/BtGatt.ScanManager( 4948): configureRegularScanParams() - ScanSetting LE 1M Scan mode=0 ScanSetting LE Coded Scan mode=0 mLastConfiguredScanSettingLE1M=0 mLastConfiguredScanSettingLECoded=-2147483648 scanPhy=255
+04-03 06:34:10.583 D/BtGatt.ScanManager( 4948): configureRegularScanParams - scanInterval LE 1M = 660 configureRegularScanParams - scanWindow LE 1M= 66 configureRegularScanParams - scanInterval LE Coded= 660 configureRegularScanParams - scanWindow LE Coded= 66
+04-03 06:34:10.583 D/BtGatt.ScanManager( 4948): apply scan timeout (300000)to scannerId 7
+04-03 06:34:10.583 D/BtGatt.GattService( 4948): onScanParamSetupCompleted : 0
+04-03 06:34:10.617 I/bt_stack( 4948): [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7c:b3:f1:83:62:0d
+04-03 06:34:10.617 I/bt_stack( 4948): [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7c:b3:f1:83:62:0d
+04-03 06:34:10.617 D/bt_btm_ble( 4948): bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-03 06:34:10.618 D/BluetoothAdapterService( 4948): getIdentityAddress null retruning 7C:B3:F1:83:62:0D
+04-03 06:34:10.621 I/NearbyConnections(16129): Found BleAdvertisement [ 0x23 0x39 0x52 0x4c 0x4f 0x11 0x34 0xe1 0xdd 0x51 0x85 0x15 0xbe 0x01 0xf7 0x0a 0x12 0x2e 0x03 0xda 0x1f 0xd9 0x6a ] (with EndpointId 9RLO and EndpointInfo [ 0x34 0xe1 0xdd 0x51 0x85 0x15 0xbe 0x01 0xf7 0x0a 0x12 0x2e 0x03 0xda 0x1f 0xd9 0x6a ])
+04-03 06:34:10.621 I/NearbyConnections(16129): ClientProxy(111641486 0p:com.google.android.gms.nearby.sharing) reporting onEndpointFound(9RLO)
+04-03 06:34:10.622 I/NearbyConnections(16129): ClientProxy(111641486) reporting onEndpointDistanceChanged(9RLO, UNKNOWN)
+04-03 06:34:10.622 I/NearbySharing(16129): NearbySharing Internal event EndpointDiscovered(endpointId=9RLO)
+04-03 06:34:10.656 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-03 06:34:10.670 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-03 06:34:10.670 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-03 06:34:10.671 I/bt_stack( 4948): [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:26:77:ad:bb:96
+04-03 06:34:10.671 D/bt_btm_ble( 4948): bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-03 06:34:10.672 D/BluetoothAdapterService( 4948): getIdentityAddress null retruning 7F:26:77:AD:BB:96
+04-03 06:34:10.710 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-03 06:34:11.025 D/DynamicService( 3976): PhoneStateListener.onDataActivity: direction=0
+04-03 06:34:11.025 D/DynamicService( 3976): modem or radio power state change,messageType: 128 state: 0
+04-03 06:34:11.025 D/DynamicService( 3976): listeners is null or md controller is disable!!!
+04-03 06:34:11.025 D/DynamicService_WifiBt( 3976): PhoneStateListener.onDataActivity: direction=0
+04-03 06:34:11.025 D/DynamicService_WifiBt( 3976): modem or radio power state change,messageType: 128 state: 0
+04-03 06:34:11.025 D/WifiSarController( 3976): onStateChanged: type = 2, value = 0
+04-03 06:34:11.025 D/NetworkController.MobileSignalController(1)( 3986): notifyListeners: mFeatureRelayData=false
+04-03 06:34:11.027 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:11.209 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:11.513 I/ExtM    ( 1984): zram userate is low, no need to flush: 34
+04-03 06:34:11.586 I/vendor.qti.bluetooth@1.0-ibs_handler( 1107): DeviceSleep: TX Awake, Sending SLEEP_IND
+04-03 06:34:11.586 D/vendor.qti.bluetooth@1.0-ibs_handler( 1107): SerialClockVote: vote for UART CLK OFF
+04-03 06:34:11.605 W/fr.leboncoin(10872): Reducing the number of considered missed Gc histogram windows from 202 to 100
+04-03 06:34:11.736 D/vendor.qti.bluetooth@1.0-wake_lock( 1107): Release wakelock is released 
+04-03 06:34:11.854 D/AndroidRuntime(21032): >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+04-03 06:34:11.859 I/AndroidRuntime(21032): Using default boot image
+04-03 06:34:11.859 I/AndroidRuntime(21032): Leaving lock profiling enabled
+04-03 06:34:11.861 I/app_process(21032): Using CollectorTypeCC GC.
+04-03 06:34:11.925 D/nativeloader(21032): InitDefaultPublicLibraries for_preload=1: libandroid.so:libaaudio.so:libamidi.so:libbinder_ndk.so:libc.so:libcamera2ndk.so:libdl.so:libEGL.so:libGLESv1_CM.so:libGLESv2.so:libGLESv3.so:libicu.so:libicui18n.so:libicuuc.so:libjnigraphics.so:liblog.so:libmediandk.so:libm.so:libnativehelper.so:libnativewindow.so:libOpenMAXAL.so:libOpenSLES.so:libRS.so:libstdc++.so:libsync.so:libvulkan.so:libwebviewchromium_plat_support.so:libz.so
+04-03 06:34:11.934 D/nativeloader(21032): Load libicu_jni.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+04-03 06:34:11.935 D/app_process(21032): Time zone APEX ICU file found: /apex/com.android.tzdata/etc/icu/icu_tzdata.dat
+04-03 06:34:11.935 D/app_process(21032): I18n APEX ICU file found: /apex/com.android.i18n/etc/icu/icudt72l.dat
+04-03 06:34:11.935 D/nativeloader(21032): Load libjavacore.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+04-03 06:34:11.936 D/nativeloader(21032): Load libopenjdk.so using APEX ns com_android_art for caller /apex/com.android.art/javalib/core-oj.jar: ok
+04-03 06:34:11.937 I/app_process(21032): Priority-to-niceness mapping: 19, 16, 13, 10, 0, -2, -4, -5, -6, -8
+04-03 06:34:11.960 W/libc    (21032): Access denied finding property "ro.product.name_for_attestation"
+04-03 06:34:11.960 W/libc    (21032): Access denied finding property "ro.product.device_for_attestation"
+04-03 06:34:11.960 W/libc    (21032): Access denied finding property "ro.product.manufacturer_for_attestation"
+04-03 06:34:11.960 W/libc    (21032): Access denied finding property "ro.product.brand_for_attestation"
+04-03 06:34:11.961 W/libc    (21032): Access denied finding property "ro.product.model_for_attestation"
+04-03 06:34:11.954 W/main    (21032): type=1400 audit(0.0:68113): avc:  denied  { read } for  name="u:object_r:build_attestation_prop:s0" dev="tmpfs" ino=2229 scontext=u:r:shell:s0 tcontext=u:object_r:build_attestation_prop:s0 tclass=file permissive=0
+04-03 06:34:11.954 W/main    (21032): type=1400 audit(0.0:68114): avc:  denied  { read } for  name="u:object_r:build_attestation_prop:s0" dev="tmpfs" ino=2229 scontext=u:r:shell:s0 tcontext=u:object_r:build_attestation_prop:s0 tclass=file permissive=0
+04-03 06:34:11.954 W/main    (21032): type=1400 audit(0.0:68115): avc:  denied  { read } for  name="u:object_r:build_attestation_prop:s0" dev="tmpfs" ino=2229 scontext=u:r:shell:s0 tcontext=u:object_r:build_attestation_prop:s0 tclass=file permissive=0
+04-03 06:34:11.958 W/main    (21032): type=1400 audit(0.0:68116): avc:  denied  { read } for  name="u:object_r:build_attestation_prop:s0" dev="tmpfs" ino=2229 scontext=u:r:shell:s0 tcontext=u:object_r:build_attestation_prop:s0 tclass=file permissive=0
+04-03 06:34:11.958 W/main    (21032): type=1400 audit(0.0:68117): avc:  denied  { read } for  name="u:object_r:build_attestation_prop:s0" dev="tmpfs" ino=2229 scontext=u:r:shell:s0 tcontext=u:object_r:build_attestation_prop:s0 tclass=file permissive=0
+04-03 06:34:11.961 W/libc    (21032): Access denied finding property "ro.vendor.mi_fake_32bit_support"
+04-03 06:34:11.962 D/nativeloader(21032): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+04-03 06:34:11.962 D/AndroidRuntime(21032): Calling main entry com.android.commands.uiautomator.Launcher
+04-03 06:34:11.973 W/MiuiStubRegistry(21032): Failed to collect stub providers in com.miui.autoui.MIUIAutoUIStub$$: /system_ext/framework/miui-framework.autoui.jar not exist
+04-03 06:34:11.973 W/MiuiStubRegistry(21032): Failed to collect stub providers in android.hovermode.MiuiHoverModeStub$$: /system_ext/framework/miui-framework.hovermode.jar not exist
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): Failed to collect stub providers
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): java.lang.ClassNotFoundException: android.net.wifi.CarOsSystemServiceRegistryStubManifest$$
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at java.lang.Class.classForName(Native Method)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at java.lang.Class.forName(Class.java:591)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at com.miui.base.MiuiStubRegistry.collectStubProviders(MiuiStubRegistry.java:149)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at com.miui.base.MiuiStubRegistry.init(MiuiStubRegistry.java:82)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at com.miui.base.MiuiFrameworkRouter.collectManifests(MiuiFrameworkRouter.java:67)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at com.miui.base.MiuiFrameworkRouter.init(MiuiFrameworkRouter.java:34)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at com.miui.base.MiuiStubRegistry.<clinit>(MiuiStubRegistry.java:52)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at com.miui.base.MiuiStubUtil.getImplSupplier(MiuiStubUtil.java:78)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at android.os.perfdebug.MessageMonitor.<clinit>(MessageMonitor.java:23)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at android.os.Looper.<init>(Looper.java:354)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at android.os.Looper.prepare(Looper.java:126)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at android.os.Looper.prepare(Looper.java:119)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	at android.os.HandlerThread.run(HandlerThread.java:60)
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): Caused by: java.lang.ClassNotFoundException: android.net.wifi.CarOsSystemServiceRegistryStubManifest$$
+04-03 06:34:11.974 W/MiuiStubRegistry(21032): 	... 13 more
+04-03 06:34:11.974 W/MiuiFrameworkImpl(21032): MiuiFrameworkImpl already collected
+04-03 06:34:11.978 I/MessageMonitor(21032): Load libmiui_runtime
+04-03 06:34:11.979 D/nativeloader(21032): Load libmiui_runtime.so using system ns (caller=/system_ext/framework/miui-framework.jar): ok
+04-03 06:34:11.979 E/app_process(21032): register_android_view_SurfaceRuntimeShader  
+04-03 06:34:11.979 E/app_process(21032): register_android_view_SurfaceRuntimeShader  0
+04-03 06:34:11.981 D/UiAutomationConnection(21032): Created on user UserHandle{0}
+04-03 06:34:11.981 I/UiAutomation(21032): Initialized for user 0 on display 0
+04-03 06:34:11.981 W/UiAutomation(21032): Created with deprecatead constructor, assumes DEFAULT_DISPLAY
+04-03 06:34:11.984 D/AccessibilityManagerService( 1984): changeCurrentUserForTestAutomationIfNeededLocked(0): ignoring because device doesn't support visible background users
+04-03 06:34:11.984 I/UiAutomationManager( 1984): Registering UiTestAutomationService (id=com.android.server.accessibility/UiAutomation) when called by user 0
+04-03 06:34:11.986 D/MI-SF   ( 1305): mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 487(328), mIsKeepAutoMode 0
+04-03 06:34:11.986 D/RefreshRateSelector( 1305): fixedMode_group: 0, isFindModeGroup 0
+04-03 06:34:11.986 D/RefreshRateSelector( 1305): find max refresh rate:120, mode Group:0
+04-03 06:34:11.989 W/WindowMagnificationMgr( 1984): requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+04-03 06:34:11.993 W/WindowMagnificationMgr( 1984): requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+04-03 06:34:12.001 I/SDM     ( 1177): HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-03 06:34:12.001 I/SDM     ( 1177): HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 0
+04-03 06:34:12.004 E/AccessibilityStateListenerImpl( 1984): MiuiEnhanceTBService is not installed
+04-03 06:34:12.014 I/SafetyCenterAccessibilityListener(11049): accessibility event occurred, safety center feature not enabled.
+04-03 06:34:12.015 D/AS.AudioService( 1984): Accessibility volume enabled = false
+04-03 06:34:12.015 W/WindowManager( 1984): Cannot find window which accessibility connection is added to
+04-03 06:34:12.015 D/BatterySaverPolicy( 1984): accessibility changed to true, updating policy.
+04-03 06:34:12.029 D/DynamicService( 3976): PhoneStateListener.onDataActivity: direction=3
+04-03 06:34:12.029 D/DynamicService( 3976): modem or radio power state change,messageType: 128 state: 3
+04-03 06:34:12.029 D/DynamicService( 3976): listeners is null or md controller is disable!!!
+04-03 06:34:12.029 D/DynamicService_WifiBt( 3976): PhoneStateListener.onDataActivity: direction=3
+04-03 06:34:12.029 D/DynamicService_WifiBt( 3976): modem or radio power state change,messageType: 128 state: 3
+04-03 06:34:12.029 D/WifiSarController( 3976): onStateChanged: type = 2, value = 1
+04-03 06:34:12.029 D/NetworkController.MobileSignalController(1)( 3986): notifyListeners: mFeatureRelayData=false
+04-03 06:34:12.031 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:12.207 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:12.922 I/SmartPower: com.google.android.gms/10163(16219)( 1984): background->idle(3000ms) R(service destroy com.google.android.gms/.chimera.GmsIntentOperationService) adj=600.
+04-03 06:34:13.014 W/uiautomator(21032): type=1400 audit(0.0:68118): avc:  denied  { read } for  name="u:object_r:qemu_sf_lcd_density_prop:s0" dev="tmpfs" ino=2415 scontext=u:r:shell:s0 tcontext=u:object_r:qemu_sf_lcd_density_prop:s0 tclass=file permissive=0
+04-03 06:34:13.014 W/uiautomator(21032): type=1400 audit(0.0:68119): avc:  denied  { read } for  name="u:object_r:qemu_sf_lcd_density_prop:s0" dev="tmpfs" ino=2415 scontext=u:r:shell:s0 tcontext=u:object_r:qemu_sf_lcd_density_prop:s0 tclass=file permissive=0
+04-03 06:34:13.018 W/libc    (21032): Access denied finding property "qemu.sf.lcd_density"
+04-03 06:34:13.018 W/libc    (21032): Access denied finding property "qemu.sf.lcd_density"
+04-03 06:34:13.032 W/MediaProvider( 5741): isAppCloneUserPair for user 0: false
+04-03 06:34:13.034 D/DynamicService_WifiBt( 3976): PhoneStateListener.onDataActivity: direction=0
+04-03 06:34:13.034 D/DynamicService_WifiBt( 3976): modem or radio power state change,messageType: 128 state: 0
+04-03 06:34:13.034 D/WifiSarController( 3976): onStateChanged: type = 2, value = 0
+04-03 06:34:13.034 D/DynamicService( 3976): PhoneStateListener.onDataActivity: direction=0
+04-03 06:34:13.034 D/DynamicService( 3976): modem or radio power state change,messageType: 128 state: 0
+04-03 06:34:13.034 D/DynamicService( 3976): listeners is null or md controller is disable!!!
+04-03 06:34:13.034 D/NetworkController.MobileSignalController(1)( 3986): notifyListeners: mFeatureRelayData=false
+04-03 06:34:13.037 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:13.092 D/ActivityManager( 1984): checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{b6f4724 u0a163 BFGS change:procadj procs:0 seq(857064,634761)} caps=LCMNFU always=false idle=false
+04-03 06:34:13.103 I/NetworkScheduler.Stats(16129): (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+04-03 06:34:13.108 I/NetworkScheduler.Stats(16129): (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+04-03 06:34:13.121 I/SDM     ( 1177): HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-03 06:34:13.122 I/SDM     ( 1177): HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 2
+04-03 06:34:13.124 D/ActivityManager( 1984): checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{b6f4724 u0a163 BFGS change:procadj procs:0 seq(857069,634761)} caps=LCMNFU always=false idle=false
+04-03 06:34:13.128 W/AccessibilityNodeInfoDumper(21032): Fetch time: 104ms
+04-03 06:34:13.129 W/WindowMagnificationMgr( 1984): requestConnection duplicated request: connect=false, mConnectionState=DISCONNECTED
+04-03 06:34:13.129 D/AccessibilityManagerService( 1984): restoreCurrentUserForTestAutomationIfNeededLocked(): ignoring because device doesn't support visible background users
+04-03 06:34:13.131 D/AndroidRuntime(21032): Shutting down VM
+04-03 06:34:13.135 D/MI-SF   ( 1305): mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 487(328), mIsKeepAutoMode 0
+04-03 06:34:13.135 D/RefreshRateSelector( 1305): fixedMode_group: 0, isFindModeGroup 0
+04-03 06:34:13.135 D/RefreshRateSelector( 1305): find max refresh rate:120, mode Group:0
+04-03 06:34:13.142 E/AccessibilityStateListenerImpl( 1984): MiuiEnhanceTBService is not installed
+04-03 06:34:13.145 D/BatterySaverPolicy( 1984): accessibility changed to false, updating policy.
+04-03 06:34:13.145 W/WindowManager( 1984): Cannot find window which accessibility connection is added to
+04-03 06:34:13.155 I/SDM     ( 1177): HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-03 06:34:13.155 I/SDM     ( 1177): HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 0
+04-03 06:34:13.207 D/ArtChoreographerMonitor( 3986): invoke error.
+04-03 06:34:13.541 I/Capacitor/Console(20788): File:  - Line 349 - Msg: [object Object]
+04-03 06:34:13.541 V/Capacitor/Plugin(20788): To native (Capacitor plugin): callbackId: 25992403, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-03 06:34:13.541 V/Capacitor(20788): callback: 25992403, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-03 06:34:13.543 D/BlearnScreenTime(20788): consume_pending_navigation_empty
+04-03 06:34:13.544 I/Capacitor/Console(20788): File:  - Line 333 - Msg: undefined
+04-03 06:34:13.957 I/DoViGenericTag(21032): Logger Terminated
+04-03 06:34:14.067 I/Finsky  (10427): [119] Stats for Executor: LightweightExecutor vbl@bf697e1[Running, pool size = 4, active threads = 0, queued tasks = 0, completed tasks = 435]
+04-03 06:34:14.067 I/Finsky  (10427): [119] Stats for Executor: BlockingExecutor vbl@f325cbf[Running, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 115]
+04-03 06:34:14.069 I/Finsky  (10427): [119] Stats for Executor: bgExecutor vbl@4b99ac1[Running, pool size = 4, active threads = 0, queued tasks = 0, completed tasks = 1059]
+04-03 06:34:14.137 W/ProcessStats( 1984): Tracking association SourceState{bcf99ec com.miui.securitycenter.remote/1000 Fgs #152920} whose proc state 3 is better than process ProcessState{72c5ee8 com.miui.analytics/10094 pkg=com.miui.analytics} proc state 5 (6 skipped)
+04-03 06:34:14.172 W/BpBinder(21053): Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+04-03 06:34:14.177 W/MediaProvider( 5741): isAppCloneUserPair for user 0: false
+04-03 06:34:14.190 W/ProcessState(21053): Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+04-03 06:34:14.260 I/SDM     ( 1177): HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-03 06:34:14.260 I/SDM     ( 1177): HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 2
+04-03 06:34:14.601 I/S.FlushReqestGen(13543): Queueing async flush of data to disk for 2 listeners.
+04-03 06:34:14.613 I/S.FlushReqestGen(13543): Async flush done.
+04-03 06:34:14.613 D/U/AsyncTaskHelper(13543): r8lambdaeKjHpdWvaEhsTIzu7XkVhl4aiT4$3@7d8509f finished, thread=ATH-4. Queue time: 0ms. Run real=12 cpu=10 ms
+04-03 06:34:14.980 I/ActivityManager( 1984): Broadcasting: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }
+04-03 06:34:14.981 I/ActivityManager( 1984): Broadcast action android.intent.action.MEDIA_SCANNER_SCAN_FILE forcing include-background
+04-03 06:34:14.981 D/ActivityManager( 1984): checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{4e4a280 u0a219 PER  change:procadj procs:0 seq(857103,741)} caps=LCMNFU always=true idle=false
+04-03 06:34:14.981 I/ActivityManager( 1984): App 10219/com.google.android.providers.media.module targets O+, restricted
+04-03 06:34:14.981 D/ActivityManager( 1984): checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-03 06:34:14.981 D/ActivityManager( 1984): checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{7a85b7b 1000 PER  fgServices change:procadj procs:0 seq(857162,849572)} caps=LCMNFU always=true idle=false
+04-03 06:34:14.981 I/ActivityManager( 1984): App 1000/com.miui.securitycore targets O+, restricted
+04-03 06:34:14.981 D/ActivityManager( 1984): checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=false onallowlist(ei)=false
+04-03 06:34:14.981 I/ActivityManager( 1984): Enqueued broadcast Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }: 0
+04-03 06:34:14.981 D/ActivityManager( 1984): checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{4e4a280 u0a219 PER  change:procadj procs:0 seq(857103,741)} caps=LCMNFU always=true idle=false
+04-03 06:34:14.981 I/ActivityManager( 1984): App 10219/com.google.android.providers.media.module targets O+, restricted
+04-03 06:34:14.981 D/ActivityManager( 1984): checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-03 06:34:14.983 I/MediaServiceV2( 5741): Creating work for intent Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-03 06:34:14.983 I/MediaServiceV2( 5741): Work enqueued for intent: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-03 06:34:14.986 D/ActivityManager( 1984): checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{7a85b7b 1000 PER  fgServices change:procadj procs:0 seq(857162,849572)} caps=LCMNFU always=true idle=false
+04-03 06:34:14.986 I/ActivityManager( 1984): App 1000/com.miui.securitycore targets O+, restricted
+04-03 06:34:14.986 D/ActivityManager( 1984): checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=false onallowlist(ei)=false
+04-03 06:34:14.990 I/DoViGenericTag(21053): Logger Terminated
+04-03 06:34:14.991 I/ActivityManager( 1984): Broadcast completed: result=0
+04-03 06:34:15.001 D/WM-SystemJobScheduler( 5741): Scheduling work ID a849b20f-5128-4aae-b161-fad9a16b1cdeJob ID 10907
+04-03 06:34:15.002 D/ActivityManager( 1984): checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{4e4a280 u0a219 PER  change:procadj procs:0 seq(857164,741)} caps=LCMNFU always=false idle=false
+04-03 06:34:15.004 I/whetstone.activity( 1984): Power Event callback listener is empty for resId=256
+04-03 06:34:15.004 D/BatteryStatsManagerStub( 1984): notifyEvent for resId=256 used 0ms
+04-03 06:34:15.005 D/WM-GreedyScheduler( 5741): Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-03 06:34:15.005 D/WM-GreedyScheduler( 5741): Starting work for a849b20f-5128-4aae-b161-fad9a16b1cde
+04-03 06:34:15.005 D/WM-Processor( 5741): Processor: processing WorkGenerationalId(workSpecId=a849b20f-5128-4aae-b161-fad9a16b1cde, generation=0)
+04-03 06:34:15.007 D/WM-WorkerWrapper( 5741): Starting work for com.android.providers.media.MediaServiceV2
+04-03 06:34:15.008 D/WM-SystemJobService( 5741): onStartJob for WorkGenerationalId(workSpecId=a849b20f-5128-4aae-b161-fad9a16b1cde, generation=0)
+04-03 06:34:15.008 I/MediaServiceV2( 5741): Work initiated for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-03 06:34:15.009 D/WM-Processor( 5741): Work WorkGenerationalId(workSpecId=a849b20f-5128-4aae-b161-fad9a16b1cde, generation=0) is already enqueued for processing
+04-03 06:34:15.018 I/MediaServiceV2( 5741): Work ended for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-03 06:34:15.019 I/WM-WorkerWrapper( 5741): Worker result SUCCESS for Work [ id=a849b20f-5128-4aae-b161-fad9a16b1cde, tags={ com.android.providers.media.MediaServiceV2 } ]
+04-03 06:34:15.020 D/WM-Processor( 5741): Processor a849b20f-5128-4aae-b161-fad9a16b1cde executed; reschedule = false
+04-03 06:34:15.020 D/WM-SystemJobService( 5741): a849b20f-5128-4aae-b161-fad9a16b1cde executed on JobScheduler
+04-03 06:34:15.021 I/whetstone.activity( 1984): Power Event callback listener is empty for resId=256
+04-03 06:34:15.021 D/BatteryStatsManagerStub( 1984): notifyEvent for resId=256 used 0ms
+04-03 06:34:15.024 D/WM-GreedyScheduler( 5741): Cancelling work ID a849b20f-5128-4aae-b161-fad9a16b1cde
+04-03 06:34:15.026 D/WM-GreedyScheduler( 5741): Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-03 06:34:15.032 D/WM-SystemJobScheduler( 5741): Scheduling work ID 300b031e-5b05-41bd-8b6f-29605a7ca2fdJob ID 10908
+04-03 06:34:15.033 D/ActivityManager( 1984): checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{4e4a280 u0a219 PER  change:procadj procs:0 seq(857168,741)} caps=LCMNFU always=false idle=false
+04-03 06:34:15.033 D/ActivityManager( 1984): checkAllowBackground: uid=1000 pkg=android rec=UidRecord{7a85b7b 1000 PER  fgServices change:procadj procs:0 seq(857166,849572)} caps=LCMNFU always=false idle=false
+04-03 06:34:15.034 D/WM-GreedyScheduler( 5741): Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.

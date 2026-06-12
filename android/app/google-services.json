@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "318663171805",
+    "firebase_url": "https://blearnapp-aktuell-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "blearnapp-aktuell",
+    "storage_bucket": "blearnapp-aktuell.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318663171805:android:e18bdd8ca88fa2b06ec534",
+        "android_client_info": {
+          "package_name": "app.blearn.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318663171805-4p1l2uq8j5tr136s90k3v112l7vt2irp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.blearn.mobile",
+            "certificate_hash": "07bf380f5b3fea22cf892d4292c2af943d079696"
+          }
+        },
+        {
+          "client_id": "318663171805-p7bid10kglf4snqli1ikcht06hcagi9c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZJGKTtxmlaHFemkH5803dkm4K8B_Y2-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318663171805-p7bid10kglf4snqli1ikcht06hcagi9c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,621 @@
+--------- beginning of main
+04-09 00:53:14.991 15853 16193 D AudioTrackImpl: [audioTrackData][mute] 35s(f:485 m:35036 s:265 k:37037 z:0) : pid 15853 uid 10518 sessionId 889 sr 48000 ch 2 fmt 1
+04-09 00:53:15.017 15853 16193 D AudioTrackImpl: [audioTrackData][zero] 54s(f:0 m:0 s:0 k:0 z:54007) : pid 15853 uid 10518 sessionId 897 sr 48000 ch 2 fmt 1
+04-09 00:53:15.113 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:15.113 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562824, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:15.113 25935 25935 V Capacitor: callback: 4562824, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:15.115 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:15.115 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:15.175 16806 17823 V U.Notification: Posting new notification, elapsed=16039
+04-09 00:53:15.367 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:15.369 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562825, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:15.369 25935 25935 V Capacitor: callback: 4562825, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:15.373 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:15.375 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+--------- beginning of system
+04-09 00:53:15.484  2184  8706 W MIUIInput: Input event injection from package: null action ACTION_DOWN
+04-09 00:53:15.484  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x0, deviceId=-1, 35420205, channel '2324f74 app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity (server)'
+04-09 00:53:15.485  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x4, deviceId=-1, 35420205, channel 'a8c03f0 NavigationBar0 (server)'
+04-09 00:53:15.485  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x0, deviceId=-1, 35420205, channel '[Gesture Monitor] miui-gesture (server)'
+04-09 00:53:15.485  1382  2742 D RefreshRateSelector: Touch Boost
+04-09 00:53:15.485  1382  2742 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 898(328), mIsKeepAutoMode 0
+04-09 00:53:15.485  1382  2742 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-09 00:53:15.485  1382  2742 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-09 00:53:15.486  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:15.486  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:53:15.486  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:53:15.486  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:15.486  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:53:15.486  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:53:15.489  2184  2501 I whetstone.activity: Power Event callback listener is empty for resId=64
+04-09 00:53:15.489  2184  2501 D BatteryStatsManagerStub: notifyEvent for resId=64 used 0ms
+04-09 00:53:15.500  1265  1749 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-09 00:53:15.500  1265  1749 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 0
+04-09 00:53:15.505 25935 25935 D MiuiMultiWindowUtils: freeform resolution args raw data:{  "wide_default":{    "freeform_args": {        "vertical_portrait":{"aspect_ratio":0.626, "original_ratio":0.5643,"original_scale":0.74,"top_margin":0.168,"left_margin":0.484},        "horizontal_portrait":{"aspect_ratio":0.626, "original_ratio":0.5643,"original_scale":0.74,"top_margin":0.1222,"left_margin":0.59745},        "vertical_landscape":{"aspect_ratio":1.6, "original_ratio":1,"original_scale":0.604,"top_margin":0.2596,"left_margin":0.2624},        "horizontal_landscape":{"aspect_ratio":1.6, "original_ratio":1,"original_scale":0.604,"top_margin":0.213,"left_margin":0.3758}    },    "mini_freeform_args":{        "vertical_portrait":{"original_ratio":0.147},        "horizontal_portrait":{"original_ratio":0.147},        "vertical_landscape":{"original_ratio":0.165},        "horizontal_landscape":{"original_ratio":0.165}    }  },  "narrow_default": {    "freeform_args": {        "vertical_portrait":{"aspect_ratio":0.626, "original_ratio":1,"original_scale":0.74,"top_margin":0.0753,"left_margin":-1},        "horizontal_portrait":{"aspect_ratio":0.626, "original_ratio":1,"original_scale":0.5756,"top_margin":-1,"left_margin":0.0753},        "vertical_landscape":{"aspect_ratio":1.6, "original_ratio":0.6847,"original_scale":0.587,"top_margin":0.0753,"left_margin":-1},        "horizontal_landscape":{"aspect_ratio":1.6, "original_ratio":0.6847,"original_scale":0.587,"top_margin":-1,"left_margin":0.0753}    },    "mini_freeform_args":{        "vertical_portrait":{"original_ratio":0.26},        "horizontal_portrait":{"original_ratio":0.26},        "vertical_landscape":{"original_ratio":0.293},        "horizontal_landscape":{"original_ratio":0.293}    }  },  "regular_default": {    "freeform_args": {      "vertical_portrait":{"aspect_ratio":0.625, "original_ratio":1,"original_scale":0.7,"top_margin":0.109,"left_margin":-1},      "horizontal_portrait":{"aspect_ratio":0.6667, "original_ratio":1,"original_scale":0.6102,"top_margin":-1,"left_margin":0.026},      "vertical_landscape":{"aspect_ratio":1.6, "original_ratio":1,"original_scale":0.4244,"top_margin":0.109,"left_margin":-1},      "horizontal_landscape":{"aspect_ratio":1.6, "original_ratio":1,"original_scale":0.4244,"top_margin":-1,"left_margin":0.026}    },    "mini_freeform_args":{      "vertical_portrait":{"original_ratio":0.25},      "horizontal_portrait":{"original_ratio":0.25},      "vertical_landscape":{"original_ratio":0.25},      "horizontal_landscape":{"original_ratio":0.25}    }  },  "pad_default": {    "freeform_args": {      "vertical_portrait":{"aspect_ratio":0.5625, "original_ratio":0.375,"original_scale":0.835,"top_margin":0.049,"left_margin":0.2775},      "horizontal_portrait":{"aspect_ratio":0.5625, "original_ratio":0.375,"original_scale":0.835,"top_margin":-1,"left_margin":0.6525},      "vertical_landscape":{"aspect_ratio":-1, "original_ratio":1,"original_scale":0.468,"top_margin":0.049,"left_margin":-1},      "horizontal_landscape":{"aspect_ratio":-1, "original_ratio":1,"original_scale":0.468,"top_margin":-1,"left_margin":0.4976}    },    "mini_freeform_args":{      "vertical_portrait":{"original_ratio":0.144},      "horizontal_portrait":{"original_ratio":0.144},      "vertical_landscape":{"original_ratio":0.2},      "horizontal_landscape":{"original_ratio":0.2}    }  }}
+04-09 00:53:15.506 25935 25935 D MiuiMultiWindowUtils: initFreeFormResolutionArgs failed, device is redwood
+04-09 00:53:15.507 25935 25935 D IS_CTS_MODE: false
+04-09 00:53:15.507 25935 25935 D MULTI_WINDOW_SWITCH_ENABLED: false
+04-09 00:53:15.521  2184  8706 W MIUIInput: Input event injection from package: null action ACTION_UP
+04-09 00:53:15.522  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x1, deviceId=-1, 35420205, channel '2324f74 app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity (server)'
+04-09 00:53:15.522  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x1, deviceId=-1, 35420205, channel '[Gesture Monitor] miui-gesture (server)'
+04-09 00:53:15.522  2184  2501 I whetstone.activity: Power Event callback listener is empty for resId=64
+04-09 00:53:15.522  2184  2501 D BatteryStatsManagerStub: notifyEvent for resId=64 used 0ms
+04-09 00:53:15.550 25935 26062 D Capacitor: Handling local request: https://localhost/favicon.png
+04-09 00:53:15.551  1382  1797 W EventThreadInspector: slow VSync-app on display(4630946480857061762) count=1, avg=35 ms, max=35 ms.
+04-09 00:53:15.559 25935 26062 D Capacitor: Handling local request: https://localhost/blearn-mark.svg
+04-09 00:53:15.594 25935 26003 E p.blearn.mobile: FrameInsert open fail: No such file or directory
+04-09 00:53:15.597  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:15.597  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:53:15.597  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:53:15.597  1382  1382 D RefreshRateSelector: Touch Boost
+04-09 00:53:15.598  1382  1382 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 898(328), mIsKeepAutoMode 0
+04-09 00:53:15.598  1382  1382 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-09 00:53:15.598  1382  1382 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-09 00:53:15.625  1375  2438 D AudioFlinger: updateWakeLockUids_l AudioOut_D uids:
+04-09 00:53:15.625  1375  2445 D AudioFlinger: updateWakeLockUids_l AudioOut_15 uids:
+04-09 00:53:15.626 26050 26086 I chromium: [INFO:media/base/audio_latency.cc:142] audioHardwareBufferSize = 192
+04-09 00:53:15.627  1375  2466 D AudioFlinger: updateWakeLockUids_l AudioOut_35 uids:
+04-09 00:53:15.628  1375  2479 D AudioFlinger: updateWakeLockUids_l AudioOut_45 uids:
+04-09 00:53:15.629  1103  1103 D DlbDlbEffect: effectCommand(handle=0xf5e6c740, cmdCode=10, cmdSize=8, pCmdData=0xf5dc3b88, replySize=0, pReplyData=0x0)
+04-09 00:53:15.629  1103  1103 V DlbDlbEffect: handle_EFFECT_CMD_SET_VOLUME(vl=16777216, vr=16777216)
+04-09 00:53:15.719  2184  3982 I NetworkBoostStatusManager: handle: 107
+04-09 00:53:15.725  4058  5736 E PhoneAdapter: get ntnphones failed, exception: java.lang.IllegalStateException: Default phones haven't been made yet!
+04-09 00:53:15.725  2184  3982 I NetworkBoostStatusManager: isModemSingnalStrengthStatus cellLteSignalRsrp = -109
+04-09 00:53:15.725  2184  3982 D SLM-SRV-SLAService: isModemSingnalStrengthStatus = 1
+04-09 00:53:15.791 25935 25935 E FileUtils: err write to mi_exception_log
+04-09 00:53:15.791  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:15.791  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:53:15.792  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:53:15.792 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:15.793  2184  2568 I ExtM    : zram userate is low, no need to flush: 40
+04-09 00:53:15.796 25935 25935 W cr_VibrationManager: Failed to use vibrate API, requires VIBRATE permission.
+04-09 00:53:15.796 25935 26069 I AAudio  : AAudioStreamBuilder_openStream() called ----------------------------------------
+04-09 00:53:15.797 25935 26069 I AudioStreamBuilder: rate   =  48000, channels  = 2, channelMask = 0x3, format   = 5, sharing = SH, dir = OUTPUT
+04-09 00:53:15.797 25935 26069 I AudioStreamBuilder: device =      0, sessionId = -1, perfMode = 12, callback: ON with frames = 192
+04-09 00:53:15.797 25935 26069 I AudioStreamBuilder: usage  =      1, contentType = 0, inputPreset = 0, allowedCapturePolicy = 0
+04-09 00:53:15.797 25935 26069 I AudioStreamBuilder: privacy sensitive = false, opPackageName = (null), attributionTag = (null)
+04-09 00:53:15.801 25935 26069 D p.blearn.mobile: PlayerBase::PlayerBase()
+04-09 00:53:15.802 25935 26069 D AudioStreamTrack: open(), request notificationFrames = -8, frameCount = 0
+04-09 00:53:15.803 25935 26069 D AudioTrackStub: AudioTrackStub() create
+04-09 00:53:15.807 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:53:15.807 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:53:15.807 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:53:15.807 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:53:15.807 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:53:15.807 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:53:15.807 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:53:15.807 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:53:15.808 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562826, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:15.808 25935 25935 V Capacitor: callback: 4562826, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:15.809 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:15.816  2184  2523 D HeapUsage Monitor: HeapAllocSize : 109MB; monitorSize : 500MB
+04-09 00:53:15.821 25935 26069 I AudioTrackImpl: initAudioTrackImpl()
+04-09 00:53:15.823 25935 26069 D AudioTrackImpl: binder call: getPackageName app.blearn.mobile for uid 10030
+04-09 00:53:15.835  1103  1259 D audio_hw_primary: adev_get_parameters:get_audiocloud_monitor_app_name_list
+04-09 00:53:15.835  1103  1259 D soundtrigger: audio_extn_sound_trigger_get_parameters input string<get_audiocloud_monitor_app_name_list=>
+04-09 00:53:15.835  1103  1259 D soundtrigger: extract_sm_handle input string <get_audiocloud_monitor_app_name_list=> param string <get_audiocloud_monitor_app_name_list=>
+04-09 00:53:15.835  1103  1259 D audio_hw_extn: audio_extn_get_parameters: returns 
+04-09 00:53:15.835  1103  1259 V msm8974_platform: platform_get_parameters: exit: returns - 
+04-09 00:53:15.835  1103  1259 D audio_hw_primary: adev_get_parameters: exit: returns - 
+04-09 00:53:15.838 25935 26069 D AudioTrack: set(): (sessionId=0), mcallback is 1, streamType -1, sampleRate 48000, format 0x5, channelMask 0x3, frameCount 0, flags 0x104, notificationFrames -8,transferType 1, mClientAttributionSource AttributionSourceState{pid: -1, uid: -1, packageName: app.blearn.mobile, attributionTag: (null), token: (null), renouncedPermissions: (null), next: []}
+04-09 00:53:15.838  1314 21380 I QC2Comp : [avcD_167] Stats: Pending(7) i/p-done(3) Works: Q: 25/Done 20|Work-Rate: Q(0.0/s Avg=0.0/s) Done(0.000/s Avg=0.020/s)| Stream: 30.00fps 3.0Mbps
+04-09 00:53:15.838  1314 21380 I QC2Comp : Mem-usage:  [In-1D - 7 bufs 20.918 MB] [1D-0 - 11 bufs 0.172 MB] [2D-155 - 19 bufs 27.164 MB]
+04-09 00:53:15.838  1314 21380 I QC2Comp : Total Mem-usage: 48.254 MB
+04-09 00:53:15.839  1103  1103 D audio_hw_primary: adev_get_parameters:audio_game_sound_volume_gap_switch
+04-09 00:53:15.839  1103  1103 D soundtrigger: audio_extn_sound_trigger_get_parameters input string<audio_game_sound_volume_gap_switch=>
+04-09 00:53:15.839  1103  1103 D soundtrigger: extract_sm_handle input string <audio_game_sound_volume_gap_switch=> param string <audio_game_sound_volume_gap_switch=>
+04-09 00:53:15.839  1103  1103 D audio_hw_extn: audio_extn_get_parameters: returns 
+04-09 00:53:15.839  1103  1103 V msm8974_platform: platform_get_parameters: exit: returns - audio_game_sound_volume_gap_switch=off
+04-09 00:53:15.839  1103  1103 D audio_hw_primary: adev_get_parameters: exit: returns - audio_game_sound_volume_gap_switch=off
+04-09 00:53:15.844  1375  4146 D APM_AudioPolicyManager: getOutputForAttrInt()+ attributes={ Content type: AUDIO_CONTENT_TYPE_MUSIC Usage: AUDIO_USAGE_MEDIA Source: AUDIO_SOURCE_DEFAULT Flags: 0x100 Tags:  } stream=AUDIO_STREAM_MUSIC session 969 output 0 selectedDeviceId 0 device AUDIO_DEVICE_NONE sampling rate 48000 format 0x5channel mask 0x3 flags 0x104 stream AUDIO_STREAM_MUSIC uid 10030
+04-09 00:53:15.846  1375  4146 D APM_AudioPolicyManager: getOutputForAttrInt() device {AUDIO_DEVICE_OUT_SPEAKER, @:}, sampling rate 48000, format 0x5, channel mask 0x3, flags 0x104 stream AUDIO_STREAM_MUSIC
+04-09 00:53:15.849  1375  4146 D MiAudioPolicyManager: getPackageName: app.blearn.mobile  uid 10030
+04-09 00:53:15.850  1103  1103 D audio_hw_primary: adev_get_parameters:audio_karaoke_running
+04-09 00:53:15.850  1103  1103 D audio_hw_primary: get para : audio_karaoke_running = false
+04-09 00:53:15.850  1103  1103 D soundtrigger: audio_extn_sound_trigger_get_parameters input string<audio_karaoke_running=>
+04-09 00:53:15.850  1103  1103 D soundtrigger: extract_sm_handle input string <audio_karaoke_running=> param string <audio_karaoke_running=>
+04-09 00:53:15.850  1103  1103 D audio_hw_extn: audio_extn_get_parameters: returns audio_karaoke_running=false
+04-09 00:53:15.850  1103  1103 V msm8974_platform: platform_get_parameters: exit: returns - audio_karaoke_running=false
+04-09 00:53:15.850  1103  1103 D audio_hw_primary: adev_get_parameters: exit: returns - audio_karaoke_running=false
+04-09 00:53:15.856  1375  4146 D MiAudioPolicyManager: Remove AUDIO_OUTPUT_FLAG_RAW Flag and AUDIO_OUTPUT_FLAG_MMAP_NOIRQ for forbiding ull track route
+04-09 00:53:15.857  1103  1259 D audio_hw_primary: adev_get_parameters:vr_audio_mode_on
+04-09 00:53:15.857  1103  1259 D audio_hw_primary: adev_get_parameters: exit: returns - vr_audio_mode_on=false
+04-09 00:53:15.857  4878 10237 I NearbyMediums: No BLE Fast/GATT advertisements found in the latest cycle.
+04-09 00:53:15.857  4878 10237 I NearbyMediums: Current Tracked Scanning Clients are : {NearbyConnections.EnvironmentMonitor, NearbySharing}
+04-09 00:53:15.858  1375  4146 D AudioPolicyManagerImpl: set isSpatializerFlagCE to 0.
+04-09 00:53:15.858  1375  4146 D AudioPolicyManagerImpl: set isSpatializerFlagCE to 0.
+04-09 00:53:15.859  1375  4146 D AudioPolicyManagerImpl: set isSpatializerFlagCE to 0.
+04-09 00:53:15.859  1375  4146 D AudioPolicyManagerImpl: set isSpatializerFlagCE to 0.
+04-09 00:53:15.859  1375  4146 D APM_AudioPolicyManager: getOutputForDevices(), spatializer_flag_ce is 0, spatializer_ce_lastflag is 0
+04-09 00:53:15.859  1375  4146 D APM_AudioPolicyManager: getOutputForAttrInt()- attributes={ Content type: AUDIO_CONTENT_TYPE_MUSIC Usage: AUDIO_USAGE_MEDIA Source: AUDIO_SOURCE_DEFAULT Flags: 0x100 Tags:  } stream=AUDIO_STREAM_MUSIC session 969 output 13 selectedDeviceId 0 device {AUDIO_DEVICE_OUT_SPEAKER, @:} sampling rate 48000 format 0x5channel mask 0x3 flags 0x4 stream AUDIO_STREAM_MUSIC uid 10030
+04-09 00:53:15.860  1375  4146 D ClientInfoStub: ClientInfoStub()
+04-09 00:53:15.863  1375  4146 D APM_AudioPolicyManager: getOutputForAttr() returns output 13 requestedPortId 0 selectedDeviceId 3 for port ID 535
+04-09 00:53:15.864  1375  4146 I UsecaseValidator: verifyAudioAttributes update usage: 1 to AUDIO_USAGE_GAME for output: 13 pid: 25935 package: app.blearn.mobile
+04-09 00:53:15.864  1375  4146 W AudioFlinger: createTrack_l(): mismatch between requested flags (00000104) and output flags (00000006)
+04-09 00:53:15.864  1375  4146 D AudioFlinger: Client defaulted notificationFrames to 192 for frameCount 1536
+04-09 00:53:15.874  1375  4146 D AF::Track: Track(267): usage = 14 mbIsAttrNeedFade = 0
+04-09 00:53:15.876 25935 26069 I AudioTrack: createTrack_l(0): AUDIO_OUTPUT_FLAG_FAST successful; frameCount 0 -> 1536
+04-09 00:53:15.877 25935 26069 E libprocessgroup: set_timerslack_ns write failed: Operation not permitted
+04-09 00:53:15.877  1375  4146 V xlog_client:  xlog_send  msg_id: 29
+04-09 00:53:15.878  1375  4146 V xlog_client:  xlog_send 
+04-09 00:53:15.878  1375  4146 V xlog_client: xlog_open fd = 25
+04-09 00:53:15.878  1375  4146 D xlog_client: xlog_format_msg: send msg 29
+04-09 00:53:15.878  1375  4146 D xlog_client: _xlog_write_flat_msg: send msg {"name":"audio_track_message","audio_event":{"app_name":"app.blearn.mobile", "scenario":"playback", "frame_count":"1536", "sample_rate":"48000", "notif_frame_act":"192", "transfer_type":"1", "afframe_count":"960", "afsample_rate":"48000", "aflatency":"48", "fcnt_times":"1"},"dgt":"null","audio_ext":"null" }
+04-09 00:53:15.878  1375  4146 V xlog_client: xlog_close 25
+04-09 00:53:15.878  2184  2976 I MQSserver: getData len: 512 content: {"name":"audio_track_message","audio_event":{"app_name":"app.blearn.mobile", "scenario":"playback", "frame_count":"1536", "sample_rate":"48000", "notif_frame_act":"192", "transfer_type":"1", "afframe_count":"960", "afsample_rate":"48000", "aflatency":"48", "fcnt_times":"1"},"dgt":"null","audio_ext":"null" }À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€À€
+04-09 00:53:15.878 25935 26069 I AudioTrackImpl: before scaleVolumeForVideo L:1.000000 R:1.000000 and the pakage is app.blearn.mobile
+04-09 00:53:15.878 25935 26069 I AudioTrack: AudioTrack::setVolume L:1.000000 R:1.000000 sessionid=969
+04-09 00:53:15.878 25935 26069 D AudioStreamTrack: open() flags changed from 0x00000104 to 0x00000004
+04-09 00:53:15.878 25935 26069 D AAudioStream: setState(s#1) from 0 to 2
+04-09 00:53:15.879  2184  2976 D MQSserver: enter updateCountaudio_track_message
+04-09 00:53:15.879  2184  2976 D MQSserver: read count frome file: 4
+04-09 00:53:15.879  2184  2976 D MQSserver: update RBI json: {"name":"audio_track_message","audio_event":{"app_name":"app.blearn.mobile","scenario":"playback","frame_count":"1536","sample_rate":"48000","notif_frame_act":"192","transfer_type":"1","afframe_count":"960","afsample_rate":"48000","aflatency":"48","fcnt_times":"1"},"dgt":"null","audio_ext":"null","onetrack_count":"5"}
+04-09 00:53:15.879  2184  2976 D MQSserver: updateCount: name: audio_track_message/audio_event : {"app_name":"app.blearn.mobile","scenario":"playback","frame_count":"1536","sample_rate":"48000","notif_frame_act":"192","transfer_type":"1","afframe_count":"960","afsample_rate":"48000","aflatency":"48","fcnt_times":"1"}
+04-09 00:53:15.880 25935 26140 D p.blearn.mobile: PlayerBase::setVolume() from IPlayer
+04-09 00:53:15.880 25935 26140 D AAudioStream: setDuckAndMuteVolume() to 1.000000
+04-09 00:53:15.880 25935 26140 I AudioTrackImpl: before scaleVolumeForVideo L:1.000000 R:1.000000 and the pakage is app.blearn.mobile
+04-09 00:53:15.880 25935 26140 I AudioTrack: AudioTrack::setVolume L:1.000000 R:1.000000 sessionid=969
+04-09 00:53:15.880 25935 26069 I AAudio  : AAudioStreamBuilder_openStream() returns 0 = AAUDIO_OK for s#1 ----------------
+04-09 00:53:15.881 25935 26069 D AAudio  : AAudioStream_requestStart(s#1) called --------------
+04-09 00:53:15.882 25935 26069 D AAudioStream: setState(s#1) from 2 to 3
+04-09 00:53:15.882 25935 26069 D AudioTrack: start(535): prior state:STATE_STOPPED
+04-09 00:53:15.882  1375  4146 D AF::Track: setFadeIn isFadeNeeded = 0
+04-09 00:53:15.883  1375  1982 W AudioFlinger: The package name(android) provided does not correspond to the uid 1041
+04-09 00:53:15.896  2184  2568 I ExtM    : zram userate is low, no need to flush: 40
+04-09 00:53:15.897  1103  1259 I EffectsFactory: EffectCreate() create_effect
+04-09 00:53:15.903  1103  7858 E volume_listener: check_and_set_gain_dep_cal: Failed to set gain dep cal level
+04-09 00:53:15.904  1375  1982 D APM_AudioPolicyManager: startOutput() output 13, stream 3, session 969, portId 535, appname app.blearn.mobile, uid 10030
+04-09 00:53:15.905  1375  1982 D APM_AudioPolicyManager: setOutputDevices output 13 device {AUDIO_DEVICE_OUT_SPEAKER, @:} delayMs 0 force 0 requiresMuteCheck 0
+04-09 00:53:15.905  1375  1982 D APM_AudioPolicyManager: setOutputDevices() prevDevice {AUDIO_DEVICE_OUT_SPEAKER, @:}
+04-09 00:53:15.907  1375  1982 D APM_AudioPolicyManager: checkAndSetVolume: set volumeSource 4 volume index 70 for device 0x2, volumeDb = -22.722857
+04-09 00:53:15.908  1375  1981 D AudioFlingerImpl: setGameParameters keyvalue: flags=6;volume_change=7
+04-09 00:53:15.908  1103  1258 D audio_hw_primary: adev_set_parameters: enter: flags=6;volume_change=7
+04-09 00:53:15.908  1103  1258 V msm8974_platform: platform_set_parameters: enter: flags=6;volume_change=7
+04-09 00:53:15.908  1103  1258 D msm8974_platform: platform_set_parameters: exit with code(0)
+04-09 00:53:15.909  1103  1258 D audio_hw_primary: adev_set_parameters: exit with code(0)
+04-09 00:53:15.909  1103  7857 D r_submix: adev_set_parameters() kvpairs='flags=6;volume_change=7'
+04-09 00:53:15.912  1375  4146 D audioserver: FGS Logger Transaction failed
+04-09 00:53:15.912  1375  4146 D audioserver: -129
+04-09 00:53:15.912  1375  4146 D AF::Track: noteStartAudioInNeed
+04-09 00:53:15.913 25935 26069 D AudioRepeatStartCheck: [AudioRepeatStartStopCheck], enter: uid = 10030, session = 969, uidnowTime = 0
+04-09 00:53:15.913  1375  2438 D AudioFlinger: updateWakeLockUids_l AudioOut_D uids:10030 
+04-09 00:53:15.913 25935 26069 D AudioRepeatStartCheck: [AudioRepeatStartStopCheck] isAnomaly = 0
+04-09 00:53:15.913 25935 26069 D AAudio  : AAudioStream_requestStart(s#1) returned 0 ---------
+04-09 00:53:15.914 25935 25947 D p.blearn.mobile: PlayerBase::setVolume() from IPlayer
+04-09 00:53:15.914 25935 25947 D AAudioStream: setDuckAndMuteVolume() to 1.000000
+04-09 00:53:15.914 25935 25947 I AudioTrackImpl: before scaleVolumeForVideo L:1.000000 R:1.000000 and the pakage is app.blearn.mobile
+04-09 00:53:15.914 25935 25947 I AudioTrack: AudioTrack::setVolume L:1.000000 R:1.000000 sessionid=969
+04-09 00:53:15.916  3988  3988 I BluetoothAdapterService: BT_FAST_SCAN AudioManager isPlaying: true mIsMusicPlaying false
+04-09 00:53:15.916  3988  3988 I BluetoothAdapterService: BT_FAST_SCAN AudioManager change audio state after 3S
+04-09 00:53:15.918  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:103 deviceId:0 type:android.media.SoundPool u/pid:1000/2184 state:idle attr:AudioAttributes: usage=USAGE_ASSISTANCE_SONIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800 tags= bundle=null sessionId:0 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.918  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:647 deviceId:0 type:android.media.SoundPool u/pid:1027/7465 state:idle attr:AudioAttributes: usage=USAGE_ASSISTANCE_SONIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800 tags= bundle=null sessionId:0 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.918  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:871 deviceId:0 type:android.media.SoundPool u/pid:10115/9030 state:started attr:AudioAttributes: usage=USAGE_ASSISTANCE_SONIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800 tags= bundle=null sessionId:0 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.919  3988  4885 D Avrcp_ext: AudioManager Player in started state: com.android.deskclock
+04-09 00:53:15.919  3988  4885 D Avrcp_ext: AudioManager Active Player: com.android.deskclock
+04-09 00:53:15.919  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:1063 deviceId:0 type:android.media.AudioTrack u/pid:10518/15853 state:idle attr:AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN flags=0xA00 tags= bundle=null sessionId:897 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.919  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:143 deviceId:0 type:android.media.MediaPlayer u/pid:10338/18348 state:idle attr:AudioAttributes: usage=USAGE_UNKNOWN content=CONTENT_TYPE_UNKNOWN flags=0x800 tags= bundle=null sessionId:129 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.919  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:239 deviceId:0 type:android.media.SoundPool u/pid:10082/4110 state:idle attr:AudioAttributes: usage=USAGE_ASSISTANCE_SONIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800 tags= bundle=null sessionId:0 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.920  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:1071 deviceId:0 type:android.media.AudioTrack u/pid:10518/15853 state:paused attr:AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN flags=0xA00 tags= bundle=null sessionId:889 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x3, sampleRate=48000}
+04-09 00:53:15.920  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:119 deviceId:0 type:android.media.SoundPool u/pid:1000/4073 state:idle attr:AudioAttributes: usage=USAGE_ASSISTANCE_SONIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800 tags= bundle=null sessionId:0 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.920  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:1111 deviceId:3 type:AAudio u/pid:10030/25935 state:started attr:AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN source=DEFAULT flags=0x0 tags= bundle=null sessionId:-1 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.920 25935 26140 D AudioStreamLegacy: onAudioDeviceUpdate(deviceId = 3)
+04-09 00:53:15.920  1103  6092 D audio_hw_primary: start_output_stream: enter: stream(0xf5e44000)usecase(1: low-latency-playback) devices(0x2) is_haptic_usecase(0)
+04-09 00:53:15.920  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:53:15.920  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:53:15.920  1103  6092 E audio_hw_extn: audio_extn_perf_lock_acquire: Failed to acquire perf lock, err: 0
+04-09 00:53:15.920  3988  4885 D Avrcp_ext: AudioManager Player in started state: app.blearn.mobile
+04-09 00:53:15.920  1103  6092 D audio_hw_primary: select_devices for use case (low-latency-playback in:0 out:0 device:0x2)
+04-09 00:53:15.920  1103  6092 D msm8974_platform: platform_get_output_snd_device: enter: output devices(0x2)
+04-09 00:53:15.920  1103  6092 I msm8974_platform: platform_check_and_set_codec_backend_cfg:becf: afe: bitwidth 24, samplerate 48000 channels 2, backend_idx 4 usecase = 1 device (speaker)
+04-09 00:53:15.920  1103  6092 I msm8974_platform: platform_check_and_set_codec_backend_cfg: new_snd_devices[0] is 2
+04-09 00:53:15.920  1103  6092 I msm8974_platform: platform_check_codec_backend_cfg:becf: afe: bitwidth 24, samplerate 48000 channels 2, backend_idx 4 usecase = 1 device (speaker)
+04-09 00:53:15.921  3988  4885 D Avrcp_ext: AudioManager isPlaying: true, mAudioPlaybackIsActive: true, isMusiActive: true
+04-09 00:53:15.923  3988  3988 I BluetoothAdapterService: BT_FAST_SCAN AudioManager isPlaying: true mIsMusicPlaying false
+04-09 00:53:15.924  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:103 deviceId:0 type:android.media.SoundPool u/pid:1000/2184 state:idle attr:AudioAttributes: usage=USAGE_ASSISTANCE_SONIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800 tags= bundle=null sessionId:0 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.924  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:647 deviceId:0 type:android.media.SoundPool u/pid:1027/7465 state:idle attr:AudioAttributes: usage=USAGE_ASSISTANCE_SONIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800 tags= bundle=null sessionId:0 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.924  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:871 deviceId:0 type:android.media.SoundPool u/pid:10115/9030 state:started attr:AudioAttributes: usage=USAGE_ASSISTANCE_SONIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800 tags= bundle=null sessionId:0 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.925  1103  6092 D msm8974_platform: platform_check_codec_backend_cfg:becf: updated afe: bitwidth 24, samplerate 48000 channels 2,backend_idx 4 usecase = 1 device (speaker)
+04-09 00:53:15.925  1103  6092 D msm8974_platform: platform_check_codec_backend_cfg:becf: afe: set BE sample 48000, bit_width 24, channels 2 for TDM_RX_0
+04-09 00:53:15.925  1103  6092 I msm8974_platform: platform_check_codec_backend_cfg:becf: afe: Codec selected backend: 4 updated bit width: 24 and sample rate: 48000
+04-09 00:53:15.925  1103  6092 D audio_hw_primary: check_usecases_codec_backend:becf: force routing 0
+04-09 00:53:15.925  1103  6092 E msm8974_platform: platform_check_backends_match: Invalid snd_device2 = 
+04-09 00:53:15.925  1103  6092 D audio_hw_primary: check_usecases_codec_backend:becf: (107) check_usecases curr device: speaker, usecase device: backends match 0
+04-09 00:53:15.925  1103  6092 D audio_hw_primary: @@: usecase[0xf5d083b0]=low-latency-playback, uc_info[0xf5d083b0]=low-latency-playback
+04-09 00:53:15.925  1103  6092 D audio_hw_primary: check_usecases_codec_backend:becf: check_usecases num.of Usecases to switch 0
+04-09 00:53:15.925  1103  6092 D hardware_info: hw_info_append_hw_type : device_name = speaker
+04-09 00:53:15.925  1103  6092 D audio_hw_primary: enable_snd_device: snd_device(2: speaker)[SND_DEVICE_OUT_SPEAKER]
+04-09 00:53:15.925  1103  6092 D msm8974_platform: platform_get_island_cfg_on_device:island cfg status on snd_device = (speaker 0)
+04-09 00:53:15.925  1103  6092 I soundtrigger: audio_extn_sound_trigger_update_device_status: device 0x2 of type 0 for Event 1, with Raise=0
+04-09 00:53:15.922  2184  2552 D ProcessManager: add audio active uid : 10030
+04-09 00:53:15.925  1103  6092 D audio_route: Apply path: speaker
+04-09 00:53:15.926  2184  2958 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{37d5426 1000 PER  fgServices allowlist change:procadj procs:0 seq(525735,523333)} caps=LCMNFU always=false idle=false
+04-09 00:53:15.926  3988  4885 D Avrcp_ext: AudioManager Player in started state: com.android.deskclock
+04-09 00:53:15.926  3988  4885 D Avrcp_ext: AudioManager Active Player: com.android.deskclock
+04-09 00:53:15.926  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:1063 deviceId:0 type:android.media.AudioTrack u/pid:10518/15853 state:idle attr:AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN flags=0xA00 tags= bundle=null sessionId:897 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.926  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:143 deviceId:0 type:android.media.MediaPlayer u/pid:10338/18348 state:idle attr:AudioAttributes: usage=USAGE_UNKNOWN content=CONTENT_TYPE_UNKNOWN flags=0x800 tags= bundle=null sessionId:129 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.926  2184  2958 D AudioServiceStubImpl: onUpdateMediaState mediaActive=true
+04-09 00:53:15.927  2184  2958 D AudioServiceStubImpl: onUpdateMediaState mediaActive=true
+04-09 00:53:15.927  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:239 deviceId:0 type:android.media.SoundPool u/pid:10082/4110 state:idle attr:AudioAttributes: usage=USAGE_ASSISTANCE_SONIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800 tags= bundle=null sessionId:0 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.928  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:1071 deviceId:0 type:android.media.AudioTrack u/pid:10518/15853 state:paused attr:AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN flags=0xA00 tags= bundle=null sessionId:889 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x3, sampleRate=48000}
+04-09 00:53:15.928  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:119 deviceId:0 type:android.media.SoundPool u/pid:1000/4073 state:idle attr:AudioAttributes: usage=USAGE_ASSISTANCE_SONIFICATION content=CONTENT_TYPE_SONIFICATION flags=0x800 tags= bundle=null sessionId:0 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x0, sampleRate=0}
+04-09 00:53:15.928  3988  4885 D Avrcp_ext: AudioManager Player: AudioPlaybackConfiguration piid:1111 deviceId:3 type:AAudio u/pid:10030/25935 state:started attr:AudioAttributes: usage=USAGE_MEDIA content=CONTENT_TYPE_UNKNOWN source=DEFAULT flags=0x0 tags= bundle=null sessionId:-1 mutedState:none  FormatInfo{isSpatialized=false, channelMask=0x3, sampleRate=48000}
+04-09 00:53:15.928  9679 16327 I PowerKeeper.Event: noteStartAudioInNeed uid is 10030, sessionid is 969, port is 535, type is 2
+04-09 00:53:15.928  9679 10070 I AppActiveChecker: uid:10030 change to active
+04-09 00:53:15.928  4878 10237 I NearbyDiscovery: (REDACTED) [trigger-id=Plco98302B80, feature-id=Sass] ConnectionSwitchManager: Received %s, un-mute
+04-09 00:53:15.929  3988  4885 D Avrcp_ext: AudioManager Player in started state: app.blearn.mobile
+04-09 00:53:15.929  4878 10237 I NearbyDiscovery: (REDACTED) [trigger-id=Plco7562AF51, feature-id=Sass] ConnectionSwitchManager: Received %s, un-mute
+04-09 00:53:15.929  3988  4885 D Avrcp_ext: AudioManager isPlaying: true, mAudioPlaybackIsActive: true, isMusiActive: true
+04-09 00:53:15.932  1103  6092 D hardware_info: hw_info_append_hw_type : device_name = vi-feedback
+04-09 00:53:15.932  1103  6092 D audio_hw_primary: enable_snd_device: snd_device(246: vi-feedback)[SND_DEVICE_IN_CAPTURE_VI_FEEDBACK]
+04-09 00:53:15.932  1103  6092 D msm8974_platform: platform_get_island_cfg_on_device:island cfg status on snd_device = (vi-feedback 0)
+04-09 00:53:15.932  1103  6092 I soundtrigger: audio_extn_sound_trigger_update_device_status: device 0xf6 of type 1 for Event 1, with Raise=0
+04-09 00:53:15.933  1103  6092 D audio_route: Apply path: vi-feedback
+04-09 00:53:15.933  1103  6092 D msm8974_platform: fluence nn disabled
+04-09 00:53:15.933  1103  6092 D soundtrigger: audio_extn_sound_trigger_update_stream_status: uc_info->id 53 of type 1 for Event 3, with Raise=0
+04-09 00:53:15.933  1103  6092 D audio_hw_utils: audio_extn_utils_send_app_type_cfg: usecase->in_snd_device vi-feedback
+04-09 00:53:15.933  1103  6092 E audio_hw_utils: send_app_type_cfg_for_device: Could not get ctl for mixer cmd - Audio Stream Capture 32 App Type Cfg
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> send_audio_cal, acdb_id = 102, path = 1, app id = 0x11132, sample rate = 48000, use_case = 0,buffer_idx_w_path =1, afe_sample_rate = 48000, cal_mode = 1, offset_index = 0
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> send_asm_topology
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_STREAM_TOPOLOGY_ID
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> send_adm_topology
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_COMMON_TOPOLOGY_ID
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> send_audtable
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_COMMON_TABLE_SIZE
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_COMMON_TABLE
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> AUDIO_SET_AUDPROC_CAL cal_type[11] acdb_id[102] app_type[69938]
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: check_fnn_usecase_status: fnn usecase active 0
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_PERSISTENT_AUDPROC_INSTANCE_COMMON_TABLE_SIZE
+04-09 00:53:15.933  1103  6092 D android.hardware.audio.service: [Data Manager]-> No data found
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: Error: ACDB_CMD_GET_PERSISTENT_AUDPROC_INSTANCE_COMMON_TABLE_SIZE returned -18
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> send_audproc_persist_table -18 
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: Error: Invalid Audproc persist size = -18
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_STREAM_TABLE_SIZE
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> send_audstrmtable
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_STREAM_TABLE
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> audstrm_cal->cal_type.cal_data.cal_size = 20
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> send_afe_topology
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AFE_TOPOLOGY_ID
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> GET_AFE_TOPOLOGY_ID for adcd_id 102, Topology Id 1000ff00
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> send_afe_cal
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AFE_INSTANCE_COMMON_TABLE_SIZE
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AFE_INSTANCE_COMMON_TABLE
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> AUDIO_SET_AFE_CAL cal_type[17] acdb_id[102]
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> send_hw_delay : acdb_id = 102 path = 1
+04-09 00:53:15.933  1103  6092 D ACDB-LOADER: ACDB -> ACDB_AVSYNC_INFO: ACDB_CMD_GET_DEVICE_PROPERTY
+04-09 00:53:15.933  1103  6092 D msm8974_platform: fluence nn disabled
+04-09 00:53:15.933  1103  6092 D audio_hw_primary: enable_audio_route: apply mixer and update path: spkr-vi-record
+04-09 00:53:15.934  1103  6092 D audio_route: Apply path: spkr-vi-record
+04-09 00:53:15.937  1103  6092 D audio_hw_primary: [force reset] create spkr-vi-record 1
+04-09 00:53:15.937  1103  6092 D audio_hw_awinic_feedback: audio_extn_aw882xx_start_feedback:[Awinic] the pcm id uc_info->id = 53, tx_pcm_id = 32
+04-09 00:53:15.938  1870  1870 I wificond: station_bandwidth: (
+04-09 00:53:15.950  1103  6092 D soundtrigger: audio_extn_sound_trigger_update_stream_status: uc_info->id 1 of type 0 for Event 3, with Raise=0
+04-09 00:53:15.950  1103  6092 D audio_hw_utils: audio_extn_utils_send_app_type_cfg: usecase->out_snd_device speaker
+04-09 00:53:15.951  1103  6092 I audio_hw_utils: send_app_type_cfg_for_device PLAYBACK app_type 69937, acdb_dev_id 10011, sample_rate 48000, snd_device_be_idx 55, channel is 2
+04-09 00:53:15.954  1103  6092 D DlbQdspGefDriver: eventCallback(): audio device 0x00000002 (sample rate 48000, channelMask 0x00000003, ACDB device id 10011, app type 0x11131, data 0) becomes active!
+04-09 00:53:15.954  1103  6092 D DlbQdspGefDriver: eventCallback(): Ignore values with unexpected app type 0x11131
+04-09 00:53:15.954  1103  6092 D ACDB-LOADER: ACDB -> send_audio_cal, acdb_id = 10011, path = 0, app id = 0x11131, sample rate = 48000, use_case = 0,buffer_idx_w_path =0, afe_sample_rate = 48000, cal_mode = 1, offset_index = 0
+04-09 00:53:15.954  1103  6092 D ACDB-LOADER: ACDB -> send_asm_topology
+04-09 00:53:15.954  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_STREAM_TOPOLOGY_ID
+04-09 00:53:15.954  1103  6092 D ACDB-LOADER: ACDB -> send_adm_topology
+04-09 00:53:15.954  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_COMMON_TOPOLOGY_ID
+04-09 00:53:15.954  1103  6092 D ACDB-LOADER: ACDB -> send_audtable
+04-09 00:53:15.954  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_COMMON_TABLE_SIZE
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_COMMON_TABLE
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> AUDIO_SET_AUDPROC_CAL cal_type[11] acdb_id[10011] app_type[69937]
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> send_audvoltable
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE_SIZE
+04-09 00:53:15.955  1103  6092 D android.hardware.audio.service: Failed to fetch the lookup information of the device 0000271B 
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: Error: ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE_SIZE Returned = -19
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE, vol index 0
+04-09 00:53:15.955  1103  6092 D android.hardware.audio.service: Failed to fetch the lookup information of the device 0000271B 
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: Error: ACDB AudProc vol returned = -19
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> AUDIO_SET_VOL_CAL cal type = 12
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_STREAM_TABLE_SIZE
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> send_audstrmtable
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_STREAM_TABLE
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> audstrm_cal->cal_type.cal_data.cal_size = 20
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> send_afe_topology
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AFE_TOPOLOGY_ID
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> GET_AFE_TOPOLOGY_ID for adcd_id 10011, Topology Id 1000ff01
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> send_afe_cal
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AFE_INSTANCE_COMMON_TABLE_SIZE
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AFE_INSTANCE_COMMON_TABLE
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> AUDIO_SET_AFE_CAL cal_type[16] acdb_id[10011]
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> send_hw_delay : acdb_id = 10011 path = 0
+04-09 00:53:15.955  1103  6092 D ACDB-LOADER: ACDB -> ACDB_AVSYNC_INFO: ACDB_CMD_GET_DEVICE_PROPERTY
+04-09 00:53:15.955  1103  6092 D audio_hw_primary: enable_audio_route: apply mixer and update path: low-latency-playback speaker
+04-09 00:53:15.955  1103  6092 D audio_route: Apply path: low-latency-playback speaker
+04-09 00:53:15.958  4001  5425 D QCNEJ/WlanStaInfoRelay: Received action: android.net.wifi.RSSI_CHANGED
+04-09 00:53:15.962  1103  6092 D audio_hw_primary: [force reset] create low-latency-playback speaker 1
+04-09 00:53:15.962  1103  6092 D audio_hw_primary: select_devices: done
+04-09 00:53:15.962  1103  6092 D msm8974_platform: platform_set_channel_map mixer_ctl_name:Playback Channel Map9
+04-09 00:53:15.963  1103  6092 D msm8974_platform: platform_set_channel_map: set mapping(1 2 0 0 0 0 0 0) for channel:2
+04-09 00:53:15.967  4073  4073 D ArtChoreographerMonitor: invoke error.
+04-09 00:53:15.971  2184  3021 W JobScheduler.JobStatus: Exempted app com.whatsapp considered buggy
+04-09 00:53:15.971  2184  3021 W JobScheduler.JobStatus: Exempted app android/com.whatsapp considered buggy
+04-09 00:53:15.971  2184  3021 W JobScheduler.JobStatus: Exempted app com.whatsapp considered buggy
+04-09 00:53:15.972 15853 15853 W JobService: onNetworkChanged() not implemented in com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService. Must override in a subclass.
+04-09 00:53:15.974 13143 13143 W JobService: onNetworkChanged() not implemented in com.android.providers.downloads.ui.service.CoreJobService. Must override in a subclass.
+04-09 00:53:15.977  2184  3982 I NetworkBoostStatusManager: handle: 102
+04-09 00:53:15.978 25935 25935 E FileUtils: err write to mi_exception_log
+04-09 00:53:15.978 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:15.984  2184  3982 I NetworkBoostStatusManager: interfaceOnCapabilitiesChanged interface name:wlan0
+04-09 00:53:15.984  2184  3982 I NetworkBoostStatusManager: handle: 104
+04-09 00:53:15.993 15853 16193 D AudioTrackImpl: [audioTrackData][mute] 36s(f:485 m:36038 s:265 k:38039 z:0) : pid 15853 uid 10518 sessionId 889 sr 48000 ch 2 fmt 1
+04-09 00:53:15.995  2184  3982 I NetworkBoostStatusManager: SmartDNS onAvailable WIFI master.
+04-09 00:53:15.998  1103  6092 E audio_hw_extn: audio_extn_perf_lock_release: Perf lock release error 
+04-09 00:53:15.998  1103  6092 D audio_hw_primary: start_output_stream: exit
+04-09 00:53:15.998  1103  6092 V msm8974_platform: platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a100;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69937;cal_paramid=0x1000a114;cal_topoid=0x1000a106;cal_samplerate=48000;cal_data=BwAAAA==
+04-09 00:53:15.999  1103  6092 D msm8974_platform: platform_get_output_snd_device: enter: output devices(0x2)
+04-09 00:53:15.999  1103  6092 D msm8974_platform: Setting audio calibration for snd_device(2) acdb_id(10011)
+04-09 00:53:15.999  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a106 and apptype 0x11131
+04-09 00:53:15.999  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+04-09 00:53:15.999  1103  6092 D msm8974_platform: platform_set_parameters: exit with code(0)
+04-09 00:53:15.999  1103  6092 D adsp_utils: set_channel_reverse mode: 0
+04-09 00:53:15.999  1103  6092 V msm8974_platform: platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a106;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69940;cal_paramid=0x1000a198;cal_topoid=0x1000a106;cal_samplerate=48000;cal_data=AAAAAA==
+04-09 00:53:15.999  1103  6092 D msm8974_platform: platform_get_output_snd_device: enter: output devices(0x2)
+04-09 00:53:15.999  1103  6092 D msm8974_platform: Setting audio calibration for snd_device(2) acdb_id(10011)
+04-09 00:53:15.999  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a106 and apptype 0x11134
+04-09 00:53:15.999  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+04-09 00:53:15.999  1103  6092 D msm8974_platform: platform_set_parameters: exit with code(0)
+04-09 00:53:15.999  1103  6092 V msm8974_platform: platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a106;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69940;cal_paramid=0x1000a198;cal_topoid=0x1000a100;cal_samplerate=48000;cal_data=AAAAAA==
+04-09 00:53:15.999  1103  6092 D msm8974_platform: platform_get_output_snd_device: enter: output devices(0x2)
+04-09 00:53:15.999  1103  6092 D msm8974_platform: Setting audio calibration for snd_device(2) acdb_id(10011)
+04-09 00:53:15.999  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a100 and apptype 0x11134
+04-09 00:53:15.999  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+04-09 00:53:15.999  1103  6092 D msm8974_platform: platform_set_parameters: exit with code(0)
+04-09 00:53:15.999  1103  6092 V msm8974_platform: platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a106;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69937;cal_paramid=0x1000a198;cal_topoid=0x1000a106;cal_samplerate=48000;cal_data=AAAAAA==
+04-09 00:53:15.999  1103  6092 D msm8974_platform: platform_get_output_snd_device: enter: output devices(0x2)
+04-09 00:53:15.999  1103  6092 D msm8974_platform: Setting audio calibration for snd_device(2) acdb_id(10011)
+04-09 00:53:15.999  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a106 and apptype 0x11131
+04-09 00:53:15.999  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+04-09 00:53:15.999  1103  6092 D msm8974_platform: platform_set_parameters: exit with code(0)
+04-09 00:53:15.999  1103  6092 V msm8974_platform: platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a106;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69937;cal_paramid=0x1000a198;cal_topoid=0x1000a100;cal_samplerate=48000;cal_data=AAAAAA==
+04-09 00:53:15.999  1103  6092 D msm8974_platform: platform_get_output_snd_device: enter: output devices(0x2)
+04-09 00:53:15.999  1103  6092 D msm8974_platform: Setting audio calibration for snd_device(2) acdb_id(10011)
+04-09 00:53:15.999 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:53:15.999 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:53:15.999  1103  6092 D msm8974_platform: platform_set_parameters: exit with code(0)
+04-09 00:53:15.999  1103  6092 V msm8974_platform: platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a106;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69936;cal_paramid=0x1000a198;cal_topoid=0x1000a106;cal_samplerate=48000;cal_data=AAAAAA==
+04-09 00:53:15.999  1103  6092 D msm8974_platform: platform_get_output_snd_device: enter: output devices(0x2)
+04-09 00:53:15.999  1103  6092 D msm8974_platform: Setting audio calibration for snd_device(2) acdb_id(10011)
+04-09 00:53:16.000  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a106 and apptype 0x11130
+04-09 00:53:16.000  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+04-09 00:53:16.000  1103  6092 D msm8974_platform: platform_set_parameters: exit with code(0)
+04-09 00:53:16.000  1103  6092 V msm8974_platform: platform_set_parameters: enter: cal_persist=0;cal_devid=2;cal_moduleid=0x1000a106;cal_caltype=0;cal_instanceid=0x0;cal_apptype=69936;cal_paramid=0x1000a198;cal_topoid=0x1000a100;cal_samplerate=48000;cal_data=AAAAAA==
+04-09 00:53:16.000  1103  6092 D msm8974_platform: platform_get_output_snd_device: enter: output devices(0x2)
+04-09 00:53:16.000  1103  6092 D msm8974_platform: Setting audio calibration for snd_device(2) acdb_id(10011)
+04-09 00:53:16.000  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] active device/stream not found (result=-100) for topology 0x1000a100 and apptype 0x11130
+04-09 00:53:16.000  1103  6092 E ACDB-LOADER: [acdb_loader_adsp_set_audio_cal] set parameters failed with status -100
+04-09 00:53:16.000  1103  6092 D msm8974_platform: platform_set_parameters: exit with code(0)
+04-09 00:53:16.000  1103  6092 D audio_hw_primary: check_and_set_karaok_parameters: is karaok rx device 0, is karaok tx device 0
+04-09 00:53:16.000  1103  6092 V send_data_to_xlog: getCurrentDate
+04-09 00:53:16.000  1103  6092 V send_data_to_xlog: current time is : 2026 year, 4 month, 8 daty
+04-09 00:53:16.000  1103  6092 V send_data_to_xlog: do not need to seed data to xlog
+04-09 00:53:16.000  1103  6092 V send_data_to_xlog: send_EarsCompensation_dailyuse_to_xlog
+04-09 00:53:16.000  1103  6092 I send_data_to_xlog: get_headset_type the type is speaker
+04-09 00:53:16.000  1103  6092 D send_data_to_xlog: send_misound_dailyuse_to_xlog, the headset type is speaker
+04-09 00:53:16.000  1103  6092 D send_data_to_xlog:  send_misound_dailyuse_to_xlog: misound without usb
+04-09 00:53:16.000  1103  6092 D audio_hw_primary: out_write: retry previous failed cal level set
+04-09 00:53:16.000  1103  6092 D ACDB-LOADER: ACDB -> send_audvoltable
+04-09 00:53:16.000  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE_SIZE
+04-09 00:53:16.000  1103  6092 D android.hardware.audio.service: Failed to fetch the lookup information of the device 0000271B 
+04-09 00:53:16.000  1103  6092 D ACDB-LOADER: Error: ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE_SIZE Returned = -19
+04-09 00:53:16.000  1103  6092 D ACDB-LOADER: ACDB -> ACDB_CMD_GET_AUDPROC_INSTANCE_GAIN_DEP_STEP_TABLE, vol index 5
+04-09 00:53:16.000  1103  6092 D android.hardware.audio.service: Failed to fetch the lookup information of the device 0000271B 
+04-09 00:53:16.000  1103  6092 D ACDB-LOADER: Error: ACDB AudProc vol returned = -19
+04-09 00:53:16.000  1103  6092 D ACDB-LOADER: ACDB -> AUDIO_SET_VOL_CAL cal type = 40
+04-09 00:53:16.000  1103  6092 W msm8974_platform: platform_send_gain_dep_cal: Usecase list is empty
+04-09 00:53:16.001  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.001  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:53:16.001  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:53:16.015 25935 26281 D AAudioStream: setState(s#1) from 3 to 4
+04-09 00:53:16.016  2184  2936 D ConnectivityService: NetReassign [no changes] [c 0] [a 0] [i 1]
+04-09 00:53:16.017 15853 16193 D AudioTrackImpl: [audioTrackData][zero] 55s(f:0 m:0 s:0 k:0 z:55008) : pid 15853 uid 10518 sessionId 897 sr 48000 ch 2 fmt 1
+04-09 00:53:16.029 12404 12482 W Settings: Setting device_provisioned has moved from android.provider.Settings.Secure to android.provider.Settings.Global.
+04-09 00:53:16.038 17820 18436 D WM-WorkConstraintsTrack: NetworkRequestConstraintController onCapabilitiesChanged callback
+04-09 00:53:16.041  8543  8924 I NetBusNetworkMonitor: onCapabilitiesChanged isPrimary = true
+04-09 00:53:16.041 26457 26593 D WM-WorkConstraintsTrack: NetworkRequestConstraintController onCapabilitiesChanged callback
+04-09 00:53:16.048 23830 24028 D WM-NetworkStateTracker: Network capabilities changed: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED&NOT_VCN_MANAGED LinkUpBandwidth>=6450Kbps LinkDnBandwidth>=6294Kbps TransportInfo: <SSID: <unknown ssid>, BSSID: 02:00:00:00:00:00, MAC: 02:00:00:00:00:00, IP: /10.10.154.55, Security type: 0, Supplicant state: COMPLETED, Wi-Fi standard: 6, RSSI: -74, Link speed: 206Mbps, Tx Link speed: 206Mbps, Max Supported Tx Link speed: 573Mbps, Rx Link speed: 137Mbps, Max Supported Rx Link speed: 573Mbps, Frequency: 5240MHz, Net ID: -1, Metered hint: false, score: 57, isUsable: true, CarrierMerged: false, SubscriptionId: -1, IsPrimary: -1, Trusted: true, Restricted: false, Ephemeral: false, OEM paid: false, OEM private: false, OSU AP: false, FQDN: <none>, Provider friendly name: <none>, Requesting package name: <none><none>MLO Information: , Is TID-To-Link negotiation supported by the AP: false, AP MLD Address: <none>, AP MLO Link Id: <none>, AP MLO Affiliated links: <none>> SignalStrength: -74 UnderlyingNetworks: Null]
+04-09 00:53:16.050 12404 12482 I JoyoseCloudControlManager3: network metered changed, network metered: false, deviceProvisioned: true, scAllowConn: true, try to setNetworkAccessEnabled: true
+04-09 00:53:16.056  8543  8924 I NetBusNetworkMonitor: gateway=10.*.*.1
+04-09 00:53:16.058  2184  3982 I NetworkBoostStatusManager: SmartDNS push DnsReslover a relationship, netid 126 name "NOVOTEL"
+04-09 00:53:16.062  2184  3982 W System.err: java.lang.NoSuchMethodException: android.net.ConnectivityManager.setResloverInterfaceIdAndNetid [int, class java.lang.String]
+04-09 00:53:16.062  2184  3982 W System.err: 	at java.lang.Class.getMethod(Class.java:2934)
+04-09 00:53:16.062  2184  3982 W System.err: 	at java.lang.Class.getDeclaredMethod(Class.java:2913)
+04-09 00:53:16.062  2184  3982 W System.err: 	at com.xiaomi.NetworkBoost.StatusManager.setResloverInterfaceIdAndNetid(StatusManager.java:1651)
+04-09 00:53:16.062  2184  3982 W System.err: 	at com.xiaomi.NetworkBoost.StatusManager.setSmartDNSInterface(StatusManager.java:1616)
+04-09 00:53:16.062  2184  3982 W System.err: 	at com.xiaomi.NetworkBoost.StatusManager.-$$Nest$msetSmartDNSInterface(Unknown Source:0)
+04-09 00:53:16.062  2184  3982 W System.err: 	at com.xiaomi.NetworkBoost.StatusManager$InternalHandler.handleMessage(StatusManager.java:591)
+04-09 00:53:16.062  2184  3982 W System.err: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+04-09 00:53:16.062  2184  3982 W System.err: 	at android.os.Looper.loopOnce(Looper.java:222)
+04-09 00:53:16.062  2184  3982 W System.err: 	at android.os.Looper.loop(Looper.java:314)
+04-09 00:53:16.062  2184  3982 W System.err: 	at android.os.HandlerThread.run(HandlerThread.java:67)
+04-09 00:53:16.062  8543  8924 I NetBusNetworkMonitor: addConnectNetworkInterface mediumType:256, detail:NetworkDetailInfo{mIsConnected=false, mIsSupportTdls=true, mNetworkType=0, mIpAddress=10.*.*.55, mIfName=wlan0, mGateway=10.*.*.1, mNetmask=255.*.*.0, mSsid=N**EL}
+04-09 00:53:16.063  8543  8924 I NetBusNetworkMonitor: onCapabilitiesChanged handle=544571576333, mediumType=256, ifName=wlan0
+04-09 00:53:16.073 26360 26446 I BugleRcsEngine: Connected state: [1], networkType: [WIFI] [CONTEXT thread_id=85 ]
+04-09 00:53:16.073 26360 26483 I BugleRcsEngine: handleMessage processing message:[NOTIFY_UPTIME_IGNORE_STATE_CHANGED] with [non-null]:RcsEngineImpl reference [CONTEXT log_prefix="RcsEngineImpl[DUAL_REG]:[a87b8c49-74e9]>Handler" thread_id=89 ]
+04-09 00:53:16.078 26360 26483 I BugleRcsEngine: Cannot use CS.apk as it's battery optimized [CONTEXT thread_id=89 ]
+04-09 00:53:16.096  2184  8806 I ClipboardServiceI: checkProviderWakePathForClipboard: primaryClip is null
+04-09 00:53:16.096  2184  8806 I SmartPower: com.google.android.apps.messaging/10167(26457): idle->background(280270ms) R(content provider start ContentProviderRecord{ff04af4 u0 com.google.android.apps.messaging/.shared.datamodel.provider.sharedstorage.SharedStorageProvider}) adj=200.
+04-09 00:53:16.105  2184  2568 I ExtM    : zram userate is low, no need to flush: 40
+04-09 00:53:16.123  1314 21393 I QC2Comp : [avcD_168] Stats: Pending(9) i/p-done(5) Works: Q: 7785/Done 7777|Work-Rate: Q(0.0/s Avg=7.7/s) Done(0.000/s Avg=7.658/s)| Stream: 30.00fps 6.2Mbps
+04-09 00:53:16.123  1314 21393 I QC2Comp : Mem-usage:  [In-1D - 15 bufs 44.824 MB] [1D-0 - 10 bufs 0.156 MB] [2D-156 - 18 bufs 49.781 MB]
+04-09 00:53:16.123  1314 21393 I QC2Comp : Total Mem-usage: 94.762 MB
+04-09 00:53:16.130 25935 25935 E FileUtils: err write to mi_exception_log
+04-09 00:53:16.130  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.131  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:53:16.131  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:53:16.131 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:16.139 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562827, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:16.139 25935 25935 V Capacitor: callback: 4562827, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:16.141 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:16.143 26360 26483 I BugleRcsEngine: Rcs is enabled from user settings: true [CONTEXT log_prefix="ProvisioningEngineDataRetriever" thread_id=89 ]
+04-09 00:53:16.160   640   640 I lowmemorykiller: Kill 'com.android.htmlviewer' (20187), uid 10109, oom_score_adj 975 to free 73116kB rss, 30700kB swap; reason: cw
+04-09 00:53:16.169  2184  2595 I ActivityManager: Killing 26115:com.android.camera/u0a87 (adj 600): MiuiMemoryService(recent-provider)
+04-09 00:53:16.176  2184  2595 I libc    : kill: send 9 to pid 26115 real pid 26115
+04-09 00:53:16.176 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:16.177 25935 25935 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 00:53:16.179 25935 25935 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 00:53:16.183  2184  2566 I libc    : kill: send 9 to pid -26115 real pid -26115
+04-09 00:53:16.183  2184  2566 I libc    : kill: send 9 to pid 26115 real pid 26115
+04-09 00:53:16.185  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.185  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.185  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.185  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:53:16.185  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:53:16.188  2184  2566 I libc    : kill: send 9 to pid -26115 real pid -26115
+04-09 00:53:16.189  2184  2566 I libc    : kill: send 9 to pid 26115 real pid 26115
+04-09 00:53:16.194  2184  2566 I libc    : kill: send 9 to pid -26115 real pid -26115
+04-09 00:53:16.194  2184  2566 I libc    : kill: send 9 to pid 26115 real pid 26115
+04-09 00:53:16.198  4073  4073 D ArtChoreographerMonitor: invoke error.
+04-09 00:53:16.200  2184  2566 I libc    : kill: send 9 to pid -26115 real pid -26115
+04-09 00:53:16.200  2184  2566 I libc    : kill: send 9 to pid 26115 real pid 26115
+04-09 00:53:16.206  2184  8807 I ActivityManager: Process com.android.htmlviewer (pid 20187) has died: cch+75 CEM 
+04-09 00:53:16.206   640   640 D lowmemorykiller: Ignoring critical pressure event; kill already in progress
+04-09 00:53:16.207   976   976 I Zygote  : Process 20187 exited due to signal 9 (Killed)
+04-09 00:53:16.208  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.208  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.208  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.208  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:53:16.208  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:53:16.208   640   640 I lowmemorykiller: Kill 'com.google.android.cellbroadcastreceiver' (31675), uid 10221, oom_score_adj 975 to free 68872kB rss, 36404kB swap; reason: cw
+04-09 00:53:16.209  2184  3118 E ProcessManager: error write exception log
+04-09 00:53:16.210  2184  2566 I libc    : kill: send 9 to pid -26115 real pid -26115
+04-09 00:53:16.210  2184  2566 I libc    : kill: send 9 to pid 26115 real pid 26115
+04-09 00:53:16.211 31703 31718 I IPCThreadState: oneway function results for code 3 on binder at 0xb400007272733760 will be dropped but finished with status UNKNOWN_TRANSACTION
+04-09 00:53:16.212  8105 23384 I IPCThreadState: oneway function results for code 3 on binder at 0xb4000072723f1040 will be dropped but finished with status UNKNOWN_TRANSACTION
+04-09 00:53:16.216  2184  2566 I libc    : kill: send 9 to pid -26115 real pid -26115
+04-09 00:53:16.216  2184  2566 I libc    : kill: send 9 to pid 26115 real pid 26115
+04-09 00:53:16.217  2184  2922 I MiuiNetworkPolicy: updateUidState uid = 10087, uidState = 19
+04-09 00:53:16.222  2184  2566 I libc    : kill: send 9 to pid -26115 real pid -26115
+04-09 00:53:16.222  2184  2566 I libc    : kill: send 9 to pid 26115 real pid 26115
+04-09 00:53:16.229  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.229   976   976 I Zygote  : Process 26115 exited due to signal 9 (Killed)
+04-09 00:53:16.229 25935 25935 D BlearnOverlay: overlay hidden
+04-09 00:53:16.229  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.229  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.229  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:53:16.229  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:53:16.230  2184  3118 E ProcessManager: error write exception log
+04-09 00:53:16.235  8105 23384 I IPCThreadState: oneway function results for code 3 on binder at 0xb4000072723f1040 will be dropped but finished with status UNKNOWN_TRANSACTION
+04-09 00:53:16.235 31703 31718 I IPCThreadState: oneway function results for code 3 on binder at 0xb400007272733760 will be dropped but finished with status UNKNOWN_TRANSACTION
+04-09 00:53:16.237  2184  2566 I libc    : kill: send 9 to pid -26115 real pid -26115
+04-09 00:53:16.237  2184  2566 I libprocessgroup: Successfully killed process cgroup uid 10087 pid 26115 in 56ms
+04-09 00:53:16.241  2184  2296 D DisplayManagerService: Drop pending events for gone uid 10087
+04-09 00:53:16.243  2184  2566 I libc    : kill: send 9 to pid -20187 real pid -20187
+04-09 00:53:16.244  2184  2566 I libprocessgroup: Successfully killed process cgroup uid 10109 pid 20187 in 0ms
+04-09 00:53:16.246  2184  2922 I MiuiNetworkPolicy: removeUidState uid = 10087
+04-09 00:53:16.246  2184  2296 I NetworkBoostStatusManager: onUidGone uid: 10087
+04-09 00:53:16.246  2184  3983 I SLM-SRV-SLSAppLib: SLM_Ai_Mode EVENT_CHECK_GMAE_AI_MODE_STATUS
+04-09 00:53:16.246  2184  3983 I SLM-SRV-SLSAppLib: SLM_Ai_Mode checkGameAiModeStatus mGameAiModeCloudControl:false mLinkTurboAiModeSwitch:false mGameAiModeInterfaceReady:false mGameStartBattle:false powerMgrGameUid:0
+04-09 00:53:16.255  2184  4175 I ActivityManager: Process com.google.android.cellbroadcastreceiver (pid 31675) has died: cch+65 CEM 
+04-09 00:53:16.255  2184  2566 I libc    : kill: send 9 to pid -31675 real pid -31675
+04-09 00:53:16.255  2184  2566 I libprocessgroup: Successfully killed process cgroup uid 10221 pid 31675 in 0ms
+04-09 00:53:16.256   976   976 I Zygote  : Process 31675 exited due to signal 9 (Killed)
+04-09 00:53:16.256  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.256  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.256  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:53:16.256  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:53:16.256  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:53:16.256  2184  3118 E ProcessManager: error write exception log
+04-09 00:53:16.256  8105 23384 I IPCThreadState: oneway function results for code 3 on binder at 0xb4000072723f1040 will be dropped but finished with status UNKNOWN_TRANSACTION
+04-09 00:53:16.257 31703 31718 I IPCThreadState: oneway function results for code 3 on binder at 0xb400007272733760 will be dropped but finished with status UNKNOWN_TRANSACTION
+04-09 00:53:16.257  2184  2296 D DisplayManagerService: Drop pending events for gone uid 10221
+04-09 00:53:16.258  2184  2296 I NetworkBoostStatusManager: onUidGone uid: 10221
+04-09 00:53:16.258  2184  2922 I MiuiNetworkPolicy: removeUidState uid = 10221
+04-09 00:53:16.258  2184  3983 I SLM-SRV-SLSAppLib: SLM_Ai_Mode EVENT_CHECK_GMAE_AI_MODE_STATUS
+04-09 00:53:16.258  2184  3983 I SLM-SRV-SLSAppLib: SLM_Ai_Mode checkGameAiModeStatus mGameAiModeCloudControl:false mLinkTurboAiModeSwitch:false mGameAiModeInterfaceReady:false mGameStartBattle:false powerMgrGameUid:0
+04-09 00:53:16.303 25935 25935 E FileUtils: err write to mi_exception_log
+04-09 00:53:16.310 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:53:16.310 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:53:16.428 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:16.449 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562828, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:16.449 25935 25935 V Capacitor: callback: 4562828, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:16.451 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:16.500 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:16.539  4878 22338 I NearbySharing: Network state changed: NetworkState(isRestricted=false, isOnline=true, isCongested=false, isMetered=false, isWifiConnected=true)
+04-09 00:53:16.668  1375  2437 D AF::Track: interceptBuffer: took 722us to intercept 0 tracks
+04-09 00:53:16.747 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:16.775 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562829, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:16.775 25935 25935 V Capacitor: callback: 4562829, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:16.776 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:16.823 15853 15892 I TRuntime.CctTransportBackend: Status Code: 200
+04-09 00:53:16.832  2184  2568 I ExtM    : zram userate is low, no need to flush: 39
+04-09 00:53:16.833  2184  8806 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-09 00:53:16.834  2184  8806 D BatteryStatsManagerStub: notifyEvent for resId=256 used 0ms
+04-09 00:53:16.834 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:16.834 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:53:16.834 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:53:16.842  2184  2922 I MiuiNetworkPolicy: updateUidState uid = 99032, uidState = 10
+04-09 00:53:16.844  2184  2922 I MiuiNetworkPolicy: updateUidState uid = 10518, uidState = 10
+04-09 00:53:16.848  2184  2922 I MiuiNetworkPolicy: updateUidState uid = 10518, uidState = 15
+04-09 00:53:16.936  2184  2568 I ExtM    : zram userate is low, no need to flush: 39
+04-09 00:53:16.994 15853 16193 D AudioTrackImpl: [audioTrackData][mute] 37s(f:485 m:37038 s:265 k:39039 z:0) : pid 15853 uid 10518 sessionId 889 sr 48000 ch 2 fmt 1
+04-09 00:53:17.017 15853 16193 D AudioTrackImpl: [audioTrackData][zero] 56s(f:0 m:0 s:0 k:0 z:56007) : pid 15853 uid 10518 sessionId 897 sr 48000 ch 2 fmt 1
+04-09 00:53:17.073 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:17.098 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562830, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:17.099 25935 25935 V Capacitor: callback: 4562830, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:17.100 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:17.143 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:17.144  2184  2568 I ExtM    : zram userate is low, no need to flush: 39
+04-09 00:53:17.354 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:53:17.355 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:53:17.357  2184  2922 I MiuiNetworkPolicy: updateUidState uid = 99032, uidState = 15
+04-09 00:53:17.379 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:17.394 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562831, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:17.394 25935 25935 V Capacitor: callback: 4562831, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:17.395 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:17.434 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:17.663 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:17.677 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562832, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:17.677 25935 25935 V Capacitor: callback: 4562832, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:17.679 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:17.715 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:17.773 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:53:17.774 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:53:17.783  2184  3148 I SmartPower: com.suno.android/10518(15853): background->idle(3001ms) R(service create com.suno.android/com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService) adj=700.
+04-09 00:53:17.913  4878 15263 I NearbyFastPair: (REDACTED) SassLogger_endSassSession: shouldUploadCurrent=%s
+04-09 00:53:17.926  4878 15263 I NearbyFastPair: (REDACTED) SassLogger: [%s] Switch to %s ended
+04-09 00:53:17.966 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:17.983 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562833, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:17.983 25935 25935 V Capacitor: callback: 4562833, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:17.984 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:17.994 15853 16193 D AudioTrackImpl: [audioTrackData][mute] 38s(f:485 m:38039 s:265 k:40040 z:0) : pid 15853 uid 10518 sessionId 889 sr 48000 ch 2 fmt 1
+04-09 00:53:18.017 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:18.017 15853 16193 D AudioTrackImpl: [audioTrackData][zero] 57s(f:0 m:0 s:0 k:0 z:57008) : pid 15853 uid 10518 sessionId 897 sr 48000 ch 2 fmt 1
+04-09 00:53:18.258 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:18.276 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562834, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:18.276 25935 25935 V Capacitor: callback: 4562834, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:18.278 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:18.294 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:53:18.294 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:53:18.310 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:18.436  2184  8806 D PerfShielderService: app.blearn.mobile|app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity|2883|35423157098778|176|5|120
+04-09 00:53:18.437  7444  7453 W MiuiPerfServiceClient: interceptAndQueuing:25935|app.blearn.mobile|2883|176|35423157098778|Slow issue draw commands|120
+04-09 00:53:18.486  1382  1796 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 898(328), mIsKeepAutoMode 0
+04-09 00:53:18.486  1382  1796 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-09 00:53:18.486  1382  1796 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-09 00:53:18.537  2184  2922 I MiuiNetworkPolicy: updateUidState uid = 10118, uidState = 19
+04-09 00:53:18.555 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:18.570 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562835, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:18.571 25935 25935 V Capacitor: callback: 4562835, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:18.572 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:18.601 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:18.670  7813 25833 V ContactsTaskScheduler: [ContactsPackageMonitor] Thread[Worker-32,5,main] stopping...
+04-09 00:53:18.780 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:53:18.780 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:53:18.853 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:53:18.871 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 4562836, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:53:18.871 25935 25935 V Capacitor: callback: 4562836, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:53:18.873 25935 26087 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:53:18.908 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:53:18.919  3988  3988 I BluetoothAdapterService: BT_FAST_SCAN MESSAGE_AUDIO_STATE_CHANGED isPlaying true mIsMusicPlaying false
+04-09 00:53:18.920  3988  3988 D HeadsetService: isUnderUSdk 34 package com.xiaomi.bluetooth
+04-09 00:53:18.920  3988  3988 I BluetoothAdapterService: getActiveDevices: Headset device: null
+04-09 00:53:18.920  3988  3988 I BluetoothAdapterService: getActiveDevices: A2DP device: null
+04-09 00:53:18.921  3988  3988 I BluetoothAdapterService: BT_FAST_SCAN setPageScanIntervalFast true for music active and havn't active device.
+04-09 00:53:18.969  1870  1870 I wificond: station_bandwidth: (
+04-09 00:53:18.973  2184  2936 D ConnectivityService: NetReassign [no changes] [c 0] [a 0] [i 1]
+04-09 00:53:18.996 15853 16193 D AudioTrackImpl: [audioTrackData][mute] 39s(f:485 m:39040 s:265 k:41041 z:0) : pid 15853 uid 10518 sessionId 889 sr 48000 ch 2 fmt 1
+04-09 00:53:19.018 15853 16193 D AudioTrackImpl: [audioTrackData][zero] 58s(f:0 m:0 s:0 k:0 z:58008) : pid 15853 uid 10518 sessionId 897 sr 48000 ch 2 fmt 1

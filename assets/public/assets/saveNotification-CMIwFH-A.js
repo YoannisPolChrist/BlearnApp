@@ -1,0 +1,1 @@
+import{u as a}from"./theme-rrc2Dpi4.js";function d(i,e){var r;const s=i==="saved"?"Einstellungen gespeichert":"Einstellungen aktiv",t=(r=e==null?void 0:e.detail)!=null&&r.trim()?e.detail.trim():void 0;if(i==="saved"){a.success(s,t?{description:t}:void 0);return}a(s,t?{description:t}:void 0)}export{d as s};

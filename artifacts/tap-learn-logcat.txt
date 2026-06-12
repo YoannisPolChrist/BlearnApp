@@ -1,0 +1,41 @@
+--------- beginning of main
+04-03 06:34:37.568 I/Capacitor/Console(20788): File:  - Line 349 - Msg: [object Object]
+04-03 06:34:37.570 V/Capacitor(20788): callback: 25992407, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-03 06:34:37.577 I/Capacitor/Console(20788): File:  - Line 333 - Msg: undefined
+04-03 06:34:38.034 D/Capacitor(20788): Handling local request: https://localhost/assets/Learn-DVVyDmOK.js
+04-03 06:34:38.034 D/Capacitor(20788): Handling local request: https://localhost/assets/AmbientOrbs-BAww-D09.js
+04-03 06:34:38.037 D/Capacitor(20788): Handling local request: https://localhost/assets/learn-CnQDixTE.js
+04-03 06:34:38.063 D/Capacitor(20788): Handling local request: https://localhost/favicon.png
+04-03 06:34:38.071 D/Capacitor(20788): Handling local request: https://localhost/blearn-mark.svg
+04-03 06:34:38.545 E/Capacitor/Console(20788): File: https://localhost/assets/vendor-misc-BAv9sS3k.js - Line 40 - Msg: Error: Minified React error #185; visit https://reactjs.org/docs/error-decoder.html?invariant=185 for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+04-03 06:34:38.545 E/Capacitor/Console(20788): File: https://localhost/assets/index-QunuKu0i.js - Line 2 - Msg: Root render failed: Error: Minified React error #185; visit https://reactjs.org/docs/error-decoder.html?invariant=185 for the full message or use the non-minified dev environment for full errors and additional helpful warnings.
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Dn (https://localhost/assets/vendor-misc-BAv9sS3k.js:40:33787)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at v2 (https://localhost/assets/vendor-misc-BAv9sS3k.js:38:19839)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at y2 (https://localhost/assets/vendor-misc-BAv9sS3k.js:38:19650)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Sf (https://localhost/assets/vendor-misc-BAv9sS3k.js:40:24263)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Is (https://localhost/assets/vendor-misc-BAv9sS3k.js:40:42318)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at eC (https://localhost/assets/vendor-misc-BAv9sS3k.js:40:41166)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at ho (https://localhost/assets/vendor-misc-BAv9sS3k.js:40:40215)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Kv (https://localhost/assets/vendor-misc-BAv9sS3k.js:40:36825)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Ji (https://localhost/assets/vendor-misc-BAv9sS3k.js:38:3274)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at eC (https://localhost/assets/vendor-misc-BAv9sS3k.js:40:41221)
+04-03 06:34:38.545 E/Capacitor/Console(20788): Component stack:
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Ne (https://localhost/assets/Learn-DVVyDmOK.js:2:1178)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Ae (https://localhost/assets/router-CHHHWuse.js:19:3318)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at tt (https://localhost/assets/router-CHHHWuse.js:19:7192)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Suspense
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at div
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at vo (https://localhost/assets/App-BSfbSXuu.js:2:132484)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at yo (https://localhost/assets/App-BSfbSXuu.js:2:133552)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Ha (https://localhost/assets/App-BSfbSXuu.js:2:111381)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Ke (https://localhost/assets/router-CHHHWuse.js:19:6584)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at rt (https://localhost/assets/router-CHHHWuse.js:28:467)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at ss (https://localhost/assets/motion-DqUtLYd9.js:9:3978)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at d (https://localhost/assets/radix-DMPoIThg.js:1:1123)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Ho (https://localhost/assets/radix-DMPoIThg.js:1:28403)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at s (https://localhost/assets/query-D8FPn2eF.js:1:95)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at So
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Suspense
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at P (https://localhost/assets/index-QunuKu0i.js:2:1526)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Zt (https://localhost/assets/theme-qHT6E6VE.js:1:351)
+04-03 06:34:38.545 E/Capacitor/Console(20788):     at Be (https://localhost/assets/theme-qHT6E6VE.js:1:261)

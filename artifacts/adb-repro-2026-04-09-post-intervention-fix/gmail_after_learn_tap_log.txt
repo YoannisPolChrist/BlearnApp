@@ -1,0 +1,282 @@
+--------- beginning of main
+04-09 00:57:13.628 15853 16193 D AudioTrackImpl: [audioTrackData][mute] 31s(f:485 m:31016 s:385 k:31016 z:0) : pid 15853 uid 10518 sessionId 889 sr 48000 ch 2 fmt 1
+04-09 00:57:13.699 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:13.700 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768030, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:13.700 25935 25935 V Capacitor: callback: 91768030, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:13.704 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:13.706 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:13.957 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:13.959 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768031, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:13.959 25935 25935 V Capacitor: callback: 91768031, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:13.964 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:13.966 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+--------- beginning of system
+04-09 00:57:13.982  2184  4767 W MIUIInput: Input event injection from package: null action ACTION_DOWN
+04-09 00:57:13.983  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x0, deviceId=-1, 35658703, channel '403355f app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity (server)'
+04-09 00:57:13.983  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x4, deviceId=-1, 35658703, channel 'a8c03f0 NavigationBar0 (server)'
+04-09 00:57:13.983  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x0, deviceId=-1, 35658703, channel '[Gesture Monitor] miui-gesture (server)'
+04-09 00:57:13.983  2184  2501 I whetstone.activity: Power Event callback listener is empty for resId=64
+04-09 00:57:13.983  2184  2501 D BatteryStatsManagerStub: notifyEvent for resId=64 used 0ms
+04-09 00:57:13.984  1382  2742 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 898(328), mIsKeepAutoMode 0
+04-09 00:57:13.984  1382  2742 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-09 00:57:13.984  1382  2742 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-09 00:57:13.984  1382  1796 D RefreshRateSelector: Touch Boost
+04-09 00:57:13.984  1382  1796 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 898(328), mIsKeepAutoMode 0
+04-09 00:57:13.984  1382  1796 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-09 00:57:13.984  1382  1796 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-09 00:57:13.984  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:57:13.984  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:57:13.984  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:57:13.985  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:57:13.985  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:57:13.985  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:57:13.989  2184  4767 W MIUIInput: Input event injection from package: null action ACTION_UP
+04-09 00:57:13.990  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x1, deviceId=-1, 35658703, channel '403355f app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity (server)'
+04-09 00:57:13.990  2184  2876 D MIUIInput: [MotionEvent] publisher action=0x1, deviceId=-1, 35658703, channel '[Gesture Monitor] miui-gesture (server)'
+04-09 00:57:13.990  2184  2501 I whetstone.activity: Power Event callback listener is empty for resId=64
+04-09 00:57:13.990  2184  2501 D BatteryStatsManagerStub: notifyEvent for resId=64 used 0ms
+04-09 00:57:13.997  1265  1749 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-09 00:57:13.998  1265  1749 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 0
+04-09 00:57:14.021  1870  1870 I wificond: station_bandwidth: 
+04-09 00:57:14.026 25935 26062 D Capacitor: Handling local request: https://localhost/favicon.png
+04-09 00:57:14.077  1382  1382 D RefreshRateSelector: Touch Boost
+04-09 00:57:14.077  1382  1382 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 898(328), mIsKeepAutoMode 0
+04-09 00:57:14.077  1382  1382 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-09 00:57:14.077  1382  1382 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-09 00:57:14.079 25935 26062 D Capacitor: Handling local request: https://localhost/blearn-mark.svg
+04-09 00:57:14.125 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:14.125 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:14.145 15853 16193 D AudioTrackImpl: [audioTrackData][zero] 53s(f:0 m:0 s:0 k:0 z:53022) : pid 15853 uid 10518 sessionId 897 sr 48000 ch 2 fmt 1
+04-09 00:57:14.201 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:14.201 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:14.201 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:14.201 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:14.202 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:14.202 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:14.364  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:57:14.365  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:57:14.365  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:57:14.422 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:14.426 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768032, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:14.426 25935 25935 V Capacitor: callback: 91768032, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:14.430 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:14.489 25935 25935 E FileUtils: err write to mi_exception_log
+04-09 00:57:14.493 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:14.558 25935 25935 E FileUtils: err write to mi_exception_log
+04-09 00:57:14.579  2184  2568 I ExtM    : zram userate is low, no need to flush: 40
+04-09 00:57:14.629 15853 16193 D AudioTrackImpl: [audioTrackData][mute] 32s(f:485 m:32017 s:385 k:32017 z:0) : pid 15853 uid 10518 sessionId 889 sr 48000 ch 2 fmt 1
+04-09 00:57:14.660 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:14.660 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:14.660 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:14.660 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:14.661 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:14.661 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:14.663 25935 25935 D BlearnAccessibility: skip: missing package
+04-09 00:57:14.664 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:14.664 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:14.664 25935 25935 D BlearnAccessibility: skip: missing package
+04-09 00:57:14.742 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:14.743 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768033, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:14.743 25935 25935 V Capacitor: callback: 91768033, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:14.747 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:14.749 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:15.000 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:15.001 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768034, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:15.001 25935 25935 V Capacitor: callback: 91768034, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:15.005 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:15.007 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:15.122 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:15.122 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:15.145 15853 16193 D AudioTrackImpl: [audioTrackData][zero] 54s(f:0 m:0 s:0 k:0 z:54022) : pid 15853 uid 10518 sessionId 897 sr 48000 ch 2 fmt 1
+04-09 00:57:15.258 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:15.259 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768035, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:15.259 25935 25935 V Capacitor: callback: 91768035, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:15.263 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:15.265 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:15.316 22435 22450 I Finsky  : [69] Stats for Executor: LightweightExecutor ves@4909abb[Running, pool size = 4, active threads = 0, queued tasks = 0, completed tasks = 669]
+04-09 00:57:15.316 22435 22450 I Finsky  : [69] Stats for Executor: BlockingExecutor ves@96209a2[Running, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 290]
+04-09 00:57:15.317 22435 22450 I Finsky  : [69] Stats for Executor: bgExecutor ves@960de9e[Running, pool size = 4, active threads = 0, queued tasks = 0, completed tasks = 3137]
+04-09 00:57:15.436  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:57:15.436  2184  4767 D PerfShielderService: app.blearn.mobile|app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity|276|35659371699417|71|5|10
+04-09 00:57:15.436  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:57:15.436  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:57:15.439  7444  7453 W MiuiPerfServiceClient: interceptAndQueuing:25935|app.blearn.mobile|276|71|35659371699417|Slow issue draw commands|10
+04-09 00:57:15.516 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:15.517 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768036, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:15.518 25935 25935 V Capacitor: callback: 91768036, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:15.521 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:15.523 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:15.523 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:15.523 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:15.523 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:15.523 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:15.524 25935 25935 D BlearnAccessibility: skip: missing package
+04-09 00:57:15.629 15853 16193 D AudioTrackImpl: [audioTrackData][mute] 33s(f:485 m:33017 s:385 k:33017 z:0) : pid 15853 uid 10518 sessionId 889 sr 48000 ch 2 fmt 1
+04-09 00:57:15.723  2184  2568 I ExtM    : zram userate is low, no need to flush: 40
+04-09 00:57:15.775 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:15.776 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768037, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:15.776 25935 25935 V Capacitor: callback: 91768037, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:15.780 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:15.782 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:15.822  2184  2523 D HeapUsage Monitor: HeapAllocSize : 106MB; monitorSize : 500MB
+04-09 00:57:15.854  1314 21380 I QC2Comp : [avcD_167] Stats: Pending(7) i/p-done(3) Works: Q: 25/Done 20|Work-Rate: Q(0.0/s Avg=0.0/s) Done(0.000/s Avg=0.016/s)| Stream: 30.00fps 3.0Mbps
+04-09 00:57:15.854  1314 21380 I QC2Comp : Mem-usage:  [In-1D - 7 bufs 20.918 MB] [1D-0 - 11 bufs 0.172 MB] [2D-155 - 19 bufs 27.164 MB]
+04-09 00:57:15.854  1314 21380 I QC2Comp : Total Mem-usage: 48.254 MB
+04-09 00:57:15.879  4878 22338 I NearbyMediums: No BLE Fast/GATT advertisements found in the latest cycle.
+04-09 00:57:15.879  4878 22338 I NearbyMediums: Current Tracked Scanning Clients are : {NearbyConnections.EnvironmentMonitor, NearbySharing}
+04-09 00:57:15.889  2184  3982 I NetworkBoostStatusManager: handle: 107
+04-09 00:57:15.892  4058  5794 E PhoneAdapter: get ntnphones failed, exception: java.lang.IllegalStateException: Default phones haven't been made yet!
+04-09 00:57:15.893  2184  3982 I NetworkBoostStatusManager: isModemSingnalStrengthStatus cellLteSignalRsrp = -112
+04-09 00:57:15.893  2184  3982 D SLM-SRV-SLAService: isModemSingnalStrengthStatus = 1
+04-09 00:57:15.980  2184  3148 I SmartPower: com.google.android.gms/10163(5411): background->idle(3000ms) R(service create com.google.android.gms/.chimera.GmsIntentOperationService) adj=500.
+04-09 00:57:16.033 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:16.034 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768038, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:16.034 25935 25935 V Capacitor: callback: 91768038, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:16.038 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:16.040 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:16.137  1314 21393 I QC2Comp : [avcD_168] Stats: Pending(9) i/p-done(5) Works: Q: 9916/Done 9908|Work-Rate: Q(0.0/s Avg=7.9/s) Done(0.000/s Avg=7.891/s)| Stream: 30.00fps 12.1Mbps
+04-09 00:57:16.137  1314 21393 I QC2Comp : Mem-usage:  [In-1D - 16 bufs 47.812 MB] [1D-0 - 10 bufs 0.156 MB] [2D-156 - 18 bufs 49.781 MB]
+04-09 00:57:16.137  1314 21393 I QC2Comp : Total Mem-usage: 97.750 MB
+04-09 00:57:16.145 15853 16193 D AudioTrackImpl: [audioTrackData][zero] 55s(f:0 m:0 s:0 k:0 z:55023) : pid 15853 uid 10518 sessionId 897 sr 48000 ch 2 fmt 1
+04-09 00:57:16.291 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:16.292 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768039, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:16.292 25935 25935 V Capacitor: callback: 91768039, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:16.297 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:16.298 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:16.439  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:57:16.440  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:57:16.440  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:57:16.526 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:16.526 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:16.527 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:16.527 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:16.527 25935 25935 D BlearnAccessibility: skip: missing package
+04-09 00:57:16.550 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:16.551 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768040, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:16.551 25935 25935 V Capacitor: callback: 91768040, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:16.555 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:16.557 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:16.629 15853 16193 D AudioTrackImpl: [audioTrackData][mute] 34s(f:485 m:34018 s:385 k:34018 z:0) : pid 15853 uid 10518 sessionId 889 sr 48000 ch 2 fmt 1
+04-09 00:57:16.808 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:16.810 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768041, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:16.810 25935 25935 V Capacitor: callback: 91768041, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:16.814 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:16.815 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:16.984  1382  1796 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 898(328), mIsKeepAutoMode 0
+04-09 00:57:16.985  1382  1796 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-09 00:57:16.985  1382  1796 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-09 00:57:17.033  1870  1870 I wificond: station_bandwidth: 
+04-09 00:57:17.036  4073  4073 D ArtChoreographerMonitor: invoke error.
+04-09 00:57:17.044  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:57:17.044  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:57:17.044  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:57:17.067 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:17.068 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768042, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:17.068 25935 25935 V Capacitor: callback: 91768042, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:17.072 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:17.074 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:17.145 15853 16193 D AudioTrackImpl: [audioTrackData][zero] 56s(f:0 m:0 s:0 k:0 z:56022) : pid 15853 uid 10518 sessionId 897 sr 48000 ch 2 fmt 1
+04-09 00:57:17.206  4073  4073 D ArtChoreographerMonitor: invoke error.
+04-09 00:57:17.325 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:17.326 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768043, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:17.326 25935 25935 V Capacitor: callback: 91768043, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:17.330 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:17.332 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:17.440 25935 26003 W RenderInspector: QueueBuffer time out on app.blearn.mobile/app.blearn.mobile.BlockingOverlayActivity, count=2, avg=14 ms, max=19 ms.
+04-09 00:57:17.440  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:57:17.440  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:57:17.440  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:57:17.442  1382  1382 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 898(328), mIsKeepAutoMode 0
+04-09 00:57:17.442  1382  1382 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-09 00:57:17.442  1382  1382 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-09 00:57:17.443  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:57:17.443  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:57:17.443  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:57:17.443  1265  1749 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-09 00:57:17.443  1265  1749 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 2
+04-09 00:57:17.446  1382  1382 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 898(328), mIsKeepAutoMode 0
+04-09 00:57:17.446  1382  1382 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-09 00:57:17.446  1382  1382 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-09 00:57:17.447  2184  2506 I DisplayDeviceRepository: Display device changed: DisplayDeviceInfo{"Integrierter Bildschirm": uniqueId="local:4630946480857061762", 1080 x 2400, modeId 3, renderFrameRate 60.000004, defaultModeId 1, supportedModes [{id=1, width=1080, height=2400, fps=120.00001, alternativeRefreshRates=[60.000004, 90.0], supportedHdrTypes=[1, 2, 3, 4]}, {id=2, width=1080, height=2400, fps=90.0, alternativeRefreshRates=[60.000004, 120.00001], supportedHdrTypes=[1, 2, 3, 4]}, {id=3, width=1080, height=2400, fps=60.000004, alternativeRefreshRates=[90.0, 120.00001], supportedHdrTypes=[1, 2, 3, 4]}], colorMode 0, supportedColorModes [0, 7, 9], hdrCapabilities HdrCapabilities{mSupportedHdrTypes=[1, 2, 3, 4], mMaxLuminance=420.0, mMaxAverageLuminance=210.1615, mMinLuminance=0.323}, allmSupported false, gameContentTypeSupported false, density 440, 394.705 x 394.563 dpi, appVsyncOff 1000000, presDeadline 16666666, cutout DisplayCutout{insets=Rect(0, 94 - 0, 0) waterfall=Insets{left=0, top=0, right=0, bottom=0} boundingRect={Bounds=[Rect(0, 0 - 0, 0), Rect(512, 0 - 568, 94), Rect(0, 0 - 0, 0), Rect(0, 0 - 0, 0)]} cutoutPathParserInfo={CutoutPathParserInfo{displayWidth=1080 displayHeight=2400 physicalDisplayWidth=1080 physicalDisplayHeight=2400 density={2.75} cutoutSpec={M 0,0 H -28 V 94 H 28 V 0 H 0 Z} rotation={0} scale={1.0} physicalPixelDisplaySizeRatio={1.0}}}}, touch INTERNAL, rotation 0, type INTERNAL, address {port=130, model=0x40446d49dd5499}, deviceProductInfo DeviceProductInfo{name=, manufacturerPnpId=QCM, productId=1, modelYear=null, manufactureDate=ManufactureDate{week=27, year=2006}, connectionToSinkType=0}, state ON, committedState ON, frameRateOverride , brightnessMinimum 0.0, brightnessMaximum 1.0, brightnessDefault 0.074743524, hdrSdrRatio NaN, roundedCorners RoundedCorners{[RoundedCorner{position=TopLeft, radius=70, center=Point(70, 70)}, RoundedCorner{position=TopRight, radius=70, center=Point(1010, 70)}, RoundedCorner{position=BottomRight, radius=70, center=Point(1010, 2330)}, RoundedCorner{position=BottomLeft, radius=70, center=Point(70, 2330)}]}, FLAG_ALLOWED_TO_BE_DEFAULT_DISPLAY, FLAG_ROTATES_WITH_CONTENT, FLAG_SECURE, FLAG_SUPPORTS_PROTECTED_BUFFERS, FLAG_TRUSTED, installOrientation 0, displayShape DisplayShape{ spec=-1893857183 displayWidth=1080 displayHeight=2400 physicalPixelDisplaySizeRatio=1.0 rotation=0 offsetX=0 offsetY=0 scale=1.0}}
+04-09 00:57:17.453  2184  2506 D TAG     : Remove previously redundant display event 0/2 to 10115/9030
+04-09 00:57:17.454  2184  2506 D TAG     : Remove previously redundant display event 0/2 to 10081/21098
+04-09 00:57:17.454  2184  2506 D TAG     : Remove previously redundant display event 0/2 to 10308/22739
+04-09 00:57:17.454  2184  2506 D TAG     : Remove previously redundant display event 0/2 to 10273/23830
+04-09 00:57:17.458  3988  4609 I BtGatt.ScanManager: msg.what = MSG_SCREEN_ON, msg.arg1 = None
+04-09 00:57:17.459  4110  4110 W Launcher: onDisplayChanged: newRotation=0, mCurrentRotation=0
+04-09 00:57:17.459  2184  4183 D CompatibilityChangeReporter: Compat change id reported: 170503758; UID 10030; state: ENABLED
+04-09 00:57:17.461  4058  9499 D NetworkSpeedTracker: onDisplayChanged mIsScreenOn=true
+04-09 00:57:17.461  4058  9499 D NetworkSpeedTracker: onUpdateDeviceState eventType=4,mIsScreenOn=true,mIsMobileDataOn=false
+04-09 00:57:17.461  4058  9499 D NetworkSpeedTracker: stopDataPoll
+04-09 00:57:17.462  4073  4073 V AutoDensityController: on display changed 0 context dpi:449 origin dpi:440 target dpi:449
+04-09 00:57:17.470  4073  4073 D ControlCenterWindowViewController: on display changed 0
+04-09 00:57:17.495  2184  2568 I ExtM    : zram userate is low, no need to flush: 40
+04-09 00:57:17.501  2184  2838 W ProcessStats: Tracking association SourceState{56dc307 com.xiaomi.mi_connect_service/1000 Fgs #104102} whose proc state 3 is better than process ProcessState{a840aea com.xiaomi.bluetooth/1002 pkg=com.xiaomi.bluetooth} proc state 8 (19 skipped)
+04-09 00:57:17.527 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:17.528 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:17.528 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:17.528 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:17.528 25935 25935 D BlearnAccessibility: skip: missing package
+04-09 00:57:17.583 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:17.585 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768044, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:17.585 25935 25935 V Capacitor: callback: 91768044, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:17.589 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:17.591 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:17.629 15853 16193 D AudioTrackImpl: [audioTrackData][mute] 35s(f:485 m:35017 s:385 k:35017 z:0) : pid 15853 uid 10518 sessionId 889 sr 48000 ch 2 fmt 1
+04-09 00:57:17.842 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:17.843 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768045, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:17.843 25935 25935 V Capacitor: callback: 91768045, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:17.847 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:17.849 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:18.101 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:18.102 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768046, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:18.102 25935 25935 V Capacitor: callback: 91768046, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:18.107 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:18.108 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:18.145 15853 16193 D AudioTrackImpl: [audioTrackData][zero] 57s(f:0 m:0 s:0 k:0 z:57023) : pid 15853 uid 10518 sessionId 897 sr 48000 ch 2 fmt 1
+04-09 00:57:18.359 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:18.361 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768047, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:18.361 25935 25935 V Capacitor: callback: 91768047, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:18.365 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:18.367 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:18.453  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:57:18.453  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:57:18.454  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:57:18.531 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:18.531 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:18.531 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:18.531 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:18.531 25935 25935 D BlearnAccessibility: skip: missing package
+04-09 00:57:18.618 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:18.619 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768048, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:18.619 25935 25935 V Capacitor: callback: 91768048, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:18.623 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:18.625 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:18.629 15853 16193 D AudioTrackImpl: [audioTrackData][mute] 36s(f:485 m:36018 s:385 k:36018 z:0) : pid 15853 uid 10518 sessionId 889 sr 48000 ch 2 fmt 1
+04-09 00:57:18.877 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:18.878 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768049, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:18.878 25935 25935 V Capacitor: callback: 91768049, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:18.882 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:18.883 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:19.135 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:19.136 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768050, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:19.136 25935 25935 V Capacitor: callback: 91768050, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:19.140 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:19.142 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:19.146 15853 16193 D AudioTrackImpl: [audioTrackData][zero] 58s(f:0 m:0 s:0 k:0 z:58024) : pid 15853 uid 10518 sessionId 897 sr 48000 ch 2 fmt 1
+04-09 00:57:19.272  2184  2922 D MiuiNetworkPolicy: updateLimit mLimitEnabled=true,enabled=false,mNetworkPriorityMode=0,mThermalForceMode=0
+04-09 00:57:19.272  2184  2922 I MiuiNetworkPolicy: getDisableLimitTimeout when thermal mode is:0
+04-09 00:57:19.368  2184  3983 D SLM-SRV-SLAService: checktemp temperature = 35148 temperature_average = 35619 isPerformanceMode = false thermal_enable_slm = true
+04-09 00:57:19.393 25935 25935 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-09 00:57:19.394 25935 25935 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 91768051, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-09 00:57:19.394 25935 25935 V Capacitor: callback: 91768051, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-09 00:57:19.398 25935 27129 D BlearnScreenTime: consume_pending_navigation_empty
+04-09 00:57:19.400 25935 25935 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-09 00:57:19.451  1296  1296 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-09 00:57:19.451  1296  1296 E ANDR-PERF-DATA-POOL: EventDataPool is Full
+04-09 00:57:19.451  1296  1296 E ANDR-PERF-MPCTL: perf request submission limit reached.
+04-09 00:57:19.533 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:19.533 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:19.534 25935 25935 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 00:57:19.534 25935 25935 D BlearnAccessibility: skip: own package
+04-09 00:57:19.534 25935 25935 D BlearnAccessibility: skip: missing package

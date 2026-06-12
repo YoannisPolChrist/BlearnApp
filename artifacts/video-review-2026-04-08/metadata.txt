@@ -1,0 +1,3 @@
+fps=24.25
+duration=34.56
+count=12

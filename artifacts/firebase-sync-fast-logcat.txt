@@ -1,0 +1,255 @@
+--------- beginning of system
+04-01 16:01:21.218  1931  4223 W MIUIInput: Input event injection from package: null action ACTION_DOWN
+--------- beginning of main
+04-01 16:01:21.218  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x0, deviceId=-1, 24608418, channel '83c18d9 StatusBar (server)'
+04-01 16:01:21.219  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x4, deviceId=-1, 24608418, channel '9830ee7 NavigationBar0 (server)'
+04-01 16:01:21.219  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x0, deviceId=-1, 24608418, channel '[Gesture Monitor] miui-gesture (server)'
+04-01 16:01:21.220  1413  2768 D RefreshRateSelector: Touch Boost
+04-01 16:01:21.220  1413  2768 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 16:01:21.220  1413  2768 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 16:01:21.220  1413  2768 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 16:01:21.221  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:21.222  4019  4019 I FocusedNotifPromptView: rect is empty
+04-01 16:01:21.222  4019  4019 V ControlCenterWindowViewImpl: handleMotionEvent: ACTION_DOWN, isExpandable: true, isPanelEnabled: true, lifecycleState: CREATED, external: true, blockTouch: false, ignoreExternal: false, isInMainPanel: true, isAttachedToWindow: true
+04-01 16:01:21.222  4019  4019 V MainPanelTouchController: handleMotionEvent ACTION_DOWN true false false MODE_NORMAL false
+04-01 16:01:21.222  1931  4223 W MIUIInput: Input event injection from package: null action ACTION_UP
+04-01 16:01:21.222  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:21.222  1254  1254 E ANDR-PERF-HINTEXT: Offload new thread from FpsUpdatePreAction
+04-01 16:01:21.223  1931  2318 I whetstone.activity: Power Event callback listener is empty for resId=64
+04-01 16:01:21.223  1931  2318 D BatteryStatsManagerStub: notifyEvent for resId=64 used 0ms
+04-01 16:01:21.223  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x1, deviceId=-1, 24608418, channel '83c18d9 StatusBar (server)'
+04-01 16:01:21.223  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x1, deviceId=-1, 24608418, channel '[Gesture Monitor] miui-gesture (server)'
+04-01 16:01:21.220  1254  1254 W perf@2.2-servic: type=1400 audit(0.0:11482): avc:  denied  { read } for  name="sched_min_granularity_ns" dev="proc" ino=3022165 scontext=u:r:vendor_hal_perf_default:s0 tcontext=u:object_r:proc_sched:s0 tclass=file permissive=0
+04-01 16:01:21.224  1254  1407 E ANDR-PERF-OPTSHANDLER: Failed to read /proc/sys/kernel/sched_min_granularity_ns
+04-01 16:01:21.224  1254  1407 E ANDR-PERF-RESOURCEQS: Failed to apply optimization [3, 54]
+04-01 16:01:21.224  4019  4019 V ControlCenterWindowViewImpl: handleMotionEvent: ACTION_UP, isExpandable: true, isPanelEnabled: true, lifecycleState: CREATED, external: true, blockTouch: false, ignoreExternal: false, isInMainPanel: true, isAttachedToWindow: true
+04-01 16:01:21.224  1931  2318 I whetstone.activity: Power Event callback listener is empty for resId=64
+04-01 16:01:21.224  4019  4019 V MainPanelTouchController: handleMotionEvent ACTION_UP true true false MODE_NORMAL false
+04-01 16:01:21.224  1931  2318 D BatteryStatsManagerStub: notifyEvent for resId=64 used 0ms
+04-01 16:01:21.224  4019  4019 V ControlCenterExpandController: on expand finished 0.0 0 false
+04-01 16:01:21.225  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:01:21.226  4019  4019 D BlurController: show blur false true true
+04-01 16:01:21.226  4019  4019 D ControlCenterExpandController: check anim finished, drag true, statusBar true, blur false, secPanel true, header true, spread true
+04-01 16:01:21.235  1246  1496 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-01 16:01:21.235  1246  1496 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 0
+04-01 16:01:21.241  4019  4019 I BlurController: blur animated to 0.0 0.0 true false
+04-01 16:01:21.241  4019  4019 V BlurController: updating the same blur ratio 0.0
+04-01 16:01:21.241  4019  4019 D BlurController: updating 0.0 false false
+04-01 16:01:21.241  4019  4019 D NCSwitchController: cc setBlurRatio=0.0, switching=false, fromNc=false, switchedToCC=false
+04-01 16:01:21.241  4019  4019 D backgroundBlur: enablePassWindowBlur disable miui.systemui.controlcenter.windowview.ControlCenterWindowViewImpl
+04-01 16:01:21.241  4019  4019 D BlurController: blur animate complete false
+04-01 16:01:21.241  4019  4019 D ControlCenterExpandController: check anim finished, drag true, statusBar true, blur true, secPanel true, header true, spread true
+04-01 16:01:21.242  4019  4019 D BlurController: post update blur ratio for surface control is not valid. 0.0 0.0
+04-01 16:01:21.242  4019  4019 D NCSwitchController: cc setBlurRatio=0.0, switching=false, fromNc=false, switchedToCC=false
+04-01 16:01:21.242  4019  4019 D backgroundBlur: enablePassWindowBlur disable miui.systemui.controlcenter.windowview.ControlCenterWindowViewImpl
+04-01 16:01:21.409  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:01:21.733 23553 23553 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+04-01 16:01:21.736  5908 12461 W MediaProvider: isAppCloneUserPair for user 0: false
+04-01 16:01:21.741 22831 22836 I AidlLazyServiceRegistrar: Process has 0 (of 1 available) client(s) in use after notification artd has clients: 0
+04-01 16:01:21.741 22831 22836 I AidlLazyServiceRegistrar: Trying to shut down the service. No clients in use for any service in process.
+04-01 16:01:21.742 22831 22836 I AidlLazyServiceRegistrar: Unregistered all clients and exiting
+04-01 16:01:21.742 23553 23553 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+04-01 16:01:21.749     1     1 I libc    : kill: send 9 to pid -22831 real pid -22831
+04-01 16:01:22.301  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:01:22.301  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:01:22.301  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:01:22.302  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:01:22.303  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:01:22.303  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:01:22.304  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:01:22.304  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 16:01:22.308  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:01:22.322  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:22.323  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:22.325  1246  1496 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-01 16:01:22.325  1246  1496 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 2
+04-01 16:01:22.342  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:01:22.342  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:01:22.479  1931  2335 D HeapUsage Monitor: HeapAllocSize : 96MB; monitorSize : 500MB
+04-01 16:01:22.493  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:01:22.572  1931  4223 I ActivityManager: Broadcasting: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }
+04-01 16:01:22.572  1931  4223 I ActivityManager: Broadcast action android.intent.action.MEDIA_SCANNER_SCAN_FILE forcing include-background
+04-01 16:01:22.573  1931  4223 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300604,888)} caps=LCMNFU always=true idle=false
+04-01 16:01:22.573  1931  4223 I ActivityManager: App 10219/com.google.android.providers.media.module targets O+, restricted
+04-01 16:01:22.573  1931  4223 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 16:01:22.574  1931  4223 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300660,297765)} caps=LCMNFU always=true idle=false
+04-01 16:01:22.574  1931  4223 I ActivityManager: App 1000/com.miui.securitycore targets O+, restricted
+04-01 16:01:22.574  1931  4223 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=true onallowlist(ei)=true
+04-01 16:01:22.574  1931  4223 I ActivityManager: Enqueued broadcast Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }: 0
+04-01 16:01:22.574  1931  2365 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300604,888)} caps=LCMNFU always=true idle=false
+04-01 16:01:22.574  1931  2365 I ActivityManager: App 10219/com.google.android.providers.media.module targets O+, restricted
+04-01 16:01:22.574  1931  2365 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 16:01:22.578  5908  5908 I MediaServiceV2: Creating work for intent Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-01 16:01:22.579  5908  5908 I MediaServiceV2: Work enqueued for intent: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-01 16:01:22.581  1931  2365 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300660,297765)} caps=LCMNFU always=true idle=false
+04-01 16:01:22.582  1931  2365 I ActivityManager: App 1000/com.miui.securitycore targets O+, restricted
+04-01 16:01:22.582  1931  2365 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=true onallowlist(ei)=true
+04-01 16:01:22.583 23553 23553 I DoViGenericTag: Logger Terminated
+04-01 16:01:22.587  1899  1899 I wificond: station_bandwidth: P
+04-01 16:01:22.587  1931  2012 I ActivityManager: Broadcast completed: result=0
+04-01 16:01:22.591  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:01:22.596  5908  6002 D WM-SystemJobScheduler: Scheduling work ID 4a9986f2-e514-46d2-a025-ccf5088bf414Job ID 10824
+04-01 16:01:22.598  1931  4223 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300662,888)} caps=LCMNFU always=false idle=false
+04-01 16:01:22.603  1931  4223 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 16:01:22.603  1931  4223 D BatteryStatsManagerStub: notifyEvent for resId=256 used 0ms
+04-01 16:01:22.605  5908  5908 D WM-SystemJobService: onStartJob for WorkGenerationalId(workSpecId=4a9986f2-e514-46d2-a025-ccf5088bf414, generation=0)
+04-01 16:01:22.605  5908  6002 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 16:01:22.606  5908  6002 D WM-GreedyScheduler: Starting work for 4a9986f2-e514-46d2-a025-ccf5088bf414
+04-01 16:01:22.607  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:22.607  5908  6002 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=4a9986f2-e514-46d2-a025-ccf5088bf414, generation=0)
+04-01 16:01:22.608  5908  6002 D WM-Processor: Work WorkGenerationalId(workSpecId=4a9986f2-e514-46d2-a025-ccf5088bf414, generation=0) is already enqueued for processing
+04-01 16:01:22.610  5908  5908 D WM-WorkerWrapper: Starting work for com.android.providers.media.MediaServiceV2
+04-01 16:01:22.611  5908 23565 I MediaServiceV2: Work initiated for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-01 16:01:22.632  5908 23565 I MediaServiceV2: Work ended for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-01 16:01:22.633  5908  6092 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=4a9986f2-e514-46d2-a025-ccf5088bf414, tags={ com.android.providers.media.MediaServiceV2 } ]
+04-01 16:01:22.634  5908  5908 D WM-Processor: Processor 4a9986f2-e514-46d2-a025-ccf5088bf414 executed; reschedule = false
+04-01 16:01:22.634  5908  5908 D WM-SystemJobService: 4a9986f2-e514-46d2-a025-ccf5088bf414 executed on JobScheduler
+04-01 16:01:22.635  1931  4223 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 16:01:22.635  1931  4223 D BatteryStatsManagerStub: notifyEvent for resId=256 used 0ms
+04-01 16:01:22.638  5908  6002 D WM-GreedyScheduler: Cancelling work ID 4a9986f2-e514-46d2-a025-ccf5088bf414
+04-01 16:01:22.640  5908  6002 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 16:01:22.646  5908  6002 D WM-SystemJobScheduler: Scheduling work ID 2dd4eeac-539a-4dea-bced-3af1752b48bcJob ID 10825
+04-01 16:01:22.647  1931  4223 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300666,888)} caps=LCMNFU always=false idle=false
+04-01 16:01:22.648  5908  6002 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 16:01:22.769  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:01:23.586  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:01:23.586  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:01:23.587  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:01:23.587  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:01:23.589  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:01:23.589  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:01:23.590  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:01:23.591  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 16:01:23.597  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:01:23.628  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:01:23.628  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:01:23.778  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:01:24.142  5908  5908 D WM-DelayedWorkTracker: Scheduling work 2dd4eeac-539a-4dea-bced-3af1752b48bc
+04-01 16:01:24.143  5908  5908 D WM-GreedyScheduler: Starting tracking for 2dd4eeac-539a-4dea-bced-3af1752b48bc
+04-01 16:01:24.146  5908  6092 D WM-ConstraintTracker: BatteryNotLowTracker: initial state = true
+04-01 16:01:24.146  5908  6092 D WM-BrdcstRcvrCnstrntTrc: BatteryNotLowTracker: registering receiver
+04-01 16:01:24.149  5908  6092 D WM-GreedyScheduler: Constraints met: Scheduling work ID WorkGenerationalId(workSpecId=2dd4eeac-539a-4dea-bced-3af1752b48bc, generation=0)
+04-01 16:01:24.152  5908  6092 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=2dd4eeac-539a-4dea-bced-3af1752b48bc, generation=0)
+04-01 16:01:24.155  5908  5908 D WM-WorkerWrapper: Starting work for com.android.providers.media.photopicker.sync.ProactiveSyncWorker
+04-01 16:01:24.157  5908 23567 I PSyncWorker: Starting proactive picker sync from sync source: 1
+04-01 16:01:24.157  5908 23567 I PickerSyncTracker: Created new sync future java.util.concurrent.CompletableFuture@e4bab54[Not completed, 1 dependents]. Future map: {2dd4eeac-539a-4dea-bced-3af1752b48bc=java.util.concurrent.CompletableFuture@e4bab54[Not completed, 1 dependents]}
+04-01 16:01:24.158  5908 23567 D PickerSyncController: syncAllMediaFromProvider() LOCAL, auth=com.android.providers.media.photopicker, retry=true
+04-01 16:01:24.158  5908 23567 D PickerSyncController: getSyncRequestParams() LOCAL, auth=com.android.providers.media.photopicker
+04-01 16:01:24.183  5908 23567 D PickerSyncController:    Latest ID/Gen=a9d769f4a5dc255f:external_primary/531361
+04-01 16:01:24.184  5908 23567 D PickerSyncController:    Cached ID/Gen=a9d769f4a5dc255f:external_primary/531352
+04-01 16:01:24.184  5908 23567 D PickerSyncController:    RESULT=SyncRequestParams{type=MEDIA_INCREMENTAL, gen=531352, latest=Bundle[{last_media_sync_generation=531361, media_collection_id=a9d769f4a5dc255f:external_primary}], pageSize=1000}
+04-01 16:01:24.184  5908 23567 I PickerSyncController: Executing SyncAdd. isLocal: true. authority: com.android.providers.media.photopicker
+04-01 16:01:24.184  5908 23567 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+04-01 16:01:24.184  5908 23567 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Locked by thread pool-2-thread-52]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 16:01:24.184  5908 23567 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 16:01:24.184  5908 23567 D ExternalDbFacade: Token received for queryMedia = null
+04-01 16:01:24.194  5908 23567 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+04-01 16:01:24.194  5908 23567 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Locked by thread pool-2-thread-52]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 16:01:24.194  5908 23567 D PickerSyncController: Saving next page token: 1775052082000|1000084421 for key: local_provider:media_add:resume
+04-01 16:01:24.194  5908 23567 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 16:01:24.195  5908 23567 D PickerNotificationSender: Sending a notification for media update
+04-01 16:01:24.195  5908 23567 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+04-01 16:01:24.195  5908 23567 D PickerNotificationSender: Sending a notification for album media update Favorites
+04-01 16:01:24.196  5908 23567 D PickerNotificationSender: Sending a notification for merged album media update Videos
+04-01 16:01:24.196  5908 23567 D PickerNotificationSender: Sending a notification for album media update Videos
+04-01 16:01:24.196  5908 23567 D ExternalDbFacade: Token received for queryMedia = 1775052082000|1000084421
+04-01 16:01:24.207  5908 23567 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+04-01 16:01:24.207  5908 23567 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Locked by thread pool-2-thread-52]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 16:01:24.207  5908 23567 D PickerSyncController: Clearing next page token for key: local_provider:media_add:resume
+04-01 16:01:24.207  5908 23567 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 16:01:24.207  5908 23567 D PickerNotificationSender: Sending a notification for media update
+04-01 16:01:24.208  5908 23567 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+04-01 16:01:24.208  5908 23567 D PickerNotificationSender: Sending a notification for album media update Favorites
+04-01 16:01:24.209  5908 23567 D PickerNotificationSender: Sending a notification for merged album media update Videos
+04-01 16:01:24.209  5908 23567 D PickerNotificationSender: Sending a notification for album media update Videos
+04-01 16:01:24.210  5908 23567 I PickerSyncController: Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1775052082000|1000084421, android.provider.extra.SYNC_GENERATION=531352, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 1
+04-01 16:01:24.210  5908 23567 I PickerSyncController: Executing SyncRemove. isLocal: true. authority: com.android.providers.media.photopicker
+04-01 16:01:24.211  5908 23567 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+04-01 16:01:24.211  5908 23567 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Locked by thread pool-2-thread-52]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 16:01:24.211  5908 23567 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 16:01:24.212  5908 23567 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+04-01 16:01:24.212  5908 23567 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Locked by thread pool-2-thread-52]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 16:01:24.212  5908 23567 D PickerSyncController: Clearing next page token for key: local_provider:media_remove:resume
+04-01 16:01:24.212  5908 23567 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 16:01:24.212  5908 23567 D PickerNotificationSender: Sending a notification for media update
+04-01 16:01:24.213  5908 23567 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+04-01 16:01:24.213  5908 23567 D PickerNotificationSender: Sending a notification for album media update Favorites
+04-01 16:01:24.214  5908 23567 D PickerNotificationSender: Sending a notification for merged album media update Videos
+04-01 16:01:24.214  5908 23567 D PickerNotificationSender: Sending a notification for album media update Videos
+04-01 16:01:24.216  5908 23567 I PickerSyncController: Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1775052082000|1000084421, android.provider.extra.SYNC_GENERATION=531352, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 0
+04-01 16:01:24.216  5908 23567 I PickerSyncTracker: Marked sync future complete for work id: 2dd4eeac-539a-4dea-bced-3af1752b48bc. Future map: {}
+04-01 16:01:24.216  5908 23567 I PSyncWorker: Completed picker proactive sync complete from local provider.
+04-01 16:01:24.218  5908  6085 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=2dd4eeac-539a-4dea-bced-3af1752b48bc, tags={ com.android.providers.media.photopicker.sync.ProactiveSyncWorker } ]
+04-01 16:01:24.219  5908  5908 D WM-Processor: Processor 2dd4eeac-539a-4dea-bced-3af1752b48bc executed; reschedule = false
+04-01 16:01:24.219  5908  5908 D WM-GreedyScheduler: Stopping tracking for WorkGenerationalId(workSpecId=2dd4eeac-539a-4dea-bced-3af1752b48bc, generation=0)
+04-01 16:01:24.224  1931  4223 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300664,297765)} caps=LCMNFU always=false idle=false
+04-01 16:01:24.225  1931  2844 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.daemon rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300664,297765)} caps=LCMNFU always=false idle=false
+04-01 16:01:24.225  5908  6085 D WM-GreedyScheduler: Cancelling work ID 2dd4eeac-539a-4dea-bced-3af1752b48bc
+04-01 16:01:24.227  5908  6085 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 16:01:24.227  5908  6085 D WM-BrdcstRcvrCnstrntTrc: BatteryNotLowTracker: unregistering receiver
+04-01 16:01:24.241  6014  6014 D HeartBeatUploadService: HeartBeatUploadService onStartJob
+04-01 16:01:24.244  6014 23568 D HeartBeatUploader: getFinalTotalTime before upload, totalScreenonTime = 881987
+04-01 16:01:24.245  6014 23568 D HeartBeatUploader: getFinalTotalTime before upload, totalBootTime = 881987
+04-01 16:01:24.245  6014 23568 D HeartBeatUploader: store new screenon data.
+04-01 16:01:24.265  6014 23568 D HeartBeatUploader: totalScreenonTime = 881987 startScreenonTime = 27953735 endScreenonTime =0 
+04-01 16:01:24.326  1931  4128 D SLM-SRV-SLAService: checktemp temperature = 28287 temperature_average = 28365 isPerformanceMode = false thermal_enable_slm = true
+04-01 16:01:24.791 23569 23569 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+04-01 16:01:24.793  5908  6411 W MediaProvider: isAppCloneUserPair for user 0: false
+04-01 16:01:24.799 23569 23569 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+04-01 16:01:25.026  1931  4157 W ProcessStats: Tracking association SourceState{c7aa938 system/1000 BFgs #54900} whose proc state 4 is better than process ProcessState{9194d11 com.google.android.inputmethod.latin/10179 pkg=com.google.android.inputmethod.latin} proc state 6 (14 skipped)
+04-01 16:01:25.516  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:01:25.517  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:01:25.517  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:01:25.517  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:01:25.519  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 16:01:25.541  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:01:25.542  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:01:25.542  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:01:25.543  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 16:01:25.547  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:01:25.581  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:01:25.581  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:01:25.597  1899  1899 I wificond: station_bandwidth: P
+04-01 16:01:25.621  1931  4157 I ActivityManager: Broadcasting: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }
+04-01 16:01:25.622  1931  4157 I ActivityManager: Broadcast action android.intent.action.MEDIA_SCANNER_SCAN_FILE forcing include-background
+04-01 16:01:25.622  1931  4157 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300666,888)} caps=LCMNFU always=true idle=false
+04-01 16:01:25.622  1931  4157 I ActivityManager: App 10219/com.google.android.providers.media.module targets O+, restricted
+04-01 16:01:25.622  1931  4157 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 16:01:25.622  1931  4157 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300664,297765)} caps=LCMNFU always=true idle=false
+04-01 16:01:25.622  1931  4157 I ActivityManager: App 1000/com.miui.securitycore targets O+, restricted
+04-01 16:01:25.622  1931  4157 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=true onallowlist(ei)=true
+04-01 16:01:25.622  1931  4157 I ActivityManager: Enqueued broadcast Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }: 0
+04-01 16:01:25.623  1931  2365 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300666,888)} caps=LCMNFU always=true idle=false
+04-01 16:01:25.623  1931  2365 I ActivityManager: App 10219/com.google.android.providers.media.module targets O+, restricted
+04-01 16:01:25.623  1931  2365 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 16:01:25.626  5908  5908 I MediaServiceV2: Creating work for intent Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-01 16:01:25.626  5908  5908 I MediaServiceV2: Work enqueued for intent: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-01 16:01:25.628  1931  2365 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300664,297765)} caps=LCMNFU always=true idle=false
+04-01 16:01:25.628  1931  2365 I ActivityManager: App 1000/com.miui.securitycore targets O+, restricted
+04-01 16:01:25.628  1931  2365 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=true onallowlist(ei)=true
+04-01 16:01:25.630  1931  2012 I ActivityManager: Broadcast completed: result=0
+04-01 16:01:25.632 23569 23569 I DoViGenericTag: Logger Terminated
+04-01 16:01:25.642  5908  6002 D WM-SystemJobScheduler: Scheduling work ID 3e97b713-acc9-49d0-a714-51314545b02aJob ID 10826
+04-01 16:01:25.644  1931  4157 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300670,888)} caps=LCMNFU always=false idle=false
+04-01 16:01:25.649  1931  4157 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 16:01:25.649  1931  4157 D BatteryStatsManagerStub: notifyEvent for resId=256 used 0ms
+04-01 16:01:25.650  5908  6002 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 16:01:25.650  5908  6002 D WM-GreedyScheduler: Starting work for 3e97b713-acc9-49d0-a714-51314545b02a
+04-01 16:01:25.650  5908  5908 D WM-SystemJobService: onStartJob for WorkGenerationalId(workSpecId=3e97b713-acc9-49d0-a714-51314545b02a, generation=0)
+04-01 16:01:25.652  5908  6002 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=3e97b713-acc9-49d0-a714-51314545b02a, generation=0)
+04-01 16:01:25.652  5908  6002 D WM-Processor: Work WorkGenerationalId(workSpecId=3e97b713-acc9-49d0-a714-51314545b02a, generation=0) is already enqueued for processing
+04-01 16:01:25.654  5908  5908 D WM-WorkerWrapper: Starting work for com.android.providers.media.MediaServiceV2
+04-01 16:01:25.655  5908 23576 I MediaServiceV2: Work initiated for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-01 16:01:25.678  5908 23576 I MediaServiceV2: Work ended for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-01 16:01:25.682  5908  6079 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=3e97b713-acc9-49d0-a714-51314545b02a, tags={ com.android.providers.media.MediaServiceV2 } ]
+04-01 16:01:25.684  5908  5908 D WM-Processor: Processor 3e97b713-acc9-49d0-a714-51314545b02a executed; reschedule = false
+04-01 16:01:25.684  5908  5908 D WM-SystemJobService: 3e97b713-acc9-49d0-a714-51314545b02a executed on JobScheduler
+04-01 16:01:25.686  1931  4223 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 16:01:25.686  1931  4223 D BatteryStatsManagerStub: notifyEvent for resId=256 used 0ms
+04-01 16:01:25.694  5908  6085 D WM-GreedyScheduler: Cancelling work ID 3e97b713-acc9-49d0-a714-51314545b02a
+04-01 16:01:25.696  5908  6085 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 16:01:25.703  5908  6092 D WM-SystemJobScheduler: Scheduling work ID 9b64293a-fc32-47e1-acdf-12b2e0b9395fJob ID 10827
+04-01 16:01:25.704  1931  3801 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300674,888)} caps=LCMNFU always=false idle=false
+04-01 16:01:25.705  1931  3801 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300672,297765)} caps=LCMNFU always=false idle=false
+04-01 16:01:25.706  5908  6092 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 16:01:25.732  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 

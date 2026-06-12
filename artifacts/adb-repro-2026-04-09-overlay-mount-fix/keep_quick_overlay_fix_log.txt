@@ -1,0 +1,86 @@
+04-09 02:18:42.957  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:18:42.959  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:18:42.969  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:18:42.970  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:18:43.061  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:18:43.074  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:18:43.078  9898  9898 D BlearnAccessibility: resolved target app:com.google.android.keep mode=strict deck=null
+04-09 02:18:43.078  9898  9898 D BlearnAccessibility: show overlay for app:com.google.android.keep
+04-09 02:18:43.078  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:18:43.096  2184  7326 I SmartPower: app.blearn.mobile/10030(9898): background->visible(56329ms) R(become visible) adj=200.
+04-09 02:18:43.100  2184  7326 D WindowManager: wms.Input focus has changed to Window{42edeaf u0 app.blearn.mobile} display=0 updateInputWindows = false
+04-09 02:18:43.101  2184  2507 D WindowManager: wms.Focus not requested for window=Window{42edeaf u0 app.blearn.mobile} because it has no surface or is not focusable.
+04-09 02:18:43.106  9898  9898 D BlearnOverlay: overlay shield shown for app:com.google.android.keep mode=strict
+04-09 02:18:43.109  2184  2277 D CoreBackPreview: Window{42edeaf u0 app.blearn.mobile}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@fd7e4fd, mPriority=0, mIsAnimationCallback=false}
+04-09 02:18:43.118  9898  9898 W p.blearn.mobile: type=1400 audit(0.0:39908): avc:  denied  { read } for  name="u:object_r:vendor_display_prop:s0" dev="tmpfs" ino=2509 scontext=u:r:untrusted_app:s0:c30,c256,c512,c768 tcontext=u:object_r:vendor_display_prop:s0 tclass=file permissive=0 app=app.blearn.mobile
+04-09 02:18:43.143  2184  7326 D WindowManager: wms.finishDrawingLocked: mDrawState=COMMIT_DRAW_PENDING Window{42edeaf u0 app.blearn.mobile} in Surface(name=#5691)/@0xf5fc5f2
+04-09 02:18:43.143  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=32
+04-09 02:18:43.145  2184  2507 I WindowManager: wms.showSurfaceRobustly mWin:Window{42edeaf u0 app.blearn.mobile}
+04-09 02:18:43.147  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:18:43.152  9898  9898 D BlearnAccessibility: skip: overlay_already_visible for app:com.google.android.keep
+04-09 02:18:43.154  9898  9898 D BlearnAccessibility: open intervention from overlay for app:com.google.android.keep
+04-09 02:18:43.177  2184  7326 I ImeTracker: app.blearn.mobile:523304e3: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+04-09 02:18:43.177  2184  7326 I ImeTracker: app.blearn.mobile:523304e3: onCancelled at PHASE_SERVER_SHOULD_HIDE
+04-09 02:18:43.181 23840 23840 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1444 onStartInput(EditorInfo{EditorInfo{packageName=app.blearn.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=Bundle[mParcelledData.dataSize=72], hintText=null, hintLocales=[]}}, false)
+04-09 02:18:43.182  2184  8804 W PackageConfigPersister: App-specific configuration not found for packageName: app.blearn.mobile and userId: 0
+04-09 02:18:43.187  2184  2507 I PowerManagerServiceImpl: Acquire wakelock: SCREEN_BRIGHT_WAKE_LOCK        'WindowManager/displayId:0' ON_AFTER_RELEASE (uid=1000 pid=2184 pkg=android ws=WorkSource{10030 app.blearn.mobile})
+04-09 02:18:43.225  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:18:43.225  9898  9898 D BlearnAccessibility: skip: own package while overlay is visible
+04-09 02:18:43.293  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=32
+04-09 02:18:43.293  9898  9898 D BlearnAccessibility: skip: own package while overlay is visible
+04-09 02:18:43.431  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:18:43.435  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:18:43.440  9898  9898 D BlearnAccessibility: skip: overlay_already_visible for app:com.google.android.keep
+04-09 02:18:43.511  2184  2507 I PowerManagerServiceImpl: Release wakelock: SCREEN_BRIGHT_WAKE_LOCK        'WindowManager/displayId:0' ON_AFTER_RELEASE DISABLED ACQ=-323ms (uid=1000 pid=2184 pkg=android ws=WorkSource{10030 app.blearn.mobile})
+04-09 02:18:43.516 23840 23840 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1444 onStartInput(EditorInfo{EditorInfo{packageName=app.blearn.mobile, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=Bundle[{hand_writing_keyboard_type=1}], hintText=null, hintLocales=[]}}, true)
+04-09 02:18:43.518  2184  3818 W PackageConfigPersister: App-specific configuration not found for packageName: app.blearn.mobile and userId: 0
+04-09 02:18:43.548  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:18:43.549  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:18:43.550  9898  9898 D BlearnAccessibility: skip: overlay_already_visible for app:com.google.android.keep
+04-09 02:18:43.578  2184  2741 I WindowManager: finishDrawing of orientation change: Window{42edeaf u0 app.blearn.mobile} 74ms
+04-09 02:18:43.578  2184  2741 D WindowManager: wms.finishDrawingLocked: mDrawState=COMMIT_DRAW_PENDING Window{42edeaf u0 app.blearn.mobile} in Surface(name=#5691)/@0xf5fc5f2
+04-09 02:18:43.622  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:18:43.628  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:18:43.630  2184  8507 D CoreBackPreview: Window{42edeaf u0 app.blearn.mobile}: Setting back callback null
+04-09 02:18:43.634  2184  8507 W InputManager-JNI: Input channel object '42edeaf app.blearn.mobile (client)' was disposed without first being removed with the input manager!
+04-09 02:18:43.651  2184  8507 I SmartPower: app.blearn.mobile/10030(9898): visible->invisible(554ms) R(become invisible) adj=200.
+04-09 02:18:43.651  2184  8507 I SmartPower: app.blearn.mobile/10030(9898): invisible->background(1ms) R(become background) adj=200.
+04-09 02:18:43.654  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:18:43.674  9898  9898 D BlearnAccessibility: event: app.blearn.mobile type=2048
+04-09 02:18:43.674  9898  9898 D BlearnAccessibility: skip: own package
+04-09 02:18:43.772  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:18:43.776  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:18:43.776  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:18:43.790  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=32
+04-09 02:18:43.794  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:18:43.798  9898  9898 D BlearnAccessibility: reset: stale_overlay_state for app:com.google.android.keep
+04-09 02:18:43.813  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:18:43.813  9898  9898 D BlearnAccessibility: skip: cooldown active for app:com.google.android.keep
+04-09 02:18:43.819  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:18:43.823  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:18:43.824  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:18:43.871  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:18:43.876  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:18:43.876  9898  9898 D BlearnOverlay: overlay hidden
+04-09 02:18:43.904  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:18:43.908  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:18:43.912  9898  9898 D BlearnAccessibility: skip: cooldown active for app:com.google.android.keep
+04-09 02:18:44.004  9898  9898 D BlearnAccessibility: event: com.google.android.keep type=2048
+04-09 02:18:44.008  9898  9898 D BlearnAccessibility: match: app com.google.android.keep
+04-09 02:18:44.012  9898  9898 D BlearnAccessibility: skip: cooldown active for app:com.google.android.keep
+04-09 02:18:44.249  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /system_ext/priv-app/MiuiSystemUI/MiuiSystemUI.apk' with 1 weak references
+04-09 02:18:44.251  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /system_ext/app/miuisystem/miuisystem.apk' with 2 weak references
+04-09 02:18:44.251  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '/product/overlay/GmsSystemUIOverlay.apk' with 1 weak references
+04-09 02:18:44.251  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '/product/overlay/SystemUIResCommon_Sys.apk' with 1 weak references
+04-09 02:18:44.251  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '/product/overlay/DevicesOverlay.apk' with 1 weak references
+04-09 02:18:44.252  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '/product/overlay/MccMncOverlay.apk' with 1 weak references
+04-09 02:18:44.252  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /product/priv-app/MiLauncherGlobal/MiLauncherGlobal.apk' with 1 weak references
+04-09 02:18:44.253  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~6uKh_ZQMqdV1aJyk5fefrw==/com.google.android.keep-DFHwD7BrqIEBOOv9wIJrog==/base.apk' with 1 weak references
+04-09 02:18:44.256  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~6uKh_ZQMqdV1aJyk5fefrw==/com.google.android.keep-DFHwD7BrqIEBOOv9wIJrog==/split_config.arm64_v8a.apk' with 1 weak references
+04-09 02:18:44.256  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~6uKh_ZQMqdV1aJyk5fefrw==/com.google.android.keep-DFHwD7BrqIEBOOv9wIJrog==/split_config.de.apk' with 1 weak references
+04-09 02:18:44.256  9898  9906 W p.blearn.mobile: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~6uKh_ZQMqdV1aJyk5fefrw==/com.google.android.keep-DFHwD7BrqIEBOOv9wIJrog==/split_config.xxhdpi.apk' with 1 weak references
+04-09 02:18:45.345  9898  9898 D BlearnAccessibility: service connected
+04-09 02:18:45.455  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:18:45.470  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:18:45.554  9898  9898 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:18:45.558  9898  9898 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui

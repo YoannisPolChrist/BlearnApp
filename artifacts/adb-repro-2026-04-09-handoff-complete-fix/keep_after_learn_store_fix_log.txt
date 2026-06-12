@@ -1,0 +1,12 @@
+04-09 02:24:30.214  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:24:30.226  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:24:30.236  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:24:30.237  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:24:40.503  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:24:40.505  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:24:40.538  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:24:40.538  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:24:41.787  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:24:41.792  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed
+04-09 02:24:41.802  4110  4626 E ActivityManagerWrapper:  mainTaskId=14404   userId=0   windowMode=1   baseIntent=Intent { act=null flag=268435456 cmp=ComponentInfo{app.blearn.mobile/app.blearn.mobile.MainActivity} }
+04-09 02:24:41.802  4110  4626 D WorldCirculate: getWorldCirculateInfo, taskInfo.baseIntent=Intent { flg=0x10000000 cmp=app.blearn.mobile/.MainActivity }, displayId=-1, but get Display failed

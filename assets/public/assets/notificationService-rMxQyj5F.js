@@ -1,0 +1,1 @@
+function n(){return typeof window<"u"&&"Notification"in window}async function t(){if(!n())return"unsupported";const i=window.Notification.permission;return i==="granted"||i==="denied"?i:"default"}async function e(){if(!n())return"unsupported";const i=await window.Notification.requestPermission();return i==="granted"||i==="denied"?i:"default"}export{t as g,e as r};

@@ -1,0 +1,15 @@
+--------- beginning of main
+04-09 02:30:48.867 13855 13855 D BlearnAccessibility: event: com.mi.android.globallauncher type=32
+04-09 02:30:48.878 13855 13855 D BlearnAccessibility: skip: package outside conservative text allowlist com.mi.android.globallauncher
+04-09 02:30:49.517 13855 13855 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:30:49.521 13855 13855 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:30:49.671 13855 13855 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:30:49.678 13855 13855 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:30:49.714 13855 13855 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:30:49.718 13855 13855 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:30:49.772 13855 13855 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:30:49.776 13855 13855 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:30:57.486 13855 13855 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:30:57.490 13855 13855 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui
+04-09 02:31:00.110 13855 13855 D BlearnAccessibility: event: com.android.systemui type=2048
+04-09 02:31:00.115 13855 13855 D BlearnAccessibility: skip: package outside conservative text allowlist com.android.systemui

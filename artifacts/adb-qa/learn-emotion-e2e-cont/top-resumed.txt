@@ -1,0 +1,1 @@
+    topResumedActivity=ActivityRecord{723b4e u0 app.blearn.mobile/.BlockingOverlayActivity t13992}

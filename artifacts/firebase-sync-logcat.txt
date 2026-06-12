@@ -1,0 +1,1186 @@
+--------- beginning of system
+04-01 15:59:08.495  1931  7215 W MIUIInput: Input event injection from package: null action ACTION_DOWN
+--------- beginning of main
+04-01 15:59:08.496  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x0, deviceId=-1, 24475695, channel '83c18d9 StatusBar (server)'
+04-01 15:59:08.496  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x4, deviceId=-1, 24475695, channel '9830ee7 NavigationBar0 (server)'
+04-01 15:59:08.496  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x0, deviceId=-1, 24475695, channel '[Gesture Monitor] miui-gesture (server)'
+04-01 15:59:08.497  1931  2318 I whetstone.activity: Power Event callback listener is empty for resId=64
+04-01 15:59:08.497  1931  2318 D BatteryStatsManagerStub: notifyEvent for resId=64 used 0ms
+04-01 15:59:08.497  1413  2768 D RefreshRateSelector: Touch Boost
+04-01 15:59:08.497  1413  2768 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 15:59:08.497  1413  2768 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 15:59:08.497  1413  2768 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 15:59:08.498  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:08.501  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:08.501  1254  1254 E ANDR-PERF-HINTEXT: Offload new thread from FpsUpdatePreAction
+04-01 15:59:08.502  1246  1496 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-01 15:59:08.502  1246  1496 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 0
+04-01 15:59:08.504  1254  1407 E ANDR-PERF-UTIL: Failed to read /proc/sys/kernel/sched_min_granularity_ns
+04-01 15:59:08.504  1254  1407 E ANDR-PERF-OPTSHANDLER: Failed to read /proc/sys/kernel/sched_min_granularity_ns
+04-01 15:59:08.504  1254  1407 E ANDR-PERF-RESOURCEQS: Failed to apply optimization [3, 54]
+04-01 15:59:08.500  1254  1254 W perf@2.2-servic: type=1400 audit(0.0:11470): avc:  denied  { read } for  name="sched_min_granularity_ns" dev="proc" ino=3021132 scontext=u:r:vendor_hal_perf_default:s0 tcontext=u:object_r:proc_sched:s0 tclass=file permissive=0
+04-01 15:59:08.520  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:08.534  4019  4019 I FocusedNotifPromptView: update icon rect Rect(180, 32 - 224, 76)
+04-01 15:59:08.534  4019  4019 I FocusedNotifPromptView: rect is empty
+04-01 15:59:08.584  4019  4019 V ControlCenterWindowViewImpl: handleMotionEvent: ACTION_DOWN, isExpandable: true, isPanelEnabled: true, lifecycleState: CREATED, external: true, blockTouch: false, ignoreExternal: false, isInMainPanel: true, isAttachedToWindow: true
+04-01 15:59:08.603  4019  4019 V MainPanelTouchController: handleMotionEvent ACTION_DOWN true false true MODE_NORMAL false
+04-01 15:59:08.604  1931  7215 W MIUIInput: Input event injection from package: null action ACTION_UP
+04-01 15:59:08.604  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x1, deviceId=-1, 24475695, channel '83c18d9 StatusBar (server)'
+04-01 15:59:08.604  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x1, deviceId=-1, 24475695, channel '[Gesture Monitor] miui-gesture (server)'
+04-01 15:59:08.605  4019  4019 V ControlCenterWindowViewImpl: handleMotionEvent: ACTION_UP, isExpandable: true, isPanelEnabled: true, lifecycleState: CREATED, external: true, blockTouch: false, ignoreExternal: false, isInMainPanel: true, isAttachedToWindow: true
+04-01 15:59:08.605  4019  4019 V MainPanelTouchController: handleMotionEvent ACTION_UP true true true MODE_NORMAL false
+04-01 15:59:08.605  1931  2318 I whetstone.activity: Power Event callback listener is empty for resId=64
+04-01 15:59:08.605  1931  2318 D BatteryStatsManagerStub: notifyEvent for resId=64 used 0ms
+04-01 15:59:08.605  4019  4019 V ControlCenterExpandController: on expand finished 0.0 0 false
+04-01 15:59:08.613  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:08.618  4019  4019 D BlurController: show blur false true true
+04-01 15:59:08.619  4019  4019 D ControlCenterExpandController: check anim finished, drag true, statusBar true, blur false, secPanel true, header true, spread true
+04-01 15:59:08.622  4019  4019 I BlurController: blur animated to 0.0 0.0 true false
+04-01 15:59:08.622  4019  4019 V BlurController: updating the same blur ratio 0.0
+04-01 15:59:08.622  4019  4019 D BlurController: updating 0.0 false false
+04-01 15:59:08.624  4019  4019 D NCSwitchController: cc setBlurRatio=0.0, switching=false, fromNc=false, switchedToCC=false
+04-01 15:59:08.624  4019  4019 D backgroundBlur: enablePassWindowBlur disable miui.systemui.controlcenter.windowview.ControlCenterWindowViewImpl
+04-01 15:59:08.625  4019  4019 D BlurController: blur animate complete false
+04-01 15:59:08.629  4019  4019 D ControlCenterExpandController: check anim finished, drag true, statusBar true, blur true, secPanel true, header true, spread true
+04-01 15:59:08.631  4019  4019 D BlurController: post update blur ratio for surface control is not valid. 0.0 0.0
+04-01 15:59:08.631  4019  4019 D NCSwitchController: cc setBlurRatio=0.0, switching=false, fromNc=false, switchedToCC=false
+04-01 15:59:08.631  4019  4019 D backgroundBlur: enablePassWindowBlur disable miui.systemui.controlcenter.windowview.ControlCenterWindowViewImpl
+04-01 15:59:08.798  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:08.954  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:08.954  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:08.955  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:08.955  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:08.957  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 15:59:08.996  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:08.996  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:09.147  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:09.599  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:09.600  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:09.603  1246  1496 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-01 15:59:09.603  1246  1496 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 2
+04-01 15:59:09.609  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:10.189  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:10.189  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:10.190  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:10.190  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:10.191  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:10.192  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:10.192  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:10.193  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:10.193  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:10.197  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:10.232  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:10.233  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:10.384  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:10.848  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:10.848  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:10.849  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:10.849  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:10.851  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:10.852  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:10.852  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:10.854  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:10.854  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:10.859  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:10.891  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:10.891  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:11.041  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:11.566  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:11.566  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:11.567  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:11.568  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:11.569  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:11.570  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:11.570  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:11.571  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 15:59:11.576  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:11.609  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:11.609  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:11.760  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:11.812  3991  3991 D DynamicService:  ACTION_BATTERY_CHANGED change,USB plug = 2
+04-01 15:59:11.812  3991  3991 D DynamicService_WifiBt:  ACTION_BATTERY_CHANGED change,USB plug = 2
+04-01 15:59:11.816  1931  1931 D UiModeManager: updateConfigurationLocked: mDockState=0; mCarMode=false; mCar=false; mPowerSave=false; mOverrideNightModeOn=false; mOverrideNightModeOff=false; mComputedNightMode=true; mNightMode=2; uiMode=33
+04-01 15:59:11.818  3961  3961 D DeviceStatisticsService: onReceive: action= android.intent.action.BATTERY_CHANGED
+04-01 15:59:11.819  6817  7165 D PowerCheckerService: onBatteryChanged, mBatteryLevel = 81, status = 2, level = 81, plug = 2, scale = 100
+04-01 15:59:11.820  6988  6988 I PowerUtils: getSurfaceTemprature temp: 29
+04-01 15:59:11.821  6988  6988 I PowerSaveService: onReceive: android.intent.action.BATTERY_CHANGED
+04-01 15:59:11.822  6988  6988 I PowerNoticeUI: handleBatteryChanged oldPlugType 2 mPlugType 2 oldBatteryLevel 81 mBatteryLevel 81 temperature 280
+04-01 15:59:11.824  6817  8427 D PowerKeeper.Thermal: mBatteryTemperature: 28
+04-01 15:59:11.824  3961  3961 V DeviceStatisticsService: chargerType=2 batteryLevel=81 totalBatteryCapacity=3866600
+04-01 15:59:11.824  3961  3961 D DeviceInfoHidlClient: isRadioOn()=true
+04-01 15:59:11.824  3961  3961 I DeviceInfoHidlClient: isPowerInfoNeverSent=false batteryLevel=81 batteryLevelIndex=3 chargingMode=2 totalCapacity=3866600 powerSaveMode=false
+04-01 15:59:11.826  3977  3977 D QtiCarrierConfigHelper: WARNING, no carrier configs on phone Id: 1
+04-01 15:59:11.826  6988  8886 I android_os_HwBinder: HwBinder: Starting thread pool for getting: vendor.xiaomi.hardware.micharge@1.0::IMiCharge/default
+04-01 15:59:11.827  6988  6988 I ChargerBatteryIntelligenceReceiver: onBatteryChanged temperature：28,plugType:2
+04-01 15:59:11.827  1285  1296 I vendor.xiaomi.hardware.micharge@1.0-service: ReadFilePathValue path = /sys/class/qcom-battery/night_charging value = 0
+04-01 15:59:11.828  6988  8886 I ChargeProtectionUtils: getNightChargingState: 0
+04-01 15:59:12.311  1931  2365 I SmartPower: com.facebook.appmanager/10141(10241): idle->background(48490ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 15:59:12.314  1931  2365 I SmartPower: com.xiaomi.discover/10121(15017): idle->background(50034ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 15:59:12.317  1931  2365 I SmartPower: com.android.chrome/10171(15878): idle->background(49943ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=915.
+04-01 15:59:12.320  1931  2365 I SmartPower: com.digibites.accubattery/10422(15909): idle->background(57014ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=200.
+04-01 15:59:12.323  1931  2365 I SmartPower: com.microsoft.teams/10242(17220): idle->background(57014ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=935.
+04-01 15:59:12.325  1931  2365 I SmartPower: com.miui.android.fashiongallery/10229(22232): idle->background(50032ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=925.
+04-01 15:59:12.556  1931  4458 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(299613,985)} caps=LCMNFU always=false idle=false
+04-01 15:59:12.567  4883 22690 I NetworkScheduler.Stats: (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+04-01 15:59:12.572  4883 22919 I NetworkScheduler.Stats: (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+04-01 15:59:12.589  1931  8587 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(299623,985)} caps=LCMNFU always=false idle=false
+04-01 15:59:12.628  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:12.639  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:12.670  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:12.818  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:12.916  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:12.917  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:12.917  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:12.917  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:12.919  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 15:59:12.959  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:12.959  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:13.110  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:13.573  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:13.573  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:13.574  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:13.574  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:13.576  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:13.616  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:13.616  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:13.720 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 15:59:13.724 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311457, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 15:59:13.724 23046 23046 V Capacitor: callback: 97311457, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 15:59:13.731 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 15:59:13.735 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 15:59:13.766  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:13.843 23380 23380 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+04-01 15:59:13.848  5908 12461 W MediaProvider: isAppCloneUserPair for user 0: false
+04-01 15:59:13.850 23380 23380 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+04-01 15:59:14.212  1931  4128 D SLM-SRV-SLAService: checktemp temperature = 29471 temperature_average = 29310 isPerformanceMode = false thermal_enable_slm = true
+04-01 15:59:14.661  1931  8587 I ActivityManager: Broadcasting: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }
+04-01 15:59:14.661  1931  8587 I ActivityManager: Broadcast action android.intent.action.MEDIA_SCANNER_SCAN_FILE forcing include-background
+04-01 15:59:14.661  1931  8587 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(299553,888)} caps=LCMNFU always=true idle=false
+04-01 15:59:14.661  1931  8587 I ActivityManager: App 10219/com.google.android.providers.media.module targets O+, restricted
+04-01 15:59:14.661  1931  8587 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 15:59:14.662  1931  8587 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(299609,297765)} caps=LCMNFU always=true idle=false
+04-01 15:59:14.662  1931  8587 I ActivityManager: App 1000/com.miui.securitycore targets O+, restricted
+04-01 15:59:14.662  1931  8587 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=true onallowlist(ei)=true
+04-01 15:59:14.662  1931  8587 I ActivityManager: Enqueued broadcast Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }: 0
+04-01 15:59:14.662  1931  2365 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(299553,888)} caps=LCMNFU always=true idle=false
+04-01 15:59:14.662  1931  2365 I ActivityManager: App 10219/com.google.android.providers.media.module targets O+, restricted
+04-01 15:59:14.662  1931  2365 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 15:59:14.665  5908  5908 I MediaServiceV2: Creating work for intent Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-01 15:59:14.665  5908  5908 I MediaServiceV2: Work enqueued for intent: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-01 15:59:14.667  1931  2365 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(299609,297765)} caps=LCMNFU always=true idle=false
+04-01 15:59:14.667  1931  2365 I ActivityManager: App 1000/com.miui.securitycore targets O+, restricted
+04-01 15:59:14.667  1931  2365 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=true onallowlist(ei)=true
+04-01 15:59:14.670 23380 23380 I DoViGenericTag: Logger Terminated
+04-01 15:59:14.671  1931  2012 I ActivityManager: Broadcast completed: result=0
+04-01 15:59:14.683  5908  6085 D WM-SystemJobScheduler: Scheduling work ID 1c4e089d-b1c3-4657-b9f3-f287c490bcb6Job ID 10818
+04-01 15:59:14.684  1931  8587 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(299625,888)} caps=LCMNFU always=false idle=false
+04-01 15:59:14.690  1931  8587 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 15:59:14.690  1931  8587 D BatteryStatsManagerStub: notifyEvent for resId=256 used 1ms
+04-01 15:59:14.691  5908  6085 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 15:59:14.691  5908  6085 D WM-GreedyScheduler: Starting work for 1c4e089d-b1c3-4657-b9f3-f287c490bcb6
+04-01 15:59:14.692  5908  5908 D WM-SystemJobService: onStartJob for WorkGenerationalId(workSpecId=1c4e089d-b1c3-4657-b9f3-f287c490bcb6, generation=0)
+04-01 15:59:14.693  5908  6085 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=1c4e089d-b1c3-4657-b9f3-f287c490bcb6, generation=0)
+04-01 15:59:14.693  5908  6085 D WM-Processor: Work WorkGenerationalId(workSpecId=1c4e089d-b1c3-4657-b9f3-f287c490bcb6, generation=0) is already enqueued for processing
+04-01 15:59:14.696  5908  5908 D WM-WorkerWrapper: Starting work for com.android.providers.media.MediaServiceV2
+04-01 15:59:14.696  5908 23387 I MediaServiceV2: Work initiated for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-01 15:59:14.714  5908 23387 I MediaServiceV2: Work ended for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-01 15:59:14.716  5908  6002 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=1c4e089d-b1c3-4657-b9f3-f287c490bcb6, tags={ com.android.providers.media.MediaServiceV2 } ]
+04-01 15:59:14.719  5908  5908 D WM-Processor: Processor 1c4e089d-b1c3-4657-b9f3-f287c490bcb6 executed; reschedule = false
+04-01 15:59:14.719  5908  5908 D WM-SystemJobService: 1c4e089d-b1c3-4657-b9f3-f287c490bcb6 executed on JobScheduler
+04-01 15:59:14.721  1931  8587 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 15:59:14.721  1931  8587 D BatteryStatsManagerStub: notifyEvent for resId=256 used 0ms
+04-01 15:59:14.727  5908  6002 D WM-GreedyScheduler: Cancelling work ID 1c4e089d-b1c3-4657-b9f3-f287c490bcb6
+04-01 15:59:14.729  5908  6002 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 15:59:14.738  5908  6079 D WM-SystemJobScheduler: Scheduling work ID 313321e8-d1e8-433f-afdc-c4006cabecd1Job ID 10819
+04-01 15:59:14.738  1931  4458 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(299629,888)} caps=LCMNFU always=false idle=false
+04-01 15:59:14.739  1931  4458 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(299627,297765)} caps=LCMNFU always=false idle=false
+04-01 15:59:14.741  5908  6079 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 15:59:15.313  1931  3244 I SmartPower: com.facebook.appmanager/10141(10241): background->idle(3002ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 15:59:15.315  1931  3244 I SmartPower: com.xiaomi.discover/10121(15017): background->idle(3000ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 15:59:15.317  1931  3244 I SmartPower: com.android.chrome/10171(15878): background->idle(3000ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 15:59:15.321  1931  3244 I SmartPower: com.digibites.accubattery/10422(15909): background->idle(3000ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=200.
+04-01 15:59:15.323  1931  3244 I SmartPower: com.microsoft.teams/10242(17220): background->idle(3000ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=935.
+04-01 15:59:15.326  1931  3244 I SmartPower: com.miui.android.fashiongallery/10229(22232): background->idle(3002ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=925.
+04-01 15:59:15.361  1931  2916 D MiuiNetworkPolicy: updateLimit mLimitEnabled=true,enabled=false,mNetworkPriorityMode=255,mThermalForceMode=0
+04-01 15:59:15.363  1931  2916 I MiuiNetworkPolicy: getDisableLimitTimeout when thermal mode is:0
+04-01 15:59:15.650  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:16.036  4969  5232 I BtGatt.ScanManager: msg.what = MSG_CHECK_SCAN_STATUS, msg.arg1 = CHECK_BACKGROUND_TIMEOUT
+04-01 15:59:16.231  5908  5908 D WM-DelayedWorkTracker: Scheduling work 313321e8-d1e8-433f-afdc-c4006cabecd1
+04-01 15:59:16.231  5908  5908 D WM-GreedyScheduler: Starting tracking for 313321e8-d1e8-433f-afdc-c4006cabecd1
+04-01 15:59:16.234  5908  6085 D WM-ConstraintTracker: BatteryNotLowTracker: initial state = true
+04-01 15:59:16.234  5908  6085 D WM-BrdcstRcvrCnstrntTrc: BatteryNotLowTracker: registering receiver
+04-01 15:59:16.238  5908  6085 D WM-GreedyScheduler: Constraints met: Scheduling work ID WorkGenerationalId(workSpecId=313321e8-d1e8-433f-afdc-c4006cabecd1, generation=0)
+04-01 15:59:16.241  5908  6085 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=313321e8-d1e8-433f-afdc-c4006cabecd1, generation=0)
+04-01 15:59:16.245  5908  5908 D WM-WorkerWrapper: Starting work for com.android.providers.media.photopicker.sync.ProactiveSyncWorker
+04-01 15:59:16.247  5908 23389 I PSyncWorker: Starting proactive picker sync from sync source: 1
+04-01 15:59:16.247  5908 23389 I PickerSyncTracker: Created new sync future java.util.concurrent.CompletableFuture@75480c4[Not completed, 1 dependents]. Future map: {313321e8-d1e8-433f-afdc-c4006cabecd1=java.util.concurrent.CompletableFuture@75480c4[Not completed, 1 dependents]}
+04-01 15:59:16.248  5908 23389 D PickerSyncController: syncAllMediaFromProvider() LOCAL, auth=com.android.providers.media.photopicker, retry=true
+04-01 15:59:16.248  5908 23389 D PickerSyncController: getSyncRequestParams() LOCAL, auth=com.android.providers.media.photopicker
+04-01 15:59:16.265  5908 23389 D PickerSyncController:    Latest ID/Gen=a9d769f4a5dc255f:external_primary/531334
+04-01 15:59:16.265  5908 23389 D PickerSyncController:    Cached ID/Gen=a9d769f4a5dc255f:external_primary/531325
+04-01 15:59:16.266  5908 23389 D PickerSyncController:    RESULT=SyncRequestParams{type=MEDIA_INCREMENTAL, gen=531325, latest=Bundle[{last_media_sync_generation=531334, media_collection_id=a9d769f4a5dc255f:external_primary}], pageSize=1000}
+04-01 15:59:16.266  5908 23389 I PickerSyncController: Executing SyncAdd. isLocal: true. authority: com.android.providers.media.photopicker
+04-01 15:59:16.266  5908 23389 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+04-01 15:59:16.266  5908 23389 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Locked by thread pool-2-thread-46]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 15:59:16.266  5908 23389 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 15:59:16.266  5908 23389 D ExternalDbFacade: Token received for queryMedia = null
+04-01 15:59:16.279  5908 23389 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+04-01 15:59:16.279  5908 23389 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Locked by thread pool-2-thread-46]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 15:59:16.279  5908 23389 D PickerSyncController: Saving next page token: 1775051954000|1000084418 for key: local_provider:media_add:resume
+04-01 15:59:16.279  5908 23389 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 15:59:16.280  5908 23389 D PickerNotificationSender: Sending a notification for media update
+04-01 15:59:16.281  5908 23389 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+04-01 15:59:16.281  5908 23389 D PickerNotificationSender: Sending a notification for album media update Favorites
+04-01 15:59:16.281  5908 23389 D PickerNotificationSender: Sending a notification for merged album media update Videos
+04-01 15:59:16.281  5908 23389 D PickerNotificationSender: Sending a notification for album media update Videos
+04-01 15:59:16.282  5908 23389 D ExternalDbFacade: Token received for queryMedia = 1775051954000|1000084418
+04-01 15:59:16.292  5908 23389 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+04-01 15:59:16.292  5908 23389 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Locked by thread pool-2-thread-46]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 15:59:16.292  5908 23389 D PickerSyncController: Clearing next page token for key: local_provider:media_add:resume
+04-01 15:59:16.292  5908 23389 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 15:59:16.292  5908 23389 D PickerNotificationSender: Sending a notification for media update
+04-01 15:59:16.293  5908 23389 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+04-01 15:59:16.293  5908 23389 D PickerNotificationSender: Sending a notification for album media update Favorites
+04-01 15:59:16.293  5908 23389 D PickerNotificationSender: Sending a notification for merged album media update Videos
+04-01 15:59:16.293  5908 23389 D PickerNotificationSender: Sending a notification for album media update Videos
+04-01 15:59:16.294  5908 23389 I PickerSyncController: Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1775051954000|1000084418, android.provider.extra.SYNC_GENERATION=531325, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 1
+04-01 15:59:16.294  5908 23389 I PickerSyncController: Executing SyncRemove. isLocal: true. authority: com.android.providers.media.photopicker
+04-01 15:59:16.294  5908 23389 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+04-01 15:59:16.294  5908 23389 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Locked by thread pool-2-thread-46]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 15:59:16.294  5908 23389 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 15:59:16.295  5908 23389 D PickerSyncLockManager: Trying to acquire lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = [] with timeout.
+04-01 15:59:16.295  5908 23389 D CloseableReentrantLock: Successfully acquired lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Locked by thread pool-2-thread-46]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 15:59:16.295  5908 23389 D PickerSyncController: Clearing next page token for key: local_provider:media_remove:resume
+04-01 15:59:16.295  5908 23389 D CloseableReentrantLock: Successfully released lock com.android.providers.media.photopicker.sync.CloseableReentrantLock@50cc0f6[Unlocked]. Lock Name = CLOUD_PROVIDER_LOCK. Threads that may be waiting to acquire this lock = []
+04-01 15:59:16.295  5908 23389 D PickerNotificationSender: Sending a notification for media update
+04-01 15:59:16.296  5908 23389 D PickerNotificationSender: Sending a notification for merged album media update Favorites
+04-01 15:59:16.296  5908 23389 D PickerNotificationSender: Sending a notification for album media update Favorites
+04-01 15:59:16.296  5908 23389 D PickerNotificationSender: Sending a notification for merged album media update Videos
+04-01 15:59:16.296  5908 23389 D PickerNotificationSender: Sending a notification for album media update Videos
+04-01 15:59:16.297  5908 23389 I PickerSyncController: Paged sync successful. QueryArgs: Bundle[{android.provider.extra.PAGE_TOKEN=1775051954000|1000084418, android.provider.extra.SYNC_GENERATION=531325, android.provider.extra.PAGE_SIZE=1000}] Total Rows: 0
+04-01 15:59:16.297  5908 23389 I PickerSyncTracker: Marked sync future complete for work id: 313321e8-d1e8-433f-afdc-c4006cabecd1. Future map: {}
+04-01 15:59:16.297  5908 23389 I PSyncWorker: Completed picker proactive sync complete from local provider.
+04-01 15:59:16.300  5908  6002 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=313321e8-d1e8-433f-afdc-c4006cabecd1, tags={ com.android.providers.media.photopicker.sync.ProactiveSyncWorker } ]
+04-01 15:59:16.302  5908  5908 D WM-Processor: Processor 313321e8-d1e8-433f-afdc-c4006cabecd1 executed; reschedule = false
+04-01 15:59:16.302  5908  5908 D WM-GreedyScheduler: Stopping tracking for WorkGenerationalId(workSpecId=313321e8-d1e8-433f-afdc-c4006cabecd1, generation=0)
+04-01 15:59:16.307  1931  4458 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(299627,297765)} caps=LCMNFU always=false idle=false
+04-01 15:59:16.308  5908  6002 D WM-GreedyScheduler: Cancelling work ID 313321e8-d1e8-433f-afdc-c4006cabecd1
+04-01 15:59:16.310  5908  6002 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 15:59:16.310  5908  6002 D WM-BrdcstRcvrCnstrntTrc: BatteryNotLowTracker: unregistering receiver
+04-01 15:59:16.819  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:16.819  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:16.821  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:16.821  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:16.823  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:16.823  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:16.823  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:16.824  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:16.825  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:16.830  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:16.844  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 15:59:16.882  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:16.882  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:17.033  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:18.600 15909 17072 V U.Notification: Posting new notification, elapsed=16076
+04-01 15:59:18.605  1931  4085 I NetworkBoostStatusManager: handle: 107
+04-01 15:59:18.612  3991  4846 E PhoneAdapter: get ntnphones failed, exception: java.lang.IllegalStateException: Default phones haven't been made yet!
+04-01 15:59:18.613  1931  4085 D SLM-SRV-SLAService: isModemSingnalStrengthStatus = 0
+04-01 15:59:18.672  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:18.681  1931  2950 D ConnectivityService: NetReassign [no changes] [c 1] [a 0] [i 5]
+04-01 15:59:18.698  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:18.730  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:18.807  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:18.807  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:18.808  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:18.808  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:18.810  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:18.825  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 15:59:18.864  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:18.864  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:18.880  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:18.975  1931  2916 I MiuiNetworkPolicy: updateUidState uid = 10118, uidState = 19
+04-01 15:59:19.014  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:19.117  1931  2861 W ActivityManagerServiceImpl: Sending non-protected broadcast miui.intent.action.CYCLE_CHECK from system uid 1000 pkg android. Callers=com.android.server.am.ActivityManagerService.checkBroadcastFromSystem:15246 com.android.server.am.ActivityManagerService.broadcastIntentLockedTraced:16076 com.android.server.am.ActivityManagerService.broadcastIntentLocked:15304 com.android.server.am.ActivityManagerService.broadcastIntentInPackage:16309 com.android.server.am.ActivityManagerService$LocalService.broadcastIntentInPackage:19055 
+04-01 15:59:19.118  1931  2861 D AlarmManager: mBroadcastRefCount -> 1
+04-01 15:59:19.121  1931 18150 I AppSearchIcing: icing-search-engine.cc:2327: Persisting data to disk with mode 3
+04-01 15:59:19.123  1931  2014 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(299627,297765)} caps=LCMNFU always=false idle=false
+04-01 15:59:19.124  1931  1931 D AlarmManager: mBroadcastRefCount -> 0
+04-01 15:59:19.125  1931  1931 D AlarmManager: mPendingIntent -> PendingIntent{3224d42: PendingIntentRecord{c313153 android broadcastIntent}}
+04-01 15:59:19.128  1931  2014 I android_os_HwBinder: HwBinder: Starting thread pool for getting: vendor.xiaomi.hardware.micharge@1.0::IMiCharge/default
+04-01 15:59:19.131  1285  1296 I vendor.xiaomi.hardware.micharge@1.0-service: ReadFilePathValue path = /sys/class/power_supply/battery/temp value = 280
+04-01 15:59:19.134  1931  2014 I android_os_HwBinder: HwBinder: Starting thread pool for getting: vendor.xiaomi.hardware.micharge@1.0::IMiCharge/default
+04-01 15:59:19.135  1285  1296 I vendor.xiaomi.hardware.micharge@1.0-service: ReadFilePathValue path = /sys/class/power_supply/battery/charge_control_limit value = 0
+04-01 15:59:19.148  1931 18150 I AppSearchIcing: icing-search-engine.cc:2340: PersistToDisk completed.
+04-01 15:59:19.344  1931  4458 W ProcessStats: Tracking association SourceState{c7aa938 system/1000 BFgs #54775} whose proc state 4 is better than process ProcessState{9194d11 com.google.android.inputmethod.latin/10179 pkg=com.google.android.inputmethod.latin} proc state 6 (11 skipped)
+04-01 15:59:19.393  5288  5288 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.common.BIND_SHARED_PREFS pkg=com.google.android.gms }
+04-01 15:59:19.603  1254 23376 E ANDR-PERF-HINTEXT: Offload new thread from switchToNewFps
+04-01 15:59:19.740 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 15:59:19.744 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311458, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 15:59:19.744 23046 23046 V Capacitor: callback: 97311458, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 15:59:19.759 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 15:59:19.768 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 15:59:20.366  1931  2916 D MiuiNetworkPolicy: updateLimit mLimitEnabled=false,enabled=true,mNetworkPriorityMode=255,mThermalForceMode=0
+04-01 15:59:20.367  1931  2916 I MiuiNetworkPolicy: getEnableLimitTimeout when thermal mode is:0
+04-01 15:59:20.518  1931  7215 D ActivityManager: checkAllowBackground: uid=10191 pkg=com.google.android.apps.photos rec=UidRecord{12c5108 u0a191 CEM  bg:+1h47m40s765ms idle change:procadj procs:0 seq(299562,201477)} caps=------ always=false idle=true
+04-01 15:59:20.527  1931  2916 I MiuiNetworkPolicy: updateUidState uid = 10191, uidState = 8
+04-01 15:59:20.532  1931  7215 I SmartPower: com.google.android.apps.photos/10191(21547): idle->background(42840ms) R(service create com.google.android.apps.photos/androidx.work.impl.background.systemjob.SystemJobService) adj=0.
+04-01 15:59:20.537  1931  7215 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 15:59:20.537  1931  7215 D BatteryStatsManagerStub: notifyEvent for resId=256 used 1ms
+04-01 15:59:20.551  1931  7215 D ConnectivityService: requestNetwork for uid/pid:10191/21547 activeRequest: null callbackRequest: 1912 [NetworkRequest [ REQUEST id=1913, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10191 RequestorUid: 10191 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]] callback flags: 0 order: 2147483647 isUidTracked: false declaredMethods: AVAIL|LOST|NC|BLK
+04-01 15:59:20.556  1931  2918 D WifiNetworkFactory: got request NetworkRequest [ REQUEST id=1913, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10191 RequestorUid: 10191 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+04-01 15:59:20.556  1931  2918 D UntrustedWifiNetworkFactory: got request NetworkRequest [ REQUEST id=1913, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10191 RequestorUid: 10191 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+04-01 15:59:20.556  1931  2918 D OemPaidWifiNetworkFactory: got request NetworkRequest [ REQUEST id=1913, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10191 RequestorUid: 10191 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+04-01 15:59:20.556  1931  2918 D MultiInternetWifiNetworkFactory: got request NetworkRequest [ REQUEST id=1913, [ Capabilities: INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VCN_MANAGED Uid: 10191 RequestorUid: 10191 RequestorPkg: com.google.android.apps.photos UnderlyingNetworks: Null] ]
+04-01 15:59:20.557  1931  2950 D ConnectivityService: NetReassign [1913 : null → 109] [c 2] [a 1] [i 2]
+04-01 15:59:20.587  1931  7215 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 15:59:20.587  1931  7215 D BatteryStatsManagerStub: notifyEvent for resId=256 used 0ms
+04-01 15:59:20.591  1931  2916 I MiuiNetworkPolicy: updateUidState uid = 10191, uidState = 10
+04-01 15:59:20.597  1931  2916 I MiuiNetworkPolicy: updateUidState uid = 10191, uidState = 19
+04-01 15:59:20.831  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:20.832  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:20.832  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:20.833  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:20.835  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 15:59:20.871  5250 22872 V ContactsTaskScheduler: [ContactsPackageMonitor] Thread[Worker-18,5,main] stopping...
+04-01 15:59:20.874  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:20.874  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:21.025  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:21.694  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:21.700  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:21.724  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:21.876  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:22.473  1931  2335 D HeapUsage Monitor: HeapAllocSize : 116MB; monitorSize : 500MB
+04-01 15:59:23.436  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:23.436  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:23.438  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:23.438  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:23.439  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:23.440  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:23.440  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:23.442  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:23.442  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:23.448  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:23.479  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:23.479  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:23.535  1931  3244 I SmartPower: com.google.android.apps.photos/10191(21547): background->idle(3002ms) R(service create com.google.android.apps.photos/androidx.work.impl.background.systemjob.SystemJobService) adj=905.
+04-01 15:59:23.630  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:24.043  1931  2012 W libc    : Access denied finding property "wifi.interface"
+04-01 15:59:24.043  1931  2012 D NetworkManagement: wlan0 <====> 1
+04-01 15:59:24.044  1931  2012 I MiuiNetworkPolicy: label wlan0, uid -1, active false, tsNanos 27833522580652
+04-01 15:59:24.044  1931  2916 D MiuiNetworkPolicy: updateLimit mLimitEnabled=true,enabled=false,mNetworkPriorityMode=255,mThermalForceMode=0
+04-01 15:59:24.036  1931  1931 W android.fg: type=1400 audit(0.0:11471): avc:  denied  { read } for  name="u:object_r:wifi_hal_prop:s0" dev="tmpfs" ino=13893 scontext=u:r:system_server:s0 tcontext=u:object_r:wifi_hal_prop:s0 tclass=file permissive=0
+04-01 15:59:24.224  1931  4128 D SLM-SRV-SLAService: checktemp temperature = 29249 temperature_average = 29452 isPerformanceMode = false thermal_enable_slm = true
+04-01 15:59:24.716  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:24.723  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:24.748  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:24.767  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:24.767  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:24.768  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:24.768  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:24.770  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:24.771  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:24.771  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:24.772  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:24.772  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:24.780  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:24.809  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:24.810  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:24.899  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:24.960  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:25.426  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:25.426  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:25.428  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:25.428  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:25.430  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:25.431  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:25.431  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:25.433  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:25.433  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:25.438  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:25.470  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:25.470  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:25.472  1931  1931 W android.fg: type=1400 audit(0.0:11472): avc:  denied  { read } for  name="u:object_r:wifi_hal_prop:s0" dev="tmpfs" ino=13893 scontext=u:r:system_server:s0 tcontext=u:object_r:wifi_hal_prop:s0 tclass=file permissive=0
+04-01 15:59:25.475  1931  2012 W libc    : Access denied finding property "wifi.interface"
+04-01 15:59:25.475  1931  2012 D NetworkManagement: wlan0 <====> 1
+04-01 15:59:25.476  1931  2012 I MiuiNetworkPolicy: label wlan0, uid 10569, active true, tsNanos 27834961885703
+04-01 15:59:25.476  1931  2916 I MiuiNetworkPolicy: getEnableLimitTimeout when thermal mode is:0
+04-01 15:59:25.476  1931  2916 D MiuiNetworkPolicy: updateLimit mLimitEnabled=false,enabled=true,mNetworkPriorityMode=255,mThermalForceMode=0
+04-01 15:59:25.621  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:25.768 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 15:59:25.772 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311459, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 15:59:25.773 23046 23046 V Capacitor: callback: 97311459, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 15:59:25.787 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 15:59:25.794 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 15:59:26.068  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:26.068  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:26.069  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:26.069  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:26.071  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:26.111  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:26.111  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:26.262  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:27.436  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:27.454  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:27.457  1413  2768 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 15:59:27.457  1413  2768 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 15:59:27.457  1413  2768 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 15:59:27.458  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:27.458  1254  1254 E ANDR-PERF-HINTEXT: Offload new thread from FpsUpdatePreAction
+04-01 15:59:27.460  1254  1407 E ANDR-PERF-UTIL: Failed to read /proc/sys/kernel/sched_min_granularity_ns
+04-01 15:59:27.460  1254  1407 E ANDR-PERF-OPTSHANDLER: Failed to read /proc/sys/kernel/sched_min_granularity_ns
+04-01 15:59:27.460  1254  1407 E ANDR-PERF-RESOURCEQS: Failed to apply optimization [3, 54]
+04-01 15:59:27.456  1254  1254 W perf@2.2-servic: type=1400 audit(0.0:11473): avc:  denied  { read } for  name="sched_min_granularity_ns" dev="proc" ino=3022165 scontext=u:r:vendor_hal_perf_default:s0 tcontext=u:object_r:proc_sched:s0 tclass=file permissive=0
+04-01 15:59:27.463  1413  1413 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 15:59:27.463  1413  1413 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 15:59:27.463  1413  1413 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 15:59:27.467  1246  1496 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-01 15:59:27.468  1246  1496 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 0
+04-01 15:59:27.496  1413  1413 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 15:59:27.497  1413  1413 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 15:59:27.497  1413  1413 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 15:59:27.619  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:27.737  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:28.560  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:28.563  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:28.567  1246  1496 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-01 15:59:28.567  1246  1496 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 2
+04-01 15:59:29.245  6976  8348 I com.xiaomi.dm: update fcm token
+04-01 15:59:29.245  6976  8348 E com.xiaomi.dm: not login yet
+04-01 15:59:29.278  6976  8348 I com.xiaomi.dm: update fcm token failed, code:-3, reason:
+04-01 15:59:29.278  6976  8348 I com.xiaomi.dm: delay sending fcm token to server
+04-01 15:59:30.225  1157  3401 I sensors-hal: handle_sns_std_sensor_event:57, light_event: ts=27839713961694, lux: 306.1, extra_info=24691 
+04-01 15:59:30.352  1931  2916 I MiuiNetworkPolicy: updateUidState uid = 10213, uidState = 19
+04-01 15:59:30.723  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:30.724  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:30.725  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:30.725  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:30.726  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:30.727  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:30.727  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:30.728  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:30.728  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:30.734  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:30.753  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:30.766  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:30.766  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:30.916  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:31.308  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:31.308  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:31.309  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:31.309  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:31.312  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:31.312  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:31.312  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:31.315  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 15:59:31.320  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:31.351  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:31.351  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:31.501  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:31.797 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 15:59:31.802 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311460, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 15:59:31.803 23046 23046 V Capacitor: callback: 97311460, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 15:59:31.810 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 15:59:31.814 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 15:59:31.992  1931  2916 I MiuiNetworkPolicy: updateUidState uid = 10165, uidState = 19
+04-01 15:59:32.560  1931  7215 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(299781,985)} caps=LCMNFU always=false idle=false
+04-01 15:59:32.565  1931  4157 W ProcessStats: Tracking association SourceState{c7aa938 system/1000 BFgs #54787} whose proc state 4 is better than process ProcessState{9194d11 com.google.android.inputmethod.latin/10179 pkg=com.google.android.inputmethod.latin} proc state 6 (15 skipped)
+04-01 15:59:32.571  4883 22919 I NetworkScheduler.Stats: (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+04-01 15:59:32.575  4883 22690 I NetworkScheduler.Stats: (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+04-01 15:59:32.594  1931  4458 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(299827,985)} caps=LCMNFU always=false idle=false
+04-01 15:59:32.705  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:32.705  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:32.706  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:32.706  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:32.708  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:32.747  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:32.748  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:32.898  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:33.775  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:33.781  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:33.802  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:33.956  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:34.236  1931  4128 D SLM-SRV-SLAService: checktemp temperature = 29034 temperature_average = 29522 isPerformanceMode = false thermal_enable_slm = true
+04-01 15:59:34.702  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:34.702  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:34.703  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:34.703  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:34.705  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:34.706  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:34.706  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:34.707  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:34.707  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:34.713  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:34.745  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:34.745  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:34.896  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:35.325  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:35.325  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:35.326  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:35.326  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:35.328  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:35.328  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:35.328  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:35.330  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 15:59:35.335  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:35.368  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:35.368  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:35.518  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:36.160  1931  2916 I MiuiNetworkPolicy: updateUidState uid = 10109, uidState = 19
+04-01 15:59:36.657  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:36.657  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:36.658  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:36.658  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:36.659  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 15:59:36.660  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 15:59:36.660  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:36.660  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:36.660  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:36.661  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:36.661  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 6F:CC:49:C9:B1:0F
+04-01 15:59:36.668  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:36.689 15909 17072 V U.Notification: Posting new notification, elapsed=18088
+04-01 15:59:36.699  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:36.699  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:36.798  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:36.849  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:37.819 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 15:59:37.823 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311461, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 15:59:37.824 23046 23046 V Capacitor: callback: 97311461, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 15:59:37.836 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 15:59:37.840 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 15:59:38.562  1254 23402 E ANDR-PERF-HINTEXT: Offload new thread from switchToNewFps
+04-01 15:59:38.588  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:38.588  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:38.589  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:38.589  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:38.591  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:38.592  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:38.592  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:38.593  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 15:59:38.598  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:38.632  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:38.632  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:38.783  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:39.202  1157  3401 I sensors-hal: handle_sns_std_sensor_event:57, light_event: ts=27848689961746, lux: 278.0, extra_info=22664 
+04-01 15:59:39.823  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:39.831  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:39.853  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:40.004  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:40.566  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:40.566  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:40.567  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:40.567  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:40.569  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:40.570  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:40.570  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:40.572  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 15:59:40.577  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:40.609  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:40.609  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:40.759  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:42.582  1931  4458 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(299831,985)} caps=LCMNFU always=false idle=false
+04-01 15:59:42.591  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:42.591  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:42.592  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:42.592  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:42.593  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 15:59:42.596  1931  7215 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(299831,985)} caps=LCMNFU always=false idle=false
+04-01 15:59:42.602  5288 23408 I GmscoreIpa: Starting mediastore instant index [CONTEXT service_id=255 ]
+04-01 15:59:42.608  1931  7215 I ClipboardServiceI: checkProviderWakePathForClipboard: primaryClip is null
+04-01 15:59:42.633  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:42.633  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:42.783  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:42.847  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:43.843 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 15:59:43.847 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311462, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 15:59:43.847 23046 23046 V Capacitor: callback: 97311462, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 15:59:43.863 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 15:59:43.873 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 15:59:44.238  1931  4128 D SLM-SRV-SLAService: checktemp temperature = 28860 temperature_average = 29421 isPerformanceMode = false thermal_enable_slm = true
+04-01 15:59:44.583  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:44.583  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:44.584  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:44.584  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:44.585  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:44.586  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:44.586  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:44.588  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 15:59:44.592  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:44.626  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:44.626  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:44.777  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:45.872  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:46.557  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:46.557  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:46.558  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:46.558  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:46.560  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:46.600  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:46.600  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:46.750  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:47.657  1931  7215 W ProcessStats: Tracking association SourceState{c7aa938 system/1000 BFgs #54798} whose proc state 4 is better than process ProcessState{9194d11 com.google.android.inputmethod.latin/10179 pkg=com.google.android.inputmethod.latin} proc state 6 (6 skipped)
+04-01 15:59:48.119  1931  2861 I SmartPower: com.google.android.gms.unstable/10163(12211): idle->background(75703ms) R(alarm start) adj=800.
+04-01 15:59:48.120  1931  2861 I SmartPower: com.google.process.gservices/10163(6474): idle->background(75702ms) R(alarm start) adj=945.
+04-01 15:59:48.120  1931  2861 I SmartPower: com.google.android.gms:snet/10163(23091): idle->background(75702ms) R(alarm start) adj=800.
+04-01 15:59:48.120  1931  2861 I SmartPower: com.google.process.gapps/10163(20652): idle->background(75702ms) R(alarm start) adj=955.
+04-01 15:59:48.123  1931  2861 D AlarmManager: mBroadcastRefCount -> 1
+04-01 15:59:48.124  1931  2861 I whetstone.activity: Power Event callback listener is empty for resId=128
+04-01 15:59:48.125  1931  2861 D BatteryStatsManagerStub: notifyEvent for resId=128 used 0ms
+04-01 15:59:48.140  1931  1931 D AlarmManager: mBroadcastRefCount -> 0
+04-01 15:59:48.140  1931  1931 D AlarmManager: mPendingIntent -> PendingIntent{62ade04: PendingIntentRecord{157d6ec com.google.android.gms/com.google.android.gms.location_base broadcastIntent}}
+04-01 15:59:48.145  1157  1157 I sensors-hal: batch:242, android.sensor.significant_motion/172, period=1000000, max_latency=0
+04-01 15:59:48.145  1157  1157 I sensors-hal: set_config:63, sample_period_ns is adjusted to 0 based on min/max delay_ns
+04-01 15:59:48.145  1157  1157 I sensors-hal: batch:251, android.sensor.significant_motion/172, period=1000000, max_latency=0 request completed
+04-01 15:59:48.155  1157  1157 I sensors-hal: flush:271, android.sensor.accelerometer/11
+04-01 15:59:48.155  1157  1157 I sensors-hal: send_sync_sensor_request:364, send sync request
+04-01 15:59:48.156  1157  1157 I sensors-hal: send_sync_sensor_request:390, wait for notification of response
+04-01 15:59:48.157  1157 19828 I sensors-hal: ssc_conn_resp_cb:689, resp_value = 0
+04-01 15:59:48.157  1157  1157 I sensors-hal: send_sync_sensor_request:396, takes 1 ms to receive the response with 0
+04-01 15:59:48.157  1157  1157 I sensors-hal: flush:277, android.sensor.accelerometer/11 completed
+04-01 15:59:48.174  1157  1157 I sensors-hal: flush:271, android.sensor.accelerometer/11
+04-01 15:59:48.175  1157  1157 I sensors-hal: send_sync_sensor_request:364, send sync request
+04-01 15:59:48.175  1157  1157 I sensors-hal: send_sync_sensor_request:390, wait for notification of response
+04-01 15:59:48.175  1157 19828 I sensors-hal: ssc_conn_resp_cb:689, resp_value = 0
+04-01 15:59:48.176  1157  1157 I sensors-hal: send_sync_sensor_request:396, takes 0 ms to receive the response with 0
+04-01 15:59:48.176  1157  1157 I sensors-hal: flush:277, android.sensor.accelerometer/11 completed
+04-01 15:59:48.643  1931  4085 I NetworkBoostStatusManager: handle: 107
+04-01 15:59:48.652  3991  4846 E PhoneAdapter: get ntnphones failed, exception: java.lang.IllegalStateException: Default phones haven't been made yet!
+04-01 15:59:48.653  1931  4085 D SLM-SRV-SLAService: isModemSingnalStrengthStatus = 0
+04-01 15:59:48.895  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:48.903  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:48.934  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:49.084  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:49.125  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:49.125  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:49.126  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:49.126  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:49.126  1931  2861 W ActivityManagerServiceImpl: Sending non-protected broadcast miui.intent.action.CYCLE_CHECK from system uid 1000 pkg android. Callers=com.android.server.am.ActivityManagerService.checkBroadcastFromSystem:15246 com.android.server.am.ActivityManagerService.broadcastIntentLockedTraced:16076 com.android.server.am.ActivityManagerService.broadcastIntentLocked:15304 com.android.server.am.ActivityManagerService.broadcastIntentInPackage:16309 com.android.server.am.ActivityManagerService$LocalService.broadcastIntentInPackage:19055 
+04-01 15:59:49.127  1931  2861 D AlarmManager: mBroadcastRefCount -> 1
+04-01 15:59:49.131  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:49.133  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:49.133  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:49.134  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:49.135  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:49.146  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:49.148  1931  2014 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(299920,297765)} caps=LCMNFU always=false idle=false
+04-01 15:59:49.149  1931  1931 D AlarmManager: mBroadcastRefCount -> 0
+04-01 15:59:49.149  1931  1931 D AlarmManager: mPendingIntent -> PendingIntent{3224d42: PendingIntentRecord{c313153 android broadcastIntent}}
+04-01 15:59:49.153  1931  2014 I android_os_HwBinder: HwBinder: Starting thread pool for getting: vendor.xiaomi.hardware.micharge@1.0::IMiCharge/default
+04-01 15:59:49.160  1285  1296 I vendor.xiaomi.hardware.micharge@1.0-service: ReadFilePathValue path = /sys/class/power_supply/battery/temp value = 280
+04-01 15:59:49.164  1931  2014 I android_os_HwBinder: HwBinder: Starting thread pool for getting: vendor.xiaomi.hardware.micharge@1.0::IMiCharge/default
+04-01 15:59:49.165  1285  1296 I vendor.xiaomi.hardware.micharge@1.0-service: ReadFilePathValue path = /sys/class/power_supply/battery/charge_control_limit value = 0
+04-01 15:59:49.167  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:49.168  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:49.188  1931  2001 D HighMemoryManager: Java Memory used=103M max=512M. is system: true
+04-01 15:59:49.188  1931  2001 V HighMemoryManager: Check mem usage finished! Next check delay: 0
+04-01 15:59:49.318  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:49.871 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 15:59:49.875 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311463, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 15:59:49.875 23046 23046 V Capacitor: callback: 97311463, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 15:59:49.892 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 15:59:49.898 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 15:59:50.492  1931  2916 D MiuiNetworkPolicy: updateLimit mLimitEnabled=true,enabled=false,mNetworkPriorityMode=255,mThermalForceMode=0
+04-01 15:59:50.493  1931  2916 I MiuiNetworkPolicy: getDisableLimitTimeout when thermal mode is:0
+04-01 15:59:51.122  1931  3244 I SmartPower: com.google.android.gms.unstable/10163(12211): background->idle(3003ms) R(alarm start) adj=800.
+04-01 15:59:51.123  1931  3244 I SmartPower: com.google.process.gservices/10163(6474): background->idle(3003ms) R(alarm start) adj=945.
+04-01 15:59:51.123  1931  3244 I SmartPower: com.google.android.gms/10163(5288): background->idle(81398ms) R(alarm start) adj=600.
+04-01 15:59:51.123  1931  3244 I SmartPower: com.google.android.gms:snet/10163(23091): background->idle(3003ms) R(alarm start) adj=800.
+04-01 15:59:51.123  1931  3244 I SmartPower: com.google.process.gapps/10163(20652): background->idle(3003ms) R(alarm start) adj=955.
+04-01 15:59:51.552  1157  1157 I sensors-hal: batch:242, android.sensor.accelerometer/11, period=16666000, max_latency=0
+04-01 15:59:51.552  1157  1157 I sensors-hal: set_config:63, sample_period_ns is adjusted to 16666000 based on min/max delay_ns
+04-01 15:59:51.552  1157  1157 I sensors-hal: batch:251, android.sensor.accelerometer/11, period=16666000, max_latency=0 request completed
+04-01 15:59:51.554  1157  1157 I sensors-hal: batch:242, android.sensor.light/51, period=200000000, max_latency=0
+04-01 15:59:51.554  1157  1157 I sensors-hal: set_config:68, no need to adjust sample_period_ns due to on_change_sp_enabled = 1 or reporting_mode = 2
+04-01 15:59:51.554  1157  1157 I sensors-hal: batch:251, android.sensor.light/51, period=200000000, max_latency=0 request completed
+04-01 15:59:51.626  1931  7215 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(299922,985)} caps=LCMNFU always=false idle=false
+04-01 15:59:51.919  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:51.925  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:51.950  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:52.101  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:52.475  1931  2335 D HeapUsage Monitor: HeapAllocSize : 104MB; monitorSize : 500MB
+04-01 15:59:52.768 15909 17072 V U.Notification: Posting new notification, elapsed=16078
+04-01 15:59:53.078  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:53.078  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:53.079  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:53.079  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:53.082  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:53.083  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:53.083  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:53.084  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:53.085  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 15:59:53.091  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:53.123  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:53.123  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:53.274  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:54.250  1931  4128 D SLM-SRV-SLAService: checktemp temperature = 28764 temperature_average = 29237 isPerformanceMode = false thermal_enable_slm = true
+04-01 15:59:54.942  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:54.949  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:54.964  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:55.120  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:55.499  1931  2916 D MiuiNetworkPolicy: updateLimit mLimitEnabled=false,enabled=true,mNetworkPriorityMode=255,mThermalForceMode=0
+04-01 15:59:55.501  1931  2916 I MiuiNetworkPolicy: getEnableLimitTimeout when thermal mode is:0
+04-01 15:59:55.754  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:55.754  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:55.755  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:55.755  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:55.757  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:55.758  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:55.758  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:55.759  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:55.759  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:55.765  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:55.776  1931  1931 W android.fg: type=1400 audit(0.0:11474): avc:  denied  { read } for  name="u:object_r:wifi_hal_prop:s0" dev="tmpfs" ino=13893 scontext=u:r:system_server:s0 tcontext=u:object_r:wifi_hal_prop:s0 tclass=file permissive=0
+04-01 15:59:55.780  1931  2012 W libc    : Access denied finding property "wifi.interface"
+04-01 15:59:55.781  1931  2012 D NetworkManagement: wlan0 <====> 1
+04-01 15:59:55.781  1931  2012 I MiuiNetworkPolicy: label wlan0, uid -1, active false, tsNanos 27865266454702
+04-01 15:59:55.781  1931  2916 D MiuiNetworkPolicy: updateLimit mLimitEnabled=true,enabled=false,mNetworkPriorityMode=255,mThermalForceMode=0
+04-01 15:59:55.796  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:55.796  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:55.901 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 15:59:55.904 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311464, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 15:59:55.904 23046 23046 V Capacitor: callback: 97311464, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 15:59:55.920 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 15:59:55.926 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 15:59:55.947  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:56.627  1931  2861 I SmartPower: com.google.android.gms.unstable/10163(12211): idle->background(5504ms) R(alarm start) adj=800.
+04-01 15:59:56.628  1931  2861 I SmartPower: com.google.process.gservices/10163(6474): idle->background(5505ms) R(alarm start) adj=945.
+04-01 15:59:56.628  1931  2861 I SmartPower: com.google.android.gms/10163(5288): idle->background(5505ms) R(alarm start) adj=600.
+04-01 15:59:56.628  1931  2861 I SmartPower: com.google.android.gms:snet/10163(23091): idle->background(5505ms) R(alarm start) adj=800.
+04-01 15:59:56.629  1931  2861 I SmartPower: com.google.process.gapps/10163(20652): idle->background(5505ms) R(alarm start) adj=955.
+04-01 15:59:56.632  1931  2861 D AlarmManager: mBroadcastRefCount -> 1
+04-01 15:59:56.633  1931  2861 I whetstone.activity: Power Event callback listener is empty for resId=128
+04-01 15:59:56.633  1931  2861 D BatteryStatsManagerStub: notifyEvent for resId=128 used 0ms
+04-01 15:59:56.638  1931  1931 D AlarmManager: mBroadcastRefCount -> 0
+04-01 15:59:56.639  1931  1931 D AlarmManager: mPendingIntent -> PendingIntent{653050f: PendingIntentRecord{157d6ec com.google.android.gms/com.google.android.gms.location_base broadcastIntent}}
+04-01 15:59:56.650  1157  1157 I sensors-hal: flush:271, android.sensor.accelerometer/11
+04-01 15:59:56.650  1157  1157 I sensors-hal: send_sync_sensor_request:364, send sync request
+04-01 15:59:56.650  1157  1157 I sensors-hal: send_sync_sensor_request:390, wait for notification of response
+04-01 15:59:56.652  1157 19828 I sensors-hal: ssc_conn_resp_cb:689, resp_value = 0
+04-01 15:59:56.652  1157  1157 I sensors-hal: send_sync_sensor_request:396, takes 1 ms to receive the response with 0
+04-01 15:59:56.652  1157  1157 I sensors-hal: flush:277, android.sensor.accelerometer/11 completed
+04-01 15:59:57.080  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:57.080  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:57.082  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:57.082  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:57.085  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:57.085  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:57.085  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:57.086  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:57.086  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:57.092  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:57.123  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:57.123  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:57.274  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:57.829  1931  2012 W libc    : Access denied finding property "wifi.interface"
+04-01 15:59:57.829  1931  2012 D NetworkManagement: wlan0 <====> 1
+04-01 15:59:57.829  1931  2012 I MiuiNetworkPolicy: label wlan0, uid 10091, active true, tsNanos 27867312384076
+04-01 15:59:57.824  1931  1931 W android.fg: type=1400 audit(0.0:11475): avc:  denied  { read } for  name="u:object_r:wifi_hal_prop:s0" dev="tmpfs" ino=13893 scontext=u:r:system_server:s0 tcontext=u:object_r:wifi_hal_prop:s0 tclass=file permissive=0
+04-01 15:59:57.830  1931  2916 I MiuiNetworkPolicy: getEnableLimitTimeout when thermal mode is:0
+04-01 15:59:57.830  1931  2916 D MiuiNetworkPolicy: updateLimit mLimitEnabled=false,enabled=true,mNetworkPriorityMode=255,mThermalForceMode=0
+04-01 15:59:57.962  1899  1899 I wificond: station_bandwidth: P
+04-01 15:59:57.969  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:57.995  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 15:59:58.148  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 15:59:58.429  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:58.429  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:58.430  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:58.430  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:58.433  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:58.473  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:58.473  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:58.624  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:59.078  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 15:59:59.078  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 15:59:59.080  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 15:59:59.080  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 15:59:59.082  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:59.083  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 15:59:59.083  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:59.083  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:59.084  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 15:59:59.084  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 15:59:59.084  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 15:59:59.086  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 15:59:59.087  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 15:59:59.090  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:59.090  4883 22690 I NearbyDiscovery: (REDACTED) loadFastPairModule: checkFeaturesAreAvailable:%d
+04-01 15:59:59.090  4883 22690 I NearbyDiscovery: loadFastPairModule: FastPair module is downloaded. [CONTEXT service_id=265 ]
+04-01 15:59:59.091  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 15:59:59.122  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 15:59:59.122  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 15:59:59.154  1931  2844 W ProcessStats: Tracking association SourceState{4d7bf2a com.xiaomi.mi_connect_service/1000 Fgs #54807} whose proc state 3 is better than process ProcessState{9245394 com.miui.analytics/10094 pkg=com.miui.analytics} proc state 5 (10 skipped)
+04-01 15:59:59.273  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 15:59:59.631  1931  3244 I SmartPower: com.google.android.gms.unstable/10163(12211): background->idle(3005ms) R(alarm start) adj=800.
+04-01 15:59:59.632  1931  3244 I SmartPower: com.google.process.gservices/10163(6474): background->idle(3005ms) R(alarm start) adj=945.
+04-01 15:59:59.634  1931  3244 I SmartPower: com.google.android.gms/10163(5288): background->idle(3006ms) R(alarm start) adj=600.
+04-01 15:59:59.634  1931  3244 I SmartPower: com.google.android.gms:snet/10163(23091): background->idle(3006ms) R(alarm start) adj=800.
+04-01 15:59:59.635  1931  3244 I SmartPower: com.google.process.gapps/10163(20652): background->idle(3006ms) R(alarm start) adj=955.
+04-01 16:00:00.001  1931  2861 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{32d667d 1000 PER  fgServices change:procadj procs:0 seq(300009,297765)} caps=LCMNFU always=false idle=false
+04-01 16:00:00.002  1931  2861 D AlarmManager: mBroadcastRefCount -> 1
+04-01 16:00:00.004  1931  1931 D AlarmManager: mBroadcastRefCount -> 0
+04-01 16:00:00.004  1931  1931 D AlarmManager: mPendingIntent -> null
+04-01 16:00:00.006  4019  4019 D MiuiClockController: fixed clock timezone, clockTimezone is null mCurrentTimezone is Europe/Paris
+04-01 16:00:00.006  4019  4019 I MiuiDualClock: update local timeZone:Europe/Paris
+04-01 16:00:00.006  4019  4019 D MiuiDualClock: miui dual clock time update: 16:00
+04-01 16:00:00.007  4019  4019 D MiuiDualClock: miui dual clock time update: 16:00
+04-01 16:00:00.007  4019  4019 D MiuiClockController: Listener updateTime
+04-01 16:00:00.007  4019  4019 D MiuiDualClock: miui dual clock time update: 16:00
+04-01 16:00:00.008  4019  4019 D MiuiDualClock: miui dual clock time update: 16:00
+04-01 16:00:00.008  4019  4019 E AnimationHelper: updateTime mToAod:false mHasNotification: true, mClockType: dual
+04-01 16:00:00.009  4019  4019 D MiuiDualClock: miui dual clock time update: 16:00
+04-01 16:00:00.009  4019  4019 D MiuiDualClock: miui dual clock time update: 16:00
+04-01 16:00:00.011  1931  7215 I ClipboardServiceI: checkProviderWakePathForClipboard: primaryClip is null
+04-01 16:00:00.014  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:00.021  4019 13505 I MiuiDualClock: get city name: Paris, from: content://com.android.settings.provider.MiuiSettingsDataProvider/zone_info
+04-01 16:00:00.037  1157  1157 I sensors-hal: batch:242, android.sensor.accelerometer/11, period=16666000, max_latency=0
+04-01 16:00:00.038  1157  1157 I sensors-hal: set_config:63, sample_period_ns is adjusted to 16666000 based on min/max delay_ns
+04-01 16:00:00.038  1157  1157 I sensors-hal: batch:251, android.sensor.accelerometer/11, period=16666000, max_latency=0 request completed
+04-01 16:00:00.048  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:00.079  1931  7215 W AppOps  : Noting op not finished: uid 10163 pkg com.google.android.gms code 113 startTime of in progress event=1775051865426
+04-01 16:00:00.082  1931  7215 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(299973,985)} caps=LCMNFU always=false idle=false
+04-01 16:00:00.085  1931  7215 W AppOps  : Noting op not finished: uid 10163 pkg com.google.android.gms code 113 startTime of in progress event=1775051865426
+04-01 16:00:00.091  1931  4157 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(300011,985)} caps=LCMNFU always=false idle=false
+04-01 16:00:00.093  1931  4458 W AppOps  : Noting op not finished: uid 10163 pkg com.google.android.gms code 113 startTime of in progress event=1775051865426
+04-01 16:00:00.105  1157  1157 I sensors-hal: batch:242, android.sensor.accelerometer/11, period=16666000, max_latency=0
+04-01 16:00:00.105  1157  1157 I sensors-hal: set_config:63, sample_period_ns is adjusted to 16666000 based on min/max delay_ns
+04-01 16:00:00.105  1157  1157 I sensors-hal: batch:251, android.sensor.accelerometer/11, period=16666000, max_latency=0 request completed
+04-01 16:00:00.106  1931  4458 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(300013,985)} caps=LCMNFU always=false idle=false
+04-01 16:00:00.220  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:00.415  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:00:00.416  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:00:00.417  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:00:00.417  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:00:00.419  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 16:00:00.420  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 16:00:00.420  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:00.421  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 16:00:00.421  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 16:00:00.426  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:00:00.460  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:00:00.460  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:00:00.610  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:00:00.812 15909 16254 I X.DataLogger: Rotate value series. Previous segment: 1775051100000, new segment: 1775052000000, delta: 900000
+04-01 16:00:00.823 15909 16063 I M.AppUsageEventManager: Mirror app usage events between 1 Apr 2026 13:44:22 GMT and 1 Apr 2026 14:00:00 GMT
+04-01 16:00:00.836 15909 16063 I M.AppUsageEventManager: Mirrored 14 app usage events to new format.
+04-01 16:00:00.840 15909 16063 D U/AsyncTaskHelper: onRewardedAdLoadFailed$3@5d1ebc5 finished, thread=ATH-6. Queue time: 1ms. Run real=26 cpu=17 ms
+04-01 16:00:00.983  1899  1899 I wificond: station_bandwidth: P
+04-01 16:00:01.931 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 16:00:01.935 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311465, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 16:00:01.935 23046 23046 V Capacitor: callback: 97311465, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 16:00:01.949 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 16:00:01.954 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 16:00:04.007  1899  1899 I wificond: station_bandwidth: P
+04-01 16:00:04.014  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:04.043  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:04.195  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:04.265  1931  4128 D SLM-SRV-SLAService: checktemp temperature = 28673 temperature_average = 29008 isPerformanceMode = false thermal_enable_slm = true
+04-01 16:00:04.302  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:00:04.302  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:00:04.303  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:00:04.303  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:00:04.305  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:00:04.305  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:00:04.306  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:04.307  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 16:00:04.312  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:00:04.344  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:00:04.344  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:00:04.495  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:00:04.809 15909 16253 I S.FlushReqestGen: Queueing async flush of data to disk for 2 listeners.
+04-01 16:00:04.841 15909 16069 I S.FlushReqestGen: Async flush done.
+04-01 16:00:04.841 15909 16069 D U/AsyncTaskHelper: r8lambdaeKjHpdWvaEhsTIzu7XkVhl4aiT4$3@d9ece7d finished, thread=ATH-8. Queue time: 0ms. Run real=32 cpu=22 ms
+04-01 16:00:05.072  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:00:05.072  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:00:05.073  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:00:05.073  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:00:05.075  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:00:05.075  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:00:05.076  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:05.077  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 16:00:05.082  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:00:05.115  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:00:05.115  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:00:05.266  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:00:07.025  1899  1899 I wificond: station_bandwidth: P
+04-01 16:00:07.032  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:07.067  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:07.218  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:07.959 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 16:00:07.963 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311466, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 16:00:07.963 23046 23046 V Capacitor: callback: 97311466, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 16:00:07.979 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 16:00:07.984 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 16:00:08.353  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:00:08.354  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:00:08.354  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:00:08.355  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:00:08.357  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:00:08.396  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:00:08.396  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:00:08.547  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:00:08.841 15909 17072 V U.Notification: Posting new notification, elapsed=16075
+04-01 16:00:10.048  1899  1899 I wificond: station_bandwidth: P
+04-01 16:00:10.054  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:10.072  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:10.224  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:10.307  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:00:10.307  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:00:10.308  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:00:10.309  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:00:10.310  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 16:00:10.310  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:00:10.350  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:00:10.350  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:00:10.501  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:00:11.794  3991  3991 D DynamicService:  ACTION_BATTERY_CHANGED change,USB plug = 2
+04-01 16:00:11.794  3991  3991 D DynamicService_WifiBt:  ACTION_BATTERY_CHANGED change,USB plug = 2
+04-01 16:00:11.803  1931  1931 D UiModeManager: updateConfigurationLocked: mDockState=0; mCarMode=false; mCar=false; mPowerSave=false; mOverrideNightModeOn=false; mOverrideNightModeOff=false; mComputedNightMode=true; mNightMode=2; uiMode=33
+04-01 16:00:11.805  3977  3977 D QtiCarrierConfigHelper: WARNING, no carrier configs on phone Id: 1
+04-01 16:00:11.806  3961  3961 D DeviceStatisticsService: onReceive: action= android.intent.action.BATTERY_CHANGED
+04-01 16:00:11.810  3961  3961 V DeviceStatisticsService: chargerType=2 batteryLevel=81 totalBatteryCapacity=3871600
+04-01 16:00:11.810  3961  3961 D DeviceInfoHidlClient: isRadioOn()=true
+04-01 16:00:11.810  3961  3961 I DeviceInfoHidlClient: isPowerInfoNeverSent=false batteryLevel=81 batteryLevelIndex=3 chargingMode=2 totalCapacity=3871600 powerSaveMode=false
+04-01 16:00:11.810  6817  7165 D PowerCheckerService: onBatteryChanged, mBatteryLevel = 81, status = 2, level = 81, plug = 2, scale = 100
+04-01 16:00:11.811  6817  8427 D PowerKeeper.Thermal: mBatteryTemperature: 28
+04-01 16:00:11.812  6988  6988 I PowerUtils: getSurfaceTemprature temp: 28
+04-01 16:00:11.813  6988  6988 I PowerSaveService: onReceive: android.intent.action.BATTERY_CHANGED
+04-01 16:00:11.813  6988  6988 I PowerNoticeUI: handleBatteryChanged oldPlugType 2 mPlugType 2 oldBatteryLevel 81 mBatteryLevel 81 temperature 280
+04-01 16:00:11.814  6988  6988 I ChargerBatteryIntelligenceReceiver: onBatteryChanged temperature：28,plugType:2
+04-01 16:00:11.818  6988  9024 I android_os_HwBinder: HwBinder: Starting thread pool for getting: vendor.xiaomi.hardware.micharge@1.0::IMiCharge/default
+04-01 16:00:11.820  1285  1296 I vendor.xiaomi.hardware.micharge@1.0-service: ReadFilePathValue path = /sys/class/qcom-battery/night_charging value = 0
+04-01 16:00:11.820  6988  9024 I ChargeProtectionUtils: getNightChargingState: 0
+04-01 16:00:12.290  1931  2365 I SmartPower: com.facebook.appmanager/10141(10241): idle->background(56978ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=915.
+04-01 16:00:12.293  1931  2365 I SmartPower: com.xiaomi.discover/10121(15017): idle->background(56978ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 16:00:12.295  1931  2365 I SmartPower: com.android.chrome/10171(15878): idle->background(56977ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 16:00:12.297  1931  2365 I SmartPower: com.digibites.accubattery/10422(15909): idle->background(56977ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=200.
+04-01 16:00:12.301  1931  2365 I SmartPower: com.microsoft.teams/10242(17220): idle->background(56978ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 16:00:12.304  1931  2365 I SmartPower: com.miui.android.fashiongallery/10229(22232): idle->background(56977ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 16:00:13.071  1899  1899 I wificond: station_bandwidth: P
+04-01 16:00:13.081  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:13.084  1931  2950 D ConnectivityService: NetReassign [no changes] [c 1] [a 1] [i 5]
+04-01 16:00:13.112  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:13.265  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:13.987 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 16:00:13.991 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311467, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 16:00:13.991 23046 23046 V Capacitor: callback: 97311467, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 16:00:14.006 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 16:00:14.015 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 16:00:14.262  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:00:14.262  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:00:14.263  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:00:14.263  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:00:14.265  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 16:00:14.266  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 16:00:14.266  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:14.266  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:14.267  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 16:00:14.267  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 6F:CC:49:C9:B1:0F
+04-01 16:00:14.273  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:00:14.276  1931  4128 D SLM-SRV-SLAService: checktemp temperature = 28531 temperature_average = 28851 isPerformanceMode = false thermal_enable_slm = true
+04-01 16:00:14.304  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:00:14.304  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:00:14.455  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:00:14.911  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:00:14.912  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:00:14.912  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:00:14.913  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:00:14.914  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 16:00:14.915  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 16:00:14.915  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:14.916  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 16:00:14.916  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 16:00:14.921  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:00:14.954  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:00:14.954  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:00:15.105  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:00:15.293  1931  3244 I SmartPower: com.facebook.appmanager/10141(10241): background->idle(3002ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=915.
+04-01 16:00:15.294  1931  3244 I SmartPower: com.xiaomi.discover/10121(15017): background->idle(3001ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 16:00:15.296  1931  3244 I SmartPower: com.android.chrome/10171(15878): background->idle(3002ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 16:00:15.298  1931  3244 I SmartPower: com.digibites.accubattery/10422(15909): background->idle(3001ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=200.
+04-01 16:00:15.303  1931  3244 I SmartPower: com.microsoft.teams/10242(17220): background->idle(3001ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 16:00:15.304  1931  3244 I SmartPower: com.miui.android.fashiongallery/10229(22232): background->idle(3001ms) R(broadcast start Intent { act=android.intent.action.BATTERY_CHANGED flg=0x60000010 (has extras) }) adj=905.
+04-01 16:00:16.093  1899  1899 I wificond: station_bandwidth: P
+04-01 16:00:16.095  4969  5232 I BtGatt.ScanManager: msg.what = MSG_CHECK_SCAN_STATUS, msg.arg1 = CHECK_BACKGROUND_TIMEOUT
+04-01 16:00:16.105  1931  2950 D ConnectivityService: NetReassign [no changes] [c 2] [a 1] [i 5]
+04-01 16:00:16.251  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:00:16.252  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:00:16.252  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:00:16.253  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:00:16.255  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 16:00:16.255  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 6f:cc:49:c9:b1:0f
+04-01 16:00:16.255  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:16.255  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:16.255  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:16.256  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 16:00:16.256  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 16:00:16.256  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:16.257  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 16:00:16.257  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 6F:CC:49:C9:B1:0F
+04-01 16:00:16.260  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 16:00:16.261  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 16:00:16.262  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:00:16.265  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:00:16.294  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:00:16.294  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:00:16.445  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:00:17.309  1931  7215 W ProcessStats: Tracking association SourceState{c7aa938 system/1000 BFgs #54817} whose proc state 4 is better than process ProcessState{9194d11 com.google.android.inputmethod.latin/10179 pkg=com.google.android.inputmethod.latin} proc state 6 (7 skipped)
+04-01 16:00:18.684  1931  4085 I NetworkBoostStatusManager: handle: 107
+04-01 16:00:18.692  3991  4846 E PhoneAdapter: get ntnphones failed, exception: java.lang.IllegalStateException: Default phones haven't been made yet!
+04-01 16:00:18.693  1931  4085 D SLM-SRV-SLAService: isModemSingnalStrengthStatus = 0
+04-01 16:00:19.117  1899  1899 I wificond: station_bandwidth: P
+04-01 16:00:19.124  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:19.146  1931  2861 W ActivityManagerServiceImpl: Sending non-protected broadcast miui.intent.action.CYCLE_CHECK from system uid 1000 pkg android. Callers=com.android.server.am.ActivityManagerService.checkBroadcastFromSystem:15246 com.android.server.am.ActivityManagerService.broadcastIntentLockedTraced:16076 com.android.server.am.ActivityManagerService.broadcastIntentLocked:15304 com.android.server.am.ActivityManagerService.broadcastIntentInPackage:16309 com.android.server.am.ActivityManagerService$LocalService.broadcastIntentInPackage:19055 
+04-01 16:00:19.147  1931  2861 D AlarmManager: mBroadcastRefCount -> 1
+04-01 16:00:19.155  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:19.159  1931  2014 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300100,297765)} caps=LCMNFU always=false idle=false
+04-01 16:00:19.166  1931  1931 D AlarmManager: mBroadcastRefCount -> 0
+04-01 16:00:19.166  1931  1931 D AlarmManager: mPendingIntent -> PendingIntent{3224d42: PendingIntentRecord{c313153 android broadcastIntent}}
+04-01 16:00:19.166  1931  2014 I android_os_HwBinder: HwBinder: Starting thread pool for getting: vendor.xiaomi.hardware.micharge@1.0::IMiCharge/default
+04-01 16:00:19.170  1285  1296 I vendor.xiaomi.hardware.micharge@1.0-service: ReadFilePathValue path = /sys/class/power_supply/battery/temp value = 280
+04-01 16:00:19.174  1931  2014 I android_os_HwBinder: HwBinder: Starting thread pool for getting: vendor.xiaomi.hardware.micharge@1.0::IMiCharge/default
+04-01 16:00:19.175  1285  1296 I vendor.xiaomi.hardware.micharge@1.0-service: ReadFilePathValue path = /sys/class/power_supply/battery/charge_control_limit value = 0
+04-01 16:00:19.307  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:20.016 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 16:00:20.020 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311468, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 16:00:20.020 23046 23046 V Capacitor: callback: 97311468, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 16:00:20.035 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 16:00:20.040 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 16:00:22.140  1899  1899 I wificond: station_bandwidth: P
+04-01 16:00:22.147  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:22.168  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:22.240  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:00:22.240  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:00:22.241  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:00:22.241  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:00:22.243  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 16:00:22.243  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 7f:23:b6:78:e3:70
+04-01 16:00:22.244  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:22.246  4969  5244 D BluetoothRemoteDevices:  getMappingAddr null
+04-01 16:00:22.246  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 7F:23:B6:78:E3:70
+04-01 16:00:22.252  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:00:22.282  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:00:22.283  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:00:22.321  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:22.433  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:00:22.476  1931  2335 D HeapUsage Monitor: HeapAllocSize : 108MB; monitorSize : 500MB
+04-01 16:00:22.833  1931  2916 D MiuiNetworkPolicy: updateLimit mLimitEnabled=true,enabled=false,mNetworkPriorityMode=255,mThermalForceMode=0
+04-01 16:00:22.834  1931  2916 I MiuiNetworkPolicy: getDisableLimitTimeout when thermal mode is:0
+04-01 16:00:24.283  1931  4128 D SLM-SRV-SLAService: checktemp temperature = 28494 temperature_average = 28726 isPerformanceMode = false thermal_enable_slm = true
+04-01 16:00:24.925 15909 17072 V U.Notification: Posting new notification, elapsed=16083
+04-01 16:00:25.162  1899  1899 I wificond: station_bandwidth: P
+04-01 16:00:25.169  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:25.187  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:25.341  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:26.044 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 16:00:26.049 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311469, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 16:00:26.050 23046 23046 V Capacitor: callback: 97311469, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 16:00:26.067 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 16:00:26.068  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:00:26.068  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:00:26.069  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:00:26.069  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:00:26.071  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:00:26.072  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:00:26.072  4969  5531 D bt_btm_ble: bool parse_adv_audio_uuids_from_adv_pkt(const uint8_t *, size_t, uint8_t): tmap_cap_pts: false
+04-01 16:00:26.073  4969  5244 D BluetoothAdapterService: getIdentityAddress null retruning 46:61:FD:16:0C:22
+04-01 16:00:26.078 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 16:00:26.080  4883 15229 I NearbyDiscovery: (REDACTED) BloomFilterAdvManager: Detected bloom filter but too far away, ignoring. %sm, %s
+04-01 16:00:26.111  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:00:26.111  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:00:26.261  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:00:27.442  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:27.470  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:27.473  1413  2768 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 16:00:27.473  1413  2768 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 16:00:27.473  1413  2768 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 16:00:27.474  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:27.475  1254  1254 E ANDR-PERF-HINTEXT: Offload new thread from FpsUpdatePreAction
+04-01 16:00:27.477  1254  1407 E ANDR-PERF-UTIL: Failed to read /proc/sys/kernel/sched_min_granularity_ns
+04-01 16:00:27.477  1254  1407 E ANDR-PERF-OPTSHANDLER: Failed to read /proc/sys/kernel/sched_min_granularity_ns
+04-01 16:00:27.472  1254  1254 W perf@2.2-servic: type=1400 audit(0.0:11476): avc:  denied  { read } for  name="sched_min_granularity_ns" dev="proc" ino=3022165 scontext=u:r:vendor_hal_perf_default:s0 tcontext=u:object_r:proc_sched:s0 tclass=file permissive=0
+04-01 16:00:27.491  1413  1413 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 16:00:27.491  1413  1413 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 16:00:27.491  1413  1413 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 16:00:27.495  1246  1496 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-01 16:00:27.495  1246  1496 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 0
+04-01 16:00:27.523  1413  1413 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 16:00:27.523  1413  1413 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 16:00:27.523  1413  1413 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 16:00:27.637  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:27.839  1931  2916 D MiuiNetworkPolicy: updateLimit mLimitEnabled=false,enabled=true,mNetworkPriorityMode=255,mThermalForceMode=0
+04-01 16:00:27.840  1931  2916 I MiuiNetworkPolicy: getEnableLimitTimeout when thermal mode is:0
+04-01 16:00:28.184  1899  1899 I wificond: station_bandwidth: P
+04-01 16:00:28.192  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:28.218  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:28.369  4019  4019 D ArtChoreographerMonitor: invoke error.
+04-01 16:00:28.576  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:28.578  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:00:28.583  1246  1496 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-01 16:00:28.583  1246  1496 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 2
+04-01 16:00:28.827  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:00:28.828  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:00:28.828  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:00:28.829  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:00:28.830  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:00:28.870  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:00:28.870  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:00:29.021  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:00:29.171  1931  2844 W ProcessStats: Tracking association SourceState{4d7bf2a com.xiaomi.mi_connect_service/1000 Fgs #54819} whose proc state 3 is better than process ProcessState{9245394 com.miui.analytics/10094 pkg=com.miui.analytics} proc state 5 (5 skipped)
+04-01 16:00:29.869 23463 23463 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+04-01 16:00:29.872  5908 12461 W MediaProvider: isAppCloneUserPair for user 0: false
+04-01 16:00:29.879 23463 23463 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+04-01 16:00:29.930  1931  7215 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(300147,985)} caps=LCMNFU always=false idle=false
+04-01 16:00:29.934  1931  4458 I SmartPower: com.google.android.gms/10163(5288): idle->background(30300ms) R(service create com.google.android.gms/.ipa.base.IpaGcmTaskService) adj=0.
+04-01 16:00:29.939  4883 23445 I NetworkScheduler.Stats: (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+04-01 16:00:29.942  4883 22690 I NetworkScheduler.Stats: (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+04-01 16:00:29.979  1931  4157 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(300193,985)} caps=LCMNFU always=false idle=false
+04-01 16:00:29.981  4883  4883 D BoundBrokerSvc: onRebind: Intent { act=com.google.android.gms.nearby.fastpair.service.TaskSchedulerChimeraService.ACTION_TASK_READY dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentInternalBoundBrokerService }
+04-01 16:00:29.986  4883 23445 I NetworkScheduler.Stats: (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+04-01 16:00:29.986  4883 22690 I NearbyFastPair: (REDACTED) TSS onRunTask: tag = %s
+04-01 16:00:29.991  4883  4883 I NearbyDiscovery: (REDACTED) DiscoveryService onStartCommand action: %s
+04-01 16:00:29.993  4883 23445 I NetworkScheduler.Stats: (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+04-01 16:00:29.994  4883  4883 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.nearby.fastpair.service.TaskSchedulerChimeraService.ACTION_TASK_READY dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentInternalBoundBrokerService }
+04-01 16:00:30.001  1931  4157 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(300199,985)} caps=LCMNFU always=false idle=false
+04-01 16:00:30.013  4883 20345 I NearbyFastPair: (REDACTED) SassLogger_logDeviceSettingsChange: event=%s, model=%s, enabled=%s, device type=%s
+04-01 16:00:30.703  1931  4157 I ActivityManager: Broadcasting: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }
+04-01 16:00:30.703  1931  4157 I ActivityManager: Broadcast action android.intent.action.MEDIA_SCANNER_SCAN_FILE forcing include-background
+04-01 16:00:30.704  1931  4157 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300127,888)} caps=LCMNFU always=true idle=false
+04-01 16:00:30.704  1931  4157 I ActivityManager: App 10219/com.google.android.providers.media.module targets O+, restricted
+04-01 16:00:30.704  1931  4157 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 16:00:30.704  1931  4157 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{32d667d 1000 PER  fgServices change:procadj procs:0 seq(300183,297765)} caps=LCMNFU always=true idle=false
+04-01 16:00:30.704  1931  4157 I ActivityManager: App 1000/com.miui.securitycore targets O+, restricted
+04-01 16:00:30.704  1931  4157 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 16:00:30.704  1931  4157 I ActivityManager: Enqueued broadcast Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }: 0
+04-01 16:00:30.704  1931  2365 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300127,888)} caps=LCMNFU always=true idle=false
+04-01 16:00:30.705  1931  2365 I ActivityManager: App 10219/com.google.android.providers.media.module targets O+, restricted
+04-01 16:00:30.705  1931  2365 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 16:00:30.708  5908  5908 I MediaServiceV2: Creating work for intent Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-01 16:00:30.708  5908  5908 I MediaServiceV2: Work enqueued for intent: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-01 16:00:30.711  1931  2365 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{32d667d 1000 PER  fgServices change:procadj procs:0 seq(300183,297765)} caps=LCMNFU always=true idle=false
+04-01 16:00:30.711  1931  2365 I ActivityManager: App 1000/com.miui.securitycore targets O+, restricted
+04-01 16:00:30.711  1931  2365 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 16:00:30.716  1931  2012 I ActivityManager: Broadcast completed: result=0
+04-01 16:00:30.716 23463 23463 I DoViGenericTag: Logger Terminated
+04-01 16:00:30.727  5908  6079 D WM-SystemJobScheduler: Scheduling work ID 84590604-29bc-45d1-8c13-f41a64c4d3aaJob ID 10820
+04-01 16:00:30.727  1931  4157 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300201,888)} caps=LCMNFU always=false idle=false
+04-01 16:00:30.733  1931  4157 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 16:00:30.733  1931  4157 D BatteryStatsManagerStub: notifyEvent for resId=256 used 0ms
+04-01 16:00:30.734  5908  6079 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 16:00:30.734  5908  6079 D WM-GreedyScheduler: Starting work for 84590604-29bc-45d1-8c13-f41a64c4d3aa
+04-01 16:00:30.735  5908  5908 D WM-SystemJobService: onStartJob for WorkGenerationalId(workSpecId=84590604-29bc-45d1-8c13-f41a64c4d3aa, generation=0)
+04-01 16:00:30.736  5908  6079 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=84590604-29bc-45d1-8c13-f41a64c4d3aa, generation=0)
+04-01 16:00:30.737  5908  6079 D WM-Processor: Work WorkGenerationalId(workSpecId=84590604-29bc-45d1-8c13-f41a64c4d3aa, generation=0) is already enqueued for processing
+04-01 16:00:30.739  5908  5908 D WM-WorkerWrapper: Starting work for com.android.providers.media.MediaServiceV2
+04-01 16:00:30.739  5908 23471 I MediaServiceV2: Work initiated for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-01 16:00:30.763  5908 23471 I MediaServiceV2: Work ended for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-01 16:00:30.764  5908  6092 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=84590604-29bc-45d1-8c13-f41a64c4d3aa, tags={ com.android.providers.media.MediaServiceV2 } ]
+04-01 16:00:30.765  5908  5908 D WM-Processor: Processor 84590604-29bc-45d1-8c13-f41a64c4d3aa executed; reschedule = false
+04-01 16:00:30.765  5908  5908 D WM-SystemJobService: 84590604-29bc-45d1-8c13-f41a64c4d3aa executed on JobScheduler
+04-01 16:00:30.765  1931  7215 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 16:00:30.766  1931  7215 D BatteryStatsManagerStub: notifyEvent for resId=256 used 0ms
+04-01 16:00:30.773  5908  6002 D WM-SystemJobScheduler: Scheduling work ID 67a9cd16-9468-4006-95ae-6ec58b830db9Job ID 10821
+04-01 16:00:30.773  1931  4157 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300205,888)} caps=LCMNFU always=false idle=false
+04-01 16:00:30.774  1931  4157 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{32d667d 1000 PER  fgServices change:procadj procs:0 seq(300203,297765)} caps=LCMNFU always=false idle=false
+04-01 16:00:30.775  5908  6002 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 16:00:30.776  5908  6002 D WM-GreedyScheduler: Cancelling work ID 84590604-29bc-45d1-8c13-f41a64c4d3aa
+04-01 16:00:30.778  5908  6002 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.

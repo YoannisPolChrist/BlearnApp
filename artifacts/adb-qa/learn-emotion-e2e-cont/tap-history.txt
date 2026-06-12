@@ -1,0 +1,2 @@
+tap emotion=&#128524; Erleichtert
+tap complete=Abschließen

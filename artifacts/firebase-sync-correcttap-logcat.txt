@@ -1,0 +1,121 @@
+--------- beginning of system
+04-01 16:01:47.609  1931  4223 W MIUIInput: Input event injection from package: null action ACTION_DOWN
+--------- beginning of main
+04-01 16:01:47.610  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x0, deviceId=-1, 24634809, channel '66a1c7b app.blearn.mobile/app.blearn.mobile.MainActivity (server)'
+04-01 16:01:47.610  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x4, deviceId=-1, 24634809, channel '9830ee7 NavigationBar0 (server)'
+04-01 16:01:47.610  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x0, deviceId=-1, 24634809, channel '[Gesture Monitor] miui-gesture (server)'
+04-01 16:01:47.612  1413  2768 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 16:01:47.612  1931  2318 I whetstone.activity: Power Event callback listener is empty for resId=64
+04-01 16:01:47.612  1413  2768 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 16:01:47.613  1413  2768 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 16:01:47.613  1931  2318 D BatteryStatsManagerStub: notifyEvent for resId=64 used 0ms
+04-01 16:01:47.613  1413  1749 D RefreshRateSelector: Touch Boost
+04-01 16:01:47.613  1413  1749 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 16:01:47.613  1413  1749 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 16:01:47.613  1413  1749 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 16:01:47.614  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:47.615  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:47.615  1254  1254 E ANDR-PERF-HINTEXT: Offload new thread from FpsUpdatePreAction
+04-01 16:01:47.616  1931  4223 W MIUIInput: Input event injection from package: null action ACTION_UP
+04-01 16:01:47.616  1254  1407 E ANDR-PERF-UTIL: Failed to read /proc/sys/kernel/sched_min_granularity_ns
+04-01 16:01:47.616  1254  1407 E ANDR-PERF-OPTSHANDLER: Failed to read /proc/sys/kernel/sched_min_granularity_ns
+04-01 16:01:47.616  1254  1407 E ANDR-PERF-RESOURCEQS: Failed to apply optimization [3, 54]
+04-01 16:01:47.616  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x1, deviceId=-1, 24634809, channel '66a1c7b app.blearn.mobile/app.blearn.mobile.MainActivity (server)'
+04-01 16:01:47.616  1931  2882 D MIUIInput: [MotionEvent] publisher action=0x1, deviceId=-1, 24634809, channel '[Gesture Monitor] miui-gesture (server)'
+04-01 16:01:47.612  1254  1254 W perf@2.2-servic: type=1400 audit(0.0:11483): avc:  denied  { read } for  name="sched_min_granularity_ns" dev="proc" ino=3022165 scontext=u:r:vendor_hal_perf_default:s0 tcontext=u:object_r:proc_sched:s0 tclass=file permissive=0
+04-01 16:01:47.617  1931  2318 I whetstone.activity: Power Event callback listener is empty for resId=64
+04-01 16:01:47.617  1931  2318 D BatteryStatsManagerStub: notifyEvent for resId=64 used 0ms
+04-01 16:01:47.626  1246  1496 I SDM     : HWDeviceDRM::UpdateMixerAttributes: Mixer WxH 1080x2400-0 for Peripheral
+04-01 16:01:47.626  1246  1496 I SDM     : HWCDisplay::SubmitDisplayConfig: Active configuration changed to: 0
+04-01 16:01:47.673  1931  4223 D PerfShielderService: app.blearn.mobile|app.blearn.mobile/app.blearn.mobile.MainActivity|772|24459462096656|384|5|7
+04-01 16:01:47.674  6014 16438 W MiuiPerfServiceClient: interceptAndQueuing:23046|app.blearn.mobile|772|384|24459462096656|Slow issue draw commands|7
+04-01 16:01:47.682  1413  1413 D RefreshRateSelector: Touch Boost
+04-01 16:01:47.682  1413  1413 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 16:01:47.682  1413  1413 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 16:01:47.682  1413  1413 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 16:01:47.846  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:48.751  1931  4085 I NetworkBoostStatusManager: handle: 107
+04-01 16:01:48.760  3991  4846 E PhoneAdapter: get ntnphones failed, exception: java.lang.IllegalStateException: Default phones haven't been made yet!
+04-01 16:01:48.760  1931  4085 D SLM-SRV-SLAService: isModemSingnalStrengthStatus = 0
+04-01 16:01:48.969  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:49.194  1931  2861 W ActivityManagerServiceImpl: Sending non-protected broadcast miui.intent.action.CYCLE_CHECK from system uid 1000 pkg android. Callers=com.android.server.am.ActivityManagerService.checkBroadcastFromSystem:15246 com.android.server.am.ActivityManagerService.broadcastIntentLockedTraced:16076 com.android.server.am.ActivityManagerService.broadcastIntentLocked:15304 com.android.server.am.ActivityManagerService.broadcastIntentInPackage:16309 com.android.server.am.ActivityManagerService$LocalService.broadcastIntentInPackage:19055 
+04-01 16:01:49.195  1931  2861 D AlarmManager: mBroadcastRefCount -> 1
+04-01 16:01:49.204  1931  2014 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300856,297765)} caps=LCMNFU always=false idle=false
+04-01 16:01:49.206  1931  1931 D AlarmManager: mBroadcastRefCount -> 0
+04-01 16:01:49.206  1931  1931 D AlarmManager: mPendingIntent -> PendingIntent{3224d42: PendingIntentRecord{c313153 android broadcastIntent}}
+04-01 16:01:49.209  1931  2014 I android_os_HwBinder: HwBinder: Starting thread pool for getting: vendor.xiaomi.hardware.micharge@1.0::IMiCharge/default
+04-01 16:01:49.212  1285  1296 I vendor.xiaomi.hardware.micharge@1.0-service: ReadFilePathValue path = /sys/class/power_supply/battery/temp value = 280
+04-01 16:01:49.214  1931  2014 I android_os_HwBinder: HwBinder: Starting thread pool for getting: vendor.xiaomi.hardware.micharge@1.0::IMiCharge/default
+04-01 16:01:49.215  1285  1296 I vendor.xiaomi.hardware.micharge@1.0-service: ReadFilePathValue path = /sys/class/power_supply/battery/charge_control_limit value = 0
+04-01 16:01:49.242  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:49.317  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_WAKE_IND: 0xFD
+04-01 16:01:49.317  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK ON
+04-01 16:01:49.318  1109  5528 D vendor.qti.bluetooth@1.0-wake_lock: Acquire wakelock is acquired 
+04-01 16:01:49.318  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Writing IBS_WAKE_ACK
+04-01 16:01:49.319  4969  5531 I bt_stack: [INFO:btm_ble_gap.cc(3528)] btm_ble_process_adv_pkt_cont Data Complete 46:61:fd:16:0c:22
+04-01 16:01:49.358  1109  5528 I vendor.qti.bluetooth@1.0-ibs_handler: ProcessIbsCmd: Received IBS_SLEEP_IND: 0xFE
+04-01 16:01:49.359  1109  5528 D vendor.qti.bluetooth@1.0-ibs_handler: SerialClockVote: vote for UART CLK OFF
+04-01 16:01:49.509  1109  5267 D vendor.qti.bluetooth@1.0-wake_lock: Release wakelock is released 
+04-01 16:01:49.778  1899  1899 I wificond: station_bandwidth: P
+04-01 16:01:49.841 23626 23626 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+04-01 16:01:49.844  5908  6411 W MediaProvider: isAppCloneUserPair for user 0: false
+04-01 16:01:49.847 23626 23626 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+04-01 16:01:49.924  1931  4223 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(300820,985)} caps=LCMNFU always=false idle=false
+04-01 16:01:49.938  4883 23533 I NetworkScheduler.Stats: (REDACTED) Task %s/%s started execution. cause:%s exec_start_elapsed_seconds: %s
+04-01 16:01:49.946  4883 23585 I NetworkScheduler.Stats: (REDACTED) Task %s/%s finished executing. cause:%s result: %s elapsed_millis: %s uptime_millis: %s exec_start_elapsed_seconds: %s
+04-01 16:01:49.956  1931  4157 D ActivityManager: checkAllowBackground: uid=10163 pkg=com.google.android.gms rec=UidRecord{875802d u0a163 BFGS change:procadj procs:0 seq(300866,985)} caps=LCMNFU always=false idle=false
+04-01 16:01:50.027  1931  3244 I SmartPower: com.google.android.gms/10163(5288): background->idle(3002ms) R(service destroy com.google.android.gms/.chimera.GmsIntentOperationService) adj=600.
+04-01 16:01:50.052  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:50.295  1931  2916 D MiuiNetworkPolicy: updateLimit mLimitEnabled=false,enabled=true,mNetworkPriorityMode=255,mThermalForceMode=0
+04-01 16:01:50.303  1931  2916 I MiuiNetworkPolicy: getEnableLimitTimeout when thermal mode is:0
+04-01 16:01:50.327  1254  1254 E vendor.qti.hardware.perf@2.2-service: Unknown params
+04-01 16:01:50.453 23046 23046 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-01 16:01:50.454 23046 23046 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 97311483, pluginId: ScreenTime, methodName: consumePendingNavigation
+04-01 16:01:50.454 23046 23046 V Capacitor: callback: 97311483, pluginId: ScreenTime, methodName: consumePendingNavigation, methodData: {}
+04-01 16:01:50.455 23046 23143 D BlearnScreenTime: consume_pending_navigation_empty
+04-01 16:01:50.456 23046 23046 I Capacitor/Console: File:  - Line 333 - Msg: undefined
+04-01 16:01:50.613  1413  1749 D MI-SF   : mIsSupportAutomodeForMaxFpsSetting is 0(0), getCurrentBrightness() = 764(328), mIsKeepAutoMode 0
+04-01 16:01:50.614  1413  1749 D RefreshRateSelector: fixedMode_group: 0, isFindModeGroup 0
+04-01 16:01:50.614  1413  1749 D RefreshRateSelector: find max refresh rate:120, mode Group:0
+04-01 16:01:50.659  1931  4223 I ActivityManager: Broadcasting: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }
+04-01 16:01:50.660  1931  4223 I ActivityManager: Broadcast action android.intent.action.MEDIA_SCANNER_SCAN_FILE forcing include-background
+04-01 16:01:50.660  1931  4223 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300800,888)} caps=LCMNFU always=true idle=false
+04-01 16:01:50.660  1931  4223 I ActivityManager: App 10219/com.google.android.providers.media.module targets O+, restricted
+04-01 16:01:50.660  1931  4223 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 16:01:50.660  1931  4223 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300856,297765)} caps=LCMNFU always=true idle=false
+04-01 16:01:50.660  1931  4223 I ActivityManager: App 1000/com.miui.securitycore targets O+, restricted
+04-01 16:01:50.660  1931  4223 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=true onallowlist(ei)=true
+04-01 16:01:50.660  1931  4223 I ActivityManager: Enqueued broadcast Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x400000 }: 0
+04-01 16:01:50.661  1931  2365 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300800,888)} caps=LCMNFU always=true idle=false
+04-01 16:01:50.661  1931  2365 I ActivityManager: App 10219/com.google.android.providers.media.module targets O+, restricted
+04-01 16:01:50.661  1931  2365 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module startMode=2 onallowlist=false onallowlist(ei)=false
+04-01 16:01:50.664  5908  5908 I MediaServiceV2: Creating work for intent Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-01 16:01:50.665  5908  5908 I MediaServiceV2: Work enqueued for intent: Intent { act=android.intent.action.MEDIA_SCANNER_SCAN_FILE dat=file:///... flg=0x1400010 cmp=com.google.android.providers.media.module/com.android.providers.media.MediaServiceV2 }
+04-01 16:01:50.666  1931  2365 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300856,297765)} caps=LCMNFU always=true idle=false
+04-01 16:01:50.667  1931  2365 I ActivityManager: App 1000/com.miui.securitycore targets O+, restricted
+04-01 16:01:50.667  1931  2365 D ActivityManager: checkAllowBackground: uid=1000 pkg=com.miui.securitycore startMode=2 onallowlist=true onallowlist(ei)=true
+04-01 16:01:50.670 23626 23626 I DoViGenericTag: Logger Terminated
+04-01 16:01:50.674  1931  2012 I ActivityManager: Broadcast completed: result=0
+04-01 16:01:50.689  5908  6079 D WM-SystemJobScheduler: Scheduling work ID d675b6e3-cada-4489-8aaa-3e81046f9e73Job ID 10828
+04-01 16:01:50.690  1931  4223 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300868,888)} caps=LCMNFU always=false idle=false
+04-01 16:01:50.698  1931  4223 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 16:01:50.698  1931  4223 D BatteryStatsManagerStub: notifyEvent for resId=256 used 0ms
+04-01 16:01:50.699  5908  6079 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 16:01:50.699  5908  6079 D WM-GreedyScheduler: Starting work for d675b6e3-cada-4489-8aaa-3e81046f9e73
+04-01 16:01:50.699  5908  5908 D WM-SystemJobService: onStartJob for WorkGenerationalId(workSpecId=d675b6e3-cada-4489-8aaa-3e81046f9e73, generation=0)
+04-01 16:01:50.701  5908  6079 D WM-Processor: Processor: processing WorkGenerationalId(workSpecId=d675b6e3-cada-4489-8aaa-3e81046f9e73, generation=0)
+04-01 16:01:50.701  5908  6079 D WM-Processor: Work WorkGenerationalId(workSpecId=d675b6e3-cada-4489-8aaa-3e81046f9e73, generation=0) is already enqueued for processing
+04-01 16:01:50.704  5908  5908 D WM-WorkerWrapper: Starting work for com.android.providers.media.MediaServiceV2
+04-01 16:01:50.704  5908 23639 I MediaServiceV2: Work initiated for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-01 16:01:50.723  5908 23639 I MediaServiceV2: Work ended for action [ android.intent.action.MEDIA_SCANNER_SCAN_FILE ]
+04-01 16:01:50.724  5908  6079 I WM-WorkerWrapper: Worker result SUCCESS for Work [ id=d675b6e3-cada-4489-8aaa-3e81046f9e73, tags={ com.android.providers.media.MediaServiceV2 } ]
+04-01 16:01:50.726  5908  5908 D WM-Processor: Processor d675b6e3-cada-4489-8aaa-3e81046f9e73 executed; reschedule = false
+04-01 16:01:50.726  5908  5908 D WM-SystemJobService: d675b6e3-cada-4489-8aaa-3e81046f9e73 executed on JobScheduler
+04-01 16:01:50.727  1931  4223 I whetstone.activity: Power Event callback listener is empty for resId=256
+04-01 16:01:50.727  1931  4223 D BatteryStatsManagerStub: notifyEvent for resId=256 used 0ms
+04-01 16:01:50.732  5908  6002 D WM-GreedyScheduler: Cancelling work ID d675b6e3-cada-4489-8aaa-3e81046f9e73
+04-01 16:01:50.735  5908  6002 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.
+04-01 16:01:50.747  5908  6079 D WM-SystemJobScheduler: Scheduling work ID abce99cf-f299-4650-b9be-e7b3910fc1d2Job ID 10829
+04-01 16:01:50.747  1931  3801 D ActivityManager: checkAllowBackground: uid=10219 pkg=com.google.android.providers.media.module rec=UidRecord{13e0cf5 u0a219 PER  change:procadj procs:0 seq(300872,888)} caps=LCMNFU always=false idle=false
+04-01 16:01:50.748  1931  3801 D ActivityManager: checkAllowBackground: uid=1000 pkg=android rec=UidRecord{32d667d 1000 PER  fgServices allowlist change:procadj procs:0 seq(300870,297765)} caps=LCMNFU always=false idle=false
+04-01 16:01:50.749  5908  6079 D WM-GreedyScheduler: Ignoring {WorkSpec: 32d8ab03-23d9-40ba-b7b8-55fbb9b873b7}. Requires device idle.

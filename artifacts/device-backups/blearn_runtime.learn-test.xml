@@ -1,0 +1,14 @@
+﻿<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <int name="manual_override_attempt_count_app:com.amazon.mshop.android.shopping" value="1" />
+    <string name="accessibility_foreground_package">com.android.systemui</string>
+    <long name="manual_override_attempt_window_start_app:com.amazon.mshop.android.shopping" value="1775243176949" />
+    <long name="usage_foreground_at" value="1775242878382" />
+    <int name="manual_override_attempt_count_app:com.google.android.gm" value="1" />
+    <boolean name="webview_cache_reset_v1" value="true" />
+    <long name="manual_override_attempt_window_start_app:com.google.android.gm" value="1775247518887" />
+    <string name="pending_navigation_runtime_state">{&quot;queue&quot;:[{&quot;route&quot;:&quot;/intervention?targetId=com.google.android.gm&amp;targetType=app&amp;targetLabel=Gmail&amp;mode=learn&amp;overlaySessionId=session-manual-learn&amp;unlockDurationMinutes=12&amp;deckId=deck_pizq5ngs&quot;,&quot;targetId&quot;:&quot;com.google.android.gm&quot;,&quot;targetType&quot;:&quot;app&quot;,&quot;mode&quot;:&quot;learn&quot;,&quot;sessionId&quot;:&quot;session-manual-learn&quot;,&quot;targetLabel&quot;:&quot;Gmail&quot;,&quot;deckId&quot;:&quot;deck_pizq5ngs&quot;,&quot;unlockDurationMinutes&quot;:12}],&quot;activeStage&quot;:&quot;&quot;,&quot;events&quot;:[],&quot;accessibilityForegroundPackage&quot;:&quot;com.android.systemui&quot;,&quot;accessibilityForegroundAt&quot;:0,&quot;usageForegroundPackage&quot;:&quot;app.blearn.mobile&quot;,&quot;usageForegroundAt&quot;:0}</string>
+    <string name="usage_foreground_package">com.android.settings</string>
+    <long name="accessibility_foreground_at" value="1775262726080" />
+</map>
+
