@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Blearn</string>
+    <string name="title_activity_main">Blearn</string>
+    <string name="package_name">app.blearn.mobile</string>
+    <string name="custom_url_scheme">app.blearn.mobile</string>
+    <string name="device_admin_label">Blearn Schutz</string>
+    <string name="device_admin_explanation">Aktiver Strict-Schutz blockiert Deinstallation und verlangt erst das bewusste Beenden des Schutzes in Android.</string>
+    <string name="device_admin_disable_warning">Strict-Schutz ist noch aktiv. Deaktiviere zuerst den Schutz in Blearn, bevor du diese Admin-Freigabe entfernst.</string>
+    <string name="server_client_id">318663171805-p7bid10kglf4snqli1ikcht06hcagi9c.apps.googleusercontent.com</string>
+</resources>
