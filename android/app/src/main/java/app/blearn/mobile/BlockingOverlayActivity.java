@@ -129,8 +129,38 @@ public class BlockingOverlayActivity extends MainActivity {
     private void dismissAndClose(String reason) {
         String sessionId = resolveBootstrapSessionId();
         BlockingFlowState.dismiss(this, sessionId, reason);
+        recordAbortSuppression();
+        navigateToLauncherHome();
         finishAndRemoveTask();
         overridePendingTransition(0, 0);
+    }
+
+    /**
+     * Abort contract: leaving the blocking flow must never drop the user back
+     * into the still-foregrounded blocked app, which would immediately
+     * re-trigger the overlay and create a loop. We suppress re-triggers for
+     * the aborted target briefly and send the user to the launcher instead.
+     */
+    private void recordAbortSuppression() {
+        if (bootstrapNavigation == null || !bootstrapNavigation.isValid()) {
+            return;
+        }
+        AbortSuppressionStore.recordAbort(
+            this,
+            bootstrapNavigation.targetType,
+            bootstrapNavigation.targetId
+        );
+    }
+
+    private void navigateToLauncherHome() {
+        try {
+            Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+            homeIntent.addCategory(Intent.CATEGORY_HOME);
+            homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(homeIntent);
+        } catch (RuntimeException error) {
+            Log.d(TAG, "launcher home navigation failed", error);
+        }
     }
 
     @Override

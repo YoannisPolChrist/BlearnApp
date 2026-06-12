@@ -300,6 +300,36 @@ export async function waitForPersistStorageIdle(storageKey: string, timeoutMs = 
   }
 }
 
+/**
+ * Flush every tracked persist key. Used on app pause/hide so that in-flight
+ * IndexedDB writes (the entire learning store is serialized asynchronously)
+ * are not lost when Android kills or freezes the WebView — the root cause of
+ * "my reviews were not saved" reports. Never throws: a flush failure must not
+ * break the pause path; it is logged for diagnostics instead.
+ */
+export async function flushAllPersistStorage(timeoutMs = 1500): Promise<{
+  flushedKeys: string[];
+  timedOutKeys: string[];
+}> {
+  const storageKeys = [...pendingStorageWrites.keys()];
+  const flushedKeys: string[] = [];
+  const timedOutKeys: string[] = [];
+
+  await Promise.all(
+    storageKeys.map(async (storageKey) => {
+      try {
+        await waitForPersistStorageIdle(storageKey, timeoutMs);
+        flushedKeys.push(storageKey);
+      } catch (error) {
+        timedOutKeys.push(storageKey);
+        console.warn(`Persist flush timed out for "${storageKey}":`, error);
+      }
+    }),
+  );
+
+  return { flushedKeys, timedOutKeys };
+}
+
 export function isQuotaExceededError(error: unknown) {
   if (error instanceof DOMException) {
     return error.name === 'QuotaExceededError' || error.code === 22;

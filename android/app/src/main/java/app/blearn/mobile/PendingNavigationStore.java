@@ -190,6 +190,9 @@ final class PendingNavigationStore {
     private static final int MAX_PENDING_QUEUE_SIZE = 1;
     private static final long ACCESSIBILITY_OBSERVATION_FRESH_MS = 4_000L;
     private static final long FOREGROUND_OBSERVATION_WRITE_DEBOUNCE_MS = 750L;
+    // Any active navigation older than this is considered orphaned: opening
+    // Blearn normally must never resurrect an ancient blocking flow.
+    private static final long ACTIVE_NAVIGATION_TTL_MS = 2L * 60L * 1000L;
 
     private PendingNavigationStore() {
     }
@@ -292,6 +295,25 @@ final class PendingNavigationStore {
                 debug("consume discarded stale handoff_complete after " + age + "ms");
                 return null;
             } else {
+                long lastActivityAt = findLatestEventTimestampForSession(state, state.active.sessionId);
+                long age = lastActivityAt > 0L
+                    ? System.currentTimeMillis() - lastActivityAt
+                    : ACTIVE_NAVIGATION_TTL_MS + 1;
+                if (age > ACTIVE_NAVIGATION_TTL_MS) {
+                    PendingNativeNavigation staleNavigation = state.active;
+                    appendEvent(
+                        state,
+                        "stale-cleared",
+                        "stale active navigation (stage=" + state.activeStage + ") discarded after " + age + "ms",
+                        staleNavigation
+                    );
+                    state.queue.clear();
+                    state.active = null;
+                    state.activeStage = "";
+                    writeState(context, state);
+                    debug("consume discarded stale active navigation after " + age + "ms");
+                    return null;
+                }
                 appendEvent(state, "reopened", "resuming active blocking flow after interruption", state.active);
                 writeState(context, state);
                 debug("consume reopened session=" + state.active.sessionId);
@@ -744,6 +766,17 @@ final class PendingNavigationStore {
         long latest = 0L;
         for (RuntimeEvent event : state.events) {
             if (stage.equals(event.stage) && event.at > latest) {
+                latest = event.at;
+            }
+        }
+        return latest;
+    }
+
+    private static long findLatestEventTimestampForSession(RuntimeState state, String sessionId) {
+        String normalizedSessionId = safe(sessionId);
+        long latest = 0L;
+        for (RuntimeEvent event : state.events) {
+            if (normalizedSessionId.equals(safe(event.sessionId)) && event.at > latest) {
                 latest = event.at;
             }
         }

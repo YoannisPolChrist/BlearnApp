@@ -143,6 +143,12 @@ public class ScreenTimeAccessibilityService extends AccessibilityService {
             return;
         }
 
+        if (AbortSuppressionStore.isSuppressed(this, match.target.type, match.target.id, System.currentTimeMillis())) {
+            debug("skip: abort suppression active for " + match.target.type + ":" + match.target.id);
+            hideOverlayIfIdle();
+            return;
+        }
+
         String targetKey = match.target.type + ":" + match.target.id;
         BlockingTriggerDecision triggerDecision = BlockingTriggerDecision.decide(
             handoffCoordinator.isHandoffInProgress(),

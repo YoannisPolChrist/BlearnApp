@@ -14,6 +14,7 @@ import { BlockingLoadingShell } from "./components/blocking/BlockingLoadingShell
 import { AppTourProvider } from "./components/setup/AppTourProvider";
 import { APP_TOUR_STEPS } from "./components/setup/appTourSteps";
 import { useNativePendingNavigation } from "./hooks/useNativePendingNavigation";
+import { usePersistFlushOnHide } from "./hooks/usePersistFlushOnHide";
 import { isBlockingOverlayRoute, isBlockingRoutePath } from "./lib/blockingOverlayRoutes";
 import { completeNativeRouteHandoff } from "./lib/nativeRouteHandoff";
 import { recordNativeOverlayRuntimeEvent } from "./lib/nativeOverlayRuntime";
@@ -107,6 +108,7 @@ function MainAppShell({ hideChrome }: { hideChrome: boolean }) {
 
 function AppInner() {
   const location = useLocation();
+  usePersistFlushOnHide();
   const pendingBlockingNavigationState = useNativePendingNavigation();
   const pendingBlockingNavigation = pendingBlockingNavigationState.active;
   const overlaySessionId = new URLSearchParams(location.search).get("overlaySessionId");

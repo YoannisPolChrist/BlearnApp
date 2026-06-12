@@ -8,6 +8,41 @@ interface UseOverlayDismissGuardOptions {
 }
 
 const BACKGROUND_EXIT_GRACE_MS = 500;
+const DISMISS_RETRY_DELAY_MS = 400;
+
+function wait(ms: number) {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
+}
+
+/**
+ * Dismiss with self-healing: a single failed native dismiss must never leave
+ * the overlay/handoff state inconsistent until the next trigger. We retry
+ * once after a short backoff, and if that also fails we abandon the pending
+ * navigation so the native side clears its blocking flow state.
+ */
+async function dismissWithRecovery(sessionId: string | null): Promise<void> {
+  try {
+    await dismissBlockingOverlay(sessionId);
+    return;
+  } catch (firstError) {
+    console.warn('Blocking overlay dismiss failed, retrying once:', firstError);
+  }
+
+  await wait(DISMISS_RETRY_DELAY_MS);
+
+  try {
+    await dismissBlockingOverlay(sessionId);
+    return;
+  } catch (retryError) {
+    console.error('Blocking overlay dismiss failed after retry, forcing abandon:', retryError);
+  }
+
+  // Last resort: abandon clears the pending navigation + native flow state
+  // through a different code path, preventing a stuck overlay session.
+  await abandonPendingNavigation(sessionId);
+}
 
 export function useOverlayDismissGuard({
   active,
@@ -54,7 +89,7 @@ export function useOverlayDismissGuard({
     }
 
     try {
-      await dismissBlockingOverlay(sessionIdRef.current);
+      await dismissWithRecovery(sessionIdRef.current);
       return true;
     } catch (error) {
       dismissedRef.current = false;
@@ -69,7 +104,7 @@ export function useOverlayDismissGuard({
 
     dismissedRef.current = true;
     try {
-      await dismissBlockingOverlay(sessionIdRef.current);
+      await dismissWithRecovery(sessionIdRef.current);
       return true;
     } catch (error) {
       dismissedRef.current = false;
