@@ -28,6 +28,7 @@ import {
   migrateUnlockGrant,
 } from '@/lib/learning';
 import { createIndexedDbJsonStorage } from '@/lib/persistStorage';
+import { replayReviewWal } from '@/modules/learning/store/reviewWriteAheadLog';
 import type { LearningPreset, LearningDeck, LearningNote, LearningCard, ReviewLog } from '@/lib/learning';
 import { normalizeMediaRegistry } from '@/modules/learning/media/mediaRegistry';
 import { normalizeMediaTransferQueue } from '@/modules/learning/media/mediaTransferQueue';
@@ -284,3 +285,21 @@ export const useLearningStore = create<LearningStoreWithPhase3>()(
     ),
   ),
 );
+
+// Replay the review write-ahead log once the persisted snapshot is hydrated
+// (Masterplan 2.2): reviews whose async snapshot write was killed mid-flight
+// are restored from the synchronous WAL. Replay also runs when hydration has
+// already finished by the time this module evaluates.
+const replayWalAfterHydration = () => {
+  try {
+    replayReviewWal(useLearningStore);
+  } catch (error) {
+    console.warn('Review-WAL replay failed:', error);
+  }
+};
+
+if (useLearningStore.persist.hasHydrated()) {
+  replayWalAfterHydration();
+} else {
+  useLearningStore.persist.onFinishHydration(replayWalAfterHydration);
+}

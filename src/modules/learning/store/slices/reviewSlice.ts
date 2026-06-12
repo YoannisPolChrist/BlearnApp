@@ -15,6 +15,7 @@ import {
   type ReviewLog,
 } from '@/lib/learning';
 import { normalizeTargetValue } from '@/lib/targetModes';
+import { appendReviewToWal } from '@/modules/learning/store/reviewWriteAheadLog';
 import type { LearningReviewSlice, LearningStore } from '../types';
 import { buildLearningStoreIndexes } from '../helpers';
 
@@ -177,6 +178,12 @@ export const createLearningReviewSlice: StateCreator<LearningStore, [], [], Lear
     const reviewResult = buildReviewResult(card, rating, wasCorrect, preset);
     const { updatedCard, log } = reviewResult;
     const defaultPresetId = getDefaultLearningPreset().id;
+
+    // Durability contract (Masterplan 2.2): commit the review synchronously
+    // to the write-ahead log BEFORE the store update schedules the large
+    // asynchronous snapshot persist. A WebView kill between this point and
+    // the snapshot commit costs nothing — startup replay restores the review.
+    appendReviewToWal(migrateLearningCard(updatedCard), migrateReviewLog(log));
 
     set((state) => {
       const migratedLog = migrateReviewLog(log);

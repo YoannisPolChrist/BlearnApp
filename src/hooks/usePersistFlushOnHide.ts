@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
 import { flushAllPersistStorage } from '@/lib/persistStorage';
+import { clearReviewWal } from '@/modules/learning/store/reviewWriteAheadLog';
+
+const LEARNING_PERSIST_KEY = 'blearn-learning-storage';
 
 /**
  * Flushes all pending persist writes whenever the WebView is about to be
@@ -22,6 +25,14 @@ export function usePersistFlushOnHide() {
 
       void flushAllPersistStorage()
         .then(({ flushedKeys, timedOutKeys }) => {
+          if (
+            flushedKeys.includes(LEARNING_PERSIST_KEY)
+            && !timedOutKeys.includes(LEARNING_PERSIST_KEY)
+          ) {
+            // The learning snapshot is durably committed; every WAL entry is
+            // now redundant and can be dropped (Masterplan 2.2).
+            clearReviewWal();
+          }
           if (timedOutKeys.length > 0) {
             console.warn(
               `Persist flush (${reason}) incomplete; timed out:`,

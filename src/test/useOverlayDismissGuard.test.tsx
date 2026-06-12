@@ -98,7 +98,7 @@ describe('useOverlayDismissGuard', () => {
     await waitFor(() => expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(2));
   });
 
-  it('allows retrying dismissOnce after a dismissal error', async () => {
+  it('self-heals dismissOnce: retries after a dismissal error and succeeds in one call', async () => {
     let dismissOnce: () => Promise<boolean> = async () => false;
 
     const onReady = vi.fn((nextDismissOnce: () => Promise<boolean>) => {
@@ -111,10 +111,32 @@ describe('useOverlayDismissGuard', () => {
 
     render(<GuardHarness active={true} overlaySessionId="session-retry" onReady={onReady} />);
 
-    await expect(dismissOnce()).rejects.toThrow('bridge busy');
+    // New contract: a single failed native dismiss must never surface to the
+    // caller or leave inconsistent state — the guard retries internally.
     await expect(dismissOnce()).resolves.toBe(true);
 
     expect(dismissBlockingOverlayMock).toHaveBeenNthCalledWith(1, 'session-retry');
     expect(dismissBlockingOverlayMock).toHaveBeenNthCalledWith(2, 'session-retry');
+    expect(abandonPendingNavigationMock).not.toHaveBeenCalled();
+  });
+
+  it('forces abandon when dismiss keeps failing so native state cannot stay stuck', async () => {
+    let dismissOnce: () => Promise<boolean> = async () => false;
+
+    const onReady = vi.fn((nextDismissOnce: () => Promise<boolean>) => {
+      dismissOnce = nextDismissOnce;
+    });
+
+    dismissBlockingOverlayMock.mockRejectedValue(new Error('bridge dead'));
+    abandonPendingNavigationMock.mockResolvedValue(undefined);
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    render(<GuardHarness active={true} overlaySessionId="session-stuck" onReady={onReady} />);
+
+    await expect(dismissOnce()).resolves.toBe(true);
+
+    expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(2);
+    expect(abandonPendingNavigationMock).toHaveBeenCalledWith('session-stuck');
+    consoleError.mockRestore();
   });
 });
