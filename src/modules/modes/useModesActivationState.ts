@@ -9,7 +9,8 @@ import { getScheduleDurationHours } from '@/lib/view-models/modes';
 import { haveBlockingDraftChanges, type DraftBlockingState } from '@/modules/modes/draftBlocking';
 import type { ModeId } from '@/modules/modes/modeTypes';
 
-export const MAX_STRICT_LOCK_DURATION_HOURS = 20;
+export { MAX_STRICT_LOCK_DURATION_HOURS } from '@/lib/strictLockLimits';
+import { MAX_STRICT_LOCK_DURATION_HOURS } from '@/lib/strictLockLimits';
 
 type PermissionStatus = {
   usageStats: boolean;

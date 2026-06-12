@@ -8,6 +8,7 @@ import {
   isStrictAddonActive,
   type StrictAddonModeId,
 } from '@/lib/targetModes';
+import { clampStrictLockEnd } from '@/lib/strictLockLimits';
 
 export const createModeSlice: AppStoreSlice<Partial<AppState>> = (set, get) => ({
   activeMode: 'normal',
@@ -83,7 +84,18 @@ export const createModeSlice: AppStoreSlice<Partial<AppState>> = (set, get) => (
       });
     }),
   setBlockingMode: (mode) => set({ blockingMode: mode }),
-  setStrictSchedule: (start, end) => set({ strictStartTime: start, strictEndTime: end }),
+  setStrictSchedule: (start, end) =>
+    set((state) => {
+      // Requirement: settings are immutable while the strict window runs.
+      // The UI disables these controls, but the store is the last line of
+      // defense — a locked schedule silently changing would void the
+      // commitment the user made.
+      const lockActive = state.strictLockUntil !== null && Date.now() < state.strictLockUntil;
+      if (lockActive) {
+        return state;
+      }
+      return { ...state, strictStartTime: start, strictEndTime: end };
+    }),
   setBreathingRounds: (rounds) => set({ breathingRounds: rounds }),
   setInterventionInterval: (minutes) => set({ interventionInterval: minutes }),
   setDefaultUnlockDurationMinutes: (minutes) => set({ defaultUnlockDurationMinutes: minutes }),
@@ -116,8 +128,12 @@ export const createModeSlice: AppStoreSlice<Partial<AppState>> = (set, get) => (
       return;
     }
 
+    // Hard cap (requirement): a strict lock never exceeds 20 hours from
+    // activation, regardless of how the window was configured or persisted.
+    const lockUntil = clampStrictLockEnd(now.getTime(), endDate.getTime());
+
     set((state) => applyModeState(state, {
-      strictLockUntil: endDate.getTime(),
+      strictLockUntil: lockUntil,
       strictLockScope: scope,
     }, now.getTime()));
   },
@@ -144,6 +160,9 @@ export const createModeSlice: AppStoreSlice<Partial<AppState>> = (set, get) => (
       return;
     }
 
+    // Same hard cap as the main strict lock: never more than 20 hours.
+    const addonLockUntil = clampStrictLockEnd(now.getTime(), endDate.getTime());
+
     const uniqueLockedApps = Array.from(new Set(lockedAppIds));
 
     set((state) => applyModeState(state, {
@@ -152,7 +171,7 @@ export const createModeSlice: AppStoreSlice<Partial<AppState>> = (set, get) => (
         [mode]: {
           ...state.strictAddons[mode],
           enabled: true,
-          lockUntil: endDate.getTime(),
+          lockUntil: addonLockUntil,
           lockedAppIds: uniqueLockedApps,
         },
       },

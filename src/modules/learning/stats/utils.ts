@@ -1,5 +1,6 @@
 
 import type { ReviewLog } from '../domain/entities';
+import { getLocalDateKey } from '@/lib/localDate';
 
 export const DEFAULT_OPTIMIZER_MIN_REVIEWS = 300;
 export const DEFAULT_OPTIMIZER_MIN_ACTIVE_DAYS = 14;
@@ -9,7 +10,10 @@ export const DEFAULT_OPTIMIZER_NEW_REVIEWS = 500;
 export function countDistinctActiveDays(reviewLogs: ReviewLog[]): number {
   const activeDays = new Set<string>();
   reviewLogs.forEach((log) => {
-    activeDays.add(new Date(log.reviewedAt).toISOString().slice(0, 10));
+    // Local date key, consistent with countReviewsToday's local-midnight
+    // boundary. The previous toISOString() bucketed days in UTC, so reviews
+    // near midnight could count toward the wrong day.
+    activeDays.add(getLocalDateKey(log.reviewedAt));
   });
   return activeDays.size;
 }
