@@ -448,3 +448,17 @@ Anforderung (Aktivierung → Pflicht-Zeitfenster, Einstellungen im Fenster unver
 - **[AGENT D] Phase D komplett:** Design-Overhaul nach Briefing; Copy-Budgets nach jedem Screen im Ratchet ABSENKEN. SyncStatusBadge als Beispiel für die Ziel-Copy-Dichte nehmen.
 - **[AGENT D ODER A2] Strict-Modus-UX-Lücke:** Der Store erzwingt jetzt das 20-h-Cap durch stilles Clampen — die UI sollte beim Aktivieren die effektive Lock-Endzeit anzeigen ("Gesperrt bis 17:00"), damit Clamping nie überrascht. Plus: Modes-Save-Bug "Einstellungen bereits aktiv" (Project Memory) triagieren.
 - **[ALLE] Vor Merge:** `npm run test` && `npm run build` && `npm run check:copy-budget` && `npm run check:android-sources`; `docs/project-memory.md` nach jeder Phase aktualisieren.
+
+### Performance-Update (Runde 3, 2026-06-12)
+
+**Erledigt (4b.2 teilweise, messbar):**
+- Alby/Lightning-SDK aus der initialen Ladekette entfernt: war via penaltySlice statisch im App-Store-Importgraph. Jetzt dynamischer Import bei erster Nutzung + eigener `alby`-Chunk. **vendor-misc: 452 kB → 211 kB (gzip 147 → 66,5)**; der 260-kB-Alby-Chunk (82 kB gzip) lädt nur noch bei Wallet-/Penalty-Nutzung. Initialer Kaltstart: ~80 kB gzip leichter.
+- sql.js (Anki-Import, inkl. WASM-Loader) aus dem Store-Importgraph gelöst: dynamischer Import im importSlice; liegt jetzt im eigenen Lazy-Chunk `ankiImport` + separatem WASM-Asset.
+- Selbstprüfungs-Fix: WAL-Clear-Regel im Pause-Flush präzisiert (Tracker droppt idle Keys; WAL wird jetzt immer geleert, außer der Learning-Flush lief in einen Timeout).
+
+**[AGENT A3 / D — OFFEN, Performance 4b]:**
+- `learning-engine` (ts-fsrs, 27 kB gzip) hängt weiter in der initialen Kette via useLearningStore — prüfen ob Store-Hydration ohne FSRS-Import starten kann (4b.2 Startpfad).
+- index-CSS 172 kB (24,7 gzip): Tailwind-Purge-Audit.
+- Geräte-Messungen (Budgets aus 4b.1): Kaltstart, Overlay→erste Karte, Review-Tap-Latenz — NUR auf dem Gerät messbar.
+- Listen-Virtualisierung (Card Browser, 4b.3), React-Profiler-Session, Breathing-Sphere-Mount-Audit.
+- Design (Phase D) ist unverändert KOMPLETT offen — nur der Copy-Ratchet existiert. SyncStatusBadge als Copy-Vorbild.

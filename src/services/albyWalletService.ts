@@ -1,5 +1,16 @@
-import { LN, SATS } from '@getalby/sdk/lnclient';
-import { NWCClient } from '@getalby/sdk/nwc';
+import type { NWCClient } from '@getalby/sdk/nwc';
+
+// Performance (Masterplan 4b.2): the Alby/Lightning SDK is heavy and only
+// needed for penalty-wallet features, but a static import here pulled it
+// into the app store's initial load chain (penaltySlice -> this service).
+// Both SDK entry points are now loaded on first use.
+async function loadNwcModule() {
+  return import('@getalby/sdk/nwc');
+}
+
+async function loadLnClientModule() {
+  return import('@getalby/sdk/lnclient');
+}
 
 export type AlbyBudgetRenewal = 'daily' | 'weekly' | 'monthly';
 
@@ -63,7 +74,8 @@ function readNumber(value: unknown): number | null {
   return typeof value === 'number' && Number.isFinite(value) ? value : null;
 }
 
-function createNwcClient(connection: AlbyConnectionConfig): NWCClient {
+async function createNwcClient(connection: AlbyConnectionConfig): Promise<NWCClient> {
+  const { NWCClient } = await loadNwcModule();
   return new NWCClient({
     nostrWalletConnectUrl: normalizeNwcConnectionUri(connection.nwcConnectionUri),
   });
@@ -209,7 +221,7 @@ export async function testAlbyConnection(connection: AlbyConnectionConfig | null
     };
   }
 
-  const client = createNwcClient(connection);
+  const client = await createNwcClient(connection);
 
   try {
     const [info, balance, budget] = await Promise.all([
@@ -261,6 +273,7 @@ export async function processAlbyPenalty(input: AlbyPenaltySignalInput): Promise
     throw new Error('Der Strafbetrag muss größer als 0 sats sein.');
   }
 
+  const { LN, SATS } = await loadLnClientModule();
   const client = new LN(normalizeNwcConnectionUri(input.connection.nwcConnectionUri));
 
   try {

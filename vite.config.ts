@@ -20,6 +20,7 @@ export default defineConfig(() => {
     { name: "theme", match: ["next-themes", "sonner"] },
     { name: "capacitor", match: ["@capacitor"] },
     { name: "anime", match: ["animejs"] },
+    { name: "alby", match: ["@getalby/", "nostr-tools", "@noble/", "@scure/"] },
     { name: "learning-engine", match: ["sql.js", "ts-fsrs", "fflate", "fzstd"] },
     { name: "ui-extras", match: ["cmdk", "embla-carousel-react", "react-day-picker", "react-resizable-panels", "vaul"] },
     { name: "utils", match: ["date-fns", "clsx", "class-variance-authority", "tailwind-merge"] },

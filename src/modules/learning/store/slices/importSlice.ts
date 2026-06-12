@@ -11,7 +11,6 @@ import {
   normalizeImportPayload,
   parseCsv,
 } from '@/lib/learning';
-import { parseAnkiPackage } from '@/lib/ankiImport';
 import { appendLearningCloudTombstones } from '@/lib/learningCloudLocalSyncState';
 import type { LearningImportSlice, LearningManualCardInput, LearningStore } from '../types';
 import {
@@ -322,6 +321,9 @@ export const createLearningImportSlice: StateCreator<LearningStore, [], [], Lear
 
   importFromAnkiPackage: async (filename, content) => {
     try {
+      // Lazy: sql.js (~MBs incl. wasm loader) is only needed for Anki
+      // imports and must not ride in the store's initial chunk chain.
+      const { parseAnkiPackage } = await import('@/lib/ankiImport');
       const { rows, reviewLogs } = await parseAnkiPackage(filename, content);
       const entities = buildEntitiesFromRows(rows, Date.now(), {
         sourceType: 'anki',

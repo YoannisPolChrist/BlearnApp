@@ -25,12 +25,11 @@ export function usePersistFlushOnHide() {
 
       void flushAllPersistStorage()
         .then(({ flushedKeys, timedOutKeys }) => {
-          if (
-            flushedKeys.includes(LEARNING_PERSIST_KEY)
-            && !timedOutKeys.includes(LEARNING_PERSIST_KEY)
-          ) {
-            // The learning snapshot is durably committed; every WAL entry is
-            // now redundant and can be dropped (Masterplan 2.2).
+          if (!timedOutKeys.includes(LEARNING_PERSIST_KEY)) {
+            // Either the learning snapshot just flushed, or it had no
+            // pending writes (the tracker drops idle keys) — in both cases
+            // the snapshot already contains every WAL'd review, so the WAL
+            // is redundant and can be dropped (Masterplan 2.2).
             clearReviewWal();
           }
           if (timedOutKeys.length > 0) {
