@@ -39,10 +39,16 @@ tmp*
 blearn-overlay*.png
 jdk-21*
 *.bin
-META-INF/
-kotlin/
-org/
-res/
-resources.arsc
-AndroidManifest.xml
+# Extracted APK dumps only — NEVER ignore real Android sources.
+# The previous global patterns (res/, AndroidManifest.xml, ...) silently
+# excluded android/app/src/main/AndroidManifest.xml and res/ from the repo.
+/extracted-apk/
+/apk-dump/
+/META-INF/
+/kotlin/
+/org/
+/resources.arsc
+/AndroidManifest.xml
+/res/
+vitest.config.ts.timestamp*
 .tools/jdk/
