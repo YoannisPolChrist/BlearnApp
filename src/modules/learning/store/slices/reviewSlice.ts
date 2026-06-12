@@ -15,7 +15,7 @@ import {
   type ReviewLog,
 } from '@/lib/learning';
 import { normalizeTargetValue } from '@/lib/targetModes';
-import { appendReviewToWal } from '@/modules/learning/store/reviewWriteAheadLog';
+import { appendReviewToWal, removeReviewFromWal } from '@/modules/learning/store/reviewWriteAheadLog';
 import type { LearningReviewSlice, LearningStore } from '../types';
 import { buildLearningStoreIndexes } from '../helpers';
 
@@ -289,8 +289,16 @@ export const createLearningReviewSlice: StateCreator<LearningStore, [], [], Lear
 
   revertReviewLog: (cardId) => {
     set((state) => {
-      const logsArray = Object.values(state.reviewLogs);
-      const log = logsArray.find((l) => l.cardId === cardId);
+      // Revert the LATEST review of this card. Object.values preserves
+      // insertion order, so a plain find() would return the OLDEST log and
+      // restore the wrong snapshot for cards reviewed more than once.
+      let log: ReviewLog | undefined;
+      for (const candidate of Object.values(state.reviewLogs)) {
+        if (candidate.cardId !== cardId) continue;
+        if (!log || candidate.reviewedAt > log.reviewedAt) {
+          log = candidate;
+        }
+      }
       if (!log || !log.previousCardSnapshot) return state;
 
       const nextReviewLogs = { ...state.reviewLogs };
@@ -298,6 +306,10 @@ export const createLearningReviewSlice: StateCreator<LearningStore, [], [], Lear
 
       const nextCards = { ...state.cards };
       nextCards[log.cardId] = log.previousCardSnapshot;
+
+      // Keep the write-ahead log consistent: an undone review must not be
+      // resurrected by a WAL replay after a kill/restart.
+      removeReviewFromWal(log.id);
 
       return {
         ...state,

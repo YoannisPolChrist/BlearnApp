@@ -88,6 +88,18 @@ export function clearReviewWal(): void {
   }
 }
 
+/**
+ * Remove a single entry, e.g. when a review is undone. Without this, a
+ * killed-and-restarted app would replay the undone review from the WAL.
+ */
+export function removeReviewFromWal(logId: string): void {
+  const entries = readWalEntries();
+  const nextEntries = entries.filter((entry) => entry.logId !== logId);
+  if (nextEntries.length !== entries.length) {
+    writeWalEntries(nextEntries);
+  }
+}
+
 export function peekReviewWal(): ReviewWalEntry[] {
   return readWalEntries();
 }

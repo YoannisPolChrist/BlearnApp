@@ -149,7 +149,15 @@ export function getDueSessionCards(
   const deckFilter = deckIds && deckIds.length > 0 ? new Set(deckIds) : null;
   return cards
     .map((card) => (cardsAreNormalized ? card : migrateLearningCard(card)))
-    .filter((card) => (!deckFilter || deckFilter.has(card.deckId)) && card.state !== 'new' && card.dueAt <= now)
+    .filter(
+      (card) =>
+        (!deckFilter || deckFilter.has(card.deckId))
+        && card.state !== 'new'
+        // Suspended cards must never surface in any queue — including the
+        // blocking learn flow — regardless of how overdue they are.
+        && card.state !== 'suspended'
+        && card.dueAt <= now,
+    )
     .sort((left, right) => {
       const statePriority = getLearningCardPriority(left.state) - getLearningCardPriority(right.state);
       if (statePriority !== 0) return statePriority;

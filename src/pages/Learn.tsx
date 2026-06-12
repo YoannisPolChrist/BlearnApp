@@ -8,6 +8,7 @@ import { AmbientOrbs } from '@/components/ui/AmbientOrbs';
 import { MetricCard } from '@/components/ui/MetricCard';
 import { QuickActionCard } from '@/components/ui/QuickActionCard';
 import { useManualLearningCloudSync } from '@/hooks/useManualLearningCloudSync';
+import { SyncStatusBadge } from '@/components/learn/SyncStatusBadge';
 import { ctaFollowThrough, heroContent, heroStat, sectionItem, sectionStagger } from '@/lib/motion';
 import { buildLearnHubSummary } from '@/lib/view-models/learn';
 import { useLearnHubActions } from '@/store/selectors';
@@ -98,6 +99,13 @@ export default function LearnPage() {
               <h1 className="break-words text-2xl font-black tracking-[-0.05em] text-foreground sm:text-3xl">
                 Learn Mode
               </h1>
+              <SyncStatusBadge
+                busy={learningCloudSyncBusy}
+                onRetry={() => {
+                  void syncLearningCloud();
+                }}
+                className="mt-1"
+              />
             </div>
             <motion.button
               type="button"
