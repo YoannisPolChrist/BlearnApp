@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import type { MonitoringStatus } from '@/plugins/ScreenTimePlugin';
 import { getMonitoringStatus, isUnsupportedPlatformError } from '@/services/screenTimeService';
 import { EMPTY_MONITORING_STATUS } from '@/services/screenTimeNormalization';
 import { useAppStore } from '@/store/useAppStore';
@@ -15,14 +16,64 @@ export interface UseProtectionHealthResult {
   active: boolean;
 }
 
+// Geteilter Monitoring-Poll: Dashboard-Karte UND Header-Schild konsumieren
+// denselben nativen Status — ein Intervall/Listener statt zwei.
+interface MonitoringPollState {
+  status: MonitoringStatus;
+  supported: boolean;
+}
+
+let pollState: MonitoringPollState = { status: EMPTY_MONITORING_STATUS, supported: true };
+const subscribers = new Set<(state: MonitoringPollState) => void>();
+let intervalId: number | null = null;
+let monitoringVisibilityHandler: (() => void) | null = null;
+
+async function refreshMonitoringStatus() {
+  try {
+    pollState = { status: await getMonitoringStatus(), supported: true };
+  } catch (error) {
+    if (isUnsupportedPlatformError(error)) {
+      pollState = { ...pollState, supported: false };
+    }
+  }
+  subscribers.forEach((notify) => notify(pollState));
+}
+
+function subscribeMonitoring(notify: (state: MonitoringPollState) => void): () => void {
+  subscribers.add(notify);
+  notify(pollState);
+
+  if (intervalId === null) {
+    void refreshMonitoringStatus();
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void refreshMonitoringStatus();
+    };
+    intervalId = window.setInterval(() => void refreshMonitoringStatus(), REFRESH_INTERVAL_MS);
+    document.addEventListener('visibilitychange', onVisible);
+    // Listener-Teardown am Singleton-Handle festhalten.
+    monitoringVisibilityHandler = onVisible;
+  }
+
+  return () => {
+    subscribers.delete(notify);
+    if (subscribers.size === 0 && intervalId !== null) {
+      window.clearInterval(intervalId);
+      intervalId = null;
+      if (monitoringVisibilityHandler) {
+        document.removeEventListener('visibilitychange', monitoringVisibilityHandler);
+        monitoringVisibilityHandler = null;
+      }
+    }
+  };
+}
+
 /**
- * Geteilte Schutz-Health-Quelle (Masterplan 1.1) für Dashboard-Karte und das
- * Header-Schild. Pollt den nativen Status konfigurationsabhängig und leitet das
- * grün/gelb/rot-Modell ab.
+ * Konfigurationsabhängiges Schutz-Health-Modell (Masterplan 1.1), geteilt über
+ * einen Singleton-Poll. Leitet das grün/gelb/rot-Modell aus dem nativen Status
+ * und der aktiven Blocking-Konfiguration ab.
  */
 export function useProtectionHealth(): UseProtectionHealthResult {
-  const [status, setStatus] = useState(EMPTY_MONITORING_STATUS);
-  const [supported, setSupported] = useState(true);
+  const [{ status, supported }, setPollState] = useState<MonitoringPollState>(() => pollState);
   const { activeModes, blockedApps, blockedSearchTerms, blockedWebsites, isStrictLocked } =
     useAppStore(
       useShallow((state) => ({
@@ -34,29 +85,9 @@ export function useProtectionHealth(): UseProtectionHealthResult {
       })),
     );
 
-  const refresh = useCallback(async () => {
-    try {
-      setStatus(await getMonitoringStatus());
-      setSupported(true);
-    } catch (error) {
-      if (isUnsupportedPlatformError(error)) {
-        setSupported(false);
-      }
-    }
-  }, []);
+  useEffect(() => subscribeMonitoring(setPollState), []);
 
-  useEffect(() => {
-    void refresh();
-    const interval = window.setInterval(() => void refresh(), REFRESH_INTERVAL_MS);
-    const onVisible = () => {
-      if (document.visibilityState === 'visible') void refresh();
-    };
-    document.addEventListener('visibilitychange', onVisible);
-    return () => {
-      window.clearInterval(interval);
-      document.removeEventListener('visibilitychange', onVisible);
-    };
-  }, [refresh]);
+  const refresh = useCallback(() => refreshMonitoringStatus(), []);
 
   const blockingModesActive = activeModes.some((mode) => mode !== 'normal');
   const health = useMemo(
