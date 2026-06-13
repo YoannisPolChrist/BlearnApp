@@ -293,7 +293,7 @@ const enPack: TranslationTree = {
       typedAnswerOn: 'Type your answer on',
       typedAnswerOff: 'Type your answer off',
       typedAnswerLabel: 'Type your answer',
-      typedAnswerHint: 'You type the answer yourself. The first 3 correct letters per word are enough to pass, so the check stays forgiving.',
+      typedAnswerHint: 'Type the answer — 3 correct letters per word are enough.',
     },
     penalty: {
       eyebrow: 'Penalty setup',

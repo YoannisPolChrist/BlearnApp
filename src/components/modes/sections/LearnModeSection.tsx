@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import type { Dispatch, SetStateAction } from 'react';
 import GlassCard from '@/components/GlassCard';
-import { DeckOptimizerTile } from '@/components/learn/DeckOptimizerTile';
 import { useI18n } from '@/hooks/useI18n';
 import type { GateRule, LearningDeck, LearningDeckStats } from '@/lib/learning';
 import { getModePalette } from '@/lib/semanticTones';
@@ -75,14 +74,6 @@ export function LearnModeSection({
         ? `Neue Karte nach ${resolvedLearnDeck.reviewsBetweenNewCards} Wiederholungen`
         : `New card after ${resolvedLearnDeck.reviewsBetweenNewCards} reviews`)
     : (isGerman ? 'Erst ein Deck auswählen' : 'Select a deck first');
-  const nextNewPreview = resolvedLearnDeck
-    ? (isGerman
-        ? `Aktuell läuft das Deck mit Mix ${resolvedLearnDeck.reviewMixLabel}.`
-        : `This deck currently runs with mix ${resolvedLearnDeck.reviewMixLabel}.`)
-    : (isGerman
-        ? 'Dann kannst du den Abstand neuer Karten direkt hier festlegen.'
-        : 'Then you can configure the new-card spacing right here.');
-
   return (
     <motion.section variants={variants}>
       <GlassCard elevation="hero" surface="hero" tone="learn" accentGlow className="space-y-5">
@@ -122,7 +113,7 @@ export function LearnModeSection({
         </div>
 
         {resolvedLearnDeck ? (
-          <div className="grid gap-3 md:grid-cols-4">
+          <div className="grid gap-3 md:grid-cols-3">
             <div className="rounded-[1.3rem] border border-border/70 bg-background/60 px-4 py-3">
               <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground">Overdue</p>
               <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-foreground">{resolvedLearnDeck.overdueCount}</p>
@@ -135,10 +126,6 @@ export function LearnModeSection({
               <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground">Retention</p>
               <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-foreground">{Math.round(resolvedLearnDeck.desiredRetention * 100)}%</p>
             </div>
-            <DeckOptimizerTile
-              deckId={resolvedLearnDeck.id}
-              optimizerStatus={resolvedLearnDeck.optimizerStatus}
-            />
           </div>
         ) : null}
 
@@ -150,9 +137,6 @@ export function LearnModeSection({
               </p>
               <p className="mt-2 text-sm font-black tracking-[-0.03em] text-foreground">
                 {reviewMixSummary}
-              </p>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                {nextNewPreview}
               </p>
             </div>
             {resolvedLearnDeck ? (

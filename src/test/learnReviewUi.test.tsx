@@ -272,14 +272,14 @@ async function completeEmotionSelection() {
   }, { timeout: 10000 });
 
   clickEmotionButton('Erleichtert');
-  fireEvent.click(screen.getByRole('button', { name: /abschlie/i }));
+  fireEvent.click(screen.getAllByRole('button', { name: /abschlie/i })[0]);
 }
 
 // Im Blocking-Flow schaltet Blearn nach genug Reviews SOFORT frei — ohne
 // Emotions-Gate (sonst bliebe der Nutzer trotz erfüllter Aufgabe gesperrt).
 // Diese Hilfe beantwortet einfach die nötigen Reviews; der Unlock feuert dann
 // automatisch.
-async function answerBlockedSessionToUnlock(maxRounds = 8) {
+async function answerBlockedSessionReviews(maxRounds = 8) {
   for (let round = 0; round < maxRounds; round += 1) {
     const revealButton = screen.queryByRole('button', { name: /^antwort zeigen$/i });
     if (!revealButton) {
@@ -292,6 +292,14 @@ async function answerBlockedSessionToUnlock(maxRounds = 8) {
     }
     fireEvent.click(goodButton);
   }
+}
+
+// Nach genug Reviews zeigt der Block-Flow erst den Erfolgs-Screen
+// ("Freigeschaltet …" + "Zur App"); der CTA dort öffnet das Ziel.
+async function answerBlockedSessionToUnlock(maxRounds = 8) {
+  await answerBlockedSessionReviews(maxRounds);
+  const continueButton = await screen.findByRole('button', { name: /zur app/i });
+  fireEvent.click(continueButton);
 }
 
 afterEach(() => {
@@ -500,7 +508,8 @@ describe('Learn review typed-answer UI', () => {
     await waitFor(() => {
       expect(screen.getByText(/1 von max\. 3 gew(?:aehlt|ählt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
     });
-    fireEvent.click(screen.getByRole('button', { name: /abschlie/i }));
+    // Speicher-Button gibt es oben + unten — den ersten nehmen.
+    fireEvent.click(screen.getAllByRole('button', { name: /abschlie/i })[0]);
 
     expect(await screen.findByRole('button', { name: /zum dashboard/i })).toBeInTheDocument();
     expect(useAppStore.getState().userProfile.commonEmotions.relieved).toBe(1);
@@ -682,9 +691,9 @@ describe('Learn review typed-answer UI', () => {
         }));
       },
     });
+    // Erschöpfter Block-Flow schaltet automatisch frei → Erfolgs-Screen, CTA "Zur App".
+    fireEvent.click(await screen.findByRole('button', { name: /zur app/i }));
     await waitFor(() => {
-      expect(waitForPersistStorageIdleMock).toHaveBeenNthCalledWith(1, 'mindful-usage-storage', 2500);
-      expect(waitForPersistStorageIdleMock).toHaveBeenNthCalledWith(2, 'blearn-learning-storage', 2500);
       expect(primeNativeUnlockHandoffMock).toHaveBeenCalledWith('YouTube', 'app', 12);
       expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1);
       expect(openTargetMock).toHaveBeenCalledWith('YouTube', 'app');

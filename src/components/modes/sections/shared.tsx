@@ -131,9 +131,6 @@ export function ModeStrictAddonBlock({
 
       <div className="rounded-[1.25rem] border border-border/70 bg-background/70 px-4 py-4 text-sm text-muted-foreground">
         {assignedAppLabel}
-        <span className="ml-2 text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground/80">
-          {t('modes.strictAddon.systemHint')}
-        </span>
       </div>
 
       {enabled ? (
@@ -169,11 +166,6 @@ export function ModeStrictAddonBlock({
               {`Gesperrt bis ${getEffectiveStrictLockEndTime(startTime, endTime, MAX_STRICT_LOCK_DURATION_HOURS)}`}
             </span>
           </div>
-          {locked ? (
-            <div className="rounded-[1.4rem] border border-border/70 bg-background/70 px-4 py-4 text-sm text-muted-foreground">
-              {t('modes.strictAddon.systemHint')}
-            </div>
-          ) : null}
         </>
       ) : null}
     </div>

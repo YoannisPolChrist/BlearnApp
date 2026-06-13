@@ -28,12 +28,13 @@ interface UseLearnReviewSessionCompletionInput {
   addInteraction: ReturnType<typeof useAppStore.getState>['addInteraction'];
   awaitingEmotionSelection: boolean;
   blockedFlowExhausted: boolean;
+  blockedUnlockSignal: number;
   exhaustedBlockedFlowAutoUnlockKeyRef: MutableRefObject<string | null>;
-  handleContinueToTarget: () => Promise<void>;
   pendingCompletionKindRef: MutableRefObject<'review' | 'unlock' | null>;
   recordFeedback: RecordFeedback;
   registerUnlockGrant: ReturnType<typeof useLearningStore.getState>['registerUnlockGrant'];
   runPendingReviewWrites: () => void;
+  setOverlaySuccessVisible: Dispatch<SetStateAction<boolean>>;
   selectedSessionEmotions: string[];
   sessionCreditsRequired: number;
   setAwaitingEmotionSelection: Dispatch<SetStateAction<boolean>>;
@@ -52,12 +53,13 @@ export function useLearnReviewSessionCompletion({
   addInteraction,
   awaitingEmotionSelection,
   blockedFlowExhausted,
+  blockedUnlockSignal,
   exhaustedBlockedFlowAutoUnlockKeyRef,
-  handleContinueToTarget,
   pendingCompletionKindRef,
   recordFeedback,
   registerUnlockGrant,
   runPendingReviewWrites,
+  setOverlaySuccessVisible,
   selectedSessionEmotions,
   sessionCreditsRequired,
   setAwaitingEmotionSelection,
@@ -93,14 +95,16 @@ export function useLearnReviewSessionCompletion({
         console.warn('Learn overlay cloud sync did not settle before continuing to the blocked target:', error);
       }
       recordFeedback('unlock-request', 'Freischaltung abgeschlossen.');
-      await handleContinueToTarget();
+      // Erst den Erfolgs-Screen zeigen ("Freigeschaltet für X Min" + App),
+      // statt sofort zur App zu springen. Der CTA dort ruft handleContinueToTarget.
+      setOverlaySuccessVisible(true);
       return true;
     },
     [
-      handleContinueToTarget,
       recordFeedback,
       registerUnlockGrant,
       runPendingReviewWrites,
+      setOverlaySuccessVisible,
       targetId,
       targetType,
       unlockDurationMinutes,
@@ -109,12 +113,12 @@ export function useLearnReviewSessionCompletion({
   );
 
   // KRITISCH (Blocking-Versprechen): Sind im Blocking-Flow genug Reviews
-  // geschafft, MUSS sofort freigeschaltet werden. Die Emotionsabfrage darf die
-  // Rückkehr zur App niemals blockieren — sonst bleibt der Nutzer trotz erfüllter
-  // Aufgabe gesperrt ("Vokabeln beantwortet, App nicht frei"). Der Emotions-
-  // Check-in bleibt dem normalen (nicht-blockierten) Lernmodus vorbehalten.
+  // geschafft, MUSS freigeschaltet werden — ohne Emotions-Gate (sonst bleibt der
+  // Nutzer trotz erfüllter Aufgabe gesperrt). review-actions signalisiert das
+  // über blockedUnlockSignal; finishUnlock zeigt dann den Erfolgs-Screen.
+  // Der Emotions-Check-in bleibt dem normalen (nicht-blockierten) Lernmodus.
   useEffect(() => {
-    if (!awaitingEmotionSelection || pendingCompletionKindRef.current !== 'unlock') {
+    if (blockedUnlockSignal <= 0 || pendingCompletionKindRef.current !== 'unlock') {
       return;
     }
     if (!activeDeck || !targetId) {
@@ -122,19 +126,13 @@ export function useLearnReviewSessionCompletion({
     }
 
     pendingCompletionKindRef.current = null;
-    setAwaitingEmotionSelection(false);
-    setSelectedSessionCategories([]);
-    setSelectedSessionEmotions([]);
     void finishUnlock(activeDeck.id, sessionCreditsRequired);
   }, [
     activeDeck,
-    awaitingEmotionSelection,
+    blockedUnlockSignal,
     finishUnlock,
     pendingCompletionKindRef,
     sessionCreditsRequired,
-    setAwaitingEmotionSelection,
-    setSelectedSessionCategories,
-    setSelectedSessionEmotions,
     targetId,
   ]);
 

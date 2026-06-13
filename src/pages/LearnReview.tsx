@@ -36,12 +36,12 @@ export default function LearnReviewPage() {
     });
   }, []);
 
-  if (!session.targetId && (session.success || session.overlaySuccessVisible)) {
+  if (session.overlaySuccessVisible || (!session.targetId && session.success)) {
     return (
       <PageTransition variant="hero">
         <LearnReviewSuccessState
           blockedTargetLabel={session.blockedTargetLabel}
-          onContinueToTarget={session.handleContinueToTarget}
+          onContinueToTarget={session.handleOverlaySuccessDone}
           reduceInterfaceMotion={reduceInterfaceMotion}
           targetId={session.targetId}
           targetType={session.targetType}

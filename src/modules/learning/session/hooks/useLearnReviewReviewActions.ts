@@ -21,6 +21,7 @@ export function useLearnReviewReviewActions({
   sessionControllerRef,
   sessionCreditsRequired,
   setAwaitingEmotionSelection,
+  setBlockedUnlockSignal,
   setBlockedEasyHintVisible,
   setBlockedEasyPulseKey,
   setCompletedSessionVisible,
@@ -50,6 +51,7 @@ export function useLearnReviewReviewActions({
   sessionControllerRef: MutableRefObject<LearningSessionController | null>;
   sessionCreditsRequired: number;
   setAwaitingEmotionSelection: Dispatch<SetStateAction<boolean>>;
+  setBlockedUnlockSignal: Dispatch<SetStateAction<number>>;
   setBlockedEasyHintVisible: Dispatch<SetStateAction<boolean>>;
   setBlockedEasyPulseKey: Dispatch<SetStateAction<number>>;
   setCompletedSessionVisible: Dispatch<SetStateAction<boolean>>;
@@ -135,12 +137,19 @@ export function useLearnReviewReviewActions({
       }
 
       if (sessionCompleted) {
-        pendingCompletionKindRef.current =
-          targetId && nextCountedReviews >= sessionCreditsRequired ? 'unlock' : 'review';
+        const isUnlockCompletion = Boolean(targetId) && nextCountedReviews >= sessionCreditsRequired;
+        pendingCompletionKindRef.current = isUnlockCompletion ? 'unlock' : 'review';
         setSelectedSessionCategories([]);
         setSelectedSessionEmotions([]);
         setCompletedSessionVisible(false);
-        setAwaitingEmotionSelection(true);
+        if (isUnlockCompletion) {
+          // Blocking-Flow: KEIN Emotions-Schritt — direkt zur Freischaltung
+          // (deterministisch, ohne kurzes Aufblitzen der Emotionsabfrage).
+          setAwaitingEmotionSelection(false);
+          setBlockedUnlockSignal((value) => value + 1);
+        } else {
+          setAwaitingEmotionSelection(true);
+        }
       }
 
       const persistReview = () => {
@@ -178,6 +187,7 @@ export function useLearnReviewReviewActions({
       sessionControllerRef,
       sessionCreditsRequired,
       setAwaitingEmotionSelection,
+      setBlockedUnlockSignal,
       setBlockedEasyHintVisible,
       setBlockedEasyPulseKey,
       setCompletedSessionVisible,

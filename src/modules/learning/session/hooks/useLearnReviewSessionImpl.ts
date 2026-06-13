@@ -126,6 +126,7 @@ export function useLearnReviewSession() {
   const [completedSessionVisible, setCompletedSessionVisible] = useState(false);
   const [blockedEasyHintVisible, setBlockedEasyHintVisible] = useState(false);
   const [blockedEasyPulseKey, setBlockedEasyPulseKey] = useState(0);
+  const [blockedUnlockSignal, setBlockedUnlockSignal] = useState(0);
   const [typedAnswerDraft, setTypedAnswerDraft] = useState('');
   const [sessionSnapshot, setSessionSnapshot] = useState<LearningSessionSnapshot>();
   const [feedbackEvents, setFeedbackEvents] = useState<LearningReviewFeedbackEvent[]>([]);
@@ -401,6 +402,7 @@ export function useLearnReviewSession() {
     sessionControllerRef,
     sessionCreditsRequired,
     setAwaitingEmotionSelection,
+    setBlockedUnlockSignal,
     setBlockedEasyHintVisible,
     setBlockedEasyPulseKey,
     setCompletedSessionVisible,
@@ -422,12 +424,13 @@ export function useLearnReviewSession() {
     addInteraction,
     awaitingEmotionSelection,
     blockedFlowExhausted,
+    blockedUnlockSignal,
     exhaustedBlockedFlowAutoUnlockKeyRef,
-    handleContinueToTarget,
     pendingCompletionKindRef,
     recordFeedback,
     registerUnlockGrant,
     runPendingReviewWrites,
+    setOverlaySuccessVisible,
     selectedSessionEmotions,
     sessionCreditsRequired,
     setAwaitingEmotionSelection,

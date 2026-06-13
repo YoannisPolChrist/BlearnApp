@@ -354,7 +354,7 @@ describe('Android overlay success flows', () => {
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click(await screen.findByRole('button', { name: /weiter zur app|abschlie/i }));
+    fireEvent.click((await screen.findAllByRole('button', { name: /weiter zur app|abschlie/i }))[0]);
 
     expect(useAppStore.getState().unlockedTargets['app:youtube']).toBe(now + 12 * 60 * 1000);
     await waitFor(() => expect(grantManualOverrideMock).toHaveBeenCalledWith('YouTube', 'app', 12));
@@ -400,7 +400,7 @@ describe('Android overlay success flows', () => {
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click(await screen.findByRole('button', { name: /weiter zur app|abschlie/i }));
+    fireEvent.click((await screen.findAllByRole('button', { name: /weiter zur app|abschlie/i }))[0]);
 
     await waitFor(() => expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(openTargetMock).toHaveBeenCalledWith('YouTube', 'app'));
@@ -450,7 +450,7 @@ describe('Android overlay success flows', () => {
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click(await screen.findByRole('button', { name: /weiter zur app|abschlie/i }));
+    fireEvent.click((await screen.findAllByRole('button', { name: /weiter zur app|abschlie/i }))[0]);
 
     expect(useAppStore.getState().unlockedTargets['app:youtube']).toBe(now + 25 * 60 * 1000);
     await waitFor(() => expect(grantManualOverrideMock).toHaveBeenCalledWith('YouTube', 'app', 25));
@@ -772,7 +772,7 @@ describe('Android overlay success flows', () => {
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click(await screen.findByRole('button', { name: /weiter zur app|abschlie/i }));
+    fireEvent.click((await screen.findAllByRole('button', { name: /weiter zur app|abschlie/i }))[0]);
 
     expect(useAppStore.getState().unlockedTargets['website:youtube.com']).toBe(now + 7 * 60 * 1000);
     await waitFor(() => expect(grantManualOverrideMock).toHaveBeenCalledWith('youtube.com', 'website', 7));
@@ -916,13 +916,10 @@ describe('Android overlay success flows', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: /antwort zeigen/i }));
     fireEvent.click(await screen.findByRole('button', { name: /good/i }));
-    fireEvent.click(await screen.findByRole('button', { name: /erleichtert/i }));
-    fireEvent.click(await screen.findByRole('button', { name: /zufrieden/i }));
-    fireEvent.click(await screen.findByRole('button', { name: /hoffnungsvoll/i }));
-    fireEvent.click(await screen.findByRole('button', { name: /weiter zur app|abschlie/i }));
+    // Block-Flow: kein Emotions-Schritt — direkt Erfolgs-Screen, CTA "Zur App".
+    fireEvent.click(await screen.findByRole('button', { name: /zur app/i }));
 
     expect(useAppStore.getState().unlockedTargets['app:youtube']).toBe(now + 12 * 60 * 1000);
-    expect(screen.queryByRole('button', { name: /app freischalten|zur app/i })).not.toBeInTheDocument();
 
     await waitFor(() => expect(grantManualOverrideMock).toHaveBeenCalledWith('YouTube', 'app', 12));
     await waitFor(() => expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1));
@@ -981,10 +978,6 @@ describe('Android overlay success flows', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: /antwort zeigen/i }));
     fireEvent.click(await screen.findByRole('button', { name: /good/i }));
-    fireEvent.click(await screen.findByRole('button', { name: /erleichtert/i }));
-    fireEvent.click(await screen.findByRole('button', { name: /zufrieden/i }));
-    fireEvent.click(await screen.findByRole('button', { name: /hoffnungsvoll/i }));
-    fireEvent.click(await screen.findByRole('button', { name: /weiter zur app|abschlie/i }));
 
     await waitFor(() => {
       expect(waitForPersistStorageIdleMock).toHaveBeenCalledWith('mindful-usage-storage', 2500);
@@ -994,6 +987,9 @@ describe('Android overlay success flows', () => {
     expect(openTargetMock).not.toHaveBeenCalled();
 
     resolvePersistStorage?.();
+
+    // Erfolgs-Screen erscheint nach der Persistenz; CTA "Zur App" öffnet das Ziel.
+    fireEvent.click(await screen.findByRole('button', { name: /zur app/i }));
 
     await waitFor(() => expect(grantManualOverrideMock).toHaveBeenCalledWith('YouTube', 'app', 12));
     await waitFor(() => expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1));

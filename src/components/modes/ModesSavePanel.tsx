@@ -60,9 +60,6 @@ export function ModesSavePanel({
 }: ModesSavePanelProps) {
   return (
     <motion.div variants={{ hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }} className="mt-8">
-      <p className="mb-3 text-center text-xs font-bold uppercase tracking-[0.16em] text-muted-foreground">
-        {t('modes.page.introNotice')}
-      </p>
       {runtimeIssueMessages.length > 0 ? (
         <div className="mb-4 rounded-2xl border border-warning/30 bg-warning/8 px-4 py-4 text-left text-sm text-foreground shadow-[0_14px_34px_hsl(var(--warning)/0.08)]">
           <div className="flex items-start gap-3">
@@ -141,18 +138,6 @@ export function ModesSavePanel({
           <p className="text-center text-xs font-semibold uppercase tracking-[0.16em] text-foreground/70">
             {isGerman ? 'Änderungen und Schutz werden gerade aktiviert.' : 'Changes and protection are being activated now.'}
           </p>
-        ) : null}
-        {showSavedStateHint ? (
-          <div className="rounded-2xl border border-border/70 bg-background/70 px-4 py-3 text-left text-sm text-foreground/72 shadow-[0_14px_34px_hsl(var(--foreground)/0.04)]">
-            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-muted-foreground">
-              {isGerman ? 'Bereits gespeichert' : 'Already saved'}
-            </p>
-            <p className="mt-1 font-semibold leading-relaxed text-foreground/72">
-              {isGerman
-                ? 'Diese Einstellungen sind bereits aktiv.'
-                : 'These settings are already active. Change something if you want to save again.'}
-            </p>
-          </div>
         ) : null}
         {saveErrorMessage ? (
           <div className="rounded-2xl border border-destructive/30 bg-destructive/8 px-4 py-3 text-left text-sm text-destructive shadow-[0_14px_34px_hsl(var(--destructive)/0.08)]">

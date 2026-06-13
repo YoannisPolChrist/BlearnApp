@@ -247,6 +247,23 @@ export function CheckinEmotionStep({
             </motion.div>
           ) : null}
         </AnimatePresence>
+
+        {/* Zweiter Speicher-Button unten — nach der Auswahl direkt erreichbar. */}
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={onFinish}
+          disabled={!canComplete}
+          className={cn(
+            'mt-2 flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-semibold disabled:opacity-30',
+            cardClassName,
+          )}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12 }}
+        >
+          {finishLabel}
+          <Check size={18} />
+        </motion.button>
       </div>
     </motion.div>
   );

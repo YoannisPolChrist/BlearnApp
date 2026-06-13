@@ -293,7 +293,7 @@ const dePack: TranslationTree = {
       typedAnswerOn: 'Antwort eintippen aktiv',
       typedAnswerOff: 'Antwort eintippen aus',
       typedAnswerLabel: 'Antwort eintippen',
-      typedAnswerHint: 'Du tippst die Antwort selbst. Die ersten 3 richtigen Buchstaben pro Wort reichen zum Bestehen, damit die Eingabe nicht unnötig streng wird.',
+      typedAnswerHint: 'Tippe die Antwort — 3 richtige Buchstaben pro Wort genügen.',
     },
     penalty: {
       eyebrow: 'Penalty Setup',

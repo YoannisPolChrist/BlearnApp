@@ -179,7 +179,7 @@ describe('CheckinPage', () => {
       expect(screen.getByText(/1 von max\. 5 gew(?:ählt|aehlt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
     });
 
-    const finishButton = screen.getByRole('button', { name: /weiter zur app/i });
+    const finishButton = screen.getAllByRole('button', { name: /weiter zur app/i })[0];
     await waitFor(() => {
       expect(finishButton).not.toBeDisabled();
     });
@@ -194,7 +194,7 @@ describe('CheckinPage', () => {
       expect(screen.getByText(/5 von max\. 5 gew(?:ählt|aehlt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /weiter zur app/i }));
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
 
     await waitFor(() => {
       expect(openTargetMock).toHaveBeenCalledWith('com.instagram.android', 'app');
@@ -238,7 +238,7 @@ describe('CheckinPage', () => {
     await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
-    fireEvent.click(screen.getByRole('button', { name: /weiter zur app/i }));
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
 
     await waitFor(() => {
       expect(waitForPersistStorageIdleMock).toHaveBeenCalledWith('mindful-usage-storage', 2500);
@@ -287,7 +287,7 @@ describe('CheckinPage', () => {
     await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
-    fireEvent.click(screen.getByRole('button', { name: /weiter zur app/i }));
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
 
     await waitFor(() => {
       expect(dismissOnceMock).toHaveBeenCalledTimes(1);

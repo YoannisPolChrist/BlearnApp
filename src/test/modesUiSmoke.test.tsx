@@ -322,7 +322,6 @@ describe('modes UI smoke', () => {
     expect(await screen.findByText(/^gespeichert$|^saved$/i)).toBeInTheDocument();
     expect(screen.getByTestId('success-feedback-host')).toHaveAttribute('data-feedback-layout', 'compact');
     expect(screen.queryByTestId('inline-confirmation-badge')).not.toBeInTheDocument();
-    expect(await screen.findByText(/diese einstellungen sind bereits aktiv/i)).toBeInTheDocument();
     expect((await screen.findAllByText(/reflexion/i)).length).toBeGreaterThan(0);
   }, 12000);
 
@@ -757,7 +756,7 @@ describe('modes UI smoke', () => {
     clickLearnModeCard();
 
     expect(
-      await screen.findByText(/die ersten 3 richtigen buchstaben pro wort reichen zum bestehen/i),
+      await screen.findByText(/3 richtige buchstaben pro wort gen(?:ü|ue)gen/i),
     ).toBeInTheDocument();
   });
 
@@ -781,10 +780,7 @@ describe('modes UI smoke', () => {
       expect(strictAddonHeader).not.toBeNull();
       fireEvent.click(within(strictAddonHeader).getByRole('button', { name: /aus|off/i }));
 
-      expect(
-        await screen.findByText(/deinstallations-|uninstall/i),
-      ).toBeInTheDocument();
-      expect(screen.getByLabelText(/^von$|^from$/i)).toBeInTheDocument();
+      expect(await screen.findByLabelText(/^von$|^from$/i)).toBeInTheDocument();
       expect(screen.getByLabelText(/^bis$|^to$/i)).toBeInTheDocument();
 
       const saveButton = await screen.findByRole('button', { name: /speichern/i });

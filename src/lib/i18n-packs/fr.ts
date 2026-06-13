@@ -276,7 +276,7 @@ const frPack: TranslationTree = {
       typedAnswerOn: 'Saisie de reponse active',
       typedAnswerOff: 'Saisie de reponse inactive',
       typedAnswerLabel: 'Saisie de reponse',
-      typedAnswerHint: 'Tu tapes la reponse toi-meme. Les 3 premieres lettres correctes par mot suffisent pour valider, afin que la verification reste souple.',
+      typedAnswerHint: 'Tape la reponse — 3 bonnes lettres par mot suffisent.',
     },
     strictAddon: {
       eyebrow: 'Ajouter strict',
