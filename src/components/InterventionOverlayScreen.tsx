@@ -140,10 +140,15 @@ export default function InterventionOverlayScreen({
       <div className={cn('absolute -bottom-16 right-[-3rem] h-80 w-80 rounded-full blur-3xl opacity-70', palette.glow)} />
 
       <motion.div
-        initial={reduceInterfaceMotion ? false : { opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.22, ease: premiumEase }}
+        // Ruhiger "Über-die-App-legen"-Effekt: das Overlay sinkt leicht herab
+        // und schärft sich ein, statt abrupt aufzupoppen. Nur transform/opacity
+        // (GPU); die Animation läuft auch auf Mobile, aber respektiert
+        // prefers-reduced-motion.
+        initial={reducedMotion ? false : { opacity: 0, scale: 1.03, y: -8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: premiumEase }}
         className="relative z-10 flex min-h-[100svh] flex-col px-6 pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] sm:px-8"
+        style={{ willChange: 'transform, opacity' }}
       >
         <div className="flex flex-1 flex-col justify-between gap-10">
           <div className="space-y-6">

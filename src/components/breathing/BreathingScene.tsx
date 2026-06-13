@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { isAndroidPlatform } from '@/lib/platform';
 
@@ -43,10 +43,20 @@ function getToneVars(tone: BreathingSceneProps['tone']) {
 function OptimizedBreathingScene({ phase, progress, duration, isActive, tone, reducedMotion }: BreathingSceneProps) {
   const palette = getToneVars(tone);
   const targetScale = phase === 'inhale' || phase === 'hold' ? 1.08 : 0.92;
-  // Drive the progress ring with a CSS custom prop — avoids a Framer Motion
-  // re-render on every progress tick (which happens every animation frame).
-  const progressAngle = Math.min(Math.max(progress, 0), 1) * 360;
+  // Der Atem-Timer tickt nur 1×/Sekunde, der Fortschritt ändert sich also in
+  // Sprüngen. Ein SVG-Ring mit strokeDashoffset + linearer 1s-Transition
+  // interpoliert diese Schritte flüssig (GPU-freundlich, kein conic-gradient-Ruckeln).
+  const clampedProgress = Math.min(Math.max(progress, 0), 1);
+  const ringRadius = 46;
+  const ringCircumference = 2 * Math.PI * ringRadius;
   const glowDuration = Math.max(duration, 2.4);
+  // Beim Phasenwechsel fällt der Fortschritt zurück auf 0 — dann SOFORT
+  // zurücksetzen (kein sichtbares Zurückwickeln), nur das Vorwärtsfüllen smooth.
+  const prevProgressRef = useRef(0);
+  const isResetting = clampedProgress < prevProgressRef.current - 0.001;
+  useEffect(() => {
+    prevProgressRef.current = clampedProgress;
+  }, [clampedProgress]);
 
   return (
     <div className="relative flex h-[var(--breathing-scene-size)] w-[var(--breathing-scene-size)] max-w-full items-center justify-center [--breathing-scene-size:min(320px,calc(100vw-2rem))] sm:[--breathing-scene-size:380px]">
@@ -61,15 +71,26 @@ function OptimizedBreathingScene({ phase, progress, duration, isActive, tone, re
         transition={{ duration: glowDuration, repeat: reducedMotion ? 0 : Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Progress ring — updated every frame via CSS custom prop, no FM re-render */}
-      <div
-        className="absolute h-[calc(var(--breathing-scene-size)*0.7)] w-[calc(var(--breathing-scene-size)*0.7)] rounded-full"
-        style={{
-          background: `conic-gradient(${palette.ring} ${progressAngle}deg, transparent ${progressAngle}deg 360deg)`,
-        }}
+      {/* Progress ring — smooth SVG stroke, interpolates the per-second steps */}
+      <svg
+        className="absolute h-[calc(var(--breathing-scene-size)*0.74)] w-[calc(var(--breathing-scene-size)*0.74)] -rotate-90"
+        viewBox="0 0 100 100"
+        aria-hidden="true"
       >
-        <div className="absolute inset-[6%] rounded-full bg-background/86 backdrop-blur-xl" />
-      </div>
+        <circle cx="50" cy="50" r={ringRadius} fill="none" stroke={palette.accent} strokeWidth="3" />
+        <circle
+          cx="50"
+          cy="50"
+          r={ringRadius}
+          fill="none"
+          stroke={palette.ring}
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeDasharray={ringCircumference}
+          strokeDashoffset={ringCircumference * (1 - clampedProgress)}
+          style={{ transition: reducedMotion || isResetting ? 'none' : 'stroke-dashoffset 1s linear' }}
+        />
+      </svg>
 
       {/* Main sphere — GPU-composited scale */}
       <motion.div
