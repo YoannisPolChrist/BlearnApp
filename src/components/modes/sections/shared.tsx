@@ -8,6 +8,8 @@ import {
   type StrictAddonModeId,
   type TargetModeId,
 } from '@/lib/targetModes';
+import { getEffectiveStrictLockEndTime } from '@/lib/view-models/modes';
+import { MAX_STRICT_LOCK_DURATION_HOURS } from '@/lib/strictLockLimits';
 import type { ModeId } from '@/modules/modes/modeTypes';
 import { cn } from '@/lib/utils';
 
@@ -163,6 +165,9 @@ export function ModeStrictAddonBlock({
             {t('modes.strictAddon.durationInfo', { hours: durationLabel })}
             {' '}
             {strictDurationTooLong ? t('modes.strictAddon.durationTooLong') : t('modes.strictAddon.durationOk')}
+            <span className="mt-1 block text-xs font-bold">
+              {`Gesperrt bis ${getEffectiveStrictLockEndTime(startTime, endTime, MAX_STRICT_LOCK_DURATION_HOURS)}`}
+            </span>
           </div>
           {locked ? (
             <div className="rounded-[1.4rem] border border-border/70 bg-background/70 px-4 py-4 text-sm text-muted-foreground">

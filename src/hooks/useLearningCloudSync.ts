@@ -32,6 +32,7 @@ import {
   type LearningCloudSyncApi,
 } from '@/modules/learning/sync/learningCloudRuntimeBridge';
 import { useLearningCloudLocalSave } from '@/modules/learning/sync/useLearningCloudLocalSave';
+import { useLearningCloudSaveRetry } from '@/modules/learning/sync/useLearningCloudSaveRetry';
 import type { LearningCloudSyncCursor } from '@/services/firebaseLearningSyncService';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useLearningStore } from '@/store/useLearningStore';
@@ -486,4 +487,6 @@ export function useLearningCloudSync(enabled = true) {
     syncReadyRef,
     syncedLearningState,
   });
+
+  useLearningCloudSaveRetry(enabled && firebaseWritesEnabled);
 }

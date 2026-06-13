@@ -2,6 +2,7 @@
 import type { ImportPayload, ImportableRow, LearningCard, LearningDeck, LearningNote } from '../domain/entities';
 import { DEFAULT_PASSIVE_PRESET_ID } from '../domain/entities';
 import { createId } from '../domain/id';
+import { extractClozeOccurrences } from './preview';
 
 export function parseCsv(content: string): ImportableRow[] {
   const lines = content.replace(/\r/g, '').split('\n').filter(Boolean);
@@ -164,38 +165,54 @@ export function buildEntitiesFromRows(
       createdAt: noteCreatedAt,
       updatedAt: noteUpdatedAt,
     };
-    const card: LearningCard = {
-      id: cardId,
-      noteId,
-      deckId: deck.id,
-      type: note.type,
-      state: row.card?.state || 'new',
-      dueAt: row.card?.dueAt ?? now,
-      intervalDays: Math.max(0, Math.round(row.card?.intervalDays ?? row.card?.scheduledDays ?? 0)),
-      easeFactor: row.card?.easeFactor ?? 2.5,
-      reps: Math.max(0, Math.round(row.card?.reps || 0)),
-      lapses: Math.max(0, Math.round(row.card?.lapses || 0)),
-      stepIndex: Math.max(0, Math.round(row.card?.stepIndex || 0)),
-      scheduledDays: Math.max(0, Math.round(row.card?.scheduledDays ?? row.card?.intervalDays ?? 0)),
-      elapsedDays: Math.max(0, Math.round(row.card?.elapsedDays || 0)),
-      memoryState: row.card?.memoryState || null,
-      lastReviewedAt: row.card?.lastReviewedAt,
-      createdAt: row.card?.createdAt ?? now,
-      updatedAt:
-        row.card?.updatedAt
-        ?? row.card?.lastReviewedAt
-        ?? row.card?.createdAt
-        ?? now,
-      anki: row.anki?.card,
-    };
+    // Multi-Cloze (5.1): {{c1::…}} {{c2::…}} erzeugt eine Karte pro Lücke.
+    // Alle Geschwister teilen sich die Note — burySiblings greift damit korrekt.
+    const clozeSource = note.type === 'cloze' ? (note.clozeText || note.front) : '';
+    const clozeOrdinals = clozeSource
+      ? Array.from(new Set(extractClozeOccurrences(clozeSource).map((occurrence) => occurrence.ordinal)))
+          .filter((ordinal) => Number.isFinite(ordinal) && ordinal > 0)
+          .sort((left, right) => left - right)
+      : [];
+    const cardVariants: Array<number | undefined> =
+      clozeOrdinals.length > 0 ? clozeOrdinals : [undefined];
 
-    deck.cardIds.push(cardId);
+    cardVariants.forEach((clozeIndex, variantIndex) => {
+      const variantCardId = variantIndex === 0 ? cardId : createId('card');
+      const card: LearningCard = {
+        id: variantCardId,
+        noteId,
+        deckId: deck.id,
+        type: note.type,
+        state: row.card?.state || 'new',
+        dueAt: row.card?.dueAt ?? now,
+        intervalDays: Math.max(0, Math.round(row.card?.intervalDays ?? row.card?.scheduledDays ?? 0)),
+        easeFactor: row.card?.easeFactor ?? 2.5,
+        reps: Math.max(0, Math.round(row.card?.reps || 0)),
+        lapses: Math.max(0, Math.round(row.card?.lapses || 0)),
+        stepIndex: Math.max(0, Math.round(row.card?.stepIndex || 0)),
+        scheduledDays: Math.max(0, Math.round(row.card?.scheduledDays ?? row.card?.intervalDays ?? 0)),
+        elapsedDays: Math.max(0, Math.round(row.card?.elapsedDays || 0)),
+        memoryState: row.card?.memoryState || null,
+        lastReviewedAt: row.card?.lastReviewedAt,
+        createdAt: row.card?.createdAt ?? now,
+        updatedAt:
+          row.card?.updatedAt
+          ?? row.card?.lastReviewedAt
+          ?? row.card?.createdAt
+          ?? now,
+        clozeIndex,
+        anki: variantIndex === 0 ? row.anki?.card : undefined,
+      };
+
+      deck.cardIds.push(variantCardId);
+      cards.push(card);
+    });
+
     deck.tags = Array.from(new Set([...deck.tags, ...note.tags]));
     deck.createdAt = Math.min(deck.createdAt, note.createdAt);
     deck.updatedAt = Math.max(deck.updatedAt, note.updatedAt ?? note.createdAt);
 
     notes.push(note);
-    cards.push(card);
   });
 
   return {

@@ -26,6 +26,8 @@ type UseModesActivationStateOptions = {
   isGerman: boolean;
   selectedMode: ModeId;
   committedModeSelection: ModeId;
+  /** Tatsächlich aktive Modi aus dem Store — Quelle für die Reaktivierungs-Erkennung. */
+  activeModes?: ReadonlyArray<ModeId | 'lock'>;
   currentModeName?: string;
   persistedStrictAddons: StrictAddonMap;
   localStrictAddons: StrictAddonMap;
@@ -76,6 +78,7 @@ export function useModesActivationState({
   isGerman,
   selectedMode,
   committedModeSelection,
+  activeModes,
   currentModeName,
   persistedStrictAddons,
   localStrictAddons,
@@ -172,8 +175,17 @@ export function useModesActivationState({
   );
   const hasModeSelectionChange = selectedMode !== 'lock' && selectedMode !== committedModeSelection;
   const needsPenaltyActivation = selectedMode === 'penalty' && penaltyTargetsCount > 0 && !penaltyEnabled;
+  // Project-Memory-Bug "Einstellungen bereits aktiv": eine gespeicherte, aber
+  // nicht (mehr) aktive Auswahl muss reaktivierbar sein — sie zählt als Änderung.
+  const needsReactivation =
+    activeModes !== undefined
+    && selectedMode !== 'lock'
+    && selectedMode !== 'normal'
+    && selectedMode === committedModeSelection
+    && !activeModes.includes(selectedMode);
   const hasChanges =
     hasModeSelectionChange
+    || needsReactivation
     || hasGlobalChanges
     || hasLearnGateChanges
     || hasAssignmentChanges

@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.VpnService;
 import android.os.Build;
+import android.os.PowerManager;
 import android.os.Process;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -185,6 +186,44 @@ public class ScreenTimePlugin extends Plugin {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getContext().startActivity(intent);
         call.resolve();
+    }
+
+    @PluginMethod
+    public void isBatteryOptimizationExempt(PluginCall call) {
+        JSObject result = new JSObject();
+        result.put("granted", isIgnoringBatteryOptimizations());
+        call.resolve(result);
+    }
+
+    @PluginMethod
+    public void requestBatteryOptimizationExemption(PluginCall call) {
+        try {
+            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            intent.setData(Uri.parse("package:" + getContext().getPackageName()));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(intent);
+            call.resolve();
+        } catch (Exception error) {
+            try {
+                Intent fallback = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                fallback.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(fallback);
+                call.resolve();
+            } catch (Exception fallbackError) {
+                call.reject("Battery optimization settings could not be opened", fallbackError);
+            }
+        }
+    }
+
+    @PluginMethod
+    public void clearVpnBootInterruption(PluginCall call) {
+        ProtectionWatchdog.clearVpnBootInterruption(getContext());
+        call.resolve();
+    }
+
+    private boolean isIgnoringBatteryOptimizations() {
+        PowerManager powerManager = (PowerManager) getContext().getSystemService(Context.POWER_SERVICE);
+        return powerManager != null && powerManager.isIgnoringBatteryOptimizations(getContext().getPackageName());
     }
 
     @PluginMethod
@@ -555,6 +594,15 @@ public class ScreenTimePlugin extends Plugin {
         result.put("vpnActive", prefs().getBoolean("vpn_active", false));
         result.put("overlayPermission", canPresentOverlay());
         result.put("accessibilityPermission", accessibilityPermission);
+        result.put("usageStatsPermission", hasUsageStatsAccess());
+        result.put("deviceAdminActive", isDeviceAdminActive());
+        result.put("batteryOptimizationExempt", isIgnoringBatteryOptimizations());
+        result.put("notificationsEnabled", new BlearnNotificationBridge(getContext()).areNotificationsEnabled());
+        String privateDnsMode = Settings.Global.getString(getContext().getContentResolver(), "private_dns_mode");
+        if (!TextUtils.isEmpty(privateDnsMode)) {
+            result.put("privateDnsMode", privateDnsMode);
+        }
+        result.put("vpnInterruptedByBoot", ProtectionWatchdog.wasVpnInterruptedByBoot(getContext()));
         result.put("accessibilityServiceReady", ScreenTimeAccessibilityService.isServiceReady(getContext()));
         long accessibilityServiceConnectedAt = ScreenTimeAccessibilityService.getServiceConnectedAt(getContext());
         if (accessibilityServiceConnectedAt > 0L) {
@@ -1006,7 +1054,7 @@ public class ScreenTimePlugin extends Plugin {
             BlockingFlowState.reset(getContext(), "stale_foreground_recheck_handoff");
         }
 
-        PolicySnapshotReadResult snapshotReadResult = PolicySnapshotReader.read(prefs());
+        PolicySnapshotReadResult snapshotReadResult = PolicySnapshotReader.read(getContext(), prefs());
         PolicySnapshot snapshot = snapshotReadResult.snapshot;
         if (snapshotReadResult.parseError != null) {
             debug("policy snapshot parse fallback: " + snapshotReadResult.parseError);
@@ -1122,7 +1170,7 @@ public class ScreenTimePlugin extends Plugin {
             return null;
         }
 
-        PolicySnapshotReadResult snapshotReadResult = PolicySnapshotReader.read(prefs());
+        PolicySnapshotReadResult snapshotReadResult = PolicySnapshotReader.read(getContext(), prefs());
         PolicySnapshot snapshot = snapshotReadResult.snapshot;
         if ("app".equals(targetType)) {
             return snapshot.appTargets.get(PolicySnapshot.normalize(targetId));

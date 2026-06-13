@@ -1,5 +1,6 @@
 import { useCallback, type Dispatch, type MutableRefObject, type SetStateAction } from 'react';
 import { type LearningCard, type LearningDeck, type ReviewRating } from '@/lib/learning';
+import { hapticSuccess, hapticTick } from '@/lib/haptics';
 import type { LearningReviewFeedbackEvent } from '@/modules/learning/store';
 import type { LearningSessionController, LearningSessionSnapshot } from '@/modules/learning/session';
 import { useLearningStore } from '@/store/useLearningStore';
@@ -104,10 +105,12 @@ export function useLearnReviewReviewActions({
     (rating: ReviewRating) => {
       if (!currentCard || !activeDeck) return;
 
-      if (easyRatingBlocked && rating === 'easy') {
+      // Nach einer falschen Tipp-Eingabe bleiben nur "Nochmal" und "Schwer" —
+      // "Gut"/"Leicht" wären bei nicht gewusster Antwort unehrlich (FSRS-Qualität).
+      if (easyRatingBlocked && (rating === 'easy' || rating === 'good')) {
         setBlockedEasyHintVisible(true);
         setBlockedEasyPulseKey((current) => current + 1);
-        recordFeedback('toast', 'Easy ist nach falscher Eingabe gesperrt.');
+        recordFeedback('toast', 'Nach falscher Eingabe nur Nochmal oder Schwer.');
         return;
       }
 
@@ -123,6 +126,13 @@ export function useLearnReviewReviewActions({
       const nextSnapshot = syncSessionSnapshot();
       const nextCountedReviews = nextSnapshot?.countedReviews ?? countedReviews;
       const sessionCompleted = events.some((event) => event.type === 'session-completed');
+
+      // Haptik (4b.4): Erfolg beim Freischalten, sonst ein leichtes Tick.
+      if (sessionCompleted && targetId && nextCountedReviews >= sessionCreditsRequired) {
+        hapticSuccess();
+      } else {
+        hapticTick();
+      }
 
       if (sessionCompleted) {
         pendingCompletionKindRef.current =

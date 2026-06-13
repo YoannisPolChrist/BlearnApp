@@ -14,6 +14,11 @@ import {
   type LearningSessionController,
   type LearningSessionSnapshot,
 } from '@/modules/learning/session';
+import { reportFirstCardInteractive } from '@/modules/learning/session/sessionLatency';
+import {
+  clearSessionResumeSnapshot,
+  saveSessionResumeSnapshot,
+} from '@/modules/learning/session/sessionResumeSlot';
 import { useAppStore } from '@/store/useAppStore';
 import { useLearningStore } from '@/store/useLearningStore';
 import { useLearnReviewBlockedNavigation } from './useLearnReviewBlockedNavigation';
@@ -296,6 +301,26 @@ export function useLearnReviewSession() {
   useEffect(() => {
     setTypedAnswerDraft(typedAnswer);
   }, [currentCard?.id, revealed, typedAnswer]);
+
+  // Latenz-Budget 2.3: erste interaktive Karte im Blocking-Flow loggen (< 800 ms Ziel).
+  useEffect(() => {
+    if (isBlockedFlow && currentCard) {
+      reportFirstCardInteractive();
+    }
+  }, [currentCard, isBlockedFlow]);
+
+  // Session-Resume (5.4): aktiven Fortschritt synchron sichern, damit ein
+  // Prozess-Tod die Session nicht zurücksetzt; Abschluss räumt den Slot.
+  useEffect(() => {
+    if (!currentSnapshot) {
+      return;
+    }
+    if (currentSnapshot.status === 'completed') {
+      clearSessionResumeSnapshot();
+      return;
+    }
+    saveSessionResumeSnapshot(currentSnapshot);
+  }, [currentSnapshot, currentSnapshot?.status, currentSnapshot?.updatedAt]);
 
   useLearnReviewStrictFallback({
     activeDeckId,

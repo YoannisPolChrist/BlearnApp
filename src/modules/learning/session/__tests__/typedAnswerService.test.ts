@@ -171,7 +171,7 @@ describe('typed answer service', () => {
     expect(correct).toBe(false);
   });
 
-  it('returns a wrong-answer message with attempts left', () => {
+  it('reveals the answer immediately after a single wrong attempt (Tip-Modus)', () => {
     const result = evaluateTypedAnswer(
       {
         id: 'card-1',
@@ -207,6 +207,46 @@ describe('typed answer service', () => {
 
     expect(result.correct).toBe(false);
     expect(result.matchKind).toBe('incorrect');
-    expect(result.message).toBe('Falsch. 2 Versuche uebrig');
+    expect(result.attemptsLeft).toBe(0);
+    expect(result.autoReveal).toBe(true);
+    expect(result.message).toBe('Falsch. Antwort wird aufgedeckt');
+  });
+
+  it('accepts the first three correct letters as almost right (Tip-Modus)', () => {
+    const result = evaluateTypedAnswer(
+      {
+        id: 'card-1',
+        noteId: 'note-1',
+        deckId: 'deck-1',
+        type: 'basic',
+        state: 'new',
+        dueAt: Date.now(),
+        intervalDays: 0,
+        easeFactor: 2.5,
+        reps: 0,
+        lapses: 0,
+        stepIndex: 0,
+        memoryState: null,
+        createdAt: Date.now(),
+      },
+      {
+        id: 'note-1',
+        deckId: 'deck-1',
+        type: 'basic',
+        front: 'Question',
+        back: 'Wohnung',
+        tags: [],
+        language: 'de',
+        createdAt: Date.now(),
+      },
+      'Woh',
+      {
+        typedAnswerEnabled: true,
+        typedAnswerMaxWords: 3,
+      },
+    );
+
+    expect(result.correct).toBe(true);
+    expect(result.matchKind).toBe('partial');
   });
 });

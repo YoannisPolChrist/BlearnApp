@@ -43,7 +43,7 @@ export function normalizeLearningCard(
     intervalDays: card.intervalDays,
     easeFactor: card.easeFactor,
     lapses: card.lapses,
-    suspended: card.state === 'relearning' && card.intervalDays === 0,
+    suspended: card.state === 'suspended',
     retrievability: computeRetrievability(card, now),
     createdAt: card.createdAt,
   };

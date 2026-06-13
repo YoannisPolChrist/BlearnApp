@@ -83,6 +83,14 @@ export interface MonitoringStatus {
   vpnActive: boolean;
   overlayPermission: boolean;
   accessibilityPermission: boolean;
+  usageStatsPermission?: boolean;
+  deviceAdminActive?: boolean;
+  batteryOptimizationExempt?: boolean;
+  notificationsEnabled?: boolean;
+  /** Android Private-DNS setting: 'off' | 'opportunistic' | 'hostname' (DoT aktiv). */
+  privateDnsMode?: string;
+  /** True, wenn das VPN seit dem letzten Reboot nicht reaktiviert wurde. */
+  vpnInterruptedByBoot?: boolean;
   accessibilityServiceReady?: boolean;
   accessibilityServiceConnectedAt?: number;
   accessibilityServiceDisconnectedAt?: number;
@@ -215,6 +223,9 @@ export interface ScreenTimePlugin {
     targetType: BlockTargetType;
     unlockDurationMinutes?: number;
   }): Promise<ManualOverrideStatus>;
+  isBatteryOptimizationExempt(): Promise<{ granted: boolean }>;
+  requestBatteryOptimizationExemption(): Promise<void>;
+  clearVpnBootInterruption(): Promise<void>;
   reportTriggerEvent(options: {
     targetId: string;
     targetType: BlockTargetType;

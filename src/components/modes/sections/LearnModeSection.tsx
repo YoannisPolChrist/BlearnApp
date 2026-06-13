@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import type { Dispatch, SetStateAction } from 'react';
 import GlassCard from '@/components/GlassCard';
+import { DeckOptimizerTile } from '@/components/learn/DeckOptimizerTile';
 import { useI18n } from '@/hooks/useI18n';
 import type { GateRule, LearningDeck, LearningDeckStats } from '@/lib/learning';
 import { getModePalette } from '@/lib/semanticTones';
@@ -134,16 +135,10 @@ export function LearnModeSection({
               <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground">Retention</p>
               <p className="mt-2 text-2xl font-black tracking-[-0.05em] text-foreground">{Math.round(resolvedLearnDeck.desiredRetention * 100)}%</p>
             </div>
-            <div className="rounded-[1.3rem] border border-border/70 bg-background/60 px-4 py-3">
-              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground">Optimizer</p>
-              <p className="mt-2 text-sm font-black tracking-[-0.03em] text-foreground">
-                {resolvedLearnDeck.optimizerStatus === 'ready'
-                  ? 'Bereit'
-                  : resolvedLearnDeck.optimizerStatus === 'scheduled'
-                    ? 'Geplant'
-                    : 'Sammelt'}
-              </p>
-            </div>
+            <DeckOptimizerTile
+              deckId={resolvedLearnDeck.id}
+              optimizerStatus={resolvedLearnDeck.optimizerStatus}
+            />
           </div>
         ) : null}
 

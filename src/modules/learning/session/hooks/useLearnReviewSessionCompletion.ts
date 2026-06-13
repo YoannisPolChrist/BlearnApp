@@ -108,6 +108,36 @@ export function useLearnReviewSessionCompletion({
     ],
   );
 
+  // KRITISCH (Blocking-Versprechen): Sind im Blocking-Flow genug Reviews
+  // geschafft, MUSS sofort freigeschaltet werden. Die Emotionsabfrage darf die
+  // Rückkehr zur App niemals blockieren — sonst bleibt der Nutzer trotz erfüllter
+  // Aufgabe gesperrt ("Vokabeln beantwortet, App nicht frei"). Der Emotions-
+  // Check-in bleibt dem normalen (nicht-blockierten) Lernmodus vorbehalten.
+  useEffect(() => {
+    if (!awaitingEmotionSelection || pendingCompletionKindRef.current !== 'unlock') {
+      return;
+    }
+    if (!activeDeck || !targetId) {
+      return;
+    }
+
+    pendingCompletionKindRef.current = null;
+    setAwaitingEmotionSelection(false);
+    setSelectedSessionCategories([]);
+    setSelectedSessionEmotions([]);
+    void finishUnlock(activeDeck.id, sessionCreditsRequired);
+  }, [
+    activeDeck,
+    awaitingEmotionSelection,
+    finishUnlock,
+    pendingCompletionKindRef,
+    sessionCreditsRequired,
+    setAwaitingEmotionSelection,
+    setSelectedSessionCategories,
+    setSelectedSessionEmotions,
+    targetId,
+  ]);
+
   useEffect(() => {
     if (!blockedFlowExhausted) {
       exhaustedBlockedFlowAutoUnlockKeyRef.current = null;

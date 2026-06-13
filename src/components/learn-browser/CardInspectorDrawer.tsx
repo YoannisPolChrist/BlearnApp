@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Bookmark, CalendarDays, Layers3 } from 'lucide-react';
+import { ArrowRight, Bookmark, CalendarDays, Layers3, MoonStar, PauseCircle, PlayCircle } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import { ctaFollowThrough, premiumEase } from '@/lib/motion';
 import { tonePalettes } from '@/lib/semanticTones';
 import { cn } from '@/lib/utils';
+import { useLearningStore } from '@/store/useLearningStore';
 import type { CardBrowserRow } from '@/hooks/useCardBrowser';
 
 interface CardInspectorDrawerProps {
@@ -14,6 +15,8 @@ interface CardInspectorDrawerProps {
 
 export function CardInspectorDrawer({ row, onOpenReview, onClearSelection }: CardInspectorDrawerProps) {
   const learnPalette = tonePalettes.learn;
+  const setCardSuspended = useLearningStore((state) => state.setCardSuspended);
+  const buryCardUntilTomorrow = useLearningStore((state) => state.buryCardUntilTomorrow);
 
   return (
     <GlassCard tone="learn" surface="featured" className="space-y-4">
@@ -75,6 +78,26 @@ export function CardInspectorDrawer({ row, onOpenReview, onClearSelection }: Car
               <Bookmark size={11} />
               {row.tags.length} Tags
             </span>
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-2">
+            <button
+              type="button"
+              onClick={() => setCardSuspended(row.cardId, !row.suspended)}
+              className="btn-press inline-flex items-center justify-center gap-1.5 rounded-[1rem] border border-border/70 bg-background/90 px-3 py-2.5 text-sm font-bold text-foreground transition hover:border-primary/30"
+            >
+              {row.suspended ? <PlayCircle size={15} /> : <PauseCircle size={15} />}
+              {row.suspended ? 'Fortsetzen' : 'Aussetzen'}
+            </button>
+            <button
+              type="button"
+              onClick={() => buryCardUntilTomorrow(row.cardId)}
+              disabled={row.suspended}
+              className="btn-press inline-flex items-center justify-center gap-1.5 rounded-[1rem] border border-border/70 bg-background/90 px-3 py-2.5 text-sm font-bold text-foreground transition hover:border-primary/30 disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              <MoonStar size={15} />
+              Bis morgen
+            </button>
           </div>
 
           <motion.button

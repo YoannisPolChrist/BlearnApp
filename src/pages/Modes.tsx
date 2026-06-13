@@ -247,6 +247,7 @@ export default function ModesPage() {
     isGerman,
     selectedMode,
     committedModeSelection,
+    activeModes,
     currentModeName: currentModeConfig?.name,
     persistedStrictAddons: strictAddons,
     localStrictAddons,

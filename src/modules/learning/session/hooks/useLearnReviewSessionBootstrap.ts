@@ -14,6 +14,7 @@ import {
   type LearningSessionController,
   type LearningSessionSnapshot,
 } from '@/modules/learning/session';
+import { takeSessionResumeSnapshot } from '@/modules/learning/session/sessionResumeSlot';
 
 export function useLearnReviewSessionBootstrap({
   activeDeckCards,
@@ -121,6 +122,35 @@ export function useLearnReviewSessionBootstrap({
 
     if (!currentSession || currentSession.deckId !== activeDeckId) {
       reviewedCardIdsRef.current.clear();
+    }
+
+    // Session-Resume (5.4): eine durch Crash/Kill unterbrochene Session wird an
+    // derselben Stelle fortgesetzt, statt den Fortschritt zu verwerfen.
+    if (!currentSession) {
+      const resumedSnapshot = takeSessionResumeSnapshot({
+        kind: sessionKind,
+        deckId: activeDeckId,
+        targetId,
+        targetType,
+      });
+      if (resumedSnapshot) {
+        for (const entry of resumedSnapshot.history) {
+          if (entry.kind === 'review' && entry.cardId) {
+            reviewedCardIdsRef.current.add(entry.cardId);
+          }
+        }
+        sessionControllerRef.current = createLearningSessionController(resumedSnapshot);
+        setSessionSnapshot(resumedSnapshot);
+        setFeedbackEvents([]);
+        setAwaitingEmotionSelection(false);
+        setSelectedSessionCategories([]);
+        setSelectedSessionEmotions([]);
+        setCompletedSessionVisible(false);
+        pendingCompletionKindRef.current = null;
+        setBlockedEasyHintVisible(false);
+        setBlockedEasyPulseKey(0);
+        return;
+      }
     }
 
     const unlockSnapshot = createUnlockSessionSnapshotFromContext({

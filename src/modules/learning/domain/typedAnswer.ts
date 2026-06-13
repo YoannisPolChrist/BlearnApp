@@ -77,7 +77,9 @@ export function getTypedAnswerMatchKind(
       return true;
     }
 
-    const requiredPrefixLength = Math.min(4, expectedToken.length);
+    // Tip-Modus: mind. 3 korrekte Anfangsbuchstaben gelten als richtig
+    // (bei kürzeren Wörtern entsprechend die volle Länge).
+    const requiredPrefixLength = Math.min(3, expectedToken.length);
     return token.length >= requiredPrefixLength && expectedToken.startsWith(token);
   });
 

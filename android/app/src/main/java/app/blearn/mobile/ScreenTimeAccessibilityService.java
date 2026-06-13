@@ -53,6 +53,7 @@ public class ScreenTimeAccessibilityService extends AccessibilityService {
         serviceReady = true;
         serviceConnectedAt = System.currentTimeMillis();
         persistRuntimeStatus(true);
+        ProtectionWatchdog.cancelAccessibilityCheck(this);
         debug("service connected");
     }
 
@@ -106,7 +107,7 @@ public class ScreenTimeAccessibilityService extends AccessibilityService {
             BlockingFlowState.dismiss(this, completedSessionId, "completed_handoff_left_host");
         }
 
-        PolicySnapshotReadResult readResult = PolicySnapshotReader.read(prefs());
+        PolicySnapshotReadResult readResult = PolicySnapshotReader.read(this, prefs());
         if (readResult.parseError != null) {
             debug("policy snapshot parse failed: " + readResult.parseError);
         }
@@ -176,6 +177,11 @@ public class ScreenTimeAccessibilityService extends AccessibilityService {
         lastOpenedTarget = targetKey;
         lastOpenedAt = System.currentTimeMillis();
         recordTriggerEvent(match.target.id, match.target.type);
+        if (ProtectionWatchdog.recordTriggerAndDetectStorm(this, match.target.type, match.target.id, lastOpenedAt)) {
+            debug("skip: trigger storm suppression for " + targetKey);
+            hideOverlayIfIdle();
+            return;
+        }
         debug(
             "resolved target "
                 + targetKey
@@ -196,6 +202,7 @@ public class ScreenTimeAccessibilityService extends AccessibilityService {
     public boolean onUnbind(Intent intent) {
         serviceReady = false;
         persistRuntimeStatus(false);
+        ProtectionWatchdog.scheduleAccessibilityCheck(this);
         return super.onUnbind(intent);
     }
 
@@ -203,6 +210,7 @@ public class ScreenTimeAccessibilityService extends AccessibilityService {
     public void onDestroy() {
         serviceReady = false;
         persistRuntimeStatus(false);
+        ProtectionWatchdog.scheduleAccessibilityCheck(this);
         handoffCoordinator.reset("accessibility destroyed");
         super.onDestroy();
     }

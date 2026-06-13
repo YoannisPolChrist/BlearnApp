@@ -33,6 +33,11 @@ final class StrictLockDeviceAdminManager {
     static void sync(Context context, PolicySnapshot snapshot) {
         long now = System.currentTimeMillis();
         if (!shouldKeepDeviceAdmin(snapshot, now)) {
+            if (StrictLockClockGuard.isBindingDespiteWallClock(context, now)) {
+                keepDespiteWallClock(context, now);
+                return;
+            }
+            StrictLockClockGuard.clear(context);
             persistStrictLockUntil(context, 0L);
             cancelReconcileAlarm(context);
             releaseIfActive(context);
@@ -41,6 +46,7 @@ final class StrictLockDeviceAdminManager {
 
         persistStrictLockUntil(context, snapshot.strictLockUntil);
         if (snapshot.strictLockUntil > now) {
+            StrictLockClockGuard.anchor(context, snapshot.strictLockUntil, now);
             scheduleReconcileAlarm(context, snapshot.strictLockUntil);
         } else {
             cancelReconcileAlarm(context);
@@ -48,7 +54,8 @@ final class StrictLockDeviceAdminManager {
     }
 
     static void reconcileFromStoredPolicy(Context context) {
-        long now = System.currentTimeMillis();
+        long wallNow = System.currentTimeMillis();
+        long now = StrictLockClockGuard.effectiveNow(context, wallNow);
         SharedPreferences prefs = prefs(context);
         PolicySnapshotReadResult readResult = PolicySnapshotReader.parse(
             prefs.getString(POLICY_SNAPSHOT_KEY, "{}"),
@@ -60,6 +67,7 @@ final class StrictLockDeviceAdminManager {
         if (shouldKeepDeviceAdmin(snapshot, now)) {
             persistStrictLockUntil(context, snapshot.strictLockUntil);
             if (snapshot.strictLockUntil > now) {
+                StrictLockClockGuard.anchor(context, snapshot.strictLockUntil, now);
                 scheduleReconcileAlarm(context, snapshot.strictLockUntil);
             } else {
                 cancelReconcileAlarm(context);
@@ -68,9 +76,27 @@ final class StrictLockDeviceAdminManager {
             return;
         }
 
+        if (StrictLockClockGuard.isBindingDespiteWallClock(context, wallNow)) {
+            keepDespiteWallClock(context, wallNow);
+            return;
+        }
+
+        StrictLockClockGuard.clear(context);
         persistStrictLockUntil(context, 0L);
         cancelReconcileAlarm(context);
         releaseIfActive(context);
+    }
+
+    /**
+     * The wall clock claims the lock expired, but the monotonic anchor says time
+     * remains — keep the device admin and re-check when the anchored deadline is
+     * actually reached (elapsed-clock alarm, immune to further clock changes).
+     */
+    private static void keepDespiteWallClock(Context context, long wallNow) {
+        long anchoredUntil = StrictLockClockGuard.anchoredUntil(context);
+        persistStrictLockUntil(context, anchoredUntil);
+        scheduleElapsedReconcileAlarm(context, StrictLockClockGuard.remainingMillis(context, wallNow));
+        debug(context, "kept strict device admin: wall clock jumped past anchored deadline");
     }
 
     static void releaseIfActive(Context context) {
@@ -110,6 +136,22 @@ final class StrictLockDeviceAdminManager {
             debug(context, "scheduled strict device admin reconcile at " + triggerAtMillis);
         } catch (Exception error) {
             debug(context, "strict device admin reconcile schedule failed", error);
+        }
+    }
+
+    private static void scheduleElapsedReconcileAlarm(Context context, long remainingMillis) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager == null) {
+            return;
+        }
+
+        long triggerAtMillis = android.os.SystemClock.elapsedRealtime() + Math.max(1000L, remainingMillis);
+        PendingIntent pendingIntent = buildReconcilePendingIntent(context);
+        try {
+            alarmManager.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtMillis, pendingIntent);
+            debug(context, "scheduled elapsed strict device admin reconcile in " + remainingMillis + "ms");
+        } catch (Exception error) {
+            debug(context, "strict device admin elapsed reconcile schedule failed", error);
         }
     }
 

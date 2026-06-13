@@ -131,22 +131,12 @@ export default function LearnReviewPage() {
               ) : !session.learningHydrated ? (
                 <GlassCard elevation="hero" surface="hero" tone="learn" className="py-10 text-center sm:py-12">
                   <p className="text-lg font-semibold text-foreground">
-                    {session.isBlockedFlow ? 'Learn-Freischaltung wird vorbereitet' : 'Lernsession wird vorbereitet'}
-                  </p>
-                  <p className="mt-2 text-sm text-foreground/74">
-                    {session.isBlockedFlow
-                      ? 'Lädt den Session-Scope für eine stabile Freigabe …'
-                      : 'Deine Lernsession wird aus dem gespeicherten Stand wiederhergestellt.'}
+                    {session.isBlockedFlow ? 'Freischaltung läuft …' : 'Lernsession lädt …'}
                   </p>
                 </GlassCard>
               ) : session.blockedFlowExhausted ? (
                 <GlassCard elevation="hero" surface="hero" tone="learn" className="py-10 text-center sm:py-12">
-                  <p className="text-lg font-semibold text-foreground">
-                    Learn-Freischaltung wird abgeschlossen
-                  </p>
-                  <p className="mt-2 text-sm text-foreground/74">
-                    Fuer dieses Ziel ist gerade keine offene Learn-Karte mehr faellig. Blearn gibt den Zugriff jetzt frei.
-                  </p>
+                  <p className="text-lg font-semibold text-foreground">Freigegeben ✓</p>
                 </GlassCard>
               ) : !session.currentCard || !session.currentNote || !session.activeDeck ? (
                 <LearnReviewEmptyState

@@ -64,3 +64,16 @@ export function preloadRoute(path: string) {
 export function preloadCriticalBlockingRoutes() {
   return Promise.all(CRITICAL_BLOCKING_ROUTE_PATHS.map((path) => preloadRoute(path)));
 }
+
+// Die fünf Haupt-Tabs (Bottom-Nav). Im Idle nach dem Start vorgeladen, damit ein
+// Tab-Wechsel nie einen kalten Chunk trifft (keine weißen Frames, < 200 ms).
+const MAIN_TAB_ROUTE_PATHS = ['/', '/modes', '/learn', '/stats', '/settings'] as const;
+
+export function preloadMainTabRoutes() {
+  const run = () => MAIN_TAB_ROUTE_PATHS.forEach((path) => void preloadRoute(path));
+  if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+    (window as Window & { requestIdleCallback: (cb: () => void) => number }).requestIdleCallback(run);
+  } else if (typeof window !== 'undefined') {
+    window.setTimeout(run, 1200);
+  }
+}

@@ -7,6 +7,7 @@ import {
 import { isBlockableAppTargetId } from '@/lib/blockableApps';
 import { isAndroidPlatform } from '@/lib/platform';
 import { preloadRoute } from '@/lib/routeLoaders';
+import { markBlockingLearnStart } from '@/modules/learning/session/sessionLatency';
 import {
   consumePendingNavigation,
   getMonitoringStatus,
@@ -104,6 +105,7 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, label: str
 }
 
 function applyPendingRoute(route: string, navigate: ReturnType<typeof useNavigate>) {
+  markBlockingLearnStart();
   navigate(normalizePendingRoute(route), { replace: true });
 }
 

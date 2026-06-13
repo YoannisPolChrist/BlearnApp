@@ -118,6 +118,22 @@ export function getScheduleDurationHours(start: string, end: string): number {
   return (endMinutes - startMinutes) / 60;
 }
 
+/**
+ * Effektives Lock-Ende als "HH:MM": Der Store clampt Strict-Fenster hart auf
+ * maxHours — die UI zeigt die geclampte Endzeit an, damit das nie überrascht.
+ */
+export function getEffectiveStrictLockEndTime(start: string, end: string, maxHours: number): string {
+  if (getScheduleDurationHours(start, end) <= maxHours) {
+    return end;
+  }
+
+  const [startHour, startMinute] = start.split(':').map(Number);
+  const effectiveMinutes = (startHour * 60 + startMinute + Math.round(maxHours * 60)) % (24 * 60);
+  const hours = Math.floor(effectiveMinutes / 60);
+  const minutes = effectiveMinutes % 60;
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+}
+
 export function buildVisibleApps(options: {
   installedApps: InstalledApp[];
   usage: ScreenTimeSummary | null;

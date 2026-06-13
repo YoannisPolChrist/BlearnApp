@@ -144,9 +144,9 @@ export function useLearnReviewDerivedState({
   const remainingAttempts = Math.max(0, MAX_TYPED_ANSWER_ATTEMPTS - attemptCount);
   const easyRatingBlocked = requiresTypedAnswer && typedCorrect === false;
   const cardPrompt = currentCard && currentNote ? getCardPrompt(currentCard, currentNote) : '';
-  const cardAnswer = currentNote ? getCardAnswer(currentNote) : '';
+  const cardAnswer = currentNote ? getCardAnswer(currentNote, currentCard ?? undefined) : '';
   const cardPromptHtml = currentCard && currentNote ? getCardPromptHtml(currentCard, currentNote) : '';
-  const cardAnswerHtml = currentNote ? getCardAnswerHtml(currentNote) : '';
+  const cardAnswerHtml = currentNote ? getCardAnswerHtml(currentNote, currentCard ?? undefined) : '';
   const cardTemplateCss = getCardTemplateCss(currentNote);
   const cardTemplateClass = getCardTemplateClass(currentNote);
   const hasRichTemplateHtml = Boolean(currentNote?.frontHtml || currentNote?.backHtml || currentNote?.templateCss);

@@ -20,7 +20,7 @@ import { completeNativeRouteHandoff } from "./lib/nativeRouteHandoff";
 import { recordNativeOverlayRuntimeEvent } from "./lib/nativeOverlayRuntime";
 import { isAndroidPlatform } from "./lib/platform";
 import { ROUTER_FUTURE_FLAGS } from "./lib/routerFuture";
-import { preloadCriticalBlockingRoutes, routeLoaders } from "./lib/routeLoaders";
+import { preloadCriticalBlockingRoutes, preloadMainTabRoutes, routeLoaders } from "./lib/routeLoaders";
 import { getModePalette } from "./lib/semanticTones";
 
 const GlobalRuntimeManagers = lazy(() => import("./components/runtime/GlobalRuntimeManagers"));
@@ -141,6 +141,11 @@ function AppInner() {
     void preloadCriticalBlockingRoutes().catch((error) => {
       console.warn("Critical blocking routes could not be preloaded:", error);
     });
+  }, []);
+
+  // Haupt-Tabs im Idle vorladen → flüssige Tab-Wechsel ohne weiße Frames (4b).
+  useEffect(() => {
+    preloadMainTabRoutes();
   }, []);
 
   useEffect(() => {

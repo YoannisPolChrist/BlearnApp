@@ -37,7 +37,7 @@ const BottomNav = forwardRef<HTMLDivElement>((_, ref) => {
           paddingBottom: 'max(env(safe-area-inset-bottom, 0px), 8px)',
         }}
       >
-        <div className="mx-auto grid max-w-3xl grid-cols-5 gap-1 py-2 sm:gap-2">
+        <div className="mx-auto grid max-w-3xl grid-cols-5 gap-1 py-1 sm:gap-2">
           {navItems.map((item) => {
             const isActive =
               item.path === '/'
@@ -54,7 +54,7 @@ const BottomNav = forwardRef<HTMLDivElement>((_, ref) => {
                 onFocus={() => preloadRoute(item.path)}
                 aria-current={isActive ? 'page' : undefined}
                 aria-label={item.label}
-                className={`relative flex min-h-[4.25rem] min-w-0 flex-col items-center justify-center gap-1 rounded-[1.35rem] px-1.5 py-2 transition-[background-color,box-shadow,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 ${
+                className={`relative flex min-h-[3.25rem] min-w-0 flex-col items-center justify-center gap-0.5 rounded-[1.1rem] px-1.5 py-1 transition-[background-color,box-shadow,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 ${
                   isActive ? 'bg-primary/10 shadow-[0_10px_28px_hsl(var(--primary)/0.1)]' : 'bg-transparent'
                 }`}
                 initial="rest"
@@ -64,7 +64,7 @@ const BottomNav = forwardRef<HTMLDivElement>((_, ref) => {
                 variants={ctaFollowThrough}
               >
                 <motion.div
-                  className={`flex h-10 w-10 items-center justify-center rounded-full transition-[background-color,box-shadow] duration-300 ${
+                  className={`flex h-8 w-8 items-center justify-center rounded-full transition-[background-color,box-shadow] duration-300 ${
                     isActive ? 'bg-primary/16 shadow-[0_10px_24px_hsl(var(--primary)/0.12)]' : 'bg-transparent'
                   }`}
                   animate={isActive && allowActiveMotion
@@ -75,7 +75,7 @@ const BottomNav = forwardRef<HTMLDivElement>((_, ref) => {
                     : { scale: 1 }}
                 >
                   <item.icon
-                    size={20}
+                    size={18}
                     strokeWidth={isActive ? 2.2 : 1.8}
                     className={`transition-colors duration-300 ${
                       isActive ? 'text-primary' : 'text-foreground/62'

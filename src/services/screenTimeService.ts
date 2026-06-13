@@ -177,6 +177,22 @@ export async function getMonitoringStatus(): Promise<MonitoringStatus> {
   return normalizeMonitoringStatus(await ScreenTime.getMonitoringStatus());
 }
 
+export async function isBatteryOptimizationExempt(): Promise<boolean> {
+  ensureAndroidSupport("Battery optimization status");
+  const result = await ScreenTime.isBatteryOptimizationExempt();
+  return Boolean(result?.granted);
+}
+
+export async function requestBatteryOptimizationExemption(): Promise<void> {
+  ensureAndroidSupport("Battery optimization exemption requests");
+  await ScreenTime.requestBatteryOptimizationExemption();
+}
+
+export async function clearVpnBootInterruption(): Promise<void> {
+  ensureAndroidSupport("VPN boot interruption state");
+  await ScreenTime.clearVpnBootInterruption();
+}
+
 export async function openGate(
   targetId: string,
   targetType: "app" | "website" | "search",

@@ -30,6 +30,21 @@ export interface LearningMediaAssetInput extends Partial<Omit<LearningMediaAsset
   updatedAt?: number;
 }
 
+/**
+ * Inline-Base64-Blobs (data:-URLs) dürfen nie in Registry/Transfer-Queue
+ * dupliziert werden — der Blob lebt genau einmal in der Note; Registry und
+ * Queue referenzieren ihn über diese URI (Masterplan 2.5).
+ */
+export const NOTE_MEDIA_URI_PREFIX = 'note-media://';
+
+export function toNoteMediaRef(noteId: string): string {
+  return `${NOTE_MEDIA_URI_PREFIX}${noteId}`;
+}
+
+export function isInlineDataUrl(value: string | undefined): boolean {
+  return typeof value === 'string' && value.trimStart().toLowerCase().startsWith('data:');
+}
+
 let mediaAssetIdCounter = 0;
 
 function nowTimestamp(value?: number) {
@@ -82,15 +97,21 @@ export function normalizeMediaAsset(input: LearningMediaAssetInput): LearningMed
   const id = normalizeString(input.id) || createMediaAssetId();
   const createdAt = nowTimestamp(input.createdAt);
   const updatedAt = Math.max(nowTimestamp(input.updatedAt), createdAt);
+  const noteId = normalizeString(input.noteId);
+  const rawSourceUri = normalizeString(input.sourceUri);
+  const rawRemoteUrl = normalizeString(input.remoteUrl);
+  // Heilt auch alte persistierte States, in denen der Blob bereits dupliziert wurde.
+  const sourceUri = isInlineDataUrl(rawSourceUri) && noteId ? toNoteMediaRef(noteId) : rawSourceUri;
+  const remoteUrl = isInlineDataUrl(rawRemoteUrl) ? undefined : rawRemoteUrl;
 
   return {
     id,
     deckId: normalizeString(input.deckId),
-    noteId: normalizeString(input.noteId),
+    noteId,
     kind: normalizeKind(input.kind),
     state: normalizeState(input.state),
-    sourceUri: normalizeString(input.sourceUri),
-    remoteUrl: normalizeString(input.remoteUrl),
+    sourceUri,
+    remoteUrl,
     checksum: normalizeString(input.checksum),
     mimeType: normalizeString(input.mimeType),
     bytes: Number.isFinite(input.bytes) ? Math.max(0, Math.round(input.bytes as number)) : undefined,

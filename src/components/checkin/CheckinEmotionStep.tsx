@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -59,6 +60,24 @@ export function CheckinEmotionStep({
   const selectedEmotionEntries = selectedEmotions
     .map((emotionId) => categories.flatMap((category) => category.emotions).find((emotion) => emotion.id === emotionId))
     .filter((emotion): emotion is CheckinEmotionEntry => Boolean(emotion));
+
+  // Emotionen werden über alle Kategorien gemischt dargestellt (einmal pro
+  // Mount stabil), damit nicht reflexhaft immer die oberen angeklickt werden.
+  // Wählt der Nutzer eine Kategorie ("ordnet"), wird darauf gefiltert.
+  const shuffledEmotions = useMemo(() => {
+    const flat = categories.flatMap((category) =>
+      category.emotions.map((emotion) => ({ emotion, category })),
+    );
+    for (let i = flat.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [flat[i], flat[j]] = [flat[j], flat[i]];
+    }
+    return flat;
+  }, [categories]);
+
+  const visibleEmotions = shuffledEmotions.filter(
+    ({ category }) => selectedCategories.length === 0 || selectedCategories.includes(category.id),
+  );
 
   return (
     <motion.div
@@ -162,50 +181,45 @@ export function CheckinEmotionStep({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          {categories
-            .filter((category) => selectedCategories.length === 0 || selectedCategories.includes(category.id))
-            .flatMap((category, categoryIndex) =>
-              category.emotions.map((emotion, emotionIndex) => {
-                const isSelected = selectedEmotions.includes(emotion.id);
-                const globalIndex = categoryIndex * 12 + emotionIndex;
+          {visibleEmotions.map(({ emotion, category }, index) => {
+            const isSelected = selectedEmotions.includes(emotion.id);
 
-                return (
-                  <motion.button
-                    key={emotion.id}
-                    onClick={() => onToggleEmotion(emotion.id)}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      delay: 0.22 + globalIndex * 0.012,
-                      type: 'spring',
-                      stiffness: 300,
-                      damping: 20,
-                    }}
-                    whileHover={{ scale: 1.06, y: -2 }}
-                    whileTap={{ scale: 0.92 }}
-                    className={`flex items-center gap-2 rounded-2xl border px-4 py-2.5 text-sm transition-all duration-300 ${
-                      isSelected
-                        ? badgeClassName
-                        : inactiveEmotionClassName
-                          || 'border-[hsl(var(--mode-breathing-border)/0.24)] bg-[hsl(var(--mode-breathing-surface)/0.26)] text-foreground backdrop-blur-sm hover:border-[hsl(var(--mode-breathing-border)/0.46)] hover:bg-[hsl(var(--mode-breathing-surface)/0.38)]'
-                    }`}
-                    style={isSelected ? { boxShadow: `0 14px 34px ${category.color}44` } : undefined}
+            return (
+              <motion.button
+                key={emotion.id}
+                onClick={() => onToggleEmotion(emotion.id)}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{
+                  delay: 0.22 + Math.min(index, 24) * 0.012,
+                  type: 'spring',
+                  stiffness: 300,
+                  damping: 20,
+                }}
+                whileHover={{ scale: 1.06, y: -2 }}
+                whileTap={{ scale: 0.92 }}
+                className={`flex items-center gap-2 rounded-2xl border px-4 py-2.5 text-sm transition-all duration-300 ${
+                  isSelected
+                    ? badgeClassName
+                    : inactiveEmotionClassName
+                      || 'border-[hsl(var(--mode-breathing-border)/0.24)] bg-[hsl(var(--mode-breathing-surface)/0.26)] text-foreground backdrop-blur-sm hover:border-[hsl(var(--mode-breathing-border)/0.46)] hover:bg-[hsl(var(--mode-breathing-surface)/0.38)]'
+                }`}
+                style={isSelected ? { boxShadow: `0 14px 34px ${category.color}44` } : undefined}
+              >
+                <span className="text-lg">{emotion.emoji}</span>
+                <span className="font-semibold">{emotion.label}</span>
+                {isSelected ? (
+                  <motion.span
+                    initial={{ scale: 0, rotate: -90 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: 'spring', stiffness: 400 }}
                   >
-                    <span className="text-lg">{emotion.emoji}</span>
-                    <span className="font-semibold">{emotion.label}</span>
-                    {isSelected ? (
-                      <motion.span
-                        initial={{ scale: 0, rotate: -90 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ type: 'spring', stiffness: 400 }}
-                      >
-                        <Check size={14} strokeWidth={3} />
-                      </motion.span>
-                    ) : null}
-                  </motion.button>
-                );
-              }),
-            )}
+                    <Check size={14} strokeWidth={3} />
+                  </motion.span>
+                ) : null}
+              </motion.button>
+            );
+          })}
         </motion.div>
 
         <AnimatePresence>

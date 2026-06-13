@@ -20,18 +20,6 @@ const DEFAULT_OPTIMIZER_INTERVAL_DAYS = 30;
 const DEFAULT_OPTIMIZER_NEW_REVIEWS = 500;
 const schedulerCache = new Map<string, ReturnType<typeof fsrs>>();
 const featuredDeckTemplateRowsCache = new Map<string, Promise<ImportableRow[]>>();
-let unlockSessionScopeCache:
-  | {
-      cardsRef: LearningCard[];
-      reviewLogsRef: ReviewLog[];
-      deckId?: string;
-      normalizedCards: LearningCard[];
-      resolvedDeckId?: string;
-      scopedCards: LearningCard[];
-      scopedReviewLogs: ReviewLog[];
-      scopedNewCards: LearningCard[];
-    }
-  | null = null;
 const FEATURED_DECK_TEMPLATES: FeaturedDeckTemplate[] = [
   {
     id: 'arabic-top-5000',

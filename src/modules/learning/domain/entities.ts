@@ -121,6 +121,8 @@ export interface LearningCard {
   lastReviewedAt?: number;
   createdAt: number;
   updatedAt?: number;
+  /** Multi-Cloze (5.1): welche {{cN::…}}-Lücke diese Karte abfragt. */
+  clozeIndex?: number;
   anki?: AnkiCardMetadata;
 }
 
@@ -365,5 +367,6 @@ export interface TemplatePreview {
   activeClozeOrdinal?: number;
 }
 
-export const MAX_TYPED_ANSWER_ATTEMPTS = 3;
+// Tip-Modus: ein Fehlversuch deckt die Antwort sofort auf (danach nur Nochmal/Schwer).
+export const MAX_TYPED_ANSWER_ATTEMPTS = 1;
 export const DEFAULT_PASSIVE_PRESET_ID = 'preset_passive';

@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { SessionTimer } from '@/components/learn-review/SessionTimer';
-import { tonePalettes } from '@/lib/semanticTones';
+import { SignatureRing } from '@/components/ui/SignatureRing';
 import { cn } from '@/lib/utils';
 
 interface LearnReviewPageHeaderProps {
@@ -31,8 +31,8 @@ function LearnReviewPageHeaderInner({
   showBackButton,
   totalCandidateCount,
 }: LearnReviewPageHeaderProps) {
-  const learnPalette = tonePalettes.learn;
   const visibleCardCount = Math.max(totalCandidateCount, currentCardPosition);
+  const ringProgress = visibleCardCount > 0 ? currentCardPosition / visibleCardCount : 0;
 
   return (
     <div className="flex flex-col gap-2.5">
@@ -60,26 +60,23 @@ function LearnReviewPageHeaderInner({
             <SessionTimer startedAt={sessionStartedAt} visible={showTimer} />
           ) : null}
           {activeDeckLoaded ? (
-            <div className="flex flex-col items-end gap-1 text-right">
-              <div
-                className={cn(
-                  'rounded-[1.05rem] px-3 py-1.5 text-right shadow-[0_14px_30px_hsl(var(--mode-learn-glow)/0.12)]',
-                  learnPalette.badge,
-                )}
+            <div className="flex flex-col items-end gap-1.5 text-right">
+              <SignatureRing
+                progress={ringProgress}
+                size={64}
+                strokeWidth={5}
+                className="text-[hsl(var(--mode-learn-foreground))]"
+                aria-label={`Karte ${currentCardPosition} von ${visibleCardCount}`}
               >
-                <p className="text-[9px] font-black uppercase tracking-[0.15em]">Karte</p>
-                <p className="text-[1.3rem] font-black tracking-[-0.05em]">
+                <span className="text-[1.05rem] font-black leading-none tracking-[-0.04em] text-foreground">
                   {visibleCardCount > 0 ? `${currentCardPosition}/${visibleCardCount}` : '0/0'}
-                </p>
-                <p className="text-[9px] font-black uppercase tracking-[0.14em] text-foreground/76">
-                  {currentCardKindLabel}
-                </p>
-              </div>
-              <p className="max-w-[12rem] text-[10px] font-black uppercase tracking-[0.14em] text-[hsl(var(--mode-learn-foreground)/0.72)]">
-                {nextNewCardLabel}
+                </span>
+              </SignatureRing>
+              <p className="text-[9px] font-black uppercase tracking-[0.14em] text-[hsl(var(--mode-learn-foreground)/0.72)]">
+                {currentCardKindLabel}
               </p>
               <p className="text-[10px] font-semibold text-[hsl(var(--mode-learn-foreground)/0.64)]">
-                Mix {reviewMixLabel}
+                Mix {reviewMixLabel} · {nextNewCardLabel}
               </p>
             </div>
           ) : null}

@@ -136,6 +136,145 @@ export const createLearningReviewSlice: StateCreator<LearningStore, [], [], Lear
     }));
   },
 
+  updateDeckPresetSettings: (deckId, settings) => {
+    const state = get();
+    const deck = state.getDeckById(deckId);
+    if (!deck) {
+      return;
+    }
+
+    const defaultPresetId = getDefaultLearningPreset().id;
+    const currentPreset = state.getResolvedPresetForDeck(deckId);
+    const decksSharingPreset = Object.values(state.decks).filter(
+      (deckEntry) => (deckEntry.presetId || defaultPresetId) === currentPreset.id,
+    );
+    // Geteilte Presets werden vor deck-spezifischen Änderungen geforkt,
+    // damit Per-Deck-Limits (4.4) nie fremde Decks mitverstellen.
+    const nextPresetId =
+      decksSharingPreset.length > 1
+        ? `${currentPreset.id}_${deckId}`
+        : currentPreset.id;
+    const now = Date.now();
+    const nextPreset = migrateLearningPreset({
+      ...currentPreset,
+      ...settings,
+      id: nextPresetId,
+      name:
+        nextPresetId === currentPreset.id
+          ? currentPreset.name
+          : `${deck.name} Einstellungen`,
+      updatedAt: now,
+    });
+
+    set((state) => ({
+      decks: {
+        ...state.decks,
+        [deckId]: {
+          ...state.decks[deckId],
+          presetId: nextPreset.id,
+          updatedAt: Math.max(state.decks[deckId].updatedAt, now),
+        },
+      },
+      presets: {
+        ...state.presets,
+        [nextPreset.id]: nextPreset,
+      },
+    }));
+  },
+
+  applyOptimizedPresetWeights: (deckId, fsrsParams, reviewCount) => {
+    const state = get();
+    const deck = state.getDeckById(deckId);
+    if (!deck || !Array.isArray(fsrsParams) || fsrsParams.length === 0) {
+      return;
+    }
+
+    const defaultPresetId = getDefaultLearningPreset().id;
+    const currentPreset = state.getResolvedPresetForDeck(deckId);
+    const decksSharingPreset = Object.values(state.decks).filter(
+      (deckEntry) => (deckEntry.presetId || defaultPresetId) === currentPreset.id,
+    );
+    const nextPresetId =
+      decksSharingPreset.length > 1
+        ? `${currentPreset.id}_${deckId}`
+        : currentPreset.id;
+    const now = Date.now();
+    const nextPreset = migrateLearningPreset({
+      ...currentPreset,
+      id: nextPresetId,
+      name:
+        nextPresetId === currentPreset.id
+          ? currentPreset.name
+          : `${deck.name} Optimiert`,
+      fsrsParams: [...fsrsParams],
+      updatedAt: now,
+      lastOptimizerRunAt: now,
+      lastOptimizerReviewCount: Math.max(0, Math.round(reviewCount)),
+    });
+
+    set((state) => ({
+      decks: {
+        ...state.decks,
+        [deckId]: {
+          ...state.decks[deckId],
+          presetId: nextPreset.id,
+          updatedAt: Math.max(state.decks[deckId].updatedAt, now),
+        },
+      },
+      presets: {
+        ...state.presets,
+        [nextPreset.id]: nextPreset,
+      },
+    }));
+  },
+
+  setCardSuspended: (cardId, suspended) => {
+    const card = get().cards[cardId];
+    if (!card) {
+      return;
+    }
+
+    // Unsuspend stellt anhand des Lernfortschritts den plausibelsten Zustand
+    // wieder her: Karten mit Memory-State/Reps gehen zurück in 'review'.
+    const nextState = suspended
+      ? 'suspended'
+      : card.memoryState || card.reps > 0
+        ? 'review'
+        : 'new';
+    if (card.state === nextState) {
+      return;
+    }
+
+    const now = Date.now();
+    set((state) => ({
+      cards: {
+        ...state.cards,
+        [cardId]: { ...card, state: nextState, updatedAt: now },
+      },
+    }));
+  },
+
+  buryCardUntilTomorrow: (cardId) => {
+    const card = get().cards[cardId];
+    if (!card || card.state === 'suspended') {
+      return;
+    }
+
+    const nextMidnight = new Date();
+    nextMidnight.setHours(24, 0, 0, 0);
+    const now = Date.now();
+    set((state) => ({
+      cards: {
+        ...state.cards,
+        [cardId]: {
+          ...card,
+          dueAt: Math.max(card.dueAt, nextMidnight.getTime()),
+          updatedAt: now,
+        },
+      },
+    }));
+  },
+
   getDeckStats: (deckId) => {
     const state = get();
     const deck = state.decks[deckId];

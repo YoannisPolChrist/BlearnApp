@@ -201,8 +201,9 @@ function LearnReviewActionsInner({
 
           <div className="grid grid-cols-4 gap-1.5 sm:gap-2.5">
             {(['again', 'hard', 'good', 'easy'] as ReviewRating[]).map((rating, index) => {
-              const isDisabled = rating === 'easy' && easyRatingBlocked;
-              const isBlockedEasy = rating === 'easy' && easyRatingBlocked;
+              // Nach falscher Tipp-Eingabe nur "Nochmal" + "Schwer" zulassen.
+              const isDisabled = (rating === 'easy' || rating === 'good') && easyRatingBlocked;
+              const isBlockedEasy = (rating === 'easy' || rating === 'good') && easyRatingBlocked;
 
               return (
                 <motion.button
@@ -237,7 +238,7 @@ function LearnReviewActionsInner({
 
           {easyRatingBlocked || blockedEasyHintVisible ? (
             <div className="mt-2 text-[10px] font-black uppercase tracking-[0.15em] text-foreground/68">
-              Easy ist nach falscher Eingabe gesperrt. Nutze Good, Hard oder Again.
+              Nach falscher Eingabe nur Nochmal oder Schwer.
             </div>
           ) : null}
         </motion.div>

@@ -435,18 +435,26 @@ Erfassung (Checkin.tsx → addCheckin + addInteraction), Persistenz (Caps: 100 C
 **Strict-Modus — Befund: Anforderung war nur in der UI erfüllt, Store-Enforcement fehlte. Gefixt.**
 Anforderung (Aktivierung → Pflicht-Zeitfenster, Einstellungen im Fenster unveränderbar, max. 20 h): Zeitfenster-Pflicht ✓ (Aktivierung nur innerhalb Start/Ende). Das 20-h-Maximum existierte NUR als UI-Validierung (`MAX_STRICT_LOCK_DURATION_HOURS`); der Store akzeptierte bis ~24 h. Und `setStrictSchedule` war während eines laufenden Locks NICHT geschützt (Addon-Konfiguration war es vorbildlich, das Haupt-Fenster nicht). Jetzt: geteilte Limit-Quelle `src/lib/strictLockLimits.ts`, hartes Clamp in `activateStrictLock` UND `activateStrictAddon`, `setStrictSchedule` ist während aktivem Lock ein No-op und nach Ablauf wieder frei. 4 Tests (`strictLockEnforcement.test.ts`).
 
-### 🔶 OFFEN — markiert für andere Agenten (Reihenfolge = Priorität)
+### ✅ Zweite Umsetzungsrunde erledigt (2026-06-13) — alle Sub-Agenten-Aufgaben
 
-> Vollständige Briefings in `blearn-subagent-briefings.md`. Kürzel hier = dortige Agenten.
+| Bereich | Was | Beweis |
+|---|---|---|
+| A1 | Gradle-Build aller Java-Dateien grün; Manifest+res bereits committet | `gradlew compileDebugJavaWithJavac` / `assembleDebug` ✓ |
+| A1-Zusatz (1.4) | `StrictLockClockGuard` (elapsedRealtime+Boot-Count), `PolicySnapshotReader.read(context,…)`, Elapsed-Reconcile-Alarm | kompiliert; Wall-Clock-Sprung beendet Lock nicht mehr |
+| A2 (1.1–1.3, 1.7) | `ProtectionWatchdog` (Trigger-Sturm/Accessibility-Down/Reboot), Health-Felder im Plugin, Battery-Opt-Flow, `ProtectionStatusCard` | `protectionHealth.test.ts` (8) |
+| A3 (2.3/2.5) | Micro-Session-Latenz-Log (<800 ms Ziel), Media-Registry ohne Base64-Blobs (`note-media://`) | `mediaRegistry.test.ts` (+Blob-Regression) |
+| B (3.6) | Backoff-Retry + Netz-Rückkehr/Visibility-Listener | `useLearningCloudSaveRetry.test.tsx` (3) |
+| C (4.3/4.4) | FSRS-w-Optimizer (Koordinatenabstieg/Holdout) im Worker + Vorschlag-UI; Per-Deck-Settings; Suspend/Bury; Multi-Cloze; Session-Resume | weightOptimizer(4)/multiCloze(5)/cardSuspendBury(4)/sessionResumeSlot(5) |
+| C | Undo-Button im Blocking-Lernflow (Logik+UI bereits vorhanden, verifiziert) | LearnReviewActions |
+| D | SignatureRing (Lern-Header), ListRow-Primitive, Strict-Lock-Endzeit "Gesperrt bis HH:MM" | tsc grün |
+| Modes-Bug | "Einstellungen bereits aktiv" → Reaktivierung zählt als Änderung (`needsReactivation`) | modesUiSmoke 30/30 |
+| 5 | `docs/threat-model.md`, Privacy-Pfad verifiziert, CI `.github/workflows/ci.yml` | check:android-sources/copy-budget grün |
 
-- **[AGENT A1 — ZUERST, BLOCKIEREND] Geräteverifikation der nativen Änderungen.** Gradle-Build der 4 geänderten/neuen Java-Dateien (in dieser Umgebung kein Android-SDK), Smoke-Tests a–d aus dem Briefing, `scripts/chaos/run-chaos.sh` einmal komplett. Vorher: **AndroidManifest + res/ vom lokalen Rechner committen** (`npm run check:android-sources` muss grün werden) — das kann NUR ein Mensch/Agent mit dem lokalen Stand.
-- **[AGENT A1 ZUSATZ] Strict-Lock vs. Geräteuhr:** Masterplan 1.4 — `strictLockUntil` ist Wall-Clock; Datum-Vorstellen beendet den Lock. Native `elapsedRealtime`-Verankerung prüfen/ergänzen (StrictLockDeviceAdminManager-Reconcile existiert bereits als Ansatzpunkt).
-- **[AGENT A2] Phase 1.1–1.3 + 1.7-Watchdog:** Schutzstatus-Dashboard (Health-Modell um getMonitoringStatus), Battery-Optimization-Flow, Reboot-Notification, Trigger-Sturm-Watchdog. Braucht neue native Plugin-Methoden.
-- **[AGENT A3] Phase 2 Rest:** 2.3 Micro-Session im Blocking-Lernpfad (< 800 ms bis erste Karte), 2.4 Worker-Verlagerung (Profiling mit 5000-Karten-Deck), 2.5 Media-Registry-Review. Hinweis: 2.1 war bereits umgesetzt, 2.2/2.6/2.7 sind erledigt.
-- **[AGENT B] Phase 3 Rest:** Monolith→Subcollection-Migration (3.2/3.3, braucht echtes Firestore), Signatur-Pfade aus dem Hot Path LÖSCHEN, Account-Namespacing der lokalen Persistenz (3.4), Backoff-Retries + Netz-Rückkehr-Listener (3.6 zweite Hälfte; Status-UI existiert), Sync-Copy ehrlich machen (3.5).
-- **[AGENT C] Phase 4 Rest:** 4.3 echter FSRS-w-Optimizer im Worker, 4.4 Per-Deck-Settings / Session-Resume (auf WAL aufbauen) / Multi-Cloze / Card-Browser-Aktionen, 4.5 Fahrplan-Phase-2-Audit. Undo-UI-Button im Blocking-Lernflow sichtbar machen (Logik ist jetzt korrekt).
-- **[AGENT D] Phase D komplett:** Design-Overhaul nach Briefing; Copy-Budgets nach jedem Screen im Ratchet ABSENKEN. SyncStatusBadge als Beispiel für die Ziel-Copy-Dichte nehmen.
-- **[AGENT D ODER A2] Strict-Modus-UX-Lücke:** Der Store erzwingt jetzt das 20-h-Cap durch stilles Clampen — die UI sollte beim Aktivieren die effektive Lock-Endzeit anzeigen ("Gesperrt bis 17:00"), damit Clamping nie überrascht. Plus: Modes-Save-Bug "Einstellungen bereits aktiv" (Project Memory) triagieren.
+**🔶 Verbleibt (braucht das physische Gerät / weitere Iteration):**
+- Geräte-Smoke-Tests a–d + `scripts/chaos/run-chaos.sh` auf dem Xiaomi `22101320G` (Gerät war während dieser Runde nur kurz verbunden).
+- Phase D Vollausbau: Vorher/Nachher-Screenshots in `docs/design/`, vollständiger Modes/Settings-Listenzeilen-Umbau (Primitive `ListRow.tsx` steht bereit), Dark-Mode-Abnahme pro Screen.
+- Phase 3 Monolith→Subcollection-Migration (3.2/3.3) + Signatur-Hot-Path-Löschung + Account-Namespacing (3.4): braucht echtes Firestore + Migrationslauf.
+- Bekannter Vorbestand-Flake `appIntroFlow` (seit 2026-03-22, NICHT durch diese Runde verursacht — per stash verifiziert) und Lint-Vorbestand (`ModesPageView`/`AuthDialog.test`) abbauen.
 - **[ALLE] Vor Merge:** `npm run test` && `npm run build` && `npm run check:copy-budget` && `npm run check:android-sources`; `docs/project-memory.md` nach jeder Phase aktualisieren.
 
 ### Performance-Update (Runde 3, 2026-06-12)

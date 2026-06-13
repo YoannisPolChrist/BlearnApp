@@ -310,7 +310,9 @@ export function buildUnlockSessionCandidateIds({
     : Math.max(0, resolvedPreset.newCardsPerDay - newCardsIntroducedToday);
     
   const limitedNewCards = dedupeSiblingCards(
-    scopedNewCards,
+    // Begrabene neue Karten aussparen: "begraben" heißt, dueAt wurde explizit
+    // über now UND createdAt hinaus verschoben (Import setzt dueAt = createdAt).
+    scopedNewCards.filter((card) => (card.dueAt ?? 0) <= Math.max(now, card.createdAt)),
     resolvedPreset.burySiblings,
     seenSiblingKeys,
   ).slice(0, allowedNewCards);

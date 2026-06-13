@@ -21,6 +21,8 @@ import {
 import { getModePalette, tonePalettes } from '@/lib/semanticTones';
 import { countTargetsForMode } from '@/lib/targetModes';
 import { getDashboardModeLabel } from '@/modules/dashboard/dashboardModeLabels';
+import { ProtectionStatusCard } from '@/modules/protection/ProtectionStatusCard';
+import { ProtectionShieldButton } from '@/modules/protection/ProtectionShieldButton';
 import {
   formatScreenTime,
   getAppLabel,
@@ -212,7 +214,10 @@ export default function IndexPage() {
             <div className="space-y-3">
               <BrandLockup subtitle="block and learn" subtitleClassName="!normal-case" />
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <ProtectionShieldButton isGerman={isGerman} />
+              <ThemeToggle />
+            </div>
           </div>
 
           <motion.div
@@ -221,6 +226,10 @@ export default function IndexPage() {
             animate={allowRichMotion ? 'show' : undefined}
             className="space-y-5 sm:space-y-6"
           >
+            <motion.section variants={sectionItem}>
+              <ProtectionStatusCard isGerman={isGerman} />
+            </motion.section>
+
             <motion.section variants={sectionItem}>
               <div data-tour-id="tour-dashboard-modes" className="rounded-[2rem] sm:rounded-[2.25rem]">
                 <motion.div

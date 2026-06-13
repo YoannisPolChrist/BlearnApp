@@ -109,9 +109,16 @@ export interface LearningReviewSlice {
   getPresetById: (presetId?: string) => LearningPreset;
   getResolvedPresetForDeck: (deckId: string) => LearningPreset;
   setDeckReviewMix: (deckId: string, reviewsBetweenNewCards: number) => void;
+  updateDeckPresetSettings: (
+    deckId: string,
+    settings: Partial<Pick<LearningPreset, 'newCardsPerDay' | 'maxReviewsPerDay' | 'burySiblings'>>,
+  ) => void;
+  applyOptimizedPresetWeights: (deckId: string, fsrsParams: number[], reviewCount: number) => void;
   getDeckStats: (deckId: string) => LearningDeckStats | null;
   getNoteByCardId: (cardId: string) => LearningNote | undefined;
   getDueCardsForDecks: (deckIds?: string[]) => LearningCard[];
+  setCardSuspended: (cardId: string, suspended: boolean) => void;
+  buryCardUntilTomorrow: (cardId: string) => void;
   submitReview: (cardId: string, rating: ReviewRating, wasCorrect: boolean) => ReviewResult | null;
   revertReviewLog: (cardId: string) => void;
   registerUnlockGrant: (

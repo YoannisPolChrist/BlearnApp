@@ -3,7 +3,9 @@ import { migrateLearningCard, migrateLearningDeck } from '@/lib/learning';
 import type { LearningStoreIndexes } from './types';
 import {
   type LearningMediaRegistry,
+  isInlineDataUrl,
   normalizeMediaRegistry,
+  toNoteMediaRef,
   upsertMediaAsset,
 } from '../media/mediaRegistry';
 import {
@@ -142,13 +144,15 @@ export function registerLearningMediaArtifacts(
     }
 
     const assetId = `media-asset-${note.id}`;
+    // data:-Blobs bleiben einzig in der Note; Registry/Queue halten nur die Referenz.
+    const persistableUri = isInlineDataUrl(mediaUrl) ? toNoteMediaRef(note.id) : mediaUrl;
     mediaRegistry = upsertMediaAsset(mediaRegistry, {
       id: assetId,
       deckId: note.deckId,
       noteId: note.id,
       kind: inferLearningMediaKind(mediaUrl),
       state: 'pending',
-      sourceUri: mediaUrl,
+      sourceUri: persistableUri,
       metadata: {
         source,
         noteType: note.type,
@@ -168,7 +172,7 @@ export function registerLearningMediaArtifacts(
       createdAt: now,
       updatedAt: now,
       payload: {
-        sourceUri: mediaUrl,
+        sourceUri: persistableUri,
       },
     });
   }

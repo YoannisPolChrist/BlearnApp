@@ -11,28 +11,43 @@ import type {
 export function getCardPrompt(card: LearningCard, note?: LearningNote): string {
   if (!note) return '';
   if (card.type === 'cloze') {
-    return (note.clozeText || note.front).replace(/\{\{c\d+::(.*?)\}\}/g, '_____');
+    const source = note.clozeText || note.front;
+    if (card.clozeIndex && card.clozeIndex > 0) {
+      // Multi-Cloze: nur die eigene Lücke maskieren, Geschwister-Lücken zeigen.
+      return renderClozeValue(source, card.clozeIndex, 'front');
+    }
+    return source.replace(/\{\{c\d+::(.*?)\}\}/g, '_____');
   }
 
   return note.front;
 }
 
-export function getCardAnswer(note?: LearningNote): string {
+export function getCardAnswer(note?: LearningNote, card?: LearningCard): string {
   if (!note) return '';
+  if (card?.type === 'cloze' && card.clozeIndex && card.clozeIndex > 0) {
+    const source = note.clozeText || note.front;
+    return extractClozeAnswer(source, card.clozeIndex) || note.back;
+  }
   return note.back;
 }
 
 export function getCardPromptHtml(card: LearningCard, note?: LearningNote): string {
   if (!note) return '';
   if (card.type === 'cloze' && note.frontHtml) {
+    if (card.clozeIndex && card.clozeIndex > 0 && createClozePattern().test(note.frontHtml)) {
+      return renderClozeValue(note.frontHtml, card.clozeIndex, 'front');
+    }
     return note.frontHtml;
   }
 
   return note.frontHtml || textToHtml(getCardPrompt(card, note));
 }
 
-export function getCardAnswerHtml(note?: LearningNote): string {
+export function getCardAnswerHtml(note?: LearningNote, card?: LearningCard): string {
   if (!note) return '';
+  if (card?.type === 'cloze' && card.clozeIndex && card.clozeIndex > 0) {
+    return textToHtml(getCardAnswer(note, card));
+  }
   return note.backHtml || textToHtml(getCardAnswer(note));
 }
 

@@ -40,4 +40,22 @@ describe('mediaRegistry', () => {
     expect(nextRegistry.assets[0].state).toBe('synced');
     expect(nextRegistry.assets[0].remoteUrl).toBe('https://example.com/asset.png');
   });
+
+  it('ersetzt Base64-data:-URLs durch note-media-Referenzen (kein Blob im Registry-State)', () => {
+    const dataUrl = `data:image/png;base64,${'A'.repeat(2048)}`;
+    const registry = upsertMediaAsset(undefined, {
+      id: 'asset-blob',
+      noteId: 'note-7',
+      kind: 'image',
+      state: 'pending',
+      sourceUri: dataUrl,
+      remoteUrl: dataUrl,
+      createdAt: 10,
+      updatedAt: 10,
+    });
+
+    expect(registry.assets[0].sourceUri).toBe('note-media://note-7');
+    expect(registry.assets[0].remoteUrl).toBeUndefined();
+    expect(getMediaRegistrySignature(registry)).not.toContain('base64');
+  });
 });

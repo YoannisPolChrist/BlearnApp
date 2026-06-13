@@ -1,5 +1,6 @@
 package app.blearn.mobile;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import org.json.JSONArray;
@@ -16,11 +17,16 @@ final class PolicySnapshotReader {
     private PolicySnapshotReader() {
     }
 
-    static PolicySnapshotReadResult read(SharedPreferences prefs) {
+    /**
+     * Reads the stored snapshot using the clock-guard-corrected time, so that a
+     * forward-manipulated wall clock cannot expire strict-lock targets early.
+     */
+    static PolicySnapshotReadResult read(Context context, SharedPreferences prefs) {
         String rawSnapshot = prefs.getString(POLICY_SNAPSHOT_KEY, "{}");
         boolean monitoringActive = prefs.getBoolean(MONITORING_ACTIVE_KEY, false);
         boolean websiteBlockingActive = prefs.getBoolean(WEBSITE_BLOCKING_ACTIVE_KEY, false);
-        return parse(rawSnapshot, monitoringActive, websiteBlockingActive, System.currentTimeMillis());
+        long now = StrictLockClockGuard.effectiveNow(context, System.currentTimeMillis());
+        return parse(rawSnapshot, monitoringActive, websiteBlockingActive, now);
     }
 
     static PolicySnapshotReadResult parse(

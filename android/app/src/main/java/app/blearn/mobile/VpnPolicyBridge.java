@@ -19,7 +19,7 @@ final class VpnPolicyBridge {
     }
 
     PolicySnapshotReadResult readSnapshot() {
-        return PolicySnapshotReader.read(prefs);
+        return PolicySnapshotReader.read(context, prefs);
     }
 
     DnsDecisionEngine buildDecisionEngine() {

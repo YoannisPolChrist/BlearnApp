@@ -275,6 +275,25 @@ async function completeEmotionSelection() {
   fireEvent.click(screen.getByRole('button', { name: /abschlie/i }));
 }
 
+// Im Blocking-Flow schaltet Blearn nach genug Reviews SOFORT frei — ohne
+// Emotions-Gate (sonst bliebe der Nutzer trotz erfüllter Aufgabe gesperrt).
+// Diese Hilfe beantwortet einfach die nötigen Reviews; der Unlock feuert dann
+// automatisch.
+async function answerBlockedSessionToUnlock(maxRounds = 8) {
+  for (let round = 0; round < maxRounds; round += 1) {
+    const revealButton = screen.queryByRole('button', { name: /^antwort zeigen$/i });
+    if (!revealButton) {
+      return;
+    }
+    fireEvent.click(revealButton);
+    const goodButton = screen.queryByRole('button', { name: /good/i });
+    if (!goodButton) {
+      return;
+    }
+    fireEvent.click(goodButton);
+  }
+}
+
 afterEach(() => {
   cleanup();
   window.localStorage.clear();
@@ -461,13 +480,13 @@ describe('Learn review typed-answer UI', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByText(/Learn-Freischaltung wird vorbereitet/i)).toBeInTheDocument();
+    expect(screen.getByText(/Freischaltung l(?:ä|ae)uft/i)).toBeInTheDocument();
 
     act(() => {
       vi.advanceTimersByTime(1300);
     });
 
-    expect(screen.getByText(/Learn-Freischaltung wird vorbereitet/i)).toBeInTheDocument();
+    expect(screen.getByText(/Freischaltung l(?:ä|ae)uft/i)).toBeInTheDocument();
     expect(screen.queryByText(/Learn-Freischaltung nicht bereit/i)).not.toBeInTheDocument();
   }, 10000);
 
@@ -585,8 +604,9 @@ describe('Learn review typed-answer UI', () => {
       overlaySessionId: 'session-overlay',
     });
 
-    await advanceSessionToEmotionStep();
-    await completeEmotionSelection();
+    await answerBlockedSessionToUnlock();
+    // Der Block-Flow darf NIE hinter dem Emotions-Schritt hängen bleiben.
+    expect(emotionPromptPresent()).toBe(false);
 
     await waitFor(() => {
       expect(primeNativeUnlockHandoffMock).toHaveBeenCalledWith('YouTube', 'app', 12);
@@ -681,8 +701,8 @@ describe('Learn review typed-answer UI', () => {
       },
     });
 
-    await advanceSessionToEmotionStep();
-    await completeEmotionSelection();
+    await answerBlockedSessionToUnlock();
+    expect(emotionPromptPresent()).toBe(false);
 
     await waitFor(() => {
       expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1);
@@ -713,9 +733,11 @@ describe('Learn review typed-answer UI', () => {
   it('keeps partial typed-answer feedback visible after manually revealing the answer', async () => {
     await renderReviewSession(10);
 
+    // Ohne getippte Antwort ist nur Nochmal/Schwer erlaubt (Tip-Modus) — mit
+    // "Schwer" durch die Setup-Karten zur Zielkarte vorrücken.
     for (let completedCards = 0; completedCards < 4; completedCards += 1) {
       fireEvent.click(await findRevealButton());
-      fireEvent.click(await screen.findByRole('button', { name: /good/i }));
+      fireEvent.click(await screen.findByRole('button', { name: /hard/i }));
     }
 
     expect(await screen.findByText('friend')).toBeInTheDocument();

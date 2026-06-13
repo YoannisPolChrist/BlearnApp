@@ -109,6 +109,9 @@ export const EMOTION_CATEGORIES: EmotionCategory[] = [
       { id: 'curious_hopeful', emoji: '\u{1F4AB}', label: 'Zuversichtlich' },
       { id: 'seen', emoji: '\u{1F49E}', label: 'Gesehen' },
       { id: 'open', emoji: '\u{1FAB7}', label: 'Offen' },
+      { id: 'serene', emoji: '\u{1F31E}', label: 'Gelassen' },
+      { id: 'fulfilled', emoji: '\u{1F60A}', label: 'Erfüllt' },
+      { id: 'playful', emoji: '\u{1F643}', label: 'Verspielt' },
     ],
   },
   {
@@ -134,6 +137,8 @@ export const EMOTION_CATEGORIES: EmotionCategory[] = [
       { id: 'guarded', emoji: '\u{1F6E1}\uFE0F', label: 'Vorsichtig' },
       { id: 'grounded', emoji: '\u{1FAA8}', label: 'Geerdet' },
       { id: 'numb', emoji: '\u{1FAE5}', label: 'Taub' },
+      { id: 'reflective', emoji: '\u{1F4AD}', label: 'Reflektierend' },
+      { id: 'waiting', emoji: '\u{1F567}', label: 'Abwartend' },
     ],
   },
   {
@@ -159,6 +164,8 @@ export const EMOTION_CATEGORIES: EmotionCategory[] = [
       { id: 'discouraged', emoji: '\u{1F940}', label: 'Entmutigt' },
       { id: 'jealous', emoji: '\u{1F636}\u200D\u{1F32B}\uFE0F', label: 'Neidisch' },
       { id: 'pressured', emoji: '\u23F3', label: 'Unter Druck' },
+      { id: 'insecure', emoji: '\u{1F628}', label: 'Verunsichert' },
+      { id: 'restless_neg', emoji: '\u{1F615}', label: 'Rastlos' },
     ],
   },
   {

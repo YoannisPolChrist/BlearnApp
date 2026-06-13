@@ -17,5 +17,11 @@ public class StrictLockLifecycleReceiver extends BroadcastReceiver {
             || StrictLockDeviceAdminManager.ACTION_RECONCILE.equals(action)) {
             StrictLockDeviceAdminManager.reconcileFromStoredPolicy(context);
         }
+        if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
+            ProtectionWatchdog.handleBootCompleted(context);
+        }
+        if (ProtectionWatchdog.ACTION_ACCESSIBILITY_CHECK.equals(action)) {
+            ProtectionWatchdog.runAccessibilityCheck(context);
+        }
     }
 }

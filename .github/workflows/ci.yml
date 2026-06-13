@@ -1,0 +1,48 @@
+name: CI
+
+# Masterplan 5.3: bei jedem Push/PR lint + test + build + Repo-Integritätschecks.
+# Der Android-Sources-Check (0.1) verhindert, dass Manifest/res je wieder aus dem
+# Repo fallen; der Copy-Budget-Check (D.2) verhindert zurückwucherndes Erklär-Copy.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Android sources present (Manifest + res/)
+        run: npm run check:android-sources
+
+      - name: Copy budget
+        run: npm run check:copy-budget
+
+      # Lint läuft sichtbar, blockiert aber (noch) nicht: es gibt vorbestehende
+      # Lint-Schuld (z. B. ModesPageView-Props-Passthrough, Test-`any`s), die das
+      # Projekt-Merge-Gate bewusst ausklammert. Sobald sie abgebaut ist:
+      # continue-on-error entfernen, damit Lint blockierend wird.
+      - name: Lint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build

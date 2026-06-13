@@ -33,6 +33,7 @@ final class BlearnNotificationBridge {
     static final String CHANNEL_STATUS_HINTS = "blearn.notifications.statusHints";
     static final String CHANNEL_LEARN_PROGRESS = "blearn.notifications.learnProgress";
     static final String CHANNEL_PENALTY_ALERTS = "blearn.notifications.penaltyAlerts";
+    static final String CHANNEL_PROTECTION_ALERTS = "blearn.notifications.protectionAlerts";
 
     private static final int BASE_NOTIFICATION_ID = 4600;
 
@@ -95,6 +96,39 @@ final class BlearnNotificationBridge {
             result.put("reason", "blocked");
         }
         return result;
+    }
+
+    /**
+     * Protection alerts (service killed, reboot, trigger storm) bypass the category
+     * preferences: a protection promise that fails silently is worthless. They still
+     * respect the system-level notification permission.
+     */
+    boolean dispatchProtectionAlert(String title, String body, String notificationId) {
+        if (!areNotificationsEnabled()) {
+            return false;
+        }
+
+        PendingIntent contentIntent = PendingIntent.getActivity(
+            context,
+            0,
+            new Intent(context, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP),
+            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+        Notification notification = new NotificationCompat.Builder(context, CHANNEL_PROTECTION_ALERTS)
+            .setSmallIcon(android.R.drawable.ic_dialog_alert)
+            .setContentTitle(TextUtils.isEmpty(title) ? "Blearn" : title)
+            .setContentText(TextUtils.isEmpty(body) ? "" : body)
+            .setStyle(new NotificationCompat.BigTextStyle().bigText(TextUtils.isEmpty(body) ? "" : body))
+            .setContentIntent(contentIntent)
+            .setAutoCancel(true)
+            .setOnlyAlertOnce(true)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(Notification.CATEGORY_ERROR)
+            .build();
+        NotificationManagerCompat.from(context)
+            .notify(resolveNotificationId(notificationId, "protection"), notification);
+        return true;
     }
 
     void openNotificationSettings() {
@@ -251,6 +285,12 @@ final class BlearnNotificationBridge {
             CHANNEL_PENALTY_ALERTS,
             "Blearn Wallet und Strafe",
             "Wichtige Hinweise zu Strafe, Wallet und Accountability",
+            NotificationManager.IMPORTANCE_HIGH
+        ));
+        notificationManager.createNotificationChannel(buildChannel(
+            CHANNEL_PROTECTION_ALERTS,
+            "Blearn Schutzstatus",
+            "Warnt, wenn der konfigurierte Schutz nicht mehr aktiv ist",
             NotificationManager.IMPORTANCE_HIGH
         ));
     }

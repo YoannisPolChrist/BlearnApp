@@ -15,6 +15,7 @@ final class BlockingFlowState {
         PendingNavigationStore.completeActiveHandoff(context, sessionId);
         OverlayHandoffCoordinator.getInstance().completeRouteReady();
         BlockingOverlayActivity.notifyRouteReady();
+        ProtectionWatchdog.recordRouteReady(context);
     }
 
     static void reset(Context context, String reason) {
