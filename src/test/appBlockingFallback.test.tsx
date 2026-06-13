@@ -89,6 +89,7 @@ function mockSharedAppShell(
       ...routeLoadersOverride,
     },
     preloadCriticalBlockingRoutes: vi.fn().mockResolvedValue(undefined),
+    preloadMainTabRoutes: vi.fn(),
   }));
   vi.doMock('@/components/setup/AppTourProvider', () => ({
     AppTourProvider: ({ children }: { children: ReactNode; steps?: unknown[] }) => <>{children}</>,

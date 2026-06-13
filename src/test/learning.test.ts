@@ -446,14 +446,14 @@ describe('learning scheduler', () => {
     expect(isTypedAnswerCorrect(cards[0], notes[0], '   ')).toBe(false);
   });
 
-  it('accepts typed answers once the first 4 letters match', () => {
+  it('accepts typed answers once the first 3 letters match (Tip-Modus)', () => {
     const { cards, notes } = buildEntitiesFromRows(
       [{ deck: 'Deck', front: 'focus', back: 'konzentriert', type: 'basic' }],
       1_700_000_000_000,
     );
 
-    expect(isTypedAnswerCorrect(cards[0], notes[0], 'konz')).toBe(true);
-    expect(isTypedAnswerCorrect(cards[0], notes[0], 'kon')).toBe(false);
+    expect(isTypedAnswerCorrect(cards[0], notes[0], 'kon')).toBe(true);
+    expect(isTypedAnswerCorrect(cards[0], notes[0], 'ko')).toBe(false);
     expect(isTypedAnswerCorrect(cards[0], notes[0], 'zent')).toBe(false);
   });
 
