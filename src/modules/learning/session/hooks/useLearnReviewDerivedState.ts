@@ -142,7 +142,12 @@ export function useLearnReviewDerivedState({
       : null;
   const effectiveCorrect = requiresTypedAnswer ? typedCorrect === true : true;
   const remainingAttempts = Math.max(0, MAX_TYPED_ANSWER_ATTEMPTS - attemptCount);
-  const easyRatingBlocked = requiresTypedAnswer && typedCorrect === false;
+  // "Gut"/"Einfach" sind nach einer falschen UND nach einer nur knapp ("partial",
+  // 3-Buchstaben-Tippmodus) richtigen Eingabe gesperrt: Ein Beinahe-Treffer ist
+  // kein voller Abruf und darf kein langes Easy/Good-Intervall verdienen — nur
+  // Nochmal/Schwer (Plan P2-E). Schwer gibt weiterhin Credit, terminiert aber kurz.
+  const easyRatingBlocked =
+    requiresTypedAnswer && (typedCorrect === false || typedAnswerMatchKind === 'partial');
   const cardPrompt = currentCard && currentNote ? getCardPrompt(currentCard, currentNote) : '';
   const cardAnswer = currentNote ? getCardAnswer(currentNote, currentCard ?? undefined) : '';
   const cardPromptHtml = currentCard && currentNote ? getCardPromptHtml(currentCard, currentNote) : '';

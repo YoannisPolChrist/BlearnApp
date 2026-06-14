@@ -238,7 +238,7 @@ function LearnReviewActionsInner({
 
           {easyRatingBlocked || blockedEasyHintVisible ? (
             <div className="mt-2 text-[10px] font-black uppercase tracking-[0.15em] text-foreground/68">
-              Nach falscher Eingabe nur Nochmal oder Schwer.
+              Nur Nochmal oder Schwer möglich.
             </div>
           ) : null}
         </motion.div>

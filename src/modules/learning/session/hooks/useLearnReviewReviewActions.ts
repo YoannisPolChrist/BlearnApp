@@ -118,7 +118,7 @@ export function useLearnReviewReviewActions({
       if (easyRatingBlocked && (rating === 'easy' || rating === 'good')) {
         setBlockedEasyHintVisible(true);
         setBlockedEasyPulseKey((current) => current + 1);
-        recordFeedback('toast', 'Nach falscher Eingabe nur Nochmal oder Schwer.');
+        recordFeedback('toast', 'Nur Nochmal oder Schwer möglich.');
         return;
       }
 

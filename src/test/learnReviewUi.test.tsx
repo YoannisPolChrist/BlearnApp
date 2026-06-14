@@ -761,6 +761,15 @@ describe('Learn review typed-answer UI', () => {
     fireEvent.click(await findRevealButton());
 
     expect(await screen.findByText('Deine Eingabe: Freu')).toBeInTheDocument();
+
+    // P2-E: Ein Beinahe-Treffer (partial, 3-Buchstaben-Tippmodus) sperrt
+    // "Gut"/"Einfach" — nur Nochmal/Schwer, damit ein knapper Abruf kein langes
+    // Easy-Intervall verdient.
+    expect(await screen.findByRole('button', { name: /good/i })).toHaveAttribute('aria-disabled', 'true');
+    expect(await screen.findByRole('button', { name: /easy/i })).toHaveAttribute('aria-disabled', 'true');
+    expect(
+      (await screen.findByRole('button', { name: /hard/i })).getAttribute('aria-disabled'),
+    ).not.toBe('true');
   }, 15000);
 
   it('restores the original interval preview after going back to the previous solved card', async () => {
