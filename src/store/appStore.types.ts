@@ -109,6 +109,9 @@ export interface PenaltyTransaction {
   deliveryAttempts?: number;
   lastDeliveryError?: string;
   remoteReference?: string;
+  // Lightning-Preimage = Zahlungsbeweis. Nur mit gültigem Preimage gilt die
+  // Strafzahlung als bestätigt und schaltet frei (Plan P1-D).
+  preimage?: string;
   feesPaidSats?: number;
   sentAt?: number;
   deliveredAt?: number;

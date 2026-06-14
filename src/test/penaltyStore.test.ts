@@ -185,6 +185,85 @@ describe('penalty store', () => {
     expect(useAppStore.getState().getTotalPenalties()).toBe(500);
   });
 
+  it('does not charge twice when a confirmed payment is retried within the idempotency window', async () => {
+    const useAppStore = await loadStore();
+    await primePenaltySetup(useAppStore, 500);
+
+    processAlbyPenaltyMock.mockResolvedValue({
+      success: true,
+      paymentReference: 'hash_once',
+      sentAt: 1_710_000_500_000,
+      preimage: 'preimage-once',
+      feesPaidSats: 2,
+      amountSats: 500,
+    });
+
+    const first = await useAppStore.getState().deductPenalty('com.instagram.android', 'app');
+    // Erneuter Aufruf (z.B. nach Remount/erneutem Tap) → KEINE zweite Belastung.
+    const second = await useAppStore.getState().deductPenalty('com.instagram.android', 'app');
+
+    expect(processAlbyPenaltyMock).toHaveBeenCalledTimes(1);
+    expect(useAppStore.getState().penaltyTransactions).toHaveLength(1);
+    expect(second.transactionId).toBe(first.transactionId);
+    expect(useAppStore.getState().getTotalPenalties()).toBe(500);
+  });
+
+  it('refuses a second charge while one payment is still in flight', async () => {
+    const useAppStore = await loadStore();
+    await primePenaltySetup(useAppStore, 500);
+
+    let resolvePayment: ((value: AlbyPenaltyResult) => void) | undefined;
+    processAlbyPenaltyMock.mockReturnValue(
+      new Promise<AlbyPenaltyResult>((resolve) => {
+        resolvePayment = resolve;
+      }),
+    );
+
+    // Erste Zahlung starten (fügt synchron die 'processing'-Transaktion ein und wartet).
+    const inFlight = useAppStore.getState().deductPenalty('com.instagram.android', 'app');
+
+    // Zweiter Aufruf währenddessen → abgelehnt, keine zweite Zahlung.
+    await expect(useAppStore.getState().deductPenalty('com.instagram.android', 'app')).rejects.toThrow(
+      /läuft bereits/,
+    );
+    expect(processAlbyPenaltyMock).toHaveBeenCalledTimes(1);
+
+    resolvePayment?.({
+      success: true,
+      paymentReference: 'hash_inflight',
+      sentAt: 1_710_000_600_000,
+      preimage: 'preimage-inflight',
+      feesPaidSats: 1,
+      amountSats: 500,
+    });
+    await inFlight;
+    expect(useAppStore.getState().penaltyTransactions).toHaveLength(1);
+    expect(useAppStore.getState().penaltyTransactions[0].deliveryStatus).toBe('sent');
+  });
+
+  it('does not unlock when the payment returns without a preimage (no confirmation)', async () => {
+    const useAppStore = await loadStore();
+    await primePenaltySetup(useAppStore, 500);
+
+    processAlbyPenaltyMock.mockResolvedValue({
+      success: true,
+      paymentReference: 'hash_no_preimage',
+      sentAt: 1_710_000_700_000,
+      preimage: '',
+      feesPaidSats: 0,
+      amountSats: 500,
+    });
+
+    await expect(useAppStore.getState().deductPenalty('com.tiktok.android', 'app')).rejects.toThrow(
+      /nicht bestätigt|Zahlungsbeweis/,
+    );
+
+    const transactions = useAppStore.getState().penaltyTransactions;
+    expect(transactions).toHaveLength(1);
+    expect(transactions[0].deliveryStatus).toBe('failed');
+    expect(useAppStore.getState().isTargetUnlocked('com.tiktok.android', 'app')).toBe(false);
+  });
+
   it('does not silently migrate legacy EUR penalty amounts into sats', async () => {
     const useAppStore = await loadStore({
       penaltyEnabled: true,
