@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createLearningSessionController, createUnlockSessionSnapshotFromContext, SessionTimer } from '../index';
+import {
+  createLearningSessionController,
+  createReviewSessionSnapshotFromCards,
+  createUnlockSessionSnapshotFromContext,
+  SessionTimer,
+} from '../index';
 
 describe('session controller', () => {
   const cards = [
@@ -161,6 +166,83 @@ describe('session controller', () => {
     expect(controller.getSnapshot().status).toBe('completed');
     expect(controller.getSnapshot().currentCardId).toBeUndefined();
     expect(controller.getSnapshot().queue).toHaveLength(0);
+  });
+
+  it('re-queues a wrong answer in the unlock flow instead of stranding the credit (no dead-end)', () => {
+    const now = 1_700_000_000_000;
+    const snapshot = createUnlockSessionSnapshotFromContext({
+      cards: [
+        { ...cards[0], id: 'card-1', noteId: 'note-1', createdAt: now, dueAt: now - 1_000 },
+        { ...cards[0], id: 'card-2', noteId: 'note-2', createdAt: now + 1, dueAt: now - 1_000 },
+      ],
+      notes: [],
+      reviewLogs: [],
+      deckId: 'deck-1',
+      sessionCreditsRequired: 2,
+      now,
+      ignoreNewCardsLimit: true,
+    });
+    const controller = createLearningSessionController(snapshot);
+    expect(controller.getSnapshot().queue).toEqual(['card-1', 'card-2']);
+
+    // Karte 1 falsch → bleibt in der Session (ans Ende verschoben), KEIN Credit.
+    controller.grade('again', { cardId: 'card-1', wasCorrect: false, now: now + 1 });
+    expect(controller.getSnapshot().status).toBe('active');
+    expect(controller.getSnapshot().countedReviews).toBe(0);
+    expect(controller.getSnapshot().queue).toEqual(['card-2', 'card-1']);
+
+    // Karte 2 korrekt → 1 Credit.
+    controller.grade('good', { cardId: 'card-2', wasCorrect: true, now: now + 2 });
+    expect(controller.getSnapshot().countedReviews).toBe(1);
+    expect(controller.getSnapshot().status).toBe('active');
+
+    // Karte 1 jetzt korrekt → 2. Credit, Session abgeschlossen — kein "fertig aber zu wenig".
+    controller.grade('good', { cardId: 'card-1', wasCorrect: true, now: now + 3 });
+    expect(controller.getSnapshot().status).toBe('completed');
+    expect(controller.getSnapshot().countedReviews).toBe(2);
+    expect(controller.getSnapshot().queue).toEqual([]);
+  });
+
+  it('grants an exposure credit after the requeue cap so a hard card cannot loop forever', () => {
+    const now = 1_700_000_000_000;
+    const snapshot = createUnlockSessionSnapshotFromContext({
+      cards: [{ ...cards[0], id: 'card-1', noteId: 'note-1', createdAt: now, dueAt: now - 1_000 }],
+      notes: [],
+      reviewLogs: [],
+      deckId: 'deck-1',
+      sessionCreditsRequired: 1,
+      now,
+      ignoreNewCardsLimit: true,
+    });
+    const controller = createLearningSessionController(snapshot);
+
+    // 1. + 2. Fehlversuch → Re-Queue, kein Credit, Session bleibt aktiv.
+    controller.grade('again', { cardId: 'card-1', wasCorrect: false, now: now + 1 });
+    controller.grade('again', { cardId: 'card-1', wasCorrect: false, now: now + 2 });
+    expect(controller.getSnapshot().status).toBe('active');
+    expect(controller.getSnapshot().countedReviews).toBe(0);
+
+    // 3. Fehlversuch → Cap erreicht → Exposition zählt als Credit → abgeschlossen.
+    controller.grade('again', { cardId: 'card-1', wasCorrect: false, now: now + 3 });
+    expect(controller.getSnapshot().status).toBe('completed');
+    expect(controller.getSnapshot().countedReviews).toBe(1);
+  });
+
+  it('does NOT re-queue wrong answers in the non-unlock review flow', () => {
+    const now = 1_700_000_000_000;
+    const snapshot = createReviewSessionSnapshotFromCards(
+      [{ ...cards[0], id: 'card-1', noteId: 'note-1', createdAt: now, dueAt: now - 1_000 }],
+      1,
+      now,
+    );
+    const controller = createLearningSessionController(snapshot);
+    expect(controller.getSnapshot().kind).toBe('review');
+
+    // Im freien Übungsmodus (kein Gate) wird eine falsche Karte regulär entfernt.
+    controller.grade('again', { cardId: 'card-1', wasCorrect: false, now: now + 1 });
+    expect(controller.getSnapshot().status).toBe('completed');
+    expect(controller.getSnapshot().queue).toEqual([]);
+    expect(controller.getSnapshot().countedReviews).toBe(0);
   });
 
   it('supports timer snapshots', () => {

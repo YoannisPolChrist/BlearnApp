@@ -8,6 +8,7 @@ import { LearnReviewEmptyState } from '@/components/learn-review/LearnReviewEmpt
 import { LearnReviewPageHeader } from '@/components/learn-review/LearnReviewHeader';
 import { LearnReviewStage } from '@/components/learn-review/LearnReviewStage';
 import { LearnReviewSuccessState } from '@/components/learn-review/LearnReviewSuccessState';
+import { LearnReviewUnlockProgress } from '@/components/learn-review/LearnReviewUnlockProgress';
 import { useLearnReviewSession } from '@/hooks/useLearnReviewSession';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { sectionStagger } from '@/lib/motion';
@@ -152,6 +153,13 @@ export default function LearnReviewPage() {
                   animate="show"
                   className="flex min-h-0 min-w-0 flex-col gap-2.5 overflow-visible md:gap-3"
                 >
+                  {session.isBlockedFlow ? (
+                    <LearnReviewUnlockProgress
+                      countedReviews={session.countedReviews}
+                      sessionCreditsRequired={session.sessionCardCount}
+                      progressPercent={session.progressPercent}
+                    />
+                  ) : null}
                   <LearnReviewStage
                     attemptMessage={session.attemptMessage}
                     answerIsLong={session.answerIsLong}

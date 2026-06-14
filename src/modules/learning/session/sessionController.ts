@@ -20,6 +20,9 @@ export { createLearningSessionSnapshot, createReviewSessionSnapshotFromCards, cr
 export { getMaxTypedAnswerAttempts, getSessionCardAnswer, getSessionCardPrompt, hasTypedAnswerDirective, isSessionComplete, isSessionTypedAnswerCorrect, shouldSessionRequireTypedAnswer } from './sessionLearningAccessors';
 
 const MAX_HISTORY_ENTRIES = 25;
+// Höchstzahl Re-Queues einer falsch beantworteten Karte im Unlock-Flow, bevor
+// die Exposition als Credit gewertet wird (Frust-Loop-Schutz, siehe Plan P0.2).
+const MAX_UNLOCK_REQUEUES = 2;
 
 function nowTimestamp(now?: number) {
   return now ?? Date.now();
@@ -78,6 +81,7 @@ class ReviewSessionControllerImpl implements LearningSessionController {
       status: initial.status ?? (initial.queue.length > 0 ? 'active' : 'completed'),
       history: [...(initial.history || [])],
       cardSnapshotsById: { ...(initial.cardSnapshotsById || {}) },
+      requeueCountsByCardId: { ...(initial.requeueCountsByCardId || {}) },
       timer: { ...createTimerSnapshot(initial.timer.limitMs), ...initial.timer },
     };
   }
@@ -120,6 +124,7 @@ class ReviewSessionControllerImpl implements LearningSessionController {
       ...snapshot,
       history: [...(snapshot.history || [])],
       cardSnapshotsById: { ...(snapshot.cardSnapshotsById || {}) },
+      requeueCountsByCardId: { ...(snapshot.requeueCountsByCardId || {}) },
       timer: { ...createTimerSnapshot(snapshot.timer.limitMs), ...snapshot.timer },
     };
   };
@@ -138,6 +143,7 @@ class ReviewSessionControllerImpl implements LearningSessionController {
       attemptCount: next.attemptCount ?? 0,
       attemptMessage: next.attemptMessage ?? null,
       countedReviews: next.countedReviews ?? 0,
+      requeueCountsByCardId: next.requeueCountsByCardId ?? {},
       status: next.status ?? this.snapshot.status,
       cardSnapshotsById: next.cardSnapshotsById ? { ...next.cardSnapshotsById } : this.snapshot.cardSnapshotsById,
       timer: next.timer ? { ...this.snapshot.timer, ...next.timer } : this.snapshot.timer,
@@ -301,22 +307,42 @@ class ReviewSessionControllerImpl implements LearningSessionController {
     }
 
     const wasCorrect = input.wasCorrect ?? this.snapshot.typedCorrect ?? rating !== 'again';
-    const countedReviews = wasCorrect && rating !== 'again' ? this.snapshot.countedReviews + 1 : this.snapshot.countedReviews;
+    const correctCredit = wasCorrect && rating !== 'again';
+    const isUnlock = this.snapshot.kind === 'unlock';
+
+    // Re-Queue (nur Unlock-Flow): Eine nicht-korrekt beantwortete Karte verlässt
+    // die Queue NICHT, sondern wandert ans Ende und muss korrekt erinnert werden.
+    // So kann das Gate nie mit zu wenig Credits "leerlaufen" (Sackgasse). Nach
+    // MAX_UNLOCK_REQUEUES Versuchen wird die Exposition als Credit gewertet, damit
+    // eine wirklich unbekannte Karte keinen endlosen Frust-Loop erzeugt.
+    const priorRequeues = this.snapshot.requeueCountsByCardId[cardId] ?? 0;
+    const shouldRequeue = isUnlock && !correctCredit && priorRequeues < MAX_UNLOCK_REQUEUES;
+    const capGrantedCredit = isUnlock && !correctCredit && !shouldRequeue;
+    const grantsCredit = correctCredit || capGrantedCredit;
+
+    const countedReviews = grantsCredit ? this.snapshot.countedReviews + 1 : this.snapshot.countedReviews;
     const previous = cloneHistoryState(this.snapshot);
     const previousQueue = this.snapshot.queue;
-    let nextQueue = advanceReviewQueue(previousQueue, cardId);
-    let nextCurrentCardId = nextQueue[0];
+    let nextQueue: string[];
     let nextCandidateCursor = this.snapshot.candidateCursor;
+    let nextRequeueCounts = this.snapshot.requeueCountsByCardId;
 
-    if (nextQueue.length === 0 && this.snapshot.candidateCursor < this.snapshot.candidateIds.length) {
-      const nextCursor = this.snapshot.candidateCursor;
-      const nextCandidateId = this.snapshot.candidateIds[nextCursor];
+    if (shouldRequeue) {
+      // Karte ans Queue-Ende verschieben (andere fällige Karten kommen zuerst).
+      nextQueue = [...previousQueue.filter((id) => id !== cardId), cardId];
+      nextRequeueCounts = { ...this.snapshot.requeueCountsByCardId, [cardId]: priorRequeues + 1 };
+    } else {
+      nextQueue = advanceReviewQueue(previousQueue, cardId);
+      if (nextQueue.length === 0 && this.snapshot.candidateCursor < this.snapshot.candidateIds.length) {
+        const nextCursor = this.snapshot.candidateCursor;
+        const nextCandidateId = this.snapshot.candidateIds[nextCursor];
 
-      nextQueue = nextCandidateId ? [nextCandidateId] : [];
-      nextCurrentCardId = nextCandidateId;
-      nextCandidateCursor = nextCandidateId ? nextCursor + 1 : nextCursor;
+        nextQueue = nextCandidateId ? [nextCandidateId] : [];
+        nextCandidateCursor = nextCandidateId ? nextCursor + 1 : nextCursor;
+      }
     }
 
+    const nextCurrentCardId = nextQueue[0];
     const nextStatus: LearningSessionSnapshot['status'] = nextQueue.length === 0 ? 'completed' : 'active';
 
     this.snapshot = {
@@ -324,6 +350,7 @@ class ReviewSessionControllerImpl implements LearningSessionController {
       queue: nextQueue,
       currentCardId: nextCurrentCardId,
       candidateCursor: nextCandidateCursor,
+      requeueCountsByCardId: nextRequeueCounts,
       revealed: false,
       typedAnswer: '',
       typedCorrect: null,

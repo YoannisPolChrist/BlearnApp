@@ -132,18 +132,21 @@ export function useLearnReviewReviewActions({
           wasCorrect,
         }) ?? [];
       const nextSnapshot = syncSessionSnapshot();
-      const nextCountedReviews = nextSnapshot?.countedReviews ?? countedReviews;
       const sessionCompleted = events.some((event) => event.type === 'session-completed');
+      // Im Blocking-Flow garantiert das Re-Queue (sessionController.grade), dass die
+      // Queue erst leerläuft, wenn jede Karte einen Credit verdient hat — Abschluss
+      // bedeutet also: die erreichbare Aufgabe ist erfüllt → freischalten. Damit kann
+      // eine falsche Antwort nicht mehr in der Sackgasse "fertig, aber nicht frei" enden.
+      const isUnlockCompletion = sessionCompleted && Boolean(targetId);
 
       // Haptik (4b.4): Erfolg beim Freischalten, sonst ein leichtes Tick.
-      if (sessionCompleted && targetId && nextCountedReviews >= sessionCreditsRequired) {
+      if (isUnlockCompletion) {
         hapticSuccess();
       } else {
         hapticTick();
       }
 
       if (sessionCompleted) {
-        const isUnlockCompletion = Boolean(targetId) && nextCountedReviews >= sessionCreditsRequired;
         pendingCompletionKindRef.current = isUnlockCompletion ? 'unlock' : 'review';
         setSelectedSessionCategories([]);
         setSelectedSessionEmotions([]);

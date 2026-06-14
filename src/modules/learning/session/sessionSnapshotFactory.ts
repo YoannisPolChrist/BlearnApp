@@ -103,6 +103,7 @@ export function createLearningSessionSnapshot(
     candidateIds,
     candidateCursor: Math.min(queue.length, candidateIds.length),
     cardSnapshotsById: buildCardSnapshotMap(context.cards, candidateIds),
+    requeueCountsByCardId: {},
     typedAnswer: '',
     typedCorrect: null,
     revealed: false,

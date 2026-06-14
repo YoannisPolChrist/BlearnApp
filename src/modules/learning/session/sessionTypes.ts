@@ -82,6 +82,10 @@ export interface LearningSessionSnapshot {
   candidateIds: string[];
   candidateCursor: number;
   cardSnapshotsById: Record<string, LearningCard>;
+  // Wie oft eine Karte im Unlock-Flow bei falscher Antwort ans Queue-Ende
+  // zurückgeschoben wurde (Re-Queue). Ab MAX_UNLOCK_REQUEUES zählt die
+  // Exposition als Credit, damit eine unbekannte Karte keinen Frust-Loop erzeugt.
+  requeueCountsByCardId: Record<string, number>;
   typedAnswer: string;
   typedCorrect: boolean | null;
   revealed: boolean;
