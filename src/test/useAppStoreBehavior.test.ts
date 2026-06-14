@@ -83,6 +83,39 @@ describe('useAppStore behavior', () => {
     expect(useAppStore.getState().installedAppLanguagePacks).not.toContain('es');
   });
 
+  it('freezes weakening blocking mutations while the main strict lock is active', () => {
+    const store = useAppStore.getState();
+
+    // Schutz aufbauen, dann Haupt-Strict-Lock aktiv setzen.
+    store.toggleBlockedApp('com.example.youtube', 'strict');
+    store.setBlockSchedule('com.example.youtube', '08:00', '18:00');
+    store.toggleBlockedWebsite('example.com', 'strict');
+    store.toggleBlockedSearchTerm('doomscrolling', 'strict');
+    useAppStore.setState({ strictLockUntil: Date.now() + 60 * 60 * 1000, strictLockScope: 'full' });
+
+    // Schwächende Aktionen sind im Lock No-ops.
+    store.toggleBlockedApp('com.example.youtube', 'strict'); // würde sonst entfernen
+    store.removeBlockedWebsite('example.com');
+    store.removeBlockedSearchTerm('doomscrolling');
+    store.setBlockSchedule('com.example.youtube', '23:00', '23:30'); // Fenster verkürzen
+    store.removeBlockSchedule('com.example.youtube');
+
+    const locked = useAppStore.getState();
+    expect(locked.blockedApps).toContain('com.example.youtube');
+    expect(locked.blockedWebsites).toContain('example.com');
+    expect(locked.blockedSearchTerms).toContain('doomscrolling');
+    expect(locked.blockSchedules['com.example.youtube']).toEqual({ from: '08:00', to: '18:00' });
+
+    // Stärken (einen weiteren Block hinzufügen) bleibt erlaubt.
+    store.toggleBlockedApp('com.example.instagram', 'strict');
+    expect(useAppStore.getState().blockedApps).toContain('com.example.instagram');
+
+    // Nach Ablauf des Locks sind Änderungen wieder möglich.
+    useAppStore.setState({ strictLockUntil: null, strictLockScope: null });
+    store.toggleBlockedApp('com.example.youtube', 'strict');
+    expect(useAppStore.getState().blockedApps).not.toContain('com.example.youtube');
+  });
+
   it('keeps unlock timers isolated per target', () => {
     const store = useAppStore.getState();
     const nowSpy = vi.spyOn(Date, 'now');

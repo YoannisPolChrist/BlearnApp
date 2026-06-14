@@ -18,6 +18,17 @@ import { buildUnlockedTargetKey } from '@/lib/unlockedTargets';
 
 const DEFAULT_ALL_DAY_BLOCK_SCHEDULE = { from: '00:00', to: '23:59' } as const;
 
+// Defense-in-Depth (Plan P1-B): Während der Haupt-Strict-Lock läuft, sind
+// schützende Einstellungen unveränderbar — das gilt auch im Store, nicht nur in
+// der UI. `setStrictSchedule` macht das bereits; die Blocking-Mutationen, die
+// Schutz WEGNEHMEN (Block entfernen, Zeitfenster ändern), waren bisher nur gegen
+// Addon-Locks abgesichert, nicht gegen den Haupt-Lock (`strictLockUntil`). Ein
+// entschlossener Nutzer (das Bedrohungsmodell dieses Commitment-Device) konnte so
+// den Schutz mitten im Lock aufweichen. Stärken (Blocks hinzufügen) bleibt erlaubt.
+function isMainStrictLockActive(state: { strictLockUntil: number | null }): boolean {
+  return state.strictLockUntil !== null && Date.now() < state.strictLockUntil;
+}
+
 export const createBlockingSlice: AppStoreSlice<Partial<AppState>> = (set, get) => ({
   blockedApps: [],
   blockedAppModes: {},
@@ -41,6 +52,10 @@ export const createBlockingSlice: AppStoreSlice<Partial<AppState>> = (set, get) 
         return state;
       }
       const shouldRemove = currentMode === mode;
+      // Während des Haupt-Strict-Locks darf ein Block nicht entfernt werden.
+      if (shouldRemove && isMainStrictLockActive(state)) {
+        return state;
+      }
       const nextBlockSchedules = { ...state.blockSchedules };
 
       if (shouldRemove) {
@@ -182,10 +197,15 @@ export const createBlockingSlice: AppStoreSlice<Partial<AppState>> = (set, get) 
     const normalizedUrl = normalizeTargetValue('website', url);
     if (!normalizedUrl) return;
 
-    set((state) => applyModeState(state, {
-      blockedWebsites: state.blockedWebsites.filter((entry) => entry !== normalizedUrl),
-      blockedWebsiteModes: setTargetModeRecord(state.blockedWebsiteModes, 'website', normalizedUrl, null),
-    }));
+    set((state) => {
+      if (isMainStrictLockActive(state)) {
+        return state;
+      }
+      return applyModeState(state, {
+        blockedWebsites: state.blockedWebsites.filter((entry) => entry !== normalizedUrl),
+        blockedWebsiteModes: setTargetModeRecord(state.blockedWebsiteModes, 'website', normalizedUrl, null),
+      });
+    });
   },
   toggleBlockedSearchTerm: (term, mode) => {
     const normalizedTerm = normalizeTargetValue('search', term);
@@ -225,10 +245,15 @@ export const createBlockingSlice: AppStoreSlice<Partial<AppState>> = (set, get) 
     const normalizedTerm = normalizeTargetValue('search', term);
     if (!normalizedTerm) return;
 
-    set((state) => applyModeState(state, {
-      blockedSearchTerms: state.blockedSearchTerms.filter((entry) => entry !== normalizedTerm),
-      blockedSearchTermModes: setTargetModeRecord(state.blockedSearchTermModes, 'search', normalizedTerm, null),
-    }));
+    set((state) => {
+      if (isMainStrictLockActive(state)) {
+        return state;
+      }
+      return applyModeState(state, {
+        blockedSearchTerms: state.blockedSearchTerms.filter((entry) => entry !== normalizedTerm),
+        blockedSearchTermModes: setTargetModeRecord(state.blockedSearchTermModes, 'search', normalizedTerm, null),
+      });
+    });
   },
   getTargetMode: (targetId, targetType) => getAssignedTargetModeFromState(get(), targetType, targetId),
 
@@ -243,18 +268,27 @@ export const createBlockingSlice: AppStoreSlice<Partial<AppState>> = (set, get) 
     const normalizedTo = to.trim();
     if (!normalizedApp || !normalizedFrom || !normalizedTo) return;
 
-    set((state) => ({
-      blockSchedules: {
-        ...state.blockSchedules,
-        [normalizedApp]: { from: normalizedFrom, to: normalizedTo },
-      },
-    }));
+    set((state) => {
+      // Zeitfenster-Änderung kann die Sperre verkürzen → im Lock unveränderbar.
+      if (isMainStrictLockActive(state)) {
+        return state;
+      }
+      return {
+        blockSchedules: {
+          ...state.blockSchedules,
+          [normalizedApp]: { from: normalizedFrom, to: normalizedTo },
+        },
+      };
+    });
   },
   removeBlockSchedule: (app) => {
     const normalizedApp = normalizeTargetValue('app', app);
     if (!normalizedApp) return;
 
     set((state) => {
+      if (isMainStrictLockActive(state)) {
+        return state;
+      }
       const updated = { ...state.blockSchedules };
       delete updated[normalizedApp];
       return { blockSchedules: updated };
