@@ -96,7 +96,7 @@ export default function InterventionOverlayScreen({
     mode === 'penalty'
       ? penaltyConfirmStep === 1
         ? 'Freigabe kostet'
-        : 'Letzte Bestaetigung'
+        : 'Letzte Bestätigung'
       : mode === 'learn'
         ? 'Learn vor Freigabe'
         : mode === 'lock'
@@ -106,20 +106,20 @@ export default function InterventionOverlayScreen({
   const description =
     mode === 'penalty'
       ? penaltyConfirmStep === 1
-        ? `Pruefe die Zahlung von ${penaltyAmountLabel}, um die Freigabe fortzusetzen.`
-        : `${penaltyAmountLabel} werden jetzt an ${recipientLabel} ausgeloest.`
+        ? `Freigabe kostet ${penaltyAmountLabel} an ${recipientLabel}.`
+        : `${penaltyAmountLabel} werden jetzt an ${recipientLabel} gesendet.`
       : mode === 'learn'
         ? 'Starte jetzt deine Lernrunde, um den Zugriff freizuschalten.'
         : mode === 'lock'
-          ? 'Dieser Schutzmodus laesst gerade keine Freischaltung zu.'
+          ? 'Dieser Schutzmodus lässt gerade keine Freischaltung zu.'
           : 'Starte jetzt kurz die Reflexion, um den Zugriff freizuschalten.';
 
   const primaryLabel =
     mode === 'penalty'
       ? penaltyBusy
-        ? 'Zahlung laeuft...'
+        ? 'Zahlung läuft …'
         : penaltyConfirmStep === 1
-          ? 'Zahlung pruefen'
+          ? 'Zahlung prüfen'
           : 'Jetzt bezahlen'
       : mode === 'learn'
         ? 'Learn starten'
