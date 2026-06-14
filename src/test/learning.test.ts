@@ -1043,6 +1043,37 @@ describe('learning scheduler', () => {
     ).not.toContain(secondNewCard.id);
   });
 
+  it('never lists the same card twice in a session even when sibling dedup is off', () => {
+    const now = 1_700_000_000_000;
+    const { decks, cards } = buildEntitiesFromRows(
+      [{ deck: 'Deck', front: 'word', back: 'wort', type: 'basic' }],
+      now,
+    );
+    const deckId = decks[0]!.id;
+    const dueCard = {
+      ...cards[0],
+      state: 'review' as const,
+      reps: 3,
+      memoryState: { stability: 10, difficulty: 5 },
+      dueAt: now - 60_000,
+    };
+
+    // Künstliches Duplikat derselben Karten-ID + burySiblings aus: ohne die
+    // ID-Dedup-Invariante erschiene die Vokabel doppelt in der Session.
+    const queue = buildUnlockSessionQueue({
+      cards: [dueCard, { ...dueCard }],
+      deckId,
+      reviewLogs: [],
+      preset: { ...getDefaultLearningPreset(), burySiblings: false },
+      gateRule: getDefaultGateRule(),
+      sessionCreditsRequired: 5,
+      ignoreNewCardsLimit: true,
+      now,
+    });
+
+    expect(queue.filter((id) => id === dueCard.id)).toHaveLength(1);
+  });
+
   it('reports richer deck stats for passive sessions', () => {
     const now = 1_700_000_000_000;
     const { decks, cards } = buildEntitiesFromRows(

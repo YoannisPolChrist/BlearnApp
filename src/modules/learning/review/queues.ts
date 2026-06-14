@@ -419,7 +419,21 @@ export function buildUnlockSessionCandidateIds({
     ? interleaved.filter(card => !excludeCardIds.has(card.id))
     : interleaved;
 
-  return filtered.map((card) => card.id);
+  // Invariante: jede Karte erscheint höchstens EINMAL pro Session — keine Vokabel
+  // doppelt. Die Quell-Listen sind heute schon eindeutig, AUSSER bei
+  // burySiblings=false (dann greift die Geschwister-Dedup nicht). Diese explizite
+  // ID-Dedup garantiert die Eindeutigkeit unabhängig von Preset/Quell-Änderungen.
+  const seenCardIds = new Set<string>();
+  const uniqueIds: string[] = [];
+  for (const card of filtered) {
+    if (seenCardIds.has(card.id)) {
+      continue;
+    }
+    seenCardIds.add(card.id);
+    uniqueIds.push(card.id);
+  }
+
+  return uniqueIds;
 }
 
 export function buildUnlockSessionQueue(options: BuildUnlockSessionQueueOptions): string[] {
