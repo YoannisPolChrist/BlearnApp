@@ -110,10 +110,15 @@ function useChartData(
       });
     }
 
+    // Wochen-/Monats-Buckets sind tagesweise an die Labels gebunden: Label[0] =
+    // (buckets - 1) Tage zurueck, letztes Label = heute. Der Startpunkt muss daher
+    // `now - (buckets - 1) * bucketMs` sein – andernfalls fallen die heutigen
+    // Eintraege in einen nicht existierenden Bucket (Index === buckets) und alle
+    // uebrigen Eintraege landen einen Tag neben ihrem Label.
     const startTime =
       range === 'day'
         ? new Date().setHours(0, 0, 0, 0)
-        : now - buckets * bucketMs;
+        : now - (buckets - 1) * bucketMs;
     const checkinCounts = new Array<number>(buckets).fill(0);
     const interactionCounts = new Array<number>(buckets).fill(0);
     const positiveMoodCounts = new Array<number>(buckets).fill(0);

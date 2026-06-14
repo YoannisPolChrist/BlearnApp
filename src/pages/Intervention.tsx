@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import InterventionOverlayScreen, {
@@ -31,6 +31,11 @@ export default function InterventionPage() {
 
   const [penaltyConfirmStep, setPenaltyConfirmStep] = useState<1 | 2>(1);
   const [penaltyBusy, setPenaltyBusy] = useState(false);
+  // Synchroner Reentrancy-Schutz: `penaltyBusy` (React-State) wird erst beim
+  // naechsten Render wirksam, sodass ein sehr schneller Doppel-Tap die Zahlung
+  // zweimal ausloesen koennte (Doppelbelastung). Der Ref blockt den zweiten
+  // Aufruf sofort, noch bevor `disabled` greift.
+  const paymentInFlightRef = useRef(false);
   const [penaltyErrorMessage, setPenaltyErrorMessage] = useState<string | null>(null);
   const [successVisible, setSuccessVisible] = useState(false);
   const [successHandled, setSuccessHandled] = useState(false);
@@ -131,6 +136,14 @@ export default function InterventionPage() {
       return;
     }
 
+    // Zweiter, synchroner Tap-Schutz vor `setPenaltyBusy`: verhindert, dass ein
+    // Doppel-Tap auf "Jetzt bezahlen" `deductPenalty` ein zweites Mal startet,
+    // bevor der State-Update den Button deaktiviert hat.
+    if (paymentInFlightRef.current) {
+      return;
+    }
+    paymentInFlightRef.current = true;
+
     setPenaltyBusy(true);
     setPenaltyErrorMessage(null);
 
@@ -143,6 +156,7 @@ export default function InterventionPage() {
       toast.error(message);
     } finally {
       setPenaltyBusy(false);
+      paymentInFlightRef.current = false;
     }
   };
 
