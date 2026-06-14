@@ -70,7 +70,12 @@ export function useLearnReviewReviewActions({
 
     const undoEvent = events.find((event) => event.type === 'undo-applied');
     if (undoEvent?.payload?.kind === 'review' && undoEvent.cardId) {
-      useLearningStore.getState().revertReviewLog(undoEvent.cardId as string);
+      const undoneCardId = undoEvent.cardId as string;
+      useLearningStore.getState().revertReviewLog(undoneCardId);
+      // Die Karte ist wieder offen — aus dem "bereits bewertet"-Set entfernen,
+      // sonst schließt der Blocking-Flow sie aus der Vorschau/Neu-Bootstrap aus
+      // und die Fortschrittsanzeige (Rest, nächste neue Karte) zählt zu niedrig.
+      reviewedCardIdsRef.current.delete(undoneCardId);
     }
 
     syncSessionSnapshot();
@@ -83,6 +88,7 @@ export function useLearnReviewReviewActions({
   }, [
     pendingCompletionKindRef,
     recordFeedback,
+    reviewedCardIdsRef,
     sessionControllerRef,
     setAwaitingEmotionSelection,
     setCompletedSessionVisible,

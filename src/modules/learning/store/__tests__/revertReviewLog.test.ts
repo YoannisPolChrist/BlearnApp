@@ -31,6 +31,41 @@ function seedDeckWithCard() {
   return { card: cards[0] };
 }
 
+// Multi-Cloze-Note (5.1): {{c1::…}} {{c2::…}} erzeugt zwei Karten, die sich
+// EINE Note teilen. Mit burySiblings wird beim Bewerten der einen Karte die
+// andere bis morgen begraben.
+function seedDeckWithSiblingClozeCards() {
+  const { decks, notes, cards } = buildEntitiesFromRows(
+    [
+      {
+        deck: 'Cloze-Testdeck',
+        front: 'Der {{c1::Hund}} jagt die {{c2::Katze}}.',
+        back: 'Hund / Katze',
+        type: 'cloze',
+        clozeText: 'Der {{c1::Hund}} jagt die {{c2::Katze}}.',
+      },
+    ],
+    NOW,
+  );
+
+  // Beide Geschwister sind heute fällig (Standard-Import: dueAt = createdAt).
+  const reviewableCards = cards.map((card) => ({ ...card, dueAt: NOW }));
+
+  useLearningStore.setState(
+    {
+      ...useLearningStore.getInitialState(),
+      activeDeckId: decks[0].id,
+      decks: Object.fromEntries(decks.map((d) => [d.id, d])),
+      notes: Object.fromEntries(notes.map((n) => [n.id, n])),
+      cards: Object.fromEntries(reviewableCards.map((c) => [c.id, c])),
+      presets: getDefaultLearningPresets(),
+    },
+    true,
+  );
+
+  return { gradedCard: reviewableCards[0], sibling: reviewableCards[1] };
+}
+
 describe('revertReviewLog (Masterplan 4.1)', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -66,6 +101,26 @@ describe('revertReviewLog (Masterplan 4.1)', () => {
     // The card returns to its state after the first review, FSRS memory
     // state included.
     expect(state.cards[card.id]).toEqual(afterFirst);
+  });
+
+  it('restores buried sibling cards when a multi-cloze review is undone', () => {
+    const { gradedCard, sibling } = seedDeckWithSiblingClozeCards();
+    expect(gradedCard.noteId).toBe(sibling.noteId);
+    const siblingDueBefore = useLearningStore.getState().cards[sibling.id].dueAt;
+
+    vi.spyOn(Date, 'now').mockReturnValue(NOW);
+    useLearningStore.getState().submitReview(gradedCard.id, 'good', true);
+
+    // Sanity: das Geschwister wurde tatsächlich bis morgen begraben.
+    const siblingDueAfter = useLearningStore.getState().cards[sibling.id].dueAt;
+    expect(siblingDueAfter).toBeGreaterThan(siblingDueBefore);
+
+    useLearningStore.getState().revertReviewLog(gradedCard.id);
+
+    // Nach dem Undo MUSS das Geschwister wieder fällig sein — sonst bleibt die
+    // begrabene Lücke trotz rückgängig gemachter Bewertung bis morgen versteckt.
+    const siblingDueReverted = useLearningStore.getState().cards[sibling.id].dueAt;
+    expect(siblingDueReverted).toBe(siblingDueBefore);
   });
 
   it('removes the undone review from the WAL so a replay cannot resurrect it', () => {

@@ -140,6 +140,11 @@ export interface ReviewLog {
   memoryStateBefore: FsrsMemoryState | null;
   memoryStateAfter: FsrsMemoryState | null;
   previousCardSnapshot?: LearningCard;
+  // Snapshots der Geschwister-Karten (gleiche Note), die dieses Review per
+  // burySiblings bis morgen begraben hat — VOR dem Begraben. Wird beim Undo
+  // genutzt, um die Geschwister wieder fällig zu stellen. Nur für die lokale
+  // Undo-Funktion; nicht sync-relevant.
+  buriedSiblingSnapshots?: LearningCard[];
   anki?: AnkiReviewMetadata;
 }
 

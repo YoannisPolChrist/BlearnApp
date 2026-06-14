@@ -318,6 +318,36 @@ export const createLearningReviewSlice: StateCreator<LearningStore, [], [], Lear
     const { updatedCard, log } = reviewResult;
     const defaultPresetId = getDefaultLearningPreset().id;
 
+    // Geschwister-Karten (gleiche Note — z.B. Multi-Cloze-Lücken), die dieses
+    // Review per burySiblings bis morgen begräbt, VOR dem Begraben snapshoten.
+    // Ohne diese Snapshots könnte ein Undo (revertReviewLog) nur die bewertete
+    // Karte zurücksetzen — die Geschwister blieben fälschlich bis morgen
+    // begraben, obwohl die auslösende Bewertung rückgängig gemacht wurde.
+    const reviewTimestamp = log.reviewedAt;
+    let buriedSiblingSnapshots: typeof state.cards[string][] | undefined;
+    if (preset.burySiblings && updatedCard.noteId) {
+      const nextMidnight = new Date(reviewTimestamp);
+      nextMidnight.setHours(24, 0, 0, 0);
+      const buryUntil = nextMidnight.getTime();
+      const snapshots: typeof state.cards[string][] = [];
+      for (const sibling of Object.values(state.cards)) {
+        if (
+          sibling.noteId === updatedCard.noteId
+          && sibling.id !== updatedCard.id
+          && sibling.state !== 'suspended'
+          && sibling.dueAt < buryUntil
+        ) {
+          snapshots.push({ ...sibling });
+        }
+      }
+      if (snapshots.length > 0) {
+        buriedSiblingSnapshots = snapshots;
+      }
+    }
+    if (buriedSiblingSnapshots) {
+      log.buriedSiblingSnapshots = buriedSiblingSnapshots;
+    }
+
     // Durability contract (Masterplan 2.2): commit the review synchronously
     // to the write-ahead log BEFORE the store update schedules the large
     // asynchronous snapshot persist. A WebView kill between this point and
@@ -331,10 +361,9 @@ export const createLearningReviewSlice: StateCreator<LearningStore, [], [], Lear
 
       const nextCards = { ...state.cards, [updatedCard.id]: migratedUpdatedCard };
 
-      // Geschwister-Karten (gleiche Note — z.B. Multi-Cloze-Lücken) bis morgen
-      // begraben, wenn burySiblings aktiv ist. Sonst wird die gerade bewertete
-      // Karte zwar weit terminiert, das noch fällige Geschwister taucht aber im
-      // nächsten Blocking-Flow als "dieselbe Vokabel" wieder auf.
+      // Geschwister-Karten bis morgen begraben (siehe Snapshot-Logik oben).
+      // Dieselbe Schwelle wie beim Snapshoten, damit Begraben und gespeicherte
+      // Undo-Snapshots exakt übereinstimmen.
       if (preset.burySiblings && migratedUpdatedCard.noteId) {
         const nextMidnight = new Date(reviewTimestamp);
         nextMidnight.setHours(24, 0, 0, 0);
@@ -465,6 +494,28 @@ export const createLearningReviewSlice: StateCreator<LearningStore, [], [], Lear
 
       const nextCards = { ...state.cards };
       nextCards[log.cardId] = log.previousCardSnapshot;
+
+      // Geschwister, die dieses Review bis morgen begraben hat, wieder fällig
+      // stellen — sonst bliebe eine Multi-Cloze-Lücke trotz rückgängig
+      // gemachter Bewertung versteckt. Nur restaurieren, wenn das Geschwister
+      // SEIT dem Begraben unangetastet ist (updatedAt === log.reviewedAt und
+      // noch im begrabenen Zustand); ein zwischenzeitlich selbst bewertetes
+      // Geschwister darf nicht überschrieben werden.
+      if (log.buriedSiblingSnapshots) {
+        const nextMidnight = new Date(log.reviewedAt);
+        nextMidnight.setHours(24, 0, 0, 0);
+        const buryUntil = nextMidnight.getTime();
+        for (const snapshot of log.buriedSiblingSnapshots) {
+          const current = nextCards[snapshot.id];
+          if (
+            current
+            && current.updatedAt === log.reviewedAt
+            && current.dueAt === buryUntil
+          ) {
+            nextCards[snapshot.id] = snapshot;
+          }
+        }
+      }
 
       // Keep the write-ahead log consistent: an undone review must not be
       // resurrected by a WAL replay after a kill/restart.
