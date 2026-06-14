@@ -8,6 +8,7 @@ import {
   buildUnlockSessionCandidateIds,
   buildReviewQueue,
   clampRequiredCorrectReviews,
+  formatReviewInterval,
   getDeckLearningStats,
   getReviewIntervalPreview,
   getFeaturedDeckTemplates,
@@ -488,7 +489,48 @@ describe('learning scheduler', () => {
     );
 
     expect(getReviewIntervalPreview(cards[0], 'again', false, now)).toBe('1m');
-    expect(getReviewIntervalPreview(cards[0], 'easy', true, now)).toBe('7d');
+    // Deterministischer Fuzz-Seed (siehe getFsrsScheduler): das Easy-Intervall
+    // einer frischen Karte fällt reproduzierbar auf 10d — wichtig ist, dass
+    // Vorschau und gespeicherte Fälligkeit denselben Wert liefern.
+    expect(getReviewIntervalPreview(cards[0], 'easy', true, now)).toBe('10d');
+  });
+
+  it('keeps the previewed interval identical to the stored interval despite fuzz (deterministic seed)', () => {
+    const now = 1_700_000_000_000;
+    const { cards } = buildEntitiesFromRows(
+      [{ deck: 'Deck', front: 'house', back: 'Haus', type: 'basic' }],
+      now,
+    );
+
+    // Reife Review-Karte mit großem Intervall, sodass FSRS-Fuzz greift (>= 2.5 Tage).
+    const matureCard = {
+      ...cards[0],
+      state: 'review' as const,
+      reps: 8,
+      lapses: 0,
+      memoryState: { stability: 60, difficulty: 5 },
+      dueAt: now - 24 * 60 * 60 * 1000,
+      lastReviewedAt: now - 24 * 60 * 60 * 1000,
+      intervalDays: 45,
+      scheduledDays: 45,
+    };
+
+    // Vorschau zum Render-Zeitpunkt; tatsächliches Scheduling 1.234s später
+    // (anderer Wall-Clock-ms-Wert) — vor dem Seed-Fix würfelte das einen anderen
+    // Fuzz-Wert und damit ein abweichendes Intervall.
+    for (const rating of ['hard', 'good', 'easy'] as const) {
+      const previewDueAt = buildReviewResult(matureCard, rating, true, now).updatedCard.dueAt;
+      const storedDueAt = buildReviewResult(matureCard, rating, true, now + 1_234).updatedCard.dueAt;
+      // dueAt ist relativ zur jeweiligen "now"; das gespeicherte INTERVALL (scheduledDays)
+      // muss identisch sein.
+      const previewDays = buildReviewResult(matureCard, rating, true, now).updatedCard.scheduledDays;
+      const storedDays = buildReviewResult(matureCard, rating, true, now + 1_234).updatedCard.scheduledDays;
+      expect(storedDays).toBe(previewDays);
+      // Und das angezeigte Label stimmt mit der gespeicherten Fälligkeit überein.
+      expect(formatReviewInterval(storedDueAt, now + 1_234)).toBe(
+        formatReviewInterval(previewDueAt, now),
+      );
+    }
   });
 
   it('maps answer-button ratings to different future due timestamps', () => {
@@ -901,6 +943,99 @@ describe('learning scheduler', () => {
       dueCards[0]!.id,
       dueCards[1]!.id,
     ]);
+  });
+
+  it('counts new-card pacing across days and resets after a new card is introduced', () => {
+    const now = 1_700_000_000_000;
+    const dayMs = 24 * 60 * 60 * 1000;
+    const { decks, cards } = buildEntitiesFromRows(
+      [
+        { deck: 'Deck', front: 'due-1', back: 'fällig 1', type: 'basic' },
+        { deck: 'Deck', front: 'due-2', back: 'fällig 2', type: 'basic' },
+        { deck: 'Deck', front: 'due-3', back: 'fällig 3', type: 'basic' },
+        { deck: 'Deck', front: 'new-1', back: 'neu 1', type: 'basic' },
+      ],
+      now - 60 * dayMs,
+    );
+    const deckId = decks[0]!.id;
+    const dueCards = cards.slice(0, 3).map((card) => ({
+      ...card,
+      state: 'review' as const,
+      reps: 5,
+      memoryState: { stability: 30, difficulty: 5 },
+      dueAt: now - 60_000,
+    }));
+    const newCard = { ...cards[3]!, state: 'new' as const, reps: 0, memoryState: null, dueAt: cards[3]!.createdAt };
+
+    // 15 Reviews über DREI Tage verteilt (5 pro Tag) — ein Tageszähler würde
+    // jede Nacht zurückgesetzt und nie 15 erreichen; der "seit letzter neuer
+    // Karte"-Zähler zählt durch.
+    const spreadReviewLogs: ReviewLog[] = Array.from({ length: 15 }, (_, index) => ({
+      id: `log-${index}`,
+      deckId,
+      cardId: dueCards[index % dueCards.length]!.id,
+      reviewedAt: now - (2 - Math.floor(index / 5)) * dayMs - (5 - (index % 5)) * 1_000,
+      rating: 'good',
+      previousState: 'review',
+      newState: 'review',
+      scheduledDays: 1,
+      elapsedDays: 1,
+      wasCorrect: true,
+      memoryStateBefore: null,
+      memoryStateAfter: null,
+    }));
+
+    const baseOptions = {
+      cards: [...dueCards, newCard],
+      deckId,
+      preset: { ...getDefaultLearningPreset(), reviewsBetweenNewCards: 15 },
+      gateRule: getDefaultGateRule(),
+      sessionCreditsRequired: 3,
+      ignoreNewCardsLimit: true,
+      includeReviewAhead: false,
+      now,
+    };
+
+    // 15 kumulative Reviews über mehrere Tage → neue Karte ist fällig.
+    expect(buildUnlockSessionQueue({ ...baseOptions, reviewLogs: spreadReviewLogs })).toContain(newCard.id);
+
+    // Sobald die neue Karte eingeführt wurde (previousState 'new'), startet der
+    // Zähler neu — eine weitere neue Karte ist NICHT sofort fällig.
+    const afterIntroductionLogs: ReviewLog[] = [
+      ...spreadReviewLogs,
+      {
+        id: 'log-new-intro',
+        deckId,
+        cardId: newCard.id,
+        reviewedAt: now - 1_000,
+        rating: 'good',
+        previousState: 'new',
+        newState: 'learning',
+        scheduledDays: 0,
+        elapsedDays: 0,
+        wasCorrect: true,
+        memoryStateBefore: null,
+        memoryStateAfter: null,
+      },
+    ];
+    const introducedNewCard = { ...newCard, state: 'learning' as const, reps: 1, dueAt: now + 600_000 };
+    const secondNewCard = {
+      ...cards[3]!,
+      id: 'card-new-2',
+      noteId: 'note-new-2',
+      state: 'new' as const,
+      reps: 0,
+      memoryState: null,
+      dueAt: cards[3]!.createdAt,
+    };
+
+    expect(
+      buildUnlockSessionQueue({
+        ...baseOptions,
+        cards: [...dueCards, introducedNewCard, secondNewCard],
+        reviewLogs: afterIntroductionLogs,
+      }),
+    ).not.toContain(secondNewCard.id);
   });
 
   it('reports richer deck stats for passive sessions', () => {

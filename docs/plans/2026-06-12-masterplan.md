@@ -454,7 +454,7 @@ Anforderung (Aktivierung → Pflicht-Zeitfenster, Einstellungen im Fenster unver
 - Geräte-Smoke-Tests a–d + `scripts/chaos/run-chaos.sh` auf dem Xiaomi `22101320G` (Gerät war während dieser Runde nur kurz verbunden).
 - Phase D Vollausbau: Vorher/Nachher-Screenshots in `docs/design/`, vollständiger Modes/Settings-Listenzeilen-Umbau (Primitive `ListRow.tsx` steht bereit), Dark-Mode-Abnahme pro Screen.
 - Phase 3 Monolith→Subcollection-Migration (3.2/3.3) + Signatur-Hot-Path-Löschung + Account-Namespacing (3.4): braucht echtes Firestore + Migrationslauf.
-- Bekannter Vorbestand-Flake `appIntroFlow` (seit 2026-03-22, NICHT durch diese Runde verursacht — per stash verifiziert) und Lint-Vorbestand (`ModesPageView`/`AuthDialog.test`) abbauen.
+- Lint-Vorbestand (`ModesPageView`/`AuthDialog.test`) abbauen. `appIntroFlow` ist seit der Stabilisierung am 2026-06-13 wieder grün.
 - **[ALLE] Vor Merge:** `npm run test` && `npm run build` && `npm run check:copy-budget` && `npm run check:android-sources`; `docs/project-memory.md` nach jeder Phase aktualisieren.
 
 ### Performance-Update (Runde 3, 2026-06-12)

@@ -3,6 +3,8 @@ import {
   type Card as FsrsCard,
   Rating,
   State,
+  StrategyMode,
+  type TSeedStrategy,
   checkParameters,
   createEmptyCard,
   default_w,
@@ -163,6 +165,24 @@ function buildSchedulerKey(preset: LearningPreset): string {
   });
 }
 
+// Deterministische Fuzz-Seed-Strategie: Der ts-fsrs-Default-Seed enthält die
+// Wall-Clock-Zeit in Millisekunden (`${review_time}_${reps}_${diff*stab}`).
+// Dadurch würfelt die Intervall-Vorschau (Render-Zeitpunkt) einen anderen
+// Fuzz-Wert als das tatsächliche submitReview (Submit-Zeitpunkt) — die auf dem
+// Button angezeigte Zeit weicht von der gespeicherten Fälligkeit ab. Wir leiten
+// den Seed stattdessen NUR aus dem Karten-Zustand VOR dem Review ab (reps +
+// difficulty*stability). Der ist in Vorschau und Submit identisch → angezeigtes
+// Intervall == gespeichertes Intervall. Der Fuzz bleibt erhalten (variiert pro
+// Karte), nur der zeitabhängige Jitter zwischen zwei Aufrufen entfällt.
+// `current` ist in ts-fsrs `protected`, daher strukturell typisieren und beim
+// Übergeben an useStrategy auf TSeedStrategy casten.
+const stableFuzzSeed = function (
+  this: { current: { reps: number; difficulty: number; stability: number } },
+): string {
+  const { reps, difficulty, stability } = this.current;
+  return `${reps}_${difficulty * stability}`;
+} as unknown as TSeedStrategy;
+
 export function getFsrsScheduler(preset: LearningPreset) {
   const key = buildSchedulerKey(preset);
   const cached = schedulerCache.get(key);
@@ -177,7 +197,7 @@ export function getFsrsScheduler(preset: LearningPreset) {
     enable_short_term: true,
     learning_steps: toStepUnits(preset.learningStepsMinutes),
     relearning_steps: toStepUnits(preset.relearningStepsMinutes),
-  }));
+  })).useStrategy(StrategyMode.SEED, stableFuzzSeed);
 
   schedulerCache.set(key, scheduler);
   return scheduler;

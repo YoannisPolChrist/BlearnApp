@@ -9,6 +9,11 @@ import type {
 import { getFsrsScheduler, toFsrsCard } from '../domain/fsrs';
 import { clampSessionCreditsRequired, migrateGateRule, migrateLearningCard, migrateLearningPreset } from '../domain/presets';
 
+// Höchstzahl neuer Karten, die das Cross-Flow-Pacing pro Session nach vorn holt.
+// Verhindert Flooding, wenn ein importiertes Deck eine lange Review-Historie ohne
+// frühere Neueinführungen mitbringt (reviewsSinceLastNewCard wäre dann sehr groß).
+const MAX_PACED_NEW_CARDS_PER_SESSION = 2;
+
 let unlockSessionScopeCache:
   | {
       cardsRef: LearningCard[];
@@ -215,6 +220,42 @@ function getUnlockSessionScope({
   return unlockSessionScopeCache;
 }
 
+// Pacing-Zähler für neue Karten: Reviews SEIT der letzten Einführung einer neuen
+// Karte (deckweit, über alle Tage hinweg). Anders als ein an Mitternacht
+// zurückgesetzter Tageszähler "zählt er immer mit" — bei kurzen Flows über
+// mehrere Tage (z.B. 5 Vokabeln/Flow) erreicht der Nutzer so trotzdem die
+// 1:15-Schwelle und bekommt eine neue Karte. Wird bei jeder Neueinführung
+// (previousState === 'new') auf 0 zurückgesetzt, deshalb kein Flooding.
+function countReviewsSinceLastNewCard(reviewLogs: ReviewLog[], deckId: string, now = Date.now()): number {
+  if (reviewLogs.length === 0) {
+    return 0;
+  }
+
+  let lastNewCardAt = 0;
+  for (const log of reviewLogs) {
+    if (log.deckId !== deckId || log.reviewedAt > now) {
+      continue;
+    }
+    if (log.previousState === 'new' && log.reviewedAt > lastNewCardAt) {
+      lastNewCardAt = log.reviewedAt;
+    }
+  }
+
+  let reviewsSinceLastNewCard = 0;
+  for (const log of reviewLogs) {
+    if (log.deckId !== deckId || log.reviewedAt > now) {
+      continue;
+    }
+    // Reviews STRIKT nach der letzten Neueinführung — die Neukarte selbst zählt
+    // nicht für ihre eigene Nachfolgerin.
+    if (log.reviewedAt > lastNewCardAt) {
+      reviewsSinceLastNewCard += 1;
+    }
+  }
+
+  return reviewsSinceLastNewCard;
+}
+
 function countDailyReviewActivity(reviewLogs: ReviewLog[], deckId: string, now = Date.now()) {
   if (reviewLogs.length === 0) {
     return {
@@ -299,6 +340,11 @@ export function buildUnlockSessionCandidateIds({
     ? countDailyReviewActivity(scopedReviewLogs, resolvedDeckId, now)
     : { reviewsToday: 0, newCardsIntroducedToday: 0 };
 
+  // Cross-flow/Cross-day Pacing: Reviews seit der letzten neuen Karte (siehe oben).
+  const reviewsSinceLastNewCard = resolvedDeckId
+    ? countReviewsSinceLastNewCard(scopedReviewLogs, resolvedDeckId, now)
+    : 0;
+
   const allowedReviews = ignoreNewCardsLimit 
     ? Infinity 
     : Math.max(0, resolvedPreset.maxReviewsPerDay - reviewsToday);
@@ -322,13 +368,16 @@ export function buildUnlockSessionCandidateIds({
   // Cross-flow-Pacing für neue Karten: Die erste neue Karte stünde sonst erst an
   // Position `reviewsBetweenNewCards` der interleavten Liste — bei kurzen
   // Blocking-Sessions (Kappung auf sessionCreditsRequired) wird sie dadurch nie
-  // erreicht. Stattdessen wird anhand der KUMULATIVEN Reviews des Tages bestimmt,
-  // wie viele neue Karten "fällig" sind, und diese kommen nach vorn (innerhalb
-  // der Kappung). So zählt der Counter über mehrere Flows hinweg mit.
+  // erreicht. Stattdessen bestimmen die Reviews SEIT der letzten neuen Karte
+  // (flow- UND tagesübergreifend), wie viele neue Karten "fällig" sind; diese
+  // kommen nach vorn (innerhalb der Kappung). So zählt der Counter wirklich
+  // immer mit — auch wenn pro Tag nur wenige Vokabeln gelernt werden.
   const reviewsPerNewCard = Math.max(1, Math.round(resolvedPreset.reviewsBetweenNewCards));
-  const newCardsOwedByPacing = Math.max(
-    0,
-    Math.floor(reviewsToday / reviewsPerNewCard) - newCardsIntroducedToday,
+  const newCardsOwedByPacing = Math.min(
+    Math.floor(reviewsSinceLastNewCard / reviewsPerNewCard),
+    // Flood-Schutz: höchstens so viele neue Karten pro Session aus dem Pacing,
+    // falls ein Deck eine lange Review-Historie ohne Neueinführungen mitbringt.
+    MAX_PACED_NEW_CARDS_PER_SESSION,
   );
   const pacedNewCards = limitedNewCards.slice(0, newCardsOwedByPacing);
   const remainingNewCards = limitedNewCards.slice(pacedNewCards.length);

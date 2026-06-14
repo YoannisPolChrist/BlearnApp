@@ -5,6 +5,7 @@ import {
   getDefaultLearningPresets,
 } from '@/lib/learning';
 import { buildLearningStoreIndexes } from '@/modules/learning/store';
+import { createUnlockSessionSnapshotFromContext } from '@/modules/learning/session';
 import { waitForPersistStorageIdle } from '@/lib/persistStorage';
 import { useLearningStore } from '@/store/useLearningStore';
 
@@ -544,5 +545,109 @@ describe('learning store timing', () => {
     expect(rehydrated.mediaRegistry.assets[0]?.sourceUri).toBe('https://cdn.example.com/media/sun.png');
     expect(rehydrated.mediaTransferQueue.jobs).toHaveLength(1);
     expect(rehydrated.mediaTransferQueue.jobs[0]?.status).toBe('queued');
+  });
+
+  it('surfaces a new card across short blocking flows once cumulative reviews reach the mix (live store path)', () => {
+    const now = 1_700_000_000_000;
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+
+    // 18 fällige Review-Karten + 2 neue Karten in EINEM Deck.
+    const rows = [
+      ...Array.from({ length: 18 }, (_, index) => ({
+        deck: 'Vokabeln',
+        front: `due-${index}`,
+        back: `fällig-${index}`,
+        type: 'basic' as const,
+      })),
+      { deck: 'Vokabeln', front: 'new-1', back: 'neu-1', type: 'basic' as const },
+      { deck: 'Vokabeln', front: 'new-2', back: 'neu-2', type: 'basic' as const },
+    ];
+    const { decks, notes, cards } = buildEntitiesFromRows(rows, now - 60 * 24 * 60 * 60 * 1000);
+    const deckId = decks[0].id;
+
+    // Die ersten 18 zu reifen Review-Karten machen (fällig in der Vergangenheit),
+    // die letzten 2 bleiben 'new'. dueAt der neuen Karten = createdAt (nicht begraben).
+    const dueCards = cards.slice(0, 18).map((card) => ({
+      ...card,
+      state: 'review' as const,
+      reps: 6,
+      lapses: 0,
+      memoryState: { stability: 30, difficulty: 5 },
+      dueAt: now - 24 * 60 * 60 * 1000,
+      lastReviewedAt: now - 30 * 24 * 60 * 60 * 1000,
+      intervalDays: 30,
+      scheduledDays: 30,
+    }));
+    const newCards = cards.slice(18).map((card) => ({
+      ...card,
+      state: 'new' as const,
+      reps: 0,
+      memoryState: null,
+      dueAt: card.createdAt,
+    }));
+    const allCards = [...dueCards, ...newCards];
+
+    useLearningStore.setState(
+      {
+        ...useLearningStore.getInitialState(),
+        activeDeckId: deckId,
+        decks: Object.fromEntries(decks.map((d) => [d.id, d])),
+        notes: Object.fromEntries(notes.map((n) => [n.id, n])),
+        cards: Object.fromEntries(allCards.map((c) => [c.id, c])),
+        presets: getDefaultLearningPresets(),
+        gateRule: getDefaultGateRule(),
+      },
+      true,
+    );
+
+    const newCardIds = new Set(newCards.map((c) => c.id));
+    const sessionCreditsRequired = 5; // kurze Flows: nur 5 Karten pro Freischaltung
+
+    // Baut den Unlock-Queue exakt wie der Live-Bootstrap (mit den Store-ReviewLogs).
+    const buildFlowQueue = () => {
+      const state = useLearningStore.getState();
+      const deckReviewLogs = Object.values(state.reviewLogs).filter((log) => log.deckId === deckId);
+      const snapshot = createUnlockSessionSnapshotFromContext({
+        cards: Object.values(state.cards),
+        notes: [],
+        reviewLogs: deckReviewLogs,
+        deckId,
+        targetId: 'com.example.app',
+        targetType: 'app',
+        preset: state.getResolvedPresetForDeck(deckId),
+        gateRule: state.gateRule,
+        sessionCreditsRequired,
+        unlockDurationMinutes: 15,
+        ignoreNewCardsLimit: true,
+        includeReviewAhead: false,
+        // Remount löscht reviewedCardIds zwischen Flows → leeres Set ist der Live-Worst-Case.
+        excludeCardIds: new Set<string>(),
+        now,
+      });
+      return snapshot.queue;
+    };
+
+    let newCardSeenAfterReviews: number | null = null;
+    let cumulativeReviews = 0;
+
+    // Bis zu 5 Flows (max 25 Reviews) — die neue Karte muss spätestens nach
+    // 15 kumulativen Reviews auftauchen.
+    for (let flow = 0; flow < 5 && newCardSeenAfterReviews === null; flow += 1) {
+      const queue = buildFlowQueue();
+      if (queue.some((id) => newCardIds.has(id))) {
+        newCardSeenAfterReviews = cumulativeReviews;
+        break;
+      }
+
+      for (const cardId of queue) {
+        useLearningStore.getState().submitReview(cardId, 'good', true);
+        cumulativeReviews += 1;
+      }
+    }
+
+    expect(newCardSeenAfterReviews).not.toBeNull();
+    // Die neue Karte erscheint, sobald die kumulativen Reviews die 1:15-Mix-Schwelle erreichen.
+    expect(newCardSeenAfterReviews).toBeGreaterThanOrEqual(15);
+    expect(newCardSeenAfterReviews).toBeLessThan(20);
   });
 });
