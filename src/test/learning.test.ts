@@ -517,20 +517,25 @@ describe('learning scheduler', () => {
 
     // Vorschau zum Render-Zeitpunkt; tatsächliches Scheduling 1.234s später
     // (anderer Wall-Clock-ms-Wert) — vor dem Seed-Fix würfelte das einen anderen
-    // Fuzz-Wert und damit ein abweichendes Intervall.
-    for (const rating of ['hard', 'good', 'easy'] as const) {
-      const previewDueAt = buildReviewResult(matureCard, rating, true, now).updatedCard.dueAt;
-      const storedDueAt = buildReviewResult(matureCard, rating, true, now + 1_234).updatedCard.dueAt;
-      // dueAt ist relativ zur jeweiligen "now"; das gespeicherte INTERVALL (scheduledDays)
-      // muss identisch sein.
-      const previewDays = buildReviewResult(matureCard, rating, true, now).updatedCard.scheduledDays;
-      const storedDays = buildReviewResult(matureCard, rating, true, now + 1_234).updatedCard.scheduledDays;
-      expect(storedDays).toBe(previewDays);
+    // Fuzz-Wert und damit ein abweichendes Intervall. Gilt für ALLE vier Buttons
+    // (again, schwer, gut, einfach), nicht nur "schwer".
+    const storedDaysByRating: Record<string, number> = {};
+    for (const rating of ['again', 'hard', 'good', 'easy'] as const) {
+      const previewResult = buildReviewResult(matureCard, rating, true, now).updatedCard;
+      const storedResult = buildReviewResult(matureCard, rating, true, now + 1_234).updatedCard;
+      // dueAt ist relativ zur jeweiligen "now"; das gespeicherte INTERVALL
+      // (scheduledDays) muss in Vorschau und Submit identisch sein.
+      expect(storedResult.scheduledDays).toBe(previewResult.scheduledDays);
       // Und das angezeigte Label stimmt mit der gespeicherten Fälligkeit überein.
-      expect(formatReviewInterval(storedDueAt, now + 1_234)).toBe(
-        formatReviewInterval(previewDueAt, now),
+      expect(formatReviewInterval(storedResult.dueAt, now + 1_234)).toBe(
+        formatReviewInterval(previewResult.dueAt, now),
       );
+      storedDaysByRating[rating] = storedResult.scheduledDays;
     }
+
+    // Die Reihenfolge der Intervalle bleibt trotz Fuzz monoton: again < gut < einfach.
+    expect(storedDaysByRating.again).toBeLessThan(storedDaysByRating.good);
+    expect(storedDaysByRating.good).toBeLessThanOrEqual(storedDaysByRating.easy);
   });
 
   it('maps answer-button ratings to different future due timestamps', () => {
