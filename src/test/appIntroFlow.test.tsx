@@ -389,15 +389,10 @@ describe('App intro flow', () => {
   it('does not finish native setup before the accessibility service is really ready', async () => {
     runtimeFlags.isNative = true;
     checkPermissionsMock.mockResolvedValue(grantedPermissionStatus);
-    getMonitoringStatusMock
-      .mockResolvedValueOnce({
-        ...monitoringStatusResolved,
-        accessibilityServiceReady: false,
-      })
-      .mockResolvedValue({
-        ...monitoringStatusResolved,
-        accessibilityServiceReady: true,
-      });
+    getMonitoringStatusMock.mockResolvedValue({
+      ...monitoringStatusResolved,
+      accessibilityServiceReady: false,
+    });
 
     await renderTourApp(['/']);
 
@@ -408,6 +403,11 @@ describe('App intro flow', () => {
 
     expect(await screen.findByRole('heading', { name: 'Bedienungshilfe aktivieren' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /rechte fehlen noch/i })).toBeDisabled();
+
+    getMonitoringStatusMock.mockResolvedValue({
+      ...monitoringStatusResolved,
+      accessibilityServiceReady: true,
+    });
 
     await act(async () => {
       window.dispatchEvent(new Event('focus'));

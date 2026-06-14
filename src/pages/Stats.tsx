@@ -21,12 +21,20 @@ export default function StatsPage() {
   const {
     checkins,
     userProfile,
+    unlockHistory,
   } = useAppStore(
     useShallow((state) => ({
       checkins: state.checkins,
       userProfile: state.userProfile,
+      unlockHistory: state.unlockHistory,
     })),
   );
+  const unlocksToday = useMemo(() => {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const dayStart = startOfDay.getTime();
+    return (unlockHistory ?? []).filter((ts) => ts >= dayStart).length;
+  }, [unlockHistory]);
   const { learningDeckMap, learningCardMap, learningReviewLogMap, getDeckStats } = useLearningStore(
     useShallow((state) => ({
       learningDeckMap: state.decks,
@@ -129,6 +137,7 @@ export default function StatsPage() {
                 onRefresh={handleRefresh}
                 status={status}
                 topUsageEntry={topUsageEntry}
+                unlocksToday={unlocksToday}
                 usage={usage}
               />
               <UsageAppListSection

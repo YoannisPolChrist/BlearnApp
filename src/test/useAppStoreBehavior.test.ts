@@ -107,6 +107,25 @@ describe('useAppStore behavior', () => {
     expect(store.isTargetUnlocked('com.example.youtube', 'app')).toBe(true);
   });
 
+  it('zählt Freischaltungen für "Entsperrungen heute"', () => {
+    useAppStore.setState({ unlockHistory: [] });
+    const store = useAppStore.getState();
+    const nowSpy = vi.spyOn(Date, 'now');
+    const todayNoon = new Date();
+    todayNoon.setHours(12, 0, 0, 0);
+
+    // Zwei Freischaltungen heute, eine "gestern".
+    nowSpy.mockReturnValue(todayNoon.getTime() - 26 * 60 * 60 * 1000);
+    store.unlockTarget('com.example.youtube', 'app', 12);
+    nowSpy.mockReturnValue(todayNoon.getTime());
+    store.unlockTarget('com.example.youtube', 'app', 12);
+    nowSpy.mockReturnValue(todayNoon.getTime() + 60_000);
+    store.unlockTarget('com.example.instagram', 'app', 4);
+
+    expect(useAppStore.getState().getUnlocksToday()).toBe(2);
+    nowSpy.mockRestore();
+  });
+
   it('records progress interactions with syncable ids and breathing metadata', () => {
     const store = useAppStore.getState();
     const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(1_700_000_000_000);

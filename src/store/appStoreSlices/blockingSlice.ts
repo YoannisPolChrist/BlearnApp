@@ -260,15 +260,27 @@ export const createBlockingSlice: AppStoreSlice<Partial<AppState>> = (set, get) 
       return { blockSchedules: updated };
     });
   },
+  unlockHistory: [],
   unlockTarget: (targetId, targetType, durationMinutes) => {
+    const now = Date.now();
     const { defaultUnlockDurationMinutes } = get();
-    const expiresAt = Date.now() + (durationMinutes ?? defaultUnlockDurationMinutes) * 60 * 1000;
+    const expiresAt = now + (durationMinutes ?? defaultUnlockDurationMinutes) * 60 * 1000;
     const targetKey = buildUnlockedTargetKey(targetId, targetType);
     if (!targetKey) return;
 
+    // Freischaltung für "Entsperrungen heute" protokollieren; nur die letzten
+    // 7 Tage behalten, damit die Liste nicht unbegrenzt wächst.
+    const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
     set((state) => ({
       unlockedTargets: { ...state.unlockedTargets, [targetKey]: expiresAt },
+      unlockHistory: [...(state.unlockHistory ?? []).filter((ts) => ts >= sevenDaysAgo), now],
     }));
+  },
+  getUnlocksToday: () => {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const dayStart = startOfDay.getTime();
+    return (get().unlockHistory ?? []).filter((ts) => ts >= dayStart).length;
   },
   isTargetUnlocked: (targetId, targetType) => {
     const { unlockedTargets } = get();

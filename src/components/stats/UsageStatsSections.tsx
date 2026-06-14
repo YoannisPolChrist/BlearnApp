@@ -22,6 +22,7 @@ type UsageOverviewSectionProps = {
   onRefresh: () => void;
   status: MonitoringStatus | null;
   topUsageEntry?: AppUsageEntry;
+  unlocksToday: number;
   usage: ScreenTimeSummary | null;
 };
 
@@ -40,6 +41,7 @@ export function UsageOverviewSection({
   onRefresh,
   status,
   topUsageEntry,
+  unlocksToday,
   usage,
 }: UsageOverviewSectionProps) {
   return (
@@ -62,8 +64,8 @@ export function UsageOverviewSection({
           <MetricCard
             icon={Activity}
             label="Entsperrt"
-            value={usage?.unlockCount ?? '--'}
-            hint="Entsperrungen heute"
+            value={unlocksToday}
+            hint="Freischaltungen heute"
             tone="accent"
           />
           <MetricCard

@@ -252,7 +252,11 @@ export interface AppState {
   setInterventionPatternId: (id: string) => void;
 
   unlockedTargets: Record<string, number>;
+  /** Timestamps erfolgreicher Freischaltungen (für "Entsperrungen heute"). */
+  unlockHistory: number[];
   unlockTarget: (targetId: string, targetType: 'app' | 'website' | 'search', durationMinutes?: number) => void;
+  /** Anzahl der heutigen Freischaltungen (lokale Mitternacht als Grenze). */
+  getUnlocksToday: () => number;
   isTargetUnlocked: (targetId: string, targetType: 'app' | 'website' | 'search') => boolean;
 
   blockSchedules: Record<string, { from: string; to: string }>;
