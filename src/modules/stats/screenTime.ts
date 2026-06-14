@@ -45,18 +45,19 @@ export function getAppLookupKeys(entry?: {
   return [...keys];
 }
 
-async function getScreenSnapshot(): Promise<ScreenSnapshot> {
-  const [usage, status, installedApps, currentAppId] = await Promise.all([
+// Schnelle Kerndaten (Bildschirmzeit, Status, Vordergrund-App). Bewusst OHNE
+// getInstalledApps() — das lädt alle Apps inkl. Base64-Icons über die Bridge und
+// ist der eigentliche Stats-Bremsklotz; es wird separat nachgeladen.
+async function getFastScreenSnapshot(): Promise<Omit<ScreenSnapshot, 'installedApps'>> {
+  const [usage, status, currentAppId] = await Promise.all([
     getTodayUsage(),
     getMonitoringStatus(),
-    getInstalledApps(),
     getCurrentApp(),
   ]);
 
   return {
     usage,
     status,
-    installedApps,
     currentAppId,
     loadedAt: Date.now(),
   };
@@ -105,37 +106,44 @@ export function useScreenStatsSnapshot() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdatedAt, setLastUpdatedAt] = useState<number | null>(null);
 
-  const applySnapshot = (snapshot: ScreenSnapshot) => {
-    setUsage(snapshot.usage);
-    setStatus(snapshot.status);
-    setInstalledApps(snapshot.installedApps);
-    setCurrentAppId(snapshot.currentAppId);
-    setLastUpdatedAt(snapshot.loadedAt);
+  const loadSnapshot = async (isActive: () => boolean) => {
+    setIsRefreshing(true);
+    setError(null);
+
+    try {
+      // Phase 1: Kerndaten sofort anzeigen (schnell).
+      const fast = await getFastScreenSnapshot();
+      if (!isActive()) return;
+      setUsage(fast.usage);
+      setStatus(fast.status);
+      setCurrentAppId(fast.currentAppId);
+      setLastUpdatedAt(fast.loadedAt);
+    } catch (nextError) {
+      if (!isActive()) return;
+      setError(getStatsErrorMessage(nextError));
+      setIsRefreshing(false);
+      return;
+    } finally {
+      if (isActive()) {
+        setIsRefreshing(false);
+      }
+    }
+
+    // Phase 2: App-Liste (inkl. Icons) nebenläufig nachladen — verfeinert nur
+    // Labels/Icons und darf die Übersicht nie blockieren oder mit Fehlern stören.
+    try {
+      const apps = await getInstalledApps();
+      if (isActive()) {
+        setInstalledApps(apps);
+      }
+    } catch {
+      // App-Liste ist optional; Kern-Stats stehen bereits.
+    }
   };
 
   useEffect(() => {
     let active = true;
-
-    const loadSnapshot = async () => {
-      setIsRefreshing(true);
-      setError(null);
-
-      try {
-        const snapshot = await getScreenSnapshot();
-        if (!active) return;
-
-        applySnapshot(snapshot);
-      } catch (nextError) {
-        if (!active) return;
-        setError(getStatsErrorMessage(nextError));
-      } finally {
-        if (active) {
-          setIsRefreshing(false);
-        }
-      }
-    };
-
-    void loadSnapshot();
+    void loadSnapshot(() => active);
 
     return () => {
       active = false;
@@ -143,17 +151,7 @@ export function useScreenStatsSnapshot() {
   }, []);
 
   const refresh = async () => {
-    setIsRefreshing(true);
-    setError(null);
-
-    try {
-      const snapshot = await getScreenSnapshot();
-      applySnapshot(snapshot);
-    } catch (nextError) {
-      setError(getStatsErrorMessage(nextError));
-    } finally {
-      setIsRefreshing(false);
-    }
+    await loadSnapshot(() => true);
   };
 
   return {
