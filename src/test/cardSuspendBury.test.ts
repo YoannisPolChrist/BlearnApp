@@ -95,4 +95,40 @@ describe('Suspend & Bury (Masterplan 4.2/5.3)', () => {
     });
     expect(queue).not.toContain(card.id);
   });
+
+  it('begräbt Geschwister (Multi-Cloze) beim Review bis morgen', () => {
+    // Zwei Cloze-Karten derselben Note, beide faellig.
+    const sibling1 = { ...buildCard(), id: 'cloze-1', noteId: 'note-cloze', type: 'cloze' as const, clozeIndex: 1 };
+    const sibling2 = { ...buildCard(), id: 'cloze-2', noteId: 'note-cloze', type: 'cloze' as const, clozeIndex: 2 };
+    useLearningStore.setState((state) => ({
+      decks: {
+        ...state.decks,
+        'deck-sb': {
+          id: 'deck-sb', name: 'Deck', description: '', language: 'de', tags: [],
+          cardIds: [sibling1.id, sibling2.id], createdAt: 1, updatedAt: 1,
+        },
+      },
+      cards: { ...state.cards, [sibling1.id]: sibling1, [sibling2.id]: sibling2 },
+    }));
+
+    const todayMidnight = new Date();
+    todayMidnight.setHours(24, 0, 0, 0);
+
+    useLearningStore.getState().submitReview(sibling1.id, 'good', true);
+
+    // Das Geschwister ist jetzt bis (mind.) morgen begraben → heute nicht faellig.
+    expect(useLearningStore.getState().cards[sibling2.id].dueAt).toBeGreaterThanOrEqual(
+      todayMidnight.getTime(),
+    );
+
+    const queue = buildUnlockSessionQueue({
+      cards: Object.values(useLearningStore.getState().cards),
+      deckId: 'deck-sb',
+      sessionCreditsRequired: 5,
+      ignoreNewCardsLimit: true,
+      includeReviewAhead: false,
+      now: Date.now(),
+    });
+    expect(queue).not.toContain(sibling2.id);
+  });
 });

@@ -331,6 +331,26 @@ export const createLearningReviewSlice: StateCreator<LearningStore, [], [], Lear
 
       const nextCards = { ...state.cards, [updatedCard.id]: migratedUpdatedCard };
 
+      // Geschwister-Karten (gleiche Note — z.B. Multi-Cloze-Lücken) bis morgen
+      // begraben, wenn burySiblings aktiv ist. Sonst wird die gerade bewertete
+      // Karte zwar weit terminiert, das noch fällige Geschwister taucht aber im
+      // nächsten Blocking-Flow als "dieselbe Vokabel" wieder auf.
+      if (preset.burySiblings && migratedUpdatedCard.noteId) {
+        const nextMidnight = new Date(reviewTimestamp);
+        nextMidnight.setHours(24, 0, 0, 0);
+        const buryUntil = nextMidnight.getTime();
+        for (const sibling of Object.values(nextCards)) {
+          if (
+            sibling.noteId === migratedUpdatedCard.noteId
+            && sibling.id !== migratedUpdatedCard.id
+            && sibling.state !== 'suspended'
+            && sibling.dueAt < buryUntil
+          ) {
+            nextCards[sibling.id] = { ...sibling, dueAt: buryUntil, updatedAt: reviewTimestamp };
+          }
+        }
+      }
+
       const nextDecks = { ...state.decks };
       const currentDeck = nextDecks[updatedCard.deckId];
       if (currentDeck) {
