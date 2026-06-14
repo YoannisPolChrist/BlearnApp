@@ -21,6 +21,7 @@ import {
   shouldRequireTypedAnswer,
   parseCsv,
 } from '@/lib/learning';
+import type { ReviewLog } from '@/lib/learning';
 
 describe('learning import', () => {
   it('parses csv rows into importable cards', () => {
@@ -720,6 +721,61 @@ describe('learning scheduler', () => {
     ]);
   });
 
+  it('introduces a new card across flows once cumulative reviews reach the ratio', () => {
+    const now = 1_700_000_000_000;
+    const rows = Array.from({ length: 9 }, (_, index) => ({
+      deck: 'Deck',
+      front: `q-${index + 1}`,
+      back: `a-${index + 1}`,
+      type: 'basic' as const,
+    }));
+    const { cards } = buildEntitiesFromRows(rows, now);
+    const deckId = cards[0].deckId;
+    const reviewCards = cards.slice(0, 8).map((card, index) => ({
+      ...buildReviewResult(card, 'good', true, now + index).updatedCard,
+      state: 'review' as const,
+      dueAt: now - 60_000,
+    }));
+    const newCard = cards[8];
+
+    // 15 kumulative Reviews heute (ueber mehrere Flows); previousState 'review'
+    // => newCardsIntroducedToday bleibt 0.
+    const reviewLogs: ReviewLog[] = Array.from({ length: 15 }, (_, index) => ({
+      id: `log-${index}`,
+      deckId,
+      cardId: reviewCards[index % reviewCards.length].id,
+      reviewedAt: now - 1_000 * (index + 1),
+      rating: 'good',
+      previousState: 'review',
+      newState: 'review',
+      scheduledDays: 1,
+      elapsedDays: 1,
+      wasCorrect: true,
+      memoryStateBefore: null,
+      memoryStateAfter: null,
+    }));
+
+    const baseOptions = {
+      cards: [...reviewCards, newCard],
+      deckId,
+      preset: { ...getDefaultLearningPreset(), reviewsBetweenNewCards: 15 },
+      gateRule: getDefaultGateRule(),
+      sessionCreditsRequired: 3,
+      ignoreNewCardsLimit: true,
+      includeReviewAhead: false,
+      now,
+    };
+
+    // Trotz kleiner 3-Karten-Kappung (die Reviews sonst fuellen wuerden) taucht
+    // die faellige neue Karte auf — Pacing zaehlt kumulativ ueber Flows.
+    expect(buildUnlockSessionQueue({ ...baseOptions, reviewLogs })).toContain(newCard.id);
+
+    // Gegenprobe: bei nur 5 kumulativen Reviews ist noch keine neue Karte faellig.
+    expect(
+      buildUnlockSessionQueue({ ...baseOptions, reviewLogs: reviewLogs.slice(0, 5) }),
+    ).not.toContain(newCard.id);
+  });
+
   it('keeps unlock queues scoped to the explicit deck context', () => {
     const now = 1_700_000_000_000;
     const { decks, cards } = buildEntitiesFromRows(
@@ -792,6 +848,59 @@ describe('learning scheduler', () => {
 
     expect(limitedQueue).toHaveLength(0);
     expect(continuousQueue).toEqual([cards[0].id, cards[1].id, cards[2].id]);
+  });
+
+  it('surfaces an owed new card across short blocking sessions once the daily review mix is reached', () => {
+    const now = 1_700_000_000_000;
+    const { decks, cards } = buildEntitiesFromRows(
+      [
+        { deck: 'Deck', front: 'due-1', back: 'fällig 1', type: 'basic' },
+        { deck: 'Deck', front: 'due-2', back: 'fällig 2', type: 'basic' },
+        { deck: 'Deck', front: 'due-3', back: 'fällig 3', type: 'basic' },
+        { deck: 'Deck', front: 'new-1', back: 'neu 1', type: 'basic' },
+      ],
+      now,
+    );
+    const deckId = decks[0]!.id;
+    const dueCards = cards.slice(0, 3).map((card, index) => ({
+      ...buildReviewResult(card, 'good', true, now + index).updatedCard,
+      state: 'review' as const,
+      dueAt: now - 60_000,
+    }));
+    const reviewLogs: ReviewLog[] = Array.from({ length: 10 }, (_, index) => ({
+      id: `log-${index}`,
+      deckId,
+      cardId: dueCards[index % dueCards.length]!.id,
+      reviewedAt: now - 5_000 + index,
+      rating: 'good',
+      previousState: 'review',
+      newState: 'review',
+      scheduledDays: 1,
+      elapsedDays: 1,
+      wasCorrect: true,
+      memoryStateBefore: null,
+      memoryStateAfter: null,
+    }));
+
+    const queue = buildUnlockSessionQueue({
+      cards: [...dueCards, cards[3]!],
+      deckId,
+      reviewLogs,
+      preset: {
+        ...getDefaultLearningPreset(),
+        reviewsBetweenNewCards: 10,
+        newCardsPerDay: 3,
+      },
+      gateRule: getDefaultGateRule(),
+      sessionCreditsRequired: 3,
+      now,
+    });
+
+    expect(queue).toEqual([
+      cards[3]!.id,
+      dueCards[0]!.id,
+      dueCards[1]!.id,
+    ]);
   });
 
   it('reports richer deck stats for passive sessions', () => {

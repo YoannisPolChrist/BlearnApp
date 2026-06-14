@@ -319,11 +319,28 @@ export function buildUnlockSessionCandidateIds({
 
   const reviewCandidates = [...limitedDueSelection, ...reviewAheadSelection];
 
-  let interleaved = interleaveSessionCards(
-    reviewCandidates,
-    limitedNewCards,
-    resolvedPreset.reviewsBetweenNewCards,
+  // Cross-flow-Pacing für neue Karten: Die erste neue Karte stünde sonst erst an
+  // Position `reviewsBetweenNewCards` der interleavten Liste — bei kurzen
+  // Blocking-Sessions (Kappung auf sessionCreditsRequired) wird sie dadurch nie
+  // erreicht. Stattdessen wird anhand der KUMULATIVEN Reviews des Tages bestimmt,
+  // wie viele neue Karten "fällig" sind, und diese kommen nach vorn (innerhalb
+  // der Kappung). So zählt der Counter über mehrere Flows hinweg mit.
+  const reviewsPerNewCard = Math.max(1, Math.round(resolvedPreset.reviewsBetweenNewCards));
+  const newCardsOwedByPacing = Math.max(
+    0,
+    Math.floor(reviewsToday / reviewsPerNewCard) - newCardsIntroducedToday,
   );
+  const pacedNewCards = limitedNewCards.slice(0, newCardsOwedByPacing);
+  const remainingNewCards = limitedNewCards.slice(pacedNewCards.length);
+
+  let interleaved = [
+    ...pacedNewCards,
+    ...interleaveSessionCards(
+      reviewCandidates,
+      remainingNewCards,
+      resolvedPreset.reviewsBetweenNewCards,
+    ),
+  ];
 
   if (interleaved.length < requiredCredits) {
     const selectedCandidateIds = new Set(interleaved.map((card) => card.id));
