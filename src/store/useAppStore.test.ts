@@ -150,6 +150,21 @@ describe('useAppStore', () => {
     vi.useRealTimers();
   });
 
+  it('activates an overnight strict lock when triggered after midnight', () => {
+    vi.useFakeTimers();
+    // 02:00, inside the morning portion of a 22:00 -> 06:00 window.
+    vi.setSystemTime(new Date(2024, 0, 2, 2, 0, 0));
+
+    useAppStore.setState({ strictStartTime: '22:00', strictEndTime: '06:00' });
+    useAppStore.getState().activateStrictLock({ scope: 'full' });
+
+    const expectedEnd = new Date(2024, 0, 2, 6, 0, 0).getTime();
+    expect(useAppStore.getState().strictLockUntil).toBe(expectedEnd);
+    expect(useAppStore.getState().isStrictLocked()).toBe(true);
+
+    vi.useRealTimers();
+  });
+
   it('clears orphaned legacy blocking lists instead of reviving them as active app blocks', () => {
     const merged = mergePersistedAppState({
       activeMode: 'strict',

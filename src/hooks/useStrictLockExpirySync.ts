@@ -2,45 +2,7 @@ import { useEffect } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { getActiveStrictAddonModes } from '@/lib/targetModes';
 import type { StrictAddonMap } from '@/lib/targetModes';
-
-/** Returns true if `now` is outside the [startTime, endTime] daily window. */
-function isOutsideScheduleWindow(startTime: string, endTime: string, now = Date.now()): boolean {
-  const nowDate = new Date(now);
-  const [startH, startM] = startTime.split(':').map(Number);
-  const [endH, endM] = endTime.split(':').map(Number);
-
-  const startDate = new Date(nowDate);
-  startDate.setHours(startH, startM, 0, 0);
-
-  const endDate = new Date(nowDate);
-  endDate.setHours(endH, endM, 0, 0);
-
-  // Handle overnight windows (e.g. 22:00 – 06:00)
-  if (endDate.getTime() <= startDate.getTime()) {
-    endDate.setDate(endDate.getDate() + 1);
-  }
-
-  return now < startDate.getTime() || now >= endDate.getTime();
-}
-
-/** Returns the ms until the configured end of the current or next window. */
-function msUntilWindowEnd(startTime: string, endTime: string, now = Date.now()): number {
-  const nowDate = new Date(now);
-  const [startH, startM] = startTime.split(':').map(Number);
-  const [endH, endM] = endTime.split(':').map(Number);
-
-  const startDate = new Date(nowDate);
-  startDate.setHours(startH, startM, 0, 0);
-
-  const endDate = new Date(nowDate);
-  endDate.setHours(endH, endM, 0, 0);
-
-  if (endDate.getTime() <= startDate.getTime()) {
-    endDate.setDate(endDate.getDate() + 1);
-  }
-
-  return Math.max(0, endDate.getTime() - now);
-}
+import { isOutsideScheduleWindow, msUntilWindowEnd } from '@/lib/scheduleWindow';
 
 /** Returns true if any active addon lock should be dismissed because we are
  *  outside its configured schedule window. */

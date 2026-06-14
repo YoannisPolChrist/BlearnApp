@@ -9,6 +9,7 @@ import {
   type StrictAddonModeId,
 } from '@/lib/targetModes';
 import { clampStrictLockEnd } from '@/lib/strictLockLimits';
+import { resolveScheduleWindow } from '@/lib/scheduleWindow';
 
 export const createModeSlice: AppStoreSlice<Partial<AppState>> = (set, get) => ({
   activeMode: 'normal',
@@ -105,63 +106,43 @@ export const createModeSlice: AppStoreSlice<Partial<AppState>> = (set, get) => (
   strictLockScope: null,
   activateStrictLock: (options) => {
     const { strictStartTime, strictEndTime } = get();
-    const now = new Date();
+    const now = Date.now();
     const preserveActiveMode = options?.preserveActiveMode ?? false;
     const scope = options?.scope ?? (preserveActiveMode ? 'settings' : 'full');
 
-    const [startH, startM] = strictStartTime.split(':').map(Number);
-    const [endH, endM] = strictEndTime.split(':').map(Number);
-
-    const startDate = new Date(now);
-    startDate.setHours(startH, startM, 0, 0);
-
-    const endDate = new Date(now);
-    endDate.setHours(endH, endM, 0, 0);
-
-    // Handle overnight windows (e.g., 23:00 - 06:00): push end to next day.
-    if (endDate.getTime() <= startDate.getTime()) {
-      endDate.setDate(endDate.getDate() + 1);
-    }
+    // Beruecksichtigt Nacht-Fenster korrekt – inklusive Aktivierung nach
+    // Mitternacht im Morgen-Teil eines gestern gestarteten Fensters.
+    const { start, end } = resolveScheduleWindow(strictStartTime, strictEndTime, now);
 
     // Guard: only activate the strict lock inside the configured window.
-    if (endDate.getTime() <= now.getTime() || now.getTime() < startDate.getTime()) {
+    if (end <= now || now < start) {
       return;
     }
 
     // Hard cap (requirement): a strict lock never exceeds 20 hours from
     // activation, regardless of how the window was configured or persisted.
-    const lockUntil = clampStrictLockEnd(now.getTime(), endDate.getTime());
+    // Auf das übernacht-korrekte Fensterende (`end`) angewandt.
+    const lockUntil = clampStrictLockEnd(now, end);
 
     set((state) => applyModeState(state, {
       strictLockUntil: lockUntil,
       strictLockScope: scope,
-    }, now.getTime()));
+    }, now));
   },
   activateStrictAddon: (mode: StrictAddonModeId, lockedAppIds: string[]) => {
     const { strictAddons } = get();
     const current = strictAddons[mode];
-    const now = new Date();
-    const [startH, startM] = current.startTime.split(':').map(Number);
-    const [endH, endM] = current.endTime.split(':').map(Number);
+    const now = Date.now();
 
-    const startDate = new Date(now);
-    startDate.setHours(startH, startM, 0, 0);
-
-    const endDate = new Date(now);
-    endDate.setHours(endH, endM, 0, 0);
-
-    // Handle overnight windows (e.g., 23:00 - 06:00): push end to next day.
-    if (endDate.getTime() <= startDate.getTime()) {
-      endDate.setDate(endDate.getDate() + 1);
-    }
+    const { start, end } = resolveScheduleWindow(current.startTime, current.endTime, now);
 
     // Guard: only activate the addon lock inside the configured window.
-    if (endDate.getTime() <= now.getTime() || now.getTime() < startDate.getTime()) {
+    if (end <= now || now < start) {
       return;
     }
 
     // Same hard cap as the main strict lock: never more than 20 hours.
-    const addonLockUntil = clampStrictLockEnd(now.getTime(), endDate.getTime());
+    const addonLockUntil = clampStrictLockEnd(now, end);
 
     const uniqueLockedApps = Array.from(new Set(lockedAppIds));
 
@@ -175,7 +156,7 @@ export const createModeSlice: AppStoreSlice<Partial<AppState>> = (set, get) => (
           lockedAppIds: uniqueLockedApps,
         },
       },
-    }, now.getTime()));
+    }, now));
   },
   clearExpiredStrictLock: () => {
     const { strictLockUntil } = get();
