@@ -77,27 +77,36 @@ export function useLearnReviewSessionCompletion({
         return false;
       }
 
+      // Freischaltung SOFORT & synchron: Pending-Writes flushen, Grant
+      // registrieren, Ziel entsperren — danach den Erfolgs-Screen unmittelbar
+      // zeigen. Persistenz (IndexedDB-Settle) + Cloud-Sync liefen früher VOR dem
+      // Erfolgs-Screen per await → bei langsamem/abgehängtem Sync drehte der
+      // Button/Screen bis zu mehreren Sekunden ("lädt ewig"). Jetzt laufen sie
+      // im Hintergrund; die lokale Freischaltung (unlockTarget) + das WAL sind
+      // bereits synchron persistiert, Durability bleibt also erhalten.
       runPendingReviewWrites();
       registerUnlockGrant(targetId, targetType, sourceDeckId, count, unlockDurationMinutes);
       unlockTarget(targetId, targetType, unlockDurationMinutes);
-      try {
-        await waitForBlockingFlowPersistence({ includeLearningStore: true });
-      } catch (error) {
-        console.warn('Learn overlay persistence did not settle before continuing to the blocked target:', error);
-      }
-      try {
-        await withTimeout(
-          flushLearningCloudSaveIfAvailable('blocked-learn-unlock'),
-          3500,
-          'blocked learn cloud save',
-        );
-      } catch (error) {
-        console.warn('Learn overlay cloud sync did not settle before continuing to the blocked target:', error);
-      }
       recordFeedback('unlock-request', 'Freischaltung abgeschlossen.');
-      // Erst den Erfolgs-Screen zeigen ("Freigeschaltet für X Min" + App),
-      // statt sofort zur App zu springen. Der CTA dort ruft handleContinueToTarget.
       setOverlaySuccessVisible(true);
+
+      void (async () => {
+        try {
+          await waitForBlockingFlowPersistence({ includeLearningStore: true });
+        } catch (error) {
+          console.warn('Learn overlay persistence did not settle in the background:', error);
+        }
+        try {
+          await withTimeout(
+            flushLearningCloudSaveIfAvailable('blocked-learn-unlock'),
+            3500,
+            'blocked learn cloud save',
+          );
+        } catch (error) {
+          console.warn('Learn overlay cloud sync did not settle in the background:', error);
+        }
+      })();
+
       return true;
     },
     [
@@ -112,11 +121,11 @@ export function useLearnReviewSessionCompletion({
     ],
   );
 
-  // KRITISCH (Blocking-Versprechen): Sind im Blocking-Flow genug Reviews
-  // geschafft, MUSS freigeschaltet werden — ohne Emotions-Gate (sonst bleibt der
-  // Nutzer trotz erfüllter Aufgabe gesperrt). review-actions signalisiert das
-  // über blockedUnlockSignal; finishUnlock zeigt dann den Erfolgs-Screen.
-  // Der Emotions-Check-in bleibt dem normalen (nicht-blockierten) Lernmodus.
+  // Legacy-Fallback (derzeit ungenutzt): Beide Flows laufen jetzt über den
+  // Emotions-Check-in → completeSessionEmotionStep → finishUnlock. Dieser
+  // blockedUnlockSignal-Pfad würde direkt (ohne Emotions-Schritt) freischalten,
+  // wird von review-actions aber nicht mehr getriggert. Bewusst belassen als
+  // sichere Direkt-Freischaltung, falls künftig ein Emotions-loser Pfad nötig ist.
   useEffect(() => {
     if (blockedUnlockSignal <= 0 || pendingCompletionKindRef.current !== 'unlock') {
       return;

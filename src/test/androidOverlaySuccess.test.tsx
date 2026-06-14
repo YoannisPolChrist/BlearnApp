@@ -916,7 +916,9 @@ describe('Android overlay success flows', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: /antwort zeigen/i }));
     fireEvent.click(await screen.findByRole('button', { name: /good/i }));
-    // Block-Flow: kein Emotions-Schritt — direkt Erfolgs-Screen, CTA "Zur App".
+    // Block-Flow zeigt wieder den Emotions-Check-in; danach Erfolgs-Screen + CTA "Zur App".
+    fireEvent.click(await screen.findByRole('button', { name: /erleichtert/i }));
+    fireEvent.click((await screen.findAllByRole('button', { name: /abschlie/i }))[0]);
     fireEvent.click(await screen.findByRole('button', { name: /zur app/i }));
 
     expect(useAppStore.getState().unlockedTargets['app:youtube']).toBe(now + 12 * 60 * 1000);
@@ -926,18 +928,17 @@ describe('Android overlay success flows', () => {
     await waitFor(() => expect(openTargetMock).toHaveBeenCalledWith('YouTube', 'app'));
   }, 30_000);
 
-  it('waits for app-store persistence before a learn overlay reopens the blocked target', async () => {
+  it('shows the learn success screen and reopens the target even while background persistence stalls', async () => {
     const now = Date.UTC(2026, 2, 13, 14, 15, 0);
     vi.spyOn(Date, 'now').mockReturnValue(now);
 
-    let resolvePersistStorage: (() => void) | null = null;
-    const persistStorageIdle = new Promise<void>((resolve) => {
-      resolvePersistStorage = resolve;
-    });
+    // Persistenz blockiert dauerhaft (löst nie auf): der Erfolgs-Screen darf NICHT
+    // darauf warten (sonst "lädt ewig"). Persistenz läuft im Hintergrund.
+    const persistStorageIdle = new Promise<void>(() => {});
 
     const { LearnReviewPage, useAppStore, useLearningStore } = await loadLearnReviewPage({
       applyMocks: () => {
-        waitForPersistStorageIdleMock.mockReturnValueOnce(persistStorageIdle);
+        waitForPersistStorageIdleMock.mockReturnValue(persistStorageIdle);
       },
     });
     useAppStore.setState(
@@ -978,18 +979,14 @@ describe('Android overlay success flows', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: /antwort zeigen/i }));
     fireEvent.click(await screen.findByRole('button', { name: /good/i }));
+    // Emotions-Check-in abschließen.
+    fireEvent.click(await screen.findByRole('button', { name: /erleichtert/i }));
+    fireEvent.click((await screen.findAllByRole('button', { name: /abschlie/i }))[0]);
 
-    await waitFor(() => {
-      expect(waitForPersistStorageIdleMock).toHaveBeenCalledWith('mindful-usage-storage', 2500);
-    });
-    expect(grantManualOverrideMock).not.toHaveBeenCalled();
-    expect(dismissBlockingOverlayMock).not.toHaveBeenCalled();
-    expect(openTargetMock).not.toHaveBeenCalled();
-
-    resolvePersistStorage?.();
-
-    // Erfolgs-Screen erscheint nach der Persistenz; CTA "Zur App" öffnet das Ziel.
+    // Der Erfolgs-Screen erscheint SOFORT — obwohl die Persistenz nie auflöst.
+    // Die Freischaltung selbst ist bereits synchron erfolgt.
     fireEvent.click(await screen.findByRole('button', { name: /zur app/i }));
+    expect(useAppStore.getState().unlockedTargets['app:youtube']).toBe(now + 12 * 60 * 1000);
 
     await waitFor(() => expect(grantManualOverrideMock).toHaveBeenCalledWith('YouTube', 'app', 12));
     await waitFor(() => expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1));

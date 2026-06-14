@@ -151,14 +151,13 @@ export function useLearnReviewReviewActions({
         setSelectedSessionCategories([]);
         setSelectedSessionEmotions([]);
         setCompletedSessionVisible(false);
-        if (isUnlockCompletion) {
-          // Blocking-Flow: KEIN Emotions-Schritt — direkt zur Freischaltung
-          // (deterministisch, ohne kurzes Aufblitzen der Emotionsabfrage).
-          setAwaitingEmotionSelection(false);
-          setBlockedUnlockSignal((value) => value + 1);
-        } else {
-          setAwaitingEmotionSelection(true);
-        }
+        // BEIDE Flows zeigen jetzt den Emotions-Check-in (User-Wunsch: im
+        // Blocking-Flow wieder Emotionen wählen). Sicher gegen den alten #10-Bug
+        // ("beantwortet, aber schaltet nicht frei"), weil completeSessionEmotionStep
+        // danach finishUnlock aufruft und finishUnlock die Freischaltung synchron
+        // erteilt + den Erfolgs-Screen ohne await zeigt — es kann also nie an einem
+        // hängenden Async-Schritt scheitern.
+        setAwaitingEmotionSelection(true);
       }
 
       const persistReview = () => {

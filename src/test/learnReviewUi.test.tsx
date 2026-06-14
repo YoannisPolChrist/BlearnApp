@@ -275,10 +275,8 @@ async function completeEmotionSelection() {
   fireEvent.click(screen.getAllByRole('button', { name: /abschlie/i })[0]);
 }
 
-// Im Blocking-Flow schaltet Blearn nach genug Reviews SOFORT frei — ohne
-// Emotions-Gate (sonst bliebe der Nutzer trotz erfüllter Aufgabe gesperrt).
-// Diese Hilfe beantwortet einfach die nötigen Reviews; der Unlock feuert dann
-// automatisch.
+// Im Blocking-Flow beantwortet diese Hilfe einfach die nötigen Reviews, bis der
+// Emotions-Check-in (oder der Erfolgs-Screen) erscheint.
 async function answerBlockedSessionReviews(maxRounds = 8) {
   for (let round = 0; round < maxRounds; round += 1) {
     const revealButton = screen.queryByRole('button', { name: /^antwort zeigen$/i });
@@ -294,10 +292,13 @@ async function answerBlockedSessionReviews(maxRounds = 8) {
   }
 }
 
-// Nach genug Reviews zeigt der Block-Flow erst den Erfolgs-Screen
-// ("Freigeschaltet …" + "Zur App"); der CTA dort öffnet das Ziel.
+// Nach genug Reviews zeigt der Block-Flow den Emotions-Check-in; nach dessen
+// Abschluss erscheint der Erfolgs-Screen ("Freigeschaltet …" + "Zur App"), dessen
+// CTA das Ziel öffnet. Der Unlock kann dabei NIE hängen bleiben: finishUnlock
+// erteilt die Freischaltung synchron und zeigt den Erfolgs-Screen ohne await.
 async function answerBlockedSessionToUnlock(maxRounds = 8) {
   await answerBlockedSessionReviews(maxRounds);
+  await completeEmotionSelection();
   const continueButton = await screen.findByRole('button', { name: /zur app/i });
   fireEvent.click(continueButton);
 }
@@ -614,21 +615,17 @@ describe('Learn review typed-answer UI', () => {
     });
 
     await answerBlockedSessionToUnlock();
-    // Der Block-Flow darf NIE hinter dem Emotions-Schritt hängen bleiben.
-    expect(emotionPromptPresent()).toBe(false);
 
     await waitFor(() => {
       expect(primeNativeUnlockHandoffMock).toHaveBeenCalledWith('YouTube', 'app', 12);
-      expect(flushLearningCloudSaveIfAvailableMock).toHaveBeenCalledWith('blocked-learn-unlock');
       expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1);
       expect(openTargetMock).toHaveBeenCalledWith('YouTube', 'app');
     }, { timeout: 10000 });
-    expect(waitForPersistStorageIdleMock.mock.invocationCallOrder[0]).toBeLessThan(
-      flushLearningCloudSaveIfAvailableMock.mock.invocationCallOrder[0],
-    );
-    expect(flushLearningCloudSaveIfAvailableMock.mock.invocationCallOrder[0]).toBeLessThan(
-      dismissBlockingOverlayMock.mock.invocationCallOrder[0],
-    );
+    // Cloud-Save läuft im Hintergrund — blockiert den Erfolgs-Screen/CTA nicht mehr.
+    await waitFor(() => {
+      expect(flushLearningCloudSaveIfAvailableMock).toHaveBeenCalledWith('blocked-learn-unlock');
+    }, { timeout: 10000 });
+    // CTA-Reihenfolge bleibt deterministisch: prime → dismiss → openTarget.
     expect(primeNativeUnlockHandoffMock.mock.invocationCallOrder[0]).toBeLessThan(
       dismissBlockingOverlayMock.mock.invocationCallOrder[0],
     );
@@ -711,7 +708,6 @@ describe('Learn review typed-answer UI', () => {
     });
 
     await answerBlockedSessionToUnlock();
-    expect(emotionPromptPresent()).toBe(false);
 
     await waitFor(() => {
       expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1);
