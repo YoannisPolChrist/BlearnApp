@@ -15,11 +15,13 @@ function countUniqueReviewedCardsBetween(
   start: number,
   end = Number.POSITIVE_INFINITY,
 ) {
-  return new Set(
-    reviewLogs
-      .filter((entry) => entry.reviewedAt >= start && entry.reviewedAt < end)
-      .map((entry) => entry.cardId),
-  ).size;
+  const reviewedCardIds = new Set<string>();
+  for (const entry of reviewLogs) {
+    if (entry.reviewedAt >= start && entry.reviewedAt < end) {
+      reviewedCardIds.add(entry.cardId);
+    }
+  }
+  return reviewedCardIds.size;
 }
 
 export function useVocabChartData(

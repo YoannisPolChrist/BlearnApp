@@ -104,21 +104,20 @@ function LearnReviewActionsInner({
 
           {requiresTypedAnswer ? (
             <div className="space-y-2.5">
-              <Input
-                value={typedAnswer}
-                onChange={(event) => onTypedAnswerChange(event.target.value)}
-                onFocus={handleTypedAnswerFocus}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    event.preventDefault();
-                    onCheckTypedAnswer();
-                  }
-                }}
-                placeholder="Antwort eingeben"
-                className="h-10 rounded-[1.1rem] border-[hsl(var(--mode-learn-border)/0.46)] bg-background/94 text-sm text-foreground shadow-[inset_0_1px_0_hsl(0_0%_100%/0.16)] placeholder:text-foreground/42 focus-visible:ring-[hsl(var(--mode-learn)/0.44)] focus-visible:ring-offset-[hsl(var(--background)/0.98)] sm:h-11 sm:text-base"
-              />
-
-              <div className="grid gap-2 sm:grid-cols-[0.95fr_1.2fr]">
+              <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-stretch gap-1.5 sm:gap-2">
+                <Input
+                  value={typedAnswer}
+                  onChange={(event) => onTypedAnswerChange(event.target.value)}
+                  onFocus={handleTypedAnswerFocus}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault();
+                      onCheckTypedAnswer();
+                    }
+                  }}
+                  placeholder="Antwort eingeben"
+                  className="h-10 min-w-0 rounded-[1.1rem] border-[hsl(var(--mode-learn-border)/0.46)] bg-background/94 px-3 text-sm text-foreground shadow-[inset_0_1px_0_hsl(0_0%_100%/0.16)] placeholder:text-foreground/42 focus-visible:ring-[hsl(var(--mode-learn)/0.44)] focus-visible:ring-offset-[hsl(var(--background)/0.98)] sm:h-11 sm:text-base"
+                />
                 <motion.button
                   onClick={onCheckTypedAnswer}
                   initial="rest"
@@ -126,9 +125,9 @@ function LearnReviewActionsInner({
                   whileHover={reduceInterfaceMotion ? 'rest' : 'hover'}
                   whileTap={reduceInterfaceMotion ? 'rest' : 'tap'}
                   variants={ctaFollowThrough}
-                  className="btn-press rounded-[1.1rem] border border-[hsl(var(--mode-learn-border)/0.42)] bg-[hsl(var(--mode-learn-surface)/0.72)] px-3 py-2.5 text-sm font-bold text-[hsl(var(--mode-learn-foreground))] shadow-[0_14px_30px_hsl(var(--mode-learn-glow)/0.1)]"
+                  className="btn-press rounded-[1.1rem] border border-[hsl(var(--mode-learn-border)/0.42)] bg-[hsl(var(--mode-learn-surface)/0.72)] px-2.5 py-2 text-xs font-bold text-[hsl(var(--mode-learn-foreground))] shadow-[0_14px_30px_hsl(var(--mode-learn-glow)/0.1)] sm:px-3 sm:py-2.5 sm:text-sm"
                 >
-                  Antwort prüfen
+                  <span className="whitespace-nowrap">Antwort prüfen</span>
                 </motion.button>
                 <motion.button
                   onClick={onRevealAnswer}
@@ -137,9 +136,9 @@ function LearnReviewActionsInner({
                   whileHover={reduceInterfaceMotion ? 'rest' : 'hover'}
                   whileTap={reduceInterfaceMotion ? 'rest' : 'tap'}
                   variants={ctaFollowThrough}
-                  className={cn('btn-press rounded-[1.1rem] px-3 py-2.5 text-sm font-bold', learnPalette.button)}
+                  className={cn('btn-press rounded-[1.1rem] px-2.5 py-2 text-xs font-bold sm:px-3 sm:py-2.5 sm:text-sm', learnPalette.button)}
                 >
-                  Lösung zeigen
+                  <span className="whitespace-nowrap">Lösung zeigen</span>
                 </motion.button>
               </div>
             </div>

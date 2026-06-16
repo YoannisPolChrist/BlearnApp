@@ -1,4 +1,4 @@
-import type { InstalledApp, MonitoringStatus, ScreenTimeSummary } from '@/plugins/ScreenTimePlugin';
+import type { InstalledApp, ScreenTimeSummary } from '@/plugins/ScreenTimePlugin';
 import type { Emotion, UserInteraction } from '@/store/useAppStore';
 
 export type TimeRange = 'day' | 'week' | 'month';
@@ -16,9 +16,7 @@ export type MoodEntry = {
 
 export type ScreenSnapshot = {
   usage: ScreenTimeSummary;
-  status: MonitoringStatus;
   installedApps: InstalledApp[];
-  currentAppId: string;
   loadedAt: number;
 };
 

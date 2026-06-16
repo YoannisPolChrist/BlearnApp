@@ -5,15 +5,17 @@ import { mobilePageVariants, pageVariants } from '@/lib/motion';
 
 export default function PageTransition({
   children,
+  disableMotion = false,
   variant = 'default',
 }: {
   children: ReactNode;
+  disableMotion?: boolean;
   variant?: 'default' | 'hero' | 'overlay';
 }) {
   const reducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
 
-  if (reducedMotion) {
+  if (reducedMotion || disableMotion) {
     return <div className="page-shell-clip min-h-screen pb-[calc(6rem+env(safe-area-inset-bottom,0px))]">{children}</div>;
   }
 

@@ -6,12 +6,14 @@ import { cn } from '@/lib/utils';
 
 interface LearnReviewPageHeaderProps {
   activeDeckLoaded: boolean;
+  countedReviews: number;
   currentCardKindLabel: string;
   currentCardPosition: number;
   isBlockedFlow: boolean;
   nextNewCardLabel: string;
   onBack: () => void;
   reviewMixLabel: string;
+  sessionCardCount: number;
   sessionStartedAt?: number;
   showTimer?: boolean;
   showBackButton: boolean;
@@ -20,12 +22,14 @@ interface LearnReviewPageHeaderProps {
 
 function LearnReviewPageHeaderInner({
   activeDeckLoaded,
+  countedReviews,
   currentCardKindLabel,
   currentCardPosition,
   isBlockedFlow,
   nextNewCardLabel,
   onBack,
   reviewMixLabel,
+  sessionCardCount,
   sessionStartedAt,
   showTimer = true,
   showBackButton,
@@ -33,6 +37,7 @@ function LearnReviewPageHeaderInner({
 }: LearnReviewPageHeaderProps) {
   const visibleCardCount = Math.max(totalCandidateCount, currentCardPosition);
   const ringProgress = visibleCardCount > 0 ? currentCardPosition / visibleCardCount : 0;
+  const unlockCount = Math.min(Math.max(0, countedReviews), Math.max(0, sessionCardCount));
 
   return (
     <div className="flex flex-col gap-2.5">
@@ -75,9 +80,22 @@ function LearnReviewPageHeaderInner({
               <p className="text-[9px] font-black uppercase tracking-[0.14em] text-[hsl(var(--mode-learn-foreground)/0.72)]">
                 {currentCardKindLabel}
               </p>
-              <p className="text-[10px] font-semibold text-[hsl(var(--mode-learn-foreground)/0.64)]">
-                Mix {reviewMixLabel} · {nextNewCardLabel}
-              </p>
+              {isBlockedFlow && sessionCardCount > 0 ? (
+                <p
+                  className="rounded-full border border-[hsl(var(--mode-learn-border)/0.38)] bg-[hsl(var(--mode-learn-surface)/0.5)] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[hsl(var(--mode-learn-foreground))]"
+                  aria-label={`Freischaltung ${unlockCount} von ${sessionCardCount} Vokabeln`}
+                >
+                  Freischaltung {unlockCount}/{sessionCardCount}
+                </p>
+              ) : null}
+              <div className="flex max-w-[13rem] flex-wrap justify-end gap-1">
+                <span className="rounded-full border border-[hsl(var(--mode-learn-border)/0.34)] bg-[hsl(var(--mode-learn-surface)/0.46)] px-2 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-[hsl(var(--mode-learn-foreground)/0.68)]">
+                  Mix {reviewMixLabel}
+                </span>
+                <span className="rounded-full border border-[hsl(var(--mode-learn-border)/0.48)] bg-[hsl(var(--mode-learn-glow)/0.12)] px-2 py-1 text-[10px] font-extrabold leading-tight text-[hsl(var(--mode-learn-foreground))]">
+                  {nextNewCardLabel}
+                </span>
+              </div>
             </div>
           ) : null}
         </div>

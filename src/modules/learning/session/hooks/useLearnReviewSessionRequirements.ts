@@ -76,6 +76,9 @@ export function useLearnReviewSessionRequirements({
   const effectiveSessionCreditsRequired = isBlockedFlow
     ? sessionCreditsRequired
     : reviewSessionCreditsRequired;
+  const initialUnlockQueueIds = isBlockedFlow
+    ? reviewSessionCandidateIds.slice(0, sessionCreditsRequired)
+    : EMPTY_STRING_LIST;
   const unlockDurationMinutes =
     sessionUnlockDurationMinutes ??
     assignment?.unlockDurationMinutes ??
@@ -86,6 +89,7 @@ export function useLearnReviewSessionRequirements({
 
   return {
     effectiveSessionCreditsRequired,
+    initialUnlockQueueIds,
     reviewSessionCreditsRequired,
     sessionCreditsRequired,
     typedAnswerEnabled,

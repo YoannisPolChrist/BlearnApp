@@ -16,7 +16,7 @@ const BottomNav = forwardRef<HTMLDivElement>((_, ref) => {
   const isMobile = useIsMobile();
   const allowHoverMotion = !reducedMotion && !isMobile;
   const allowTapMotion = !reducedMotion;
-  const allowActiveMotion = !reducedMotion;
+  const allowActiveMotion = !reducedMotion && !isMobile;
 
   const navItems = [
     { path: '/', icon: Home, label: t('nav.focus') },

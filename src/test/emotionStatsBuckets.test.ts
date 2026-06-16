@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useEmotionStatsData } from '@/modules/stats/emotions';
-import type { CheckinEntry, UserProfile } from '@/store/useAppStore';
+import type { CheckinEntry, UserInteraction, UserProfile } from '@/store/useAppStore';
 
 // Verankert die Tages-Grenzen der Stimmungs-Charts. Der Bug: Bei Wochen-/Monats-
 // Reichweite startete der erste Bucket bei `now - buckets * bucketMs`, wodurch
@@ -21,7 +21,18 @@ function makeCheckin(id: string, timestamp: number, emotions: string[]): Checkin
   };
 }
 
-function makeUserProfile(): UserProfile {
+function makeInteraction(overrides: Partial<UserInteraction> = {}): UserInteraction {
+  return {
+    timestamp: 0,
+    type: 'learning',
+    emotions: ['relieved'],
+    intention: 'Starter Vokabeln',
+    completed: true,
+    ...overrides,
+  };
+}
+
+function makeUserProfile(overrides: Partial<UserProfile> = {}): UserProfile {
   return {
     commonEmotions: {},
     triggerTimes: [],
@@ -30,6 +41,7 @@ function makeUserProfile(): UserProfile {
     totalChallengesCompleted: 0,
     consecutiveDays: 0,
     completedChallenges: [],
+    ...overrides,
   };
 }
 
@@ -103,5 +115,39 @@ describe('useEmotionStatsData bucketing (day boundaries)', () => {
       0,
     );
     expect(totalActivity).toBe(1);
+  });
+
+  it('counts a mirrored learn-session mood only once in activity and mood charts', () => {
+    const now = new Date('2026-06-14T12:00:00Z').getTime();
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+
+    const checkins = [
+      makeCheckin('learning-checkin', now, ['relieved']),
+    ].map((entry) => ({
+      ...entry,
+      reflection: 'Starter Vokabeln',
+      targetApp: 'youtube',
+    }));
+    const profile = makeUserProfile({
+      commonEmotions: { relieved: 1 },
+      recentInteractions: [
+        makeInteraction({
+          timestamp: now,
+          emotions: ['relieved'],
+          intention: 'Starter Vokabeln',
+          targetApp: 'youtube',
+        }),
+      ],
+    });
+
+    const { result } = renderHook(() => useEmotionStatsData('week', checkins, profile));
+
+    const todayActivity = result.current.activityData[6].series.find((s) => s.key === 'activity');
+    const todayPositive = result.current.moodData[6].series.find((s) => s.key === 'positive');
+    expect(todayActivity?.value).toBe(1);
+    expect(todayPositive?.value).toBe(1);
+    expect(result.current.topEmotions.find((entry) => entry.id === 'relieved')?.count).toBe(1);
+    expect(result.current.recentMoodEntries).toHaveLength(1);
+    expect(result.current.recentMoodEntries[0].source).toBe('learning');
   });
 });

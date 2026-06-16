@@ -68,20 +68,22 @@ export function createLearningSessionSnapshot(
   kind: LearningSessionKind = 'unlock',
 ): LearningSessionSnapshot {
   const queue =
-    kind === 'unlock'
-      ? buildUnlockSessionQueue({
-          cards: context.cards,
-          deckId: context.deckId,
-          reviewLogs: context.reviewLogs,
-          preset: context.preset,
-          gateRule: context.gateRule,
-          sessionCreditsRequired: context.sessionCreditsRequired,
-          ignoreNewCardsLimit: context.ignoreNewCardsLimit,
-          includeReviewAhead: context.includeReviewAhead,
-          excludeCardIds: context.excludeCardIds,
-          now: context.now,
-        })
-      : buildReviewQueue(context.cards, context.sessionCreditsRequired, context.now);
+    kind === 'unlock' && context.precomputedQueueIds
+      ? [...context.precomputedQueueIds]
+      : kind === 'unlock'
+        ? buildUnlockSessionQueue({
+            cards: context.cards,
+            deckId: context.deckId,
+            reviewLogs: context.reviewLogs,
+            preset: context.preset,
+            gateRule: context.gateRule,
+            sessionCreditsRequired: context.sessionCreditsRequired,
+            ignoreNewCardsLimit: context.ignoreNewCardsLimit,
+            includeReviewAhead: context.includeReviewAhead,
+            excludeCardIds: context.excludeCardIds,
+            now: context.now,
+          })
+        : buildReviewQueue(context.cards, context.sessionCreditsRequired, context.now);
   // Both unlock and review sessions restrict candidateIds to the queue.
   // This prevents the grade() refill mechanism from pulling non-due or
   // already-reviewed cards back into the session after the queue is exhausted.

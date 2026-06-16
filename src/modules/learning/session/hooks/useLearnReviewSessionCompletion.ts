@@ -15,6 +15,9 @@ import type { useLearningStore } from '@/store/useLearningStore';
 
 const MIN_SESSION_EMOTIONS = 1;
 const MAX_SESSION_EMOTIONS = 3;
+const schedulePostUnlockTask = (task: () => void) => {
+  window.setTimeout(task, 0);
+};
 
 type RecordFeedback = (
   kind: LearningReviewFeedbackEvent['kind'],
@@ -224,30 +227,35 @@ export function useLearnReviewSessionCompletion({
     setSelectedSessionCategories([]);
     setSelectedSessionEmotions([]);
     setCompletedSessionVisible(false);
-    addCheckin({
-      id: `learning-${completedAt}`,
-      timestamp: completedAt,
-      emotions: sessionEmotions,
-      reflection: sessionSummary,
-      chatHistory: [],
-      breathingCompleted: false,
-      targetApp: targetId || undefined,
-    });
-    addInteraction({
-      timestamp: completedAt,
-      type: 'learning',
-      emotions: sessionEmotions,
-      intention: sessionSummary,
-      completed: true,
-      targetApp: targetId || undefined,
-    });
-    recordFeedback('toast', 'Emotion gespeichert.');
+
+    const recordEmotionOutcome = () => {
+      addCheckin({
+        id: `learning-${completedAt}`,
+        timestamp: completedAt,
+        emotions: sessionEmotions,
+        reflection: sessionSummary,
+        chatHistory: [],
+        breathingCompleted: false,
+        targetApp: targetId || undefined,
+      });
+      addInteraction({
+        timestamp: completedAt,
+        type: 'learning',
+        emotions: sessionEmotions,
+        intention: sessionSummary,
+        completed: true,
+        targetApp: targetId || undefined,
+      });
+      recordFeedback('toast', 'Emotion gespeichert.');
+    };
 
     if (completionKind === 'unlock' && targetId && activeDeck) {
       void finishUnlock(activeDeck.id, sessionCreditsRequired);
+      schedulePostUnlockTask(recordEmotionOutcome);
       return;
     }
 
+    recordEmotionOutcome();
     setCompletedSessionVisible(true);
   }, [
     activeDeck,

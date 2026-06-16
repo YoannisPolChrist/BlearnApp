@@ -25,6 +25,7 @@ export function useLearnReviewSessionBootstrap({
   completedSessionVisible,
   effectiveSessionCreditsRequired,
   gateRule,
+  initialUnlockQueueIds,
   isBlockedFlow,
   learningHydrated,
   overlaySuccessVisible,
@@ -54,6 +55,7 @@ export function useLearnReviewSessionBootstrap({
   completedSessionVisible: boolean;
   effectiveSessionCreditsRequired: number;
   gateRule: Partial<GateRule>;
+  initialUnlockQueueIds: string[];
   isBlockedFlow: boolean;
   learningHydrated: boolean;
   overlaySuccessVisible: boolean;
@@ -167,6 +169,10 @@ export function useLearnReviewSessionBootstrap({
       ignoreNewCardsLimit: true,
       includeReviewAhead: false,
       excludeCardIds: reviewedCardIdsRef.current,
+      precomputedQueueIds:
+        reviewedCardIdsRef.current.size === 0 && initialUnlockQueueIds.length > 0
+          ? initialUnlockQueueIds
+          : undefined,
       now: Date.now(),
     });
     const reviewSnapshot = {
@@ -197,6 +203,7 @@ export function useLearnReviewSessionBootstrap({
     completedSessionVisible,
     effectiveSessionCreditsRequired,
     gateRule,
+    initialUnlockQueueIds,
     isBlockedFlow,
     learningHydrated,
     overlaySuccessVisible,

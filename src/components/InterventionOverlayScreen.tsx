@@ -65,6 +65,37 @@ function getInterventionTone(mode: InterventionMode) {
   return 'reflection' as const;
 }
 
+const overlaySequence = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      delayChildren: 0.04,
+      staggerChildren: 0.07,
+    },
+  },
+};
+
+const overlayItem = {
+  hidden: { opacity: 0, y: 18, scale: 0.986 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.34, ease: premiumEase },
+  },
+};
+
+const targetCardItem = {
+  hidden: { opacity: 0, y: 24, scale: 0.976 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.38, ease: premiumEase },
+  },
+};
+
 export default function InterventionOverlayScreen({
   open,
   blockedTarget,
@@ -136,8 +167,20 @@ export default function InterventionOverlayScreen({
       className="relative min-h-[100svh] overflow-hidden bg-background text-foreground"
     >
       <div className="absolute inset-0 bg-[linear-gradient(180deg,hsl(var(--background)),hsl(var(--background)/0.96)_40%,hsl(var(--background)))]" />
-      <div className={cn('absolute -left-20 top-[-3rem] h-72 w-72 rounded-full blur-3xl', palette.glow)} />
-      <div className={cn('absolute -bottom-16 right-[-3rem] h-80 w-80 rounded-full blur-3xl opacity-70', palette.glow)} />
+      <motion.div
+        aria-hidden="true"
+        initial={reducedMotion ? false : { opacity: 0, scale: 0.86, x: -18, y: -10 }}
+        animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+        transition={{ duration: 0.42, ease: premiumEase }}
+        className={cn('absolute -left-20 top-[-3rem] h-72 w-72 rounded-full blur-3xl', palette.glow)}
+      />
+      <motion.div
+        aria-hidden="true"
+        initial={reducedMotion ? false : { opacity: 0, scale: 0.9, x: 18, y: 12 }}
+        animate={{ opacity: 0.7, scale: 1, x: 0, y: 0 }}
+        transition={{ duration: 0.46, ease: premiumEase, delay: reducedMotion ? 0 : 0.04 }}
+        className={cn('absolute -bottom-16 right-[-3rem] h-80 w-80 rounded-full blur-3xl', palette.glow)}
+      />
 
       <motion.div
         // Ruhiger "Über-die-App-legen"-Effekt: das Overlay sinkt leicht herab
@@ -150,25 +193,30 @@ export default function InterventionOverlayScreen({
         className="relative z-10 flex min-h-[100svh] flex-col px-6 pb-[calc(env(safe-area-inset-bottom,0px)+1.5rem)] pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] sm:px-8"
         style={{ willChange: 'transform, opacity' }}
       >
-        <div className="flex flex-1 flex-col justify-between gap-10">
+        <motion.div
+          variants={overlaySequence}
+          initial={reducedMotion ? false : 'hidden'}
+          animate="show"
+          className="flex flex-1 flex-col justify-between gap-10"
+        >
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
+            <motion.div variants={overlayItem} className="flex items-center gap-3">
               <span className={cn('inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.16em]', palette.badge)}>
                 <Shield size={15} />
                 Blearn
               </span>
-            </div>
+            </motion.div>
 
-            <div className="max-w-xl space-y-3">
+            <motion.div variants={overlayItem} className="max-w-xl space-y-3">
               <h1 className="text-[2.5rem] font-black tracking-[-0.07em] text-foreground sm:text-[3.5rem]">
                 {title}
               </h1>
               <p className="text-base leading-relaxed text-foreground/72 sm:text-lg">
                 {description}
               </p>
-            </div>
+            </motion.div>
 
-            <div className={cn('w-full max-w-xl rounded-[2rem] border px-5 py-5 shadow-[0_24px_60px_hsl(var(--foreground)/0.08)]', palette.card)}>
+            <motion.div variants={targetCardItem} className={cn('w-full max-w-xl rounded-[2rem] border px-5 py-5 shadow-[0_24px_60px_hsl(var(--foreground)/0.08)]', palette.card)}>
               <div className="flex items-center gap-3">
                 <div className={cn('flex h-12 w-12 items-center justify-center rounded-[1.2rem]', palette.icon)}>
                   <BlockIcon size={20} />
@@ -191,24 +239,24 @@ export default function InterventionOverlayScreen({
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {mode === 'penalty' ? (
-              <div className={cn('w-full max-w-xl rounded-[1.7rem] border px-5 py-4 text-sm text-foreground/76', palette.card)}>
+              <motion.div variants={overlayItem} className={cn('w-full max-w-xl rounded-[1.7rem] border px-5 py-4 text-sm text-foreground/76', palette.card)}>
                 {penaltyConfirmStep === 1
                   ? 'Ein weiterer Tap fuehrt in die letzte Bestaetigung.'
                   : 'Mit dem naechsten Tap wird die Zahlung sofort ausgeloest.'}
-              </div>
+              </motion.div>
             ) : null}
 
             {penaltyErrorMessage ? (
-              <div className="w-full max-w-xl rounded-[1.7rem] border border-destructive/25 bg-destructive/10 px-5 py-4 text-sm font-semibold text-destructive">
+              <motion.div variants={overlayItem} className="w-full max-w-xl rounded-[1.7rem] border border-destructive/25 bg-destructive/10 px-5 py-4 text-sm font-semibold text-destructive">
                 {penaltyErrorMessage}
-              </div>
+              </motion.div>
             ) : null}
           </div>
 
-          <div className="w-full max-w-xl space-y-3">
+          <motion.div variants={overlayItem} className="w-full max-w-xl space-y-3">
             <motion.button
               type="button"
               initial="rest"
@@ -241,8 +289,8 @@ export default function InterventionOverlayScreen({
                 {closeLabel}
               </button>
             ) : null}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </motion.div>
     </div>
   );

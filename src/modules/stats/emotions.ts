@@ -78,8 +78,7 @@ export function getMoodEntrySourceLabel(source: MoodEntry['source']) {
 
 function useChartData(
   range: TimeRange,
-  checkins: CheckinEntry[],
-  interactions: UserInteraction[],
+  moodEntries: MoodEntry[],
   emotionCounts: Record<string, number>,
 ) {
   return useMemo(() => {
@@ -124,36 +123,19 @@ function useChartData(
     const positiveMoodCounts = new Array<number>(buckets).fill(0);
     const negativeMoodCounts = new Array<number>(buckets).fill(0);
 
-    for (const entry of checkins) {
+    for (const entry of moodEntries) {
       const bucketIndex = Math.floor((entry.timestamp - startTime) / bucketMs);
       if (bucketIndex < 0 || bucketIndex >= buckets) {
         continue;
       }
 
-      checkinCounts[bucketIndex] += 1;
+      if (entry.source === 'checkin') {
+        checkinCounts[bucketIndex] += 1;
+      } else {
+        interactionCounts[bucketIndex] += 1;
+      }
+
       for (const emotionId of entry.emotions ?? []) {
-        if (POSITIVE_EMOTION_IDS.has(emotionId)) {
-          positiveMoodCounts[bucketIndex] += 1;
-        }
-        if (NEGATIVE_EMOTION_IDS.has(emotionId)) {
-          negativeMoodCounts[bucketIndex] += 1;
-        }
-      }
-    }
-
-    for (const interaction of interactions) {
-      const bucketIndex = Math.floor((interaction.timestamp - startTime) / bucketMs);
-      if (bucketIndex < 0 || bucketIndex >= buckets) {
-        continue;
-      }
-
-      interactionCounts[bucketIndex] += 1;
-
-      if (interaction.type === 'checkin') {
-        continue;
-      }
-
-      for (const emotionId of interaction.emotions ?? []) {
         if (POSITIVE_EMOTION_IDS.has(emotionId)) {
           positiveMoodCounts[bucketIndex] += 1;
         }
@@ -205,7 +187,7 @@ function useChartData(
     });
 
     return { activityData, emotionRadar, moodData };
-  }, [checkins, emotionCounts, interactions, range]);
+  }, [emotionCounts, moodEntries, range]);
 }
 
 export function useEmotionStatsData(range: TimeRange, checkins: CheckinEntry[], userProfile: UserProfile) {
@@ -224,7 +206,7 @@ export function useEmotionStatsData(range: TimeRange, checkins: CheckinEntry[], 
 
     return counts;
   }, [derivedEmotionCounts, userProfile.commonEmotions]);
-  const chartData = useChartData(range, checkins, recentInteractions, emotionCounts);
+  const chartData = useChartData(range, moodEntries, emotionCounts);
 
   const topEmotions = useMemo(() => {
     return (Object.entries(emotionCounts) as EmotionCountEntry[])

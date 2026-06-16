@@ -156,6 +156,7 @@ export function useLearnReviewSession() {
   });
   const {
     effectiveSessionCreditsRequired,
+    initialUnlockQueueIds,
     reviewSessionCreditsRequired,
     sessionCreditsRequired,
     typedAnswerEnabled,
@@ -182,6 +183,7 @@ export function useLearnReviewSession() {
     completedSessionVisible,
     effectiveSessionCreditsRequired,
     gateRule,
+    initialUnlockQueueIds,
     isBlockedFlow,
     learningHydrated,
     overlaySuccessVisible,
@@ -261,6 +263,7 @@ export function useLearnReviewSession() {
     hasUsableLearningDeck,
     latestFeedbackMessage,
     nextNewCardLabel,
+    nextNewCardStatus,
     progressPercent,
     promptIsLong,
     remainingAttempts,
@@ -487,6 +490,7 @@ export function useLearnReviewSession() {
     progressPercent,
     promptIsLong,
     nextNewCardLabel,
+    nextNewCardStatus,
     remainingNewCount,
     remainingReviewCount,
     remainingAttempts,

@@ -66,6 +66,7 @@ export interface LearningSessionContext {
   ignoreNewCardsLimit?: boolean;
   includeReviewAhead?: boolean;
   excludeCardIds?: Set<string>;
+  precomputedQueueIds?: string[];
   now?: number;
 }
 

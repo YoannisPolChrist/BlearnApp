@@ -20,21 +20,10 @@ import {
 import { buildLearnReviewProgress, formatReviewMixLabel } from '@/lib/view-models/learn';
 import type { LearningReviewFeedbackEvent } from '@/modules/learning/store';
 import type { LearningSessionSnapshot } from '@/modules/learning/session';
+import { buildNextNewCardStatus } from '@/modules/learning/session/nextNewCardStatus';
 import { useLearningStore } from '@/store/useLearningStore';
 
 const EMPTY_STRING_LIST: string[] = [];
-
-function formatNextNewCardLabel(nextNewCardOffset: number | null) {
-  if (nextNewCardOffset === null) {
-    return 'Heute keine neue Karte mehr';
-  }
-
-  if (nextNewCardOffset === 0) {
-    return 'Neue Karte: jetzt';
-  }
-
-  return `Nächste neue in ${nextNewCardOffset} ${nextNewCardOffset === 1 ? 'Karte' : 'Karten'}`;
-}
 
 export function useLearnReviewDerivedState({
   activeDeck,
@@ -86,7 +75,7 @@ export function useLearnReviewDerivedState({
             reviewLogs: activeDeckReviewLogs,
             preset: activePreset,
             gateRule,
-            ignoreNewCardsLimit: true,
+            ignoreNewCardsLimit: false,
             includeReviewAhead: !isBlockedFlow,
             excludeCardIds: isBlockedFlow ? reviewedCardIdsRef.current : undefined,
             now: Date.now(),
@@ -200,16 +189,26 @@ export function useLearnReviewDerivedState({
     [activeDeckCardStateById, remainingPreviewCandidateIds],
   );
   const remainingReviewCount = Math.max(0, remainingPreviewCandidateIds.length - remainingNewCount);
-  const nextNewCardOffset = useMemo(() => {
-    const nextNewIndex = remainingPreviewCandidateIds.findIndex(
-      (cardId) => activeDeckCardStateById[cardId] === 'new',
-    );
-    return nextNewIndex >= 0 ? nextNewIndex : null;
-  }, [activeDeckCardStateById, remainingPreviewCandidateIds]);
-  const nextNewCardLabel = useMemo(
-    () => formatNextNewCardLabel(nextNewCardOffset),
-    [nextNewCardOffset],
+  const nextNewCardStatus = useMemo(
+    () =>
+      buildNextNewCardStatus({
+        cards: activeDeckCards,
+        deckId: activeDeckId,
+        preset: activePreset,
+        reviewLogs: activeDeckReviewLogs,
+        remainingCandidateIds: remainingPreviewCandidateIds,
+        cardStateById: activeDeckCardStateById,
+      }),
+    [
+      activeDeckCardStateById,
+      activeDeckCards,
+      activeDeckId,
+      activeDeckReviewLogs,
+      activePreset,
+      remainingPreviewCandidateIds,
+    ],
   );
+  const nextNewCardLabel = nextNewCardStatus.label;
   const currentCardKindLabel = currentCard?.state === 'new' ? 'Neu' : currentCard ? 'Wiederholung' : 'Session';
   const reviewMixLabel = formatReviewMixLabel(activePreset?.reviewsBetweenNewCards ?? 15);
   const blockedFlowExhausted = Boolean(
@@ -248,6 +247,7 @@ export function useLearnReviewDerivedState({
     hasUsableLearningDeck,
     latestFeedbackMessage,
     nextNewCardLabel,
+    nextNewCardStatus,
     progressPercent,
     promptIsLong,
     remainingAttempts,

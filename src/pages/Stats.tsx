@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { ArrowLeft, RefreshCcw } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import PageTransition from '@/components/PageTransition';
@@ -8,13 +7,24 @@ import { EmotionStatsSection } from '@/components/stats/EmotionStatsSection';
 import { StatsSectionTabs } from '@/components/stats/StatsSectionTabs';
 import { UsageAppListSection, UsageOverviewSection } from '@/components/stats/UsageStatsSections';
 import { VocabStatsSection } from '@/components/stats/VocabStatsSection';
-import { sectionStagger } from '@/lib/motion';
 import { useEmotionStatsData } from '@/modules/stats/emotions';
 import { useScreenStatsSnapshot, useUsageStatsData } from '@/modules/stats/screenTime';
 import type { StatsSection, TimeRange } from '@/modules/stats/types';
 import { useReviewMomentum, useVocabChartData } from '@/modules/stats/vocab';
 import { useAppStore } from '@/store/useAppStore';
 import { useLearningStore } from '@/store/useLearningStore';
+
+const EMPTY_LEARNING_DECKS: Array<{ id: string; name: string }> = [];
+const EMPTY_LEARNING_CARDS: Array<{
+  deckId: string;
+  state: Parameters<typeof useVocabChartData>[1][number]['state'];
+}> = [];
+const EMPTY_LEARNING_REVIEW_LOGS: Array<{
+  cardId: string;
+  reviewedAt: number;
+  wasCorrect: boolean;
+  deckId: string;
+}> = [];
 
 export default function StatsPage() {
   const navigate = useNavigate();
@@ -45,27 +55,32 @@ export default function StatsPage() {
   );
   const [section, setSection] = useState<StatsSection>('usage');
   const [range, setRange] = useState<TimeRange>('week');
-  const learningDecks = useMemo(() => Object.values(learningDeckMap), [learningDeckMap]);
-  const learningCards = useMemo(() => Object.values(learningCardMap), [learningCardMap]);
-  const learningReviewLogs = useMemo(() => Object.values(learningReviewLogMap), [learningReviewLogMap]);
+  const learningDecks = useMemo(
+    () => (section === 'vocab' ? Object.values(learningDeckMap) : EMPTY_LEARNING_DECKS),
+    [learningDeckMap, section],
+  );
+  const learningCards = useMemo(
+    () => (section === 'vocab' ? Object.values(learningCardMap) : EMPTY_LEARNING_CARDS),
+    [learningCardMap, section],
+  );
+  const learningReviewLogs = useMemo(
+    () => (section === 'vocab' ? Object.values(learningReviewLogMap) : EMPTY_LEARNING_REVIEW_LOGS),
+    [learningReviewLogMap, section],
+  );
 
   const {
-    currentAppId,
     error,
     installedApps,
     isRefreshing,
-    lastUpdatedAt,
     refresh,
-    status,
     usage,
   } = useScreenStatsSnapshot();
   const {
     appDetails,
-    currentAppLabel,
     strongestEntryTime,
     topEntries,
     topUsageEntry,
-  } = useUsageStatsData(usage, installedApps, currentAppId);
+  } = useUsageStatsData(usage, installedApps);
   const {
     activityData,
     emotionRadar,
@@ -94,7 +109,7 @@ export default function StatsPage() {
   };
 
   return (
-    <PageTransition variant="hero">
+    <PageTransition variant="hero" disableMotion>
       <div className="app-page">
         <div className="page-header justify-between">
           <div className="flex items-center gap-3">
@@ -123,19 +138,15 @@ export default function StatsPage() {
           </button>
         </div>
 
-        <motion.div variants={sectionStagger} initial="hidden" animate="show" className="section-stack">
+        <div className="section-stack">
           <StatsSectionTabs section={section} onSectionChange={setSection} />
 
           {section === 'usage' ? (
             <>
               <UsageOverviewSection
-                currentAppId={currentAppId}
-                currentAppLabel={currentAppLabel}
                 error={error}
-                lastUpdatedAt={lastUpdatedAt}
                 onOpenPermissions={() => navigate('/settings#permissions')}
                 onRefresh={handleRefresh}
-                status={status}
                 topUsageEntry={topUsageEntry}
                 unlocksToday={unlocksToday}
                 usage={usage}
@@ -173,7 +184,7 @@ export default function StatsPage() {
               topEmotions={topEmotions}
             />
           ) : null}
-        </motion.div>
+        </div>
       </div>
     </PageTransition>
   );

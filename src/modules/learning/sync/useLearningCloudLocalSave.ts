@@ -2,7 +2,6 @@ import { useEffect, type MutableRefObject } from 'react';
 import { useCloudSyncRuntimeStore } from '@/lib/cloudSyncRuntime';
 import {
   getLearningCloudStateSignature,
-  normalizeLearningCloudState,
   type LearningCloudState,
 } from '@/lib/learningCloudSync';
 import { cacheLearningCloudSyncBaseline } from '@/lib/learningCloudSyncBaseline';
@@ -170,24 +169,6 @@ export function useLearningCloudLocalSave({
       return;
     }
 
-    const nextState = normalizeLearningCloudState({
-      ...syncedLearningState,
-      decks: Object.values(syncedLearningState.decks),
-      notes: Object.values(syncedLearningState.notes),
-      cards: Object.values(syncedLearningState.cards),
-      reviewLogs: Object.values(syncedLearningState.reviewLogs),
-      presets: Object.values(syncedLearningState.presets),
-      assignments: syncedLearningState.assignments,
-      gateRule: syncedLearningState.gateRule,
-      gateRuleUpdatedAt: syncedLearningState.gateRuleUpdatedAt,
-    } as Partial<LearningCloudState>);
-    const nextSignature = getLearningCloudStateSignature(nextState);
-    const previousSignature = getLearningCloudStateSignature(lastSyncedStateRef.current);
-
-    if (nextSignature === previousSignature) {
-      return;
-    }
-
     clearWindowTimer(pendingSaveTimerRef.current);
     pendingSaveTimerRef.current = window.setTimeout(() => {
       void (async () => {
@@ -196,6 +177,13 @@ export function useLearningCloudLocalSave({
           || activeUserIdRef.current !== authUserId
           || isManualLearningCloudSyncActive()
         ) {
+          return;
+        }
+
+        const nextState = readLearningCloudStateFromStore();
+        const nextSignature = getLearningCloudStateSignature(nextState);
+        const previousSignature = getLearningCloudStateSignature(lastSyncedStateRef.current);
+        if (nextSignature === previousSignature) {
           return;
         }
 

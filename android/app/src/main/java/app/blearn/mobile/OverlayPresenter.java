@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,12 +22,16 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
     }
 
     private static final String TAG = "BlearnOverlay";
+    private static final long SCRIM_ENTER_MS = 180L;
+    private static final long GLOW_ENTER_MS = 260L;
+    private static final long CARD_ENTER_MS = 240L;
 
     private final AccessibilityService service;
     private final Handler mainHandler;
     private WindowManager windowManager;
     private FrameLayout overlayRootView;
     private View overlayView;
+    private View overlayGlowView;
     private LinearLayout manualLaunchCard;
     private TextView manualLaunchTitleView;
     private TextView manualLaunchBodyView;
@@ -56,6 +62,7 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
             root.setClickable(true);
             root.setFocusable(true);
             root.setBackgroundColor(Color.TRANSPARENT);
+            root.setAlpha(0f);
             root.setOnClickListener((view) -> {
                 if (launching || manualLaunchCard == null || manualLaunchCard.getVisibility() != View.VISIBLE) {
                     return;
@@ -70,6 +77,8 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
             FrameLayout.LayoutParams glowParams = new FrameLayout.LayoutParams(dp(240), dp(240), Gravity.CENTER);
             glow.setBackground(makeCircleDrawable(resolveGlowColor(match.target.mode)));
             glow.setAlpha(0f);
+            glow.setScaleX(0.78f);
+            glow.setScaleY(0.78f);
             root.addView(glow, glowParams);
 
             LinearLayout launchCard = new LinearLayout(service);
@@ -124,6 +133,7 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
                 windowManager.addView(root, layoutParams);
                 overlayRootView = root;
                 overlayView = root;
+                overlayGlowView = glow;
                 manualLaunchCard = launchCard;
                 manualLaunchTitleView = titleView;
                 manualLaunchBodyView = bodyView;
@@ -166,12 +176,34 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
         mainHandler.post(() -> {
             launching = true;
             if (overlayRootView != null) {
+                overlayRootView.animate().cancel();
                 overlayRootView.setBackgroundColor(Color.parseColor(resolveScrimColor(lastMode)));
-                overlayRootView.setAlpha(1f);
+                overlayRootView.animate()
+                    .alpha(1f)
+                    .setDuration(SCRIM_ENTER_MS)
+                    .setInterpolator(new DecelerateInterpolator(1.6f))
+                    .start();
+            }
+            if (overlayGlowView != null) {
+                overlayGlowView.animate().cancel();
+                overlayGlowView.setAlpha(0f);
+                overlayGlowView.setScaleX(0.78f);
+                overlayGlowView.setScaleY(0.78f);
+                overlayGlowView.animate()
+                    .alpha(1f)
+                    .scaleX(1.18f)
+                    .scaleY(1.18f)
+                    .setDuration(GLOW_ENTER_MS)
+                    .setInterpolator(new DecelerateInterpolator(1.8f))
+                    .start();
             }
             if (manualLaunchCard != null) {
+                manualLaunchCard.animate().cancel();
                 manualLaunchCard.setVisibility(View.GONE);
                 manualLaunchCard.setAlpha(0f);
+                manualLaunchCard.setTranslationY(0f);
+                manualLaunchCard.setScaleX(1f);
+                manualLaunchCard.setScaleY(1f);
             }
         });
     }
@@ -181,8 +213,13 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
         mainHandler.post(() -> {
             launching = false;
             if (overlayRootView != null) {
+                overlayRootView.animate().cancel();
                 overlayRootView.setBackgroundColor(Color.parseColor(resolveScrimColor(lastMode)));
-                overlayRootView.setAlpha(0.96f);
+                overlayRootView.animate()
+                    .alpha(0.96f)
+                    .setDuration(SCRIM_ENTER_MS)
+                    .setInterpolator(new DecelerateInterpolator(1.4f))
+                    .start();
             }
             if (manualLaunchTitleView != null) {
                 manualLaunchTitleView.setText("Blearn oeffnen");
@@ -191,8 +228,20 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
                 manualLaunchBodyView.setText("Die Uebergabe haengt gerade. Tippe, um den Blocking-Flow erneut zu starten.");
             }
             if (manualLaunchCard != null) {
+                manualLaunchCard.animate().cancel();
                 manualLaunchCard.setVisibility(View.VISIBLE);
-                manualLaunchCard.setAlpha(1f);
+                manualLaunchCard.setAlpha(0f);
+                manualLaunchCard.setTranslationY(dp(14));
+                manualLaunchCard.setScaleX(0.97f);
+                manualLaunchCard.setScaleY(0.97f);
+                manualLaunchCard.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(CARD_ENTER_MS)
+                    .setInterpolator(new OvershootInterpolator(0.78f))
+                    .start();
             }
         });
     }
@@ -212,6 +261,7 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
 
         try {
             if (currentWindowManager != null && currentOverlayView != null) {
+                currentOverlayView.animate().cancel();
                 currentWindowManager.removeViewImmediate(currentOverlayView);
             }
         } catch (Exception ignored) {
@@ -220,6 +270,7 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
             manualLaunchCard = null;
             manualLaunchTitleView = null;
             manualLaunchBodyView = null;
+            overlayGlowView = null;
             overlayRootView = null;
             overlayView = null;
             windowManager = null;

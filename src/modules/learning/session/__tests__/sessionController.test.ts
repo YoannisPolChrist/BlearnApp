@@ -73,6 +73,23 @@ describe('session controller', () => {
     expect(snapshot.currentCardId).toBe('card-1');
   });
 
+  it('reuses precomputed unlock queue ids without changing snapshot semantics', () => {
+    const snapshot = createUnlockSessionSnapshotFromContext({
+      cards,
+      notes: [],
+      reviewLogs: [],
+      deckId: 'deck-1',
+      sessionCreditsRequired: 1,
+      precomputedQueueIds: ['card-1'],
+    });
+
+    expect(snapshot.queue).toEqual(['card-1']);
+    expect(snapshot.candidateIds).toEqual(['card-1']);
+    expect(snapshot.candidateCursor).toBe(1);
+    expect(snapshot.currentCardId).toBe('card-1');
+    expect(snapshot.cardSnapshotsById['card-1']).toMatchObject({ id: 'card-1' });
+  });
+
   it('limits unlock candidates to the required review count', () => {
     const snapshot = createUnlockSessionSnapshotFromContext({
       cards: [

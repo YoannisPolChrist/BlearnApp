@@ -332,10 +332,13 @@ describe('Learn review typed-answer UI', () => {
   }, 10000);
 
   it('shows the next new card timing instead of separate new and review stat tiles', async () => {
-    await renderReviewSession(5);
+    await renderReviewSession(5, { overlaySessionId: 'session-next-new-progress' });
 
     expect(await screen.findByText(/mix 1:/i)).toBeInTheDocument();
-    expect(screen.getByText(/neue karte|nächste neue|naechste neue|heute keine neue/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/neue vokabel|nächste neue|naechste neue|heute keine neue/i).length).toBeGreaterThan(0);
+    expect(screen.queryByRole('progressbar', { name: /neuen vokabel/i })).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/freischaltung 0 von 5 vokabeln/i)).toBeInTheDocument();
+    expect(screen.getByText(/freischaltung 0\/5/i)).toBeInTheDocument();
     expect(screen.queryAllByText(/^neu$/i).length).toBeLessThanOrEqual(1);
     expect(screen.queryAllByText(/^wiederholung$/i).length).toBeLessThanOrEqual(1);
   }, 10000);
@@ -377,7 +380,7 @@ describe('Learn review typed-answer UI', () => {
       },
     });
 
-    expect(await screen.findByText(/nächste neue in 2 karten|naechste neue in 2 karten/i)).toBeInTheDocument();
+    expect(await screen.findByText(/nächste neue vokabel in 2 karten|naechste neue vokabel in 2 karten/i)).toBeInTheDocument();
   }, 10000);
 
   it('does not recompute deck scope revisions when an unrelated gate-rule update leaves deck data unchanged', async () => {
@@ -631,6 +634,58 @@ describe('Learn review typed-answer UI', () => {
     );
     expect(dismissBlockingOverlayMock.mock.invocationCallOrder[0]).toBeLessThan(
       openTargetMock.mock.invocationCallOrder[0],
+    );
+  }, 15000);
+
+  it('shows the blocked learn success screen before deferred emotion tracking runs', async () => {
+    const addCheckinSpy = vi.fn();
+    const addInteractionSpy = vi.fn();
+
+    await renderReviewSession(1, {
+      typedAnswerEnabled: false,
+      overlaySessionId: 'session-emotion-fast-success',
+      prepareStore: ({ useAppStore }) => {
+        useAppStore.setState({
+          addCheckin: addCheckinSpy,
+          addInteraction: addInteractionSpy,
+        });
+      },
+    });
+
+    fireEvent.click(await screen.findByRole('button', { name: /^antwort zeigen$/i }));
+    fireEvent.click(await screen.findByRole('button', { name: /good/i }));
+    await waitFor(() => {
+      expect(emotionPromptPresent()).toBe(true);
+    }, { timeout: 10000 });
+
+    clickEmotionButton('Erleichtert');
+    await waitFor(() => {
+      expect(screen.getByText(/1 von max\. 3 gew(?:aehlt|ählt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
+    });
+
+    vi.useFakeTimers();
+    fireEvent.click(screen.getAllByRole('button', { name: /abschlie/i })[0]);
+
+    expect(screen.getByRole('button', { name: /zur app/i })).toBeInTheDocument();
+    expect(addCheckinSpy).not.toHaveBeenCalled();
+    expect(addInteractionSpy).not.toHaveBeenCalled();
+
+    act(() => {
+      vi.runOnlyPendingTimers();
+    });
+
+    expect(addCheckinSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        emotions: expect.arrayContaining(['relieved']),
+        targetApp: 'YouTube',
+      }),
+    );
+    expect(addInteractionSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        emotions: expect.arrayContaining(['relieved']),
+        targetApp: 'YouTube',
+        type: 'learning',
+      }),
     );
   }, 15000);
 

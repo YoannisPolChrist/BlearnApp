@@ -6,6 +6,7 @@ import StatsPage from '@/pages/Stats';
 import { suppressKnownActWarnings } from '@/test/support/suppressActWarnings';
 import { useAppStore } from '@/store/useAppStore';
 import { useLearningStore } from '@/store/useLearningStore';
+import * as screenTimeService from '@/services/screenTimeService';
 
 let consoleErrorSpy: ReturnType<typeof vi.spyOn> | null = null;
 
@@ -76,6 +77,7 @@ const baselineAppState = {
   streak: useAppStore.getState().streak,
   checkins: useAppStore.getState().checkins,
   userProfile: useAppStore.getState().userProfile,
+  unlockHistory: useAppStore.getState().unlockHistory,
 };
 
 const baselineLearningState = useLearningStore.getState();
@@ -92,6 +94,7 @@ afterEach(() => {
     streak: baselineAppState.streak,
     checkins: baselineAppState.checkins,
     userProfile: baselineAppState.userProfile,
+    unlockHistory: baselineAppState.unlockHistory,
   });
   useLearningStore.setState(baselineLearningState, true);
   vi.clearAllMocks();
@@ -123,12 +126,19 @@ async function renderStatsPage() {
 describe('StatsPage', () => {
   it('switches between app usage, emotion, and vocab sections', async () => {
     const now = Date.now();
+    const todayNoon = new Date(now);
+    todayNoon.setHours(12, 0, 0, 0);
 
     useAppStore.setState({
       activeMode: 'strict',
       blockedApps: ['com.youtube'],
       blockedWebsites: ['youtube.com'],
       blockedSearchTerms: ['doomscrolling'],
+      unlockHistory: [
+        todayNoon.getTime() - 26 * 60 * 60 * 1000,
+        todayNoon.getTime(),
+        todayNoon.getTime() + 60_000,
+      ],
       dailyStats: {
         breathingSessions: 3,
         totalBreathingMinutes: 12,
@@ -182,15 +192,18 @@ describe('StatsPage', () => {
     expect(screen.getByRole('heading', { name: 'App-Nutzung' })).toBeInTheDocument();
     expect(screen.getByText('Gesamtzeit')).toBeInTheDocument();
     expect(screen.getByText('Entsperrt')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('Top-App')).toBeInTheDocument();
     expect(screen.getByText('Nutzung heute')).toBeInTheDocument();
-    expect(screen.getByText('Aktive App')).toBeInTheDocument();
-    expect(screen.getByText('Zuletzt aktualisiert')).toBeInTheDocument();
-    expect(screen.getByText('Android Runtime')).toBeInTheDocument();
-    expect(screen.getByText(/Main-Task bereit/i)).toBeInTheDocument();
-    expect(screen.getByText(/Blocking-Task aktiv/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/MainActivity/).length).toBeGreaterThan(0);
+    expect(screen.queryByText('Aktive App')).not.toBeInTheDocument();
+    expect(screen.queryByText('Zuletzt aktualisiert')).not.toBeInTheDocument();
+    expect(screen.queryByText('Android Runtime')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Main-Task bereit/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Blocking-Task aktiv/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/MainActivity/)).not.toBeInTheDocument();
     expect(screen.getAllByText('YouTube').length).toBeGreaterThan(0);
+    expect(screenTimeService.getCurrentApp).not.toHaveBeenCalled();
+    expect(screenTimeService.getMonitoringStatus).not.toHaveBeenCalled();
 
     await act(async () => {
       fireEvent.click(screen.getByRole('tab', { name: /^stimmung$/i }));

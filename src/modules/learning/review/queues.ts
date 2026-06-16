@@ -226,7 +226,7 @@ function getUnlockSessionScope({
 // mehrere Tage (z.B. 5 Vokabeln/Flow) erreicht der Nutzer so trotzdem die
 // 1:15-Schwelle und bekommt eine neue Karte. Wird bei jeder Neueinführung
 // (previousState === 'new') auf 0 zurückgesetzt, deshalb kein Flooding.
-function countReviewsSinceLastNewCard(reviewLogs: ReviewLog[], deckId: string, now = Date.now()): number {
+export function countReviewsSinceLastNewCard(reviewLogs: ReviewLog[], deckId: string, now = Date.now()): number {
   if (reviewLogs.length === 0) {
     return 0;
   }
@@ -256,7 +256,7 @@ function countReviewsSinceLastNewCard(reviewLogs: ReviewLog[], deckId: string, n
   return reviewsSinceLastNewCard;
 }
 
-function countDailyReviewActivity(reviewLogs: ReviewLog[], deckId: string, now = Date.now()) {
+export function countDailyReviewActivity(reviewLogs: ReviewLog[], deckId: string, now = Date.now()) {
   if (reviewLogs.length === 0) {
     return {
       reviewsToday: 0,
