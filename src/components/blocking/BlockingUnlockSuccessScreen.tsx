@@ -1,11 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Globe, Search, Smartphone } from 'lucide-react';
 import { ctaFollowThrough, premiumEase } from '@/lib/motion';
 import { tonePalettes, type SemanticTone } from '@/lib/semanticTones';
-import { normalizeTargetValue } from '@/lib/targetModes';
 import { formatUnlockDurationLabel } from '@/lib/unlockDuration';
-import { getAppId } from '@/services/screenTimeNormalization';
 
 type UnlockTargetType = 'app' | 'website' | 'search';
 type UnlockTone = Extract<SemanticTone, 'normal' | 'strict' | 'reflection' | 'learn' | 'penalty' | 'breathing'>;
@@ -31,50 +28,12 @@ export function BlockingUnlockSuccessScreen({
   tone,
   unlockDurationMinutes,
 }: BlockingUnlockSuccessScreenProps) {
-  const [resolvedAppIcon, setResolvedAppIcon] = useState<string | null>(null);
   const palette = tonePalettes[tone];
-  const normalizedTargetId = useMemo(
-    () => normalizeTargetValue(targetType, targetId || targetLabel || ''),
-    [targetId, targetLabel, targetType],
-  );
   const displayLabel = targetLabel?.trim() || targetId?.trim() || 'Freigabe';
   const durationLabel = formatUnlockDurationLabel(unlockDurationMinutes) || 'Freigabe aktiv';
 
-  useEffect(() => {
-    if (targetType !== 'app' || !normalizedTargetId) {
-      setResolvedAppIcon(null);
-      return;
-    }
-
-    let cancelled = false;
-
-    void import('@/services/screenTimeInstalledApps')
-      .then(async (service) => {
-        if (typeof service.getInstalledApps !== 'function') {
-          return;
-        }
-
-        const installedApps = await service.getInstalledApps();
-        const matchedApp = installedApps.find((entry) => {
-          const appId = normalizeTargetValue('app', getAppId(entry));
-          return appId === normalizedTargetId;
-        });
-
-        if (!cancelled) {
-          setResolvedAppIcon(matchedApp?.icon || null);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setResolvedAppIcon(null);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [normalizedTargetId, targetType]);
-
+  // This screen is on the latency-critical unlock path. Loading installed app
+  // icons here pulls all app metadata over the native bridge and can jank the CTA.
   const fallbackIcon = (() => {
     if (targetType === 'website') {
       return <Globe size={42} strokeWidth={2.1} />;
@@ -103,15 +62,7 @@ export function BlockingUnlockSuccessScreen({
             </p>
 
             <div className={`mt-5 flex h-28 w-28 items-center justify-center rounded-[2rem] ${palette.icon} sm:h-32 sm:w-32`}>
-              {resolvedAppIcon ? (
-                <img
-                  src={resolvedAppIcon}
-                  alt={displayLabel}
-                  className="h-16 w-16 rounded-[1.2rem] object-cover sm:h-20 sm:w-20"
-                />
-              ) : (
-                fallbackIcon
-              )}
+              {fallbackIcon}
             </div>
 
             <p className="mt-5 text-sm font-semibold text-foreground/76 sm:text-base">
