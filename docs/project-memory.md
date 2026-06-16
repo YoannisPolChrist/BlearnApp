@@ -1,8 +1,39 @@
 # Project Memory
 
-Date: 2026-04-03
+Date: 2026-06-16
 
-This file is the current high-signal memory for the Blearn app. It is meant to help future work start from the actual current architecture instead of stale assumptions.
+This file is the durable high-signal memory for the Blearn app. It is meant to help future work start from the actual current architecture instead of stale assumptions.
+
+If you are a new AI agent, read [`docs/AI_AGENT_START_HERE.md`](./AI_AGENT_START_HERE.md) first. That file is the compact onboarding layer; this file is the deeper source-of-truth and history.
+
+## Fast Agent Bootstrap
+
+Read order:
+
+1. `AGENTS.md`
+2. `docs/AI_AGENT_START_HERE.md`
+3. `docs/project-memory.md`
+4. Latest file under `docs/plans/` by modified time
+5. Focused handover docs for the area you touch
+
+Current high-signal state as of 2026-06-16:
+
+- Active GitHub branch for current work: `fix/masterplan-phase0-bugfixes`.
+- Latest pushed commit: `8812367 feat(app): publish latest blocking and stats refinements`.
+- Recent CTA fix commit: `2cddd9a fix(blocking): keep unlock success CTA responsive`.
+- Device install rule: always use `adb install -r` unless the user explicitly asks to delete data.
+- Never use force-stop or HOME redirects for blocking; use the native Overlay & Handoff pattern.
+- The latest app build installed on device `d9f69456` preserved local data/vocabulary.
+- Local `.codex-artifacts/` directories are performance evidence, not app source.
+- Generated Capacitor Gradle line-ending noise can appear after sync/build; do not commit it unless content actually changed.
+
+Recent 2026-06-16 facts:
+
+- Final blocked Learn success no longer waits on emotion/stat tracking writes.
+- Final unlock success no longer loads installed app icons or calls `getInstalledApps()`, avoiding native bridge/base64 icon jank before the CTA.
+- Blocked Learn header now carries the unlock vocabulary counter; the separate progress bar was removed.
+- Stats UI was simplified and old Android runtime / active app / last updated noise was removed.
+- Relevant changes were pushed to `origin/fix/masterplan-phase0-bugfixes`.
 
 ## North Star
 
