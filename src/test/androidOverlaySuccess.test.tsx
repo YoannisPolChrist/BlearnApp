@@ -923,6 +923,17 @@ describe('Android overlay success flows', () => {
 
     expect(useAppStore.getState().unlockedTargets['app:youtube']).toBe(now + 12 * 60 * 1000);
 
+    // Die im Blocking-Flow gewählte Emotion MUSS getrackt sein (Check-in +
+    // Interaction) — synchron beim Abschließen, nicht nachgelagert, sonst geht sie
+    // beim Overlay-Teardown ("Zur App") verloren.
+    const trackingState = useAppStore.getState();
+    expect(trackingState.checkins.some((entry) => entry.emotions?.includes('relieved'))).toBe(true);
+    expect(
+      trackingState.userProfile.recentInteractions.some(
+        (entry) => entry.type === 'learning' && entry.emotions?.includes('relieved'),
+      ),
+    ).toBe(true);
+
     await waitFor(() => expect(grantManualOverrideMock).toHaveBeenCalledWith('YouTube', 'app', 12));
     await waitFor(() => expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(openTargetMock).toHaveBeenCalledWith('YouTube', 'app'));

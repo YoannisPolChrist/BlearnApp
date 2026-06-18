@@ -637,13 +637,13 @@ describe('Learn review typed-answer UI', () => {
     );
   }, 15000);
 
-  it('shows the blocked learn success screen before deferred emotion tracking runs', async () => {
+  it('tracks the blocked learn emotion synchronously before showing the success screen', async () => {
     const addCheckinSpy = vi.fn();
     const addInteractionSpy = vi.fn();
 
     await renderReviewSession(1, {
       typedAnswerEnabled: false,
-      overlaySessionId: 'session-emotion-fast-success',
+      overlaySessionId: 'session-emotion-tracked',
       prepareStore: ({ useAppStore }) => {
         useAppStore.setState({
           addCheckin: addCheckinSpy,
@@ -663,17 +663,11 @@ describe('Learn review typed-answer UI', () => {
       expect(screen.getByText(/1 von max\. 3 gew(?:aehlt|ählt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
     });
 
-    vi.useFakeTimers();
     fireEvent.click(screen.getAllByRole('button', { name: /abschlie/i })[0]);
 
-    expect(screen.getByRole('button', { name: /zur app/i })).toBeInTheDocument();
-    expect(addCheckinSpy).not.toHaveBeenCalled();
-    expect(addInteractionSpy).not.toHaveBeenCalled();
-
-    act(() => {
-      vi.runOnlyPendingTimers();
-    });
-
+    // Emotion MUSS synchron beim Abschließen erfasst werden (nicht per setTimeout
+    // nachgelagert) — sonst geht sie verloren, wenn der Nutzer "Zur App" tippt und
+    // das Overlay-WebView zerlegt wird, bevor das deferred addCheckin läuft.
     expect(addCheckinSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         emotions: expect.arrayContaining(['relieved']),
@@ -687,6 +681,8 @@ describe('Learn review typed-answer UI', () => {
         type: 'learning',
       }),
     );
+    // Danach erscheint der Erfolgs-Screen.
+    expect(await screen.findByRole('button', { name: /zur app/i })).toBeInTheDocument();
   }, 15000);
 
   it('stores blocked learn review timestamps before any deferred timer can run', async () => {

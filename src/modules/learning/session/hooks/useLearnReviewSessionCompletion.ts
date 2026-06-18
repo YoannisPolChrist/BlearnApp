@@ -15,9 +15,6 @@ import type { useLearningStore } from '@/store/useLearningStore';
 
 const MIN_SESSION_EMOTIONS = 1;
 const MAX_SESSION_EMOTIONS = 3;
-const schedulePostUnlockTask = (task: () => void) => {
-  window.setTimeout(task, 0);
-};
 
 type RecordFeedback = (
   kind: LearningReviewFeedbackEvent['kind'],
@@ -250,8 +247,14 @@ export function useLearnReviewSessionCompletion({
     };
 
     if (completionKind === 'unlock' && targetId && activeDeck) {
+      // Emotion ZUERST in den Store schreiben, DANN freischalten. Vorher lief
+      // finishUnlock zuerst (zeigt den Erfolgs-Screen + startet die Persistenz)
+      // und das Emotions-Recording war per setTimeout(0) NACHGELAGERT — tippte der
+      // Nutzer schnell "Zur App", wurde das Overlay-WebView zerlegt, bevor das
+      // addCheckin lief → Emotion ging verloren (Check-ins syncen nicht in die
+      // Cloud). Synchron vor finishUnlock erfasst, persistiert dessen Flush sie mit.
+      recordEmotionOutcome();
       void finishUnlock(activeDeck.id, sessionCreditsRequired);
-      schedulePostUnlockTask(recordEmotionOutcome);
       return;
     }
 
