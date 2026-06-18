@@ -96,8 +96,8 @@ export default function StatsPage() {
     getDeckStats,
   );
   const reviewMomentum = useReviewMomentum(learningReviewLogs);
-  const lineLabelStep = range === 'month' ? 6 : range === 'day' ? 5 : 1;
-  const barLabelStep = range === 'month' ? 6 : range === 'day' ? 5 : 1;
+  const lineLabelStep = range === 'total' ? 2 : range === 'month' ? 6 : range === 'day' ? 5 : 1;
+  const barLabelStep = range === 'total' ? 2 : range === 'month' ? 6 : range === 'day' ? 5 : 1;
   const vocabDueNowTotal = deckComparison.reduce(
     (sum, deck) => sum + (deck.series.find((series) => series.key === 'due')?.value ?? 0),
     0,

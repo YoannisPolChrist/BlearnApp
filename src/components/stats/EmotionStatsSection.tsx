@@ -56,12 +56,12 @@ export function EmotionStatsSection({
         />
 
         <Tabs value={range} onValueChange={(value) => onRangeChange(value as TimeRange)} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3 rounded-[1.5rem] border border-border bg-card/60 p-1 lg:backdrop-blur-xl">
-            {(['day', 'week', 'month'] as TimeRange[]).map((entry) => (
+          <TabsList className="grid w-full grid-cols-4 rounded-[1.5rem] border border-border bg-card/60 p-1 lg:backdrop-blur-xl h-auto">
+            {(['day', 'week', 'month', 'total'] as TimeRange[]).map((entry) => (
               <TabsTrigger
                 key={entry}
                 value={entry}
-                className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary transition-all duration-300"
+                className="rounded-[1.25rem] py-2 text-sm font-semibold transition-all duration-300 data-[state=active]:bg-primary/20 data-[state=active]:text-primary text-center"
               >
                 {RANGE_LABELS[entry]}
               </TabsTrigger>

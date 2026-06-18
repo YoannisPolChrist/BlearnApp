@@ -785,12 +785,20 @@ public class ScreenTimePlugin extends Plugin {
 
         Activity activity = getActivity();
         if (activity != null) {
-            if (activity instanceof BlockingOverlayActivity) {
-                activity.finishAndRemoveTask();
-                activity.overridePendingTransition(0, 0);
-            }
+            activity.runOnUiThread(() -> {
+                if (activity instanceof BlockingOverlayActivity) {
+                    try {
+                        activity.finishAndRemoveTask();
+                        activity.overridePendingTransition(0, 0);
+                    } catch (Exception e) {
+                        debug("Failed to finish overlay activity: " + e.getMessage());
+                    }
+                }
+                call.resolve();
+            });
+        } else {
+            call.resolve();
         }
-        call.resolve();
     }
 
     @PluginMethod

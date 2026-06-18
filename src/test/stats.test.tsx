@@ -151,7 +151,7 @@ describe('StatsPage', () => {
         {
           id: 'checkin-1',
           timestamp: now,
-          emotions: ['calm', 'focused'],
+          emotions: ['calm', 'focused', 'anxious'],
           reflection: 'Ich bleibe bei meinem Fokus.',
           chatHistory: [],
           breathingCompleted: true,

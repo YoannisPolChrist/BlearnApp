@@ -48,6 +48,7 @@ type UseModesSaveActionsOptions = {
   enablePenaltyMode: () => void;
   logModesDebug: (reason: string) => void;
   missingPermissionsMessage: string;
+  onSaveSuccess?: () => void;
 };
 
 export function useModesSaveActions({
@@ -77,6 +78,7 @@ export function useModesSaveActions({
   enablePenaltyMode,
   logModesDebug,
   missingPermissionsMessage,
+  onSaveSuccess,
 }: UseModesSaveActionsOptions) {
   const syncCurrentNativePolicies = useCallback(async () => {
     if (!isNative) return;
@@ -185,7 +187,8 @@ export function useModesSaveActions({
         ? 'Deine Fokusregeln sind jetzt aktiv.'
         : 'Your focus rules are now active.',
     });
-  }, [clearDraftSnapshot, isGerman]);
+    onSaveSuccess?.();
+  }, [clearDraftSnapshot, isGerman, onSaveSuccess]);
 
   const getModeSaveErrorMessage = useCallback(() => (
     isGerman

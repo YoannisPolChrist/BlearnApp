@@ -31,9 +31,7 @@ export function useActiveLearningDeckData({
     const nextActiveDeck = state.decks[activeDeckId];
     const nextActivePreset = nextActiveDeck ? getResolvedPresetForDeck(activeDeckId) : undefined;
     const nextScopedDeckCards = Object.values(state.cards).filter((card) => card.deckId === activeDeckId);
-    const nextActiveDeckReviewLogs = isBlockedFlow
-      ? Object.values(state.reviewLogs).filter((log) => log.deckId === activeDeckId)
-      : [];
+    const nextActiveDeckReviewLogs = Object.values(state.reviewLogs).filter((log) => log.deckId === activeDeckId);
     const nextActiveDeckCardById: Record<string, LearningCard> = {};
     const nextActiveDeckCardStateById: Record<string, LearningCard['state']> = {};
 

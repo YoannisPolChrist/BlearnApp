@@ -80,6 +80,19 @@ vi.mock('@/services/screenTimeService', async () => {
   };
 });
 
+vi.mock('@/components/ui/SuccessAnimation', () => ({
+  SuccessAnimation: ({ visible, onAnimationDone }: { visible: boolean; onAnimationDone?: () => void }) => {
+    const { useEffect } = require('react');
+    useEffect(() => {
+      if (visible && onAnimationDone) {
+        onAnimationDone();
+      }
+    }, [visible, onAnimationDone]);
+    return <div data-testid="mock-success-animation" />;
+  }
+}));
+
+
 function resetStores() {
   window.localStorage.clear();
   useAppStore.setState(useAppStore.getInitialState(), true);

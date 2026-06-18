@@ -128,6 +128,40 @@ export async function loadProgressCloudState(
   return normalizeProgressRecord(snapshot.data() as Partial<ProgressCloudState>);
 }
 
+const UPLOADED_IDS_STORAGE_KEY_PREFIX = 'blearn-uploaded-ids-';
+
+function getUploadedIds(userId: string): Set<string> {
+  if (typeof window === 'undefined') {
+    return new Set<string>();
+  }
+  try {
+    const raw = window.localStorage.getItem(`${UPLOADED_IDS_STORAGE_KEY_PREFIX}${userId}`);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return new Set(parsed);
+      }
+    }
+  } catch (e) {
+    console.warn('Error reading uploaded IDs:', e);
+  }
+  return new Set<string>();
+}
+
+function saveUploadedIds(userId: string, ids: Set<string>) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  try {
+    window.localStorage.setItem(
+      `${UPLOADED_IDS_STORAGE_KEY_PREFIX}${userId}`,
+      JSON.stringify(Array.from(ids))
+    );
+  } catch (e) {
+    console.warn('Error saving uploaded IDs:', e);
+  }
+}
+
 export async function saveProgressCloudState(
   userId: string,
   state: ProgressCloudState,
@@ -150,6 +184,42 @@ export async function saveProgressCloudState(
     payload,
     { merge: false },
   );
+
+  const uploadedIds = getUploadedIds(userId);
+  const checkinsToSave = normalizedState.checkins.filter((c) => !uploadedIds.has(c.id));
+  const interactionsToSave = normalizedState.interactions.filter((i) => !uploadedIds.has(i.id));
+
+  const allOps = [
+    ...checkinsToSave.map((checkin) => ({
+      id: checkin.id,
+      ref: sdk.doc(firestore, USERS_COLLECTION, userId, 'checkins', checkin.id),
+      data: sanitizeFirestoreValue(checkin),
+    })),
+    ...interactionsToSave.map((interaction) => ({
+      id: interaction.id,
+      ref: sdk.doc(firestore, USERS_COLLECTION, userId, 'interactions', interaction.id),
+      data: sanitizeFirestoreValue(interaction),
+    })),
+  ];
+
+  if (allOps.length === 0) {
+    return;
+  }
+
+  for (let i = 0; i < allOps.length; i += 400) {
+    const chunk = allOps.slice(i, i + 400);
+    const batch = sdk.writeBatch(firestore);
+    for (const op of chunk) {
+      batch.set(op.ref, op.data);
+    }
+    await batch.commit();
+
+    for (const op of chunk) {
+      uploadedIds.add(op.id);
+    }
+  }
+
+  saveUploadedIds(userId, uploadedIds);
 }
 
 export function subscribeToProgressCloudState(

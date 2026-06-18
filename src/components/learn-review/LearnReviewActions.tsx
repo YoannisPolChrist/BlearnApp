@@ -24,6 +24,7 @@ interface LearnReviewActionsProps {
   remainingAttempts: number;
   requiresTypedAnswer: boolean;
   latestFeedbackMessage?: string | null;
+  isBlockedFlow: boolean;
   revealed: boolean;
   typedAnswer: string;
   typedAnswerMatchKind?: TypedAnswerMatchKind | null;
@@ -46,6 +47,7 @@ function LearnReviewActionsInner({
   remainingAttempts,
   requiresTypedAnswer,
   latestFeedbackMessage,
+  isBlockedFlow,
   revealed,
   typedAnswer,
   typedAnswerMatchKind,
@@ -96,7 +98,14 @@ function LearnReviewActionsInner({
               Rückgängig
             </button>
             {latestFeedbackMessage ? (
-              <div className="rounded-full border border-[hsl(var(--mode-learn-border)/0.22)] bg-[hsl(var(--mode-learn-surface)/0.4)] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[hsl(var(--mode-learn-foreground)/0.88)]">
+              <div
+                className={cn(
+                  "rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em]",
+                  isBlockedFlow
+                    ? "border-[hsl(var(--success)/0.38)] bg-[hsl(var(--success)/0.18)] text-[hsl(var(--success))]"
+                    : "border-[hsl(var(--mode-learn-border)/0.22)] bg-[hsl(var(--mode-learn-surface)/0.4)] text-[hsl(var(--mode-learn-foreground)/0.88)]"
+                )}
+              >
                 {latestFeedbackMessage}
               </div>
             ) : null}
@@ -192,7 +201,14 @@ function LearnReviewActionsInner({
               Rückgängig
             </button>
             {latestFeedbackMessage ? (
-              <div className="rounded-full border border-[hsl(var(--mode-learn-border)/0.22)] bg-[hsl(var(--mode-learn-surface)/0.4)] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[hsl(var(--mode-learn-foreground)/0.88)]">
+              <div
+                className={cn(
+                  "rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em]",
+                  isBlockedFlow
+                    ? "border-[hsl(var(--success)/0.38)] bg-[hsl(var(--success)/0.18)] text-[hsl(var(--success))]"
+                    : "border-[hsl(var(--mode-learn-border)/0.22)] bg-[hsl(var(--mode-learn-surface)/0.4)] text-[hsl(var(--mode-learn-foreground)/0.88)]"
+                )}
+              >
                 {latestFeedbackMessage}
               </div>
             ) : null}

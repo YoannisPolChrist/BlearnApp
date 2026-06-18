@@ -80,14 +80,6 @@ function LearnReviewPageHeaderInner({
               <p className="text-[9px] font-black uppercase tracking-[0.14em] text-[hsl(var(--mode-learn-foreground)/0.72)]">
                 {currentCardKindLabel}
               </p>
-              {isBlockedFlow && sessionCardCount > 0 ? (
-                <p
-                  className="rounded-full border border-[hsl(var(--mode-learn-border)/0.38)] bg-[hsl(var(--mode-learn-surface)/0.5)] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[hsl(var(--mode-learn-foreground))]"
-                  aria-label={`Freischaltung ${unlockCount} von ${sessionCardCount} Vokabeln`}
-                >
-                  Freischaltung {unlockCount}/{sessionCardCount}
-                </p>
-              ) : null}
               <div className="flex max-w-[13rem] flex-wrap justify-end gap-1">
                 <span className="rounded-full border border-[hsl(var(--mode-learn-border)/0.34)] bg-[hsl(var(--mode-learn-surface)/0.46)] px-2 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-[hsl(var(--mode-learn-foreground)/0.68)]">
                   Mix {reviewMixLabel}

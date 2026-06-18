@@ -87,11 +87,13 @@ function useChartData(
     let labels: string[] = [];
     let buckets: number;
     let bucketMs: number;
+    let startTime = now - 30 * MS_DAY; // fallback
 
     if (range === 'day') {
       buckets = 24;
       bucketMs = 3_600_000;
       labels = Array.from({ length: 24 }, (_, index) => `${index.toString().padStart(2, '0')}:00`);
+      startTime = new Date().setHours(0, 0, 0, 0);
     } else if (range === 'week') {
       buckets = 7;
       bucketMs = MS_DAY;
@@ -100,31 +102,63 @@ function useChartData(
         const date = new Date(now - (6 - index) * MS_DAY);
         return days[date.getDay()];
       });
-    } else {
+      startTime = now - (buckets - 1) * bucketMs;
+    } else if (range === 'month') {
       buckets = 30;
       bucketMs = MS_DAY;
       labels = Array.from({ length: 30 }, (_, index) => {
         const date = new Date(now - (29 - index) * MS_DAY);
         return `${date.getDate()}.${date.getMonth() + 1}`;
       });
+      startTime = now - (buckets - 1) * bucketMs;
+    } else { // 'total'
+      const oldestEntry = moodEntries[moodEntries.length - 1];
+      const minTime = oldestEntry ? oldestEntry.timestamp : now - MS_DAY;
+      const diffMs = now - minTime;
+      buckets = 12;
+
+      if (diffMs <= 12 * MS_DAY) {
+        bucketMs = MS_DAY;
+        startTime = now - (buckets - 1) * bucketMs;
+        labels = Array.from({ length: buckets }, (_, index) => {
+          const date = new Date(startTime + index * bucketMs);
+          return `${date.getDate()}.${date.getMonth() + 1}`;
+        });
+      } else if (diffMs <= 12 * 7 * MS_DAY) {
+        bucketMs = 7 * MS_DAY;
+        startTime = now - (buckets - 1) * bucketMs;
+        labels = Array.from({ length: buckets }, (_, index) => {
+          const date = new Date(startTime + index * bucketMs);
+          return `${date.getDate()}.${date.getMonth() + 1}`;
+        });
+      } else if (diffMs <= 12 * 30 * MS_DAY) {
+        bucketMs = 30 * MS_DAY;
+        startTime = now - (buckets - 1) * bucketMs;
+        const months = ['Jan', 'Feb', 'Mrz', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+        labels = Array.from({ length: buckets }, (_, index) => {
+          const date = new Date(startTime + index * bucketMs);
+          return `${months[date.getMonth()]} ${date.getFullYear().toString().slice(-2)}`;
+        });
+      } else {
+        bucketMs = Math.ceil(diffMs / buckets);
+        startTime = minTime;
+        labels = Array.from({ length: buckets }, (_, index) => {
+          const date = new Date(startTime + index * bucketMs);
+          return `${date.getMonth() + 1}/${date.getFullYear().toString().slice(-2)}`;
+        });
+      }
     }
 
-    // Wochen-/Monats-Buckets sind tagesweise an die Labels gebunden: Label[0] =
-    // (buckets - 1) Tage zurueck, letztes Label = heute. Der Startpunkt muss daher
-    // `now - (buckets - 1) * bucketMs` sein – andernfalls fallen die heutigen
-    // Eintraege in einen nicht existierenden Bucket (Index === buckets) und alle
-    // uebrigen Eintraege landen einen Tag neben ihrem Label.
-    const startTime =
-      range === 'day'
-        ? new Date().setHours(0, 0, 0, 0)
-        : now - (buckets - 1) * bucketMs;
     const checkinCounts = new Array<number>(buckets).fill(0);
     const interactionCounts = new Array<number>(buckets).fill(0);
     const positiveMoodCounts = new Array<number>(buckets).fill(0);
     const negativeMoodCounts = new Array<number>(buckets).fill(0);
 
     for (const entry of moodEntries) {
-      const bucketIndex = Math.floor((entry.timestamp - startTime) / bucketMs);
+      let bucketIndex = Math.floor((entry.timestamp - startTime) / bucketMs);
+      if (bucketIndex === buckets && range === 'total') {
+        bucketIndex = buckets - 1;
+      }
       if (bucketIndex < 0 || bucketIndex >= buckets) {
         continue;
       }
@@ -192,12 +226,32 @@ function useChartData(
 
 export function useEmotionStatsData(range: TimeRange, checkins: CheckinEntry[], userProfile: UserProfile) {
   const recentInteractions = userProfile.recentInteractions ?? [];
-  const moodEntries = useMemo(
+  const allMoodEntries = useMemo(
     () => buildMoodEntries(checkins, recentInteractions),
     [checkins, recentInteractions],
   );
+
+  const moodEntries = useMemo(() => {
+    if (range === 'total') {
+      return allMoodEntries;
+    }
+    const now = Date.now();
+    let startTime: number;
+    if (range === 'day') {
+      startTime = new Date().setHours(0, 0, 0, 0);
+    } else if (range === 'week') {
+      startTime = now - 7 * MS_DAY;
+    } else { // 'month'
+      startTime = now - 30 * MS_DAY;
+    }
+    return allMoodEntries.filter((entry) => entry.timestamp >= startTime);
+  }, [allMoodEntries, range]);
+
   const derivedEmotionCounts = useMemo(() => buildEmotionCounts(moodEntries), [moodEntries]);
   const emotionCounts = useMemo(() => {
+    if (range !== 'total') {
+      return derivedEmotionCounts;
+    }
     const counts = { ...(userProfile.commonEmotions ?? {}) };
 
     Object.entries(derivedEmotionCounts).forEach(([emotionId, count]) => {
@@ -205,8 +259,9 @@ export function useEmotionStatsData(range: TimeRange, checkins: CheckinEntry[], 
     });
 
     return counts;
-  }, [derivedEmotionCounts, userProfile.commonEmotions]);
-  const chartData = useChartData(range, moodEntries, emotionCounts);
+  }, [derivedEmotionCounts, userProfile.commonEmotions, range]);
+
+  const chartData = useChartData(range, allMoodEntries, emotionCounts);
 
   const topEmotions = useMemo(() => {
     return (Object.entries(emotionCounts) as EmotionCountEntry[])

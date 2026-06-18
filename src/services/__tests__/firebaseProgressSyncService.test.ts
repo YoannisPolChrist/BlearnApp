@@ -32,12 +32,29 @@ vi.mock('firebase/firestore', () => ({
     firestoreState.writes.push({ path: ref.path, data: clone(data), options });
     firestoreState.docs.set(ref.path, clone(data));
   },
+  writeBatch: (firestore: unknown) => {
+    const operations: Array<{ ref: { path: string }; data: unknown }> = [];
+    return {
+      set: (ref: { path: string }, data: unknown) => {
+        operations.push({ ref, data });
+      },
+      commit: async () => {
+        for (const op of operations) {
+          firestoreState.writes.push({ path: op.ref.path, data: clone(op.data) });
+          firestoreState.docs.set(op.ref.path, clone(op.data));
+        }
+      },
+    };
+  },
 }));
 
 describe('firebaseProgressSyncService', () => {
   beforeEach(() => {
     firestoreState.docs.clear();
     firestoreState.writes.length = 0;
+    if (typeof localStorage !== 'undefined') {
+      localStorage.clear();
+    }
   });
 
   it('strips undefined fields before writing nested progress records to Firestore', async () => {
@@ -96,6 +113,27 @@ describe('firebaseProgressSyncService', () => {
           completed: true,
         },
       ],
+    });
+
+    const checkinWrite = firestoreState.writes.find((w) => w.path === 'users/user-progress/checkins/checkin-1');
+    expect(checkinWrite).toBeDefined();
+    expect(checkinWrite?.data).toEqual({
+      id: 'checkin-1',
+      timestamp: 1_700_000_000_000,
+      emotions: ['calm'],
+      reflection: 'Bleibe ruhig',
+      chatHistory: [],
+      breathingCompleted: true,
+    });
+
+    const interactionWrite = firestoreState.writes.find((w) => w.path === 'users/user-progress/interactions/interaction-1');
+    expect(interactionWrite).toBeDefined();
+    expect(interactionWrite?.data).toEqual({
+      id: 'interaction-1',
+      timestamp: 1_700_000_000_100,
+      type: 'breathing',
+      emotions: ['calm'],
+      completed: true,
     });
   });
 });

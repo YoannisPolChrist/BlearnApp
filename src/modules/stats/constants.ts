@@ -35,6 +35,7 @@ export const RANGE_LABELS = {
   day: 'Heute',
   week: 'Woche',
   month: 'Monat',
+  total: 'Gesamt',
 } as const;
 
 export const STATS_SECTION_LABELS = {

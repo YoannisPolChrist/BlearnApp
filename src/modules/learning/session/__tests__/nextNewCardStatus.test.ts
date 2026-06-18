@@ -141,7 +141,7 @@ describe('buildNextNewCardLabel', () => {
         cardStateById: { [newCard.id]: newCard.state },
         now: NOW,
       }),
-    ).toBe('Noch 2 Wiederholungen bis zur neuen Vokabel');
+    ).toBe('Neue Vokabel: 3/5');
   });
 
   it('builds pacing progress from reviews since the last new vocabulary', () => {
@@ -159,7 +159,7 @@ describe('buildNextNewCardLabel', () => {
         now: NOW,
       }),
     ).toMatchObject({
-      label: 'Noch 2 Wiederholungen bis zur neuen Vokabel',
+      label: 'Neue Vokabel: 3/5',
       detail: '3/5 Wiederholungen geschafft',
       progressPercent: 60,
       valueNow: 3,

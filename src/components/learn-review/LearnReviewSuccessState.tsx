@@ -1,4 +1,5 @@
 import { BlockingUnlockSuccessScreen } from '@/components/blocking/BlockingUnlockSuccessScreen';
+import { SuccessAnimation } from '@/components/ui/SuccessAnimation';
 
 interface LearnReviewSuccessStateProps {
   blockedTargetLabel: string;
@@ -17,16 +18,27 @@ export function LearnReviewSuccessState({
   targetType,
   unlockDurationMinutes,
 }: LearnReviewSuccessStateProps) {
+  if (!targetId) {
+    return (
+      <BlockingUnlockSuccessScreen
+        buttonLabel="Zum Dashboard"
+        onContinue={onContinueToTarget}
+        reduceInterfaceMotion={reduceInterfaceMotion}
+        targetId={targetId}
+        targetLabel="Learn abgeschlossen"
+        targetType={targetType}
+        tone="learn"
+        unlockDurationMinutes={null}
+      />
+    );
+  }
+
   return (
-    <BlockingUnlockSuccessScreen
-      buttonLabel={targetId ? 'Zur App' : 'Zum Dashboard'}
-      onContinue={onContinueToTarget}
-      reduceInterfaceMotion={reduceInterfaceMotion}
-      targetId={targetId}
-      targetLabel={targetId ? blockedTargetLabel : 'Learn abgeschlossen'}
-      targetType={targetType}
-      tone="learn"
-      unlockDurationMinutes={targetId ? unlockDurationMinutes : null}
+    <SuccessAnimation
+      visible={true}
+      message={blockedTargetLabel}
+      subMessage={`Freigeschaltet für ${unlockDurationMinutes} Min.`}
+      onAnimationDone={onContinueToTarget}
     />
   );
 }

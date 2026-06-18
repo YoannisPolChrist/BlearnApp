@@ -1,7 +1,7 @@
 import type { InstalledApp, ScreenTimeSummary } from '@/plugins/ScreenTimePlugin';
 import type { Emotion, UserInteraction } from '@/store/useAppStore';
 
-export type TimeRange = 'day' | 'week' | 'month';
+export type TimeRange = 'day' | 'week' | 'month' | 'total';
 export type StatsSection = 'usage' | 'emotions' | 'vocab';
 export type EmotionCountEntry = [string, number];
 export type TopEmotion = Emotion & { count: number };

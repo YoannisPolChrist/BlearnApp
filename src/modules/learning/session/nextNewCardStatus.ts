@@ -107,7 +107,7 @@ export function buildNextNewCardStatus({
   const completedReviews = Math.max(0, reviewsPerNewCard - remainingReviews);
 
   return {
-    label: `Noch ${remainingReviews} ${remainingReviews === 1 ? 'Wiederholung' : 'Wiederholungen'} bis zur neuen Vokabel`,
+    label: `Neue Vokabel: ${completedReviews}/${reviewsPerNewCard}`,
     detail: `${completedReviews}/${reviewsPerNewCard} Wiederholungen geschafft`,
     progressPercent: clampPercent((completedReviews / reviewsPerNewCard) * 100),
     valueNow: completedReviews,

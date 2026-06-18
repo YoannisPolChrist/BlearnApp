@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { createElement, type ReactNode } from 'react';
+import { createElement, useEffect, type ReactNode } from 'react';
 import { ROUTER_FUTURE_FLAGS } from '@/lib/routerFuture';
 
 const openTargetMock = vi.fn<(targetId: string, targetType: 'app' | 'website' | 'search') => Promise<void>>();
@@ -85,7 +85,14 @@ async function loadCheckinPage(options?: { applyMocks?: () => void }) {
     ),
   }));
   vi.doMock('@/components/ui/SuccessAnimation', () => ({
-    SuccessAnimation: () => null,
+    SuccessAnimation: ({ visible, onAnimationDone }: { visible: boolean; onAnimationDone?: () => void }) => {
+      useEffect(() => {
+        if (visible) {
+          onAnimationDone?.();
+        }
+      }, [visible, onAnimationDone]);
+      return null;
+    },
   }));
   vi.doMock('@/components/ui/SuccessTileAnimation', () => ({
     SuccessTileAnimation: ({ children }: { children: ReactNode }) => <div>{children}</div>,
@@ -180,7 +187,7 @@ describe('CheckinPage', () => {
       expect(screen.getByText(/1 von max\. 5 gew(?:ählt|aehlt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
     });
 
-    const finishButton = screen.getAllByRole('button', { name: /weiter zur app/i })[0];
+    const finishButton = screen.getAllByRole('button', { name: /weiter/i })[0];
     await waitFor(() => {
       expect(finishButton).not.toBeDisabled();
     });
@@ -195,7 +202,9 @@ describe('CheckinPage', () => {
       expect(screen.getByText(/5 von max\. 5 gew(?:ählt|aehlt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter/i })[0]);
+    await screen.findByText(/kontext zu deinen emotionen/i);
+    fireEvent.click(screen.getAllByRole('button', { name: /freischalten|weiter zur app/i })[0]);
 
     await waitFor(() => {
       expect(openTargetMock).toHaveBeenCalledWith('com.instagram.android', 'app');
@@ -239,7 +248,9 @@ describe('CheckinPage', () => {
     await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
-    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter/i })[0]);
+    await screen.findByText(/kontext zu deinen emotionen/i);
+    fireEvent.click(screen.getAllByRole('button', { name: /freischalten|weiter zur app/i })[0]);
 
     await waitFor(() => {
       expect(waitForPersistStorageIdleMock).toHaveBeenCalledWith('mindful-usage-storage', 2500);
@@ -288,7 +299,9 @@ describe('CheckinPage', () => {
     await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
-    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter/i })[0]);
+    await screen.findByText(/kontext zu deinen emotionen/i);
+    fireEvent.click(screen.getAllByRole('button', { name: /freischalten|weiter zur app/i })[0]);
 
     await waitFor(() => {
       expect(dismissOnceMock).toHaveBeenCalledTimes(1);
@@ -296,4 +309,51 @@ describe('CheckinPage', () => {
     });
     expect(warnSpy).toHaveBeenCalledWith('Blocking overlay dismiss failed:', expect.any(Error));
   }, 20000);
+
+  it('saves the emotion context text in checkin statistics', async () => {
+    const { CheckinPage, useAppStore } = await loadCheckinPage();
+    useAppStore.setState(useAppStore.getInitialState(), true);
+
+    render(
+      <MemoryRouter
+        future={ROUTER_FUTURE_FLAGS}
+        initialEntries={['/checkin?targetId=com.instagram.android&targetType=app&targetLabel=Instagram&overlaySessionId=session-context']}
+      >
+        <Routes>
+          <Route path="/checkin" element={<CheckinPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    fireEvent.change(screen.getByPlaceholderText(/social media/i), {
+      target: { value: 'Instagram checken' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
+    await screen.findByText(/warum/i);
+
+    fireEvent.change(screen.getByPlaceholderText(/grund/i), {
+      target: { value: 'Ich suche Ablenkung' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
+    await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
+
+    fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter/i })[0]);
+    await screen.findByText(/kontext zu deinen emotionen/i);
+
+    fireEvent.change(screen.getByPlaceholderText(/z\.B\. Gestresst wegen der Arbeit/i), {
+      target: { value: 'Fühle mich heute etwas müde' },
+    });
+    fireEvent.click(screen.getAllByRole('button', { name: /freischalten|weiter zur app/i })[0]);
+
+    await waitFor(() => {
+      expect(openTargetMock).toHaveBeenCalledWith('com.instagram.android', 'app');
+    });
+
+    const checkins = useAppStore.getState().checkins;
+    expect(checkins).toHaveLength(1);
+    expect(checkins[0].reflection).toContain('Fühle mich heute etwas müde');
+    expect(checkins[0].reflection).toContain('Instagram checken');
+    expect(checkins[0].reflection).toContain('Ich suche Ablenkung');
+  });
 });

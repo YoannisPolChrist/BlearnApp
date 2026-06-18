@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import GlassCard from '@/components/GlassCard';
 import PageTransition from '@/components/PageTransition';
 import { CheckinEmotionStep } from '@/components/checkin/CheckinEmotionStep';
+import { CheckinTextStep } from '@/components/checkin/CheckinTextStep';
 import { LearnReviewActions } from '@/components/learn-review/LearnReviewActions';
 import { LearnReviewEmptyState } from '@/components/learn-review/LearnReviewEmptyState';
 import { LearnReviewPageHeader } from '@/components/learn-review/LearnReviewHeader';
@@ -124,6 +125,7 @@ export default function LearnReviewPage() {
                     chipClassName="border border-[hsl(var(--mode-learn-border)/0.3)] bg-background/70 px-3 py-1.5 text-sm font-semibold text-foreground"
                     inactiveCategoryClassName="border-[hsl(var(--mode-learn-border)/0.24)] bg-[hsl(var(--background)/0.72)] text-foreground/78 backdrop-blur-sm hover:border-[hsl(var(--mode-learn-border)/0.38)] hover:bg-[hsl(var(--mode-learn-surface)/0.22)]"
                     inactiveEmotionClassName="border-[hsl(var(--mode-learn-border)/0.24)] bg-[hsl(var(--background)/0.76)] text-foreground backdrop-blur-sm hover:border-[hsl(var(--mode-learn-border)/0.42)] hover:bg-[hsl(var(--mode-learn-surface)/0.24)]"
+                    finishLabel={session.isBlockedFlow ? 'Weiter' : undefined}
                   />
                 </div>
                 ) : (
@@ -156,8 +158,50 @@ export default function LearnReviewPage() {
                     chipClassName="border border-[hsl(var(--mode-learn-border)/0.3)] bg-background/70 px-3 py-1.5 text-sm font-semibold text-foreground"
                     inactiveCategoryClassName="border-[hsl(var(--mode-learn-border)/0.24)] bg-[hsl(var(--background)/0.72)] text-foreground/78 backdrop-blur-sm hover:border-[hsl(var(--mode-learn-border)/0.38)] hover:bg-[hsl(var(--mode-learn-surface)/0.22)]"
                     inactiveEmotionClassName="border-[hsl(var(--mode-learn-border)/0.24)] bg-[hsl(var(--background)/0.76)] text-foreground backdrop-blur-sm hover:border-[hsl(var(--mode-learn-border)/0.42)] hover:bg-[hsl(var(--mode-learn-surface)/0.24)]"
+                    finishLabel={session.isBlockedFlow ? 'Weiter' : undefined}
                   />
                 </motion.div>
+                )
+              ) : session.awaitingEmotionContext ? (
+                reduceInterfaceMotion ? (
+                  <div className="flex min-h-0 min-w-0 flex-col gap-2.5 overflow-visible md:gap-3">
+                    <CheckinTextStep
+                      stepKey="learn-emotion-context"
+                      title="Kontext zu deinen Emotionen"
+                      prompt="Schreibe kurz auf, warum du dich so fühlst (optional)."
+                      placeholder="z.B. Gestresst wegen der Arbeit, müde..."
+                      value={session.sessionEmotionContext}
+                      onChange={session.setSessionEmotionContext}
+                      onContinue={session.completeSessionTextStep}
+                      buttonLabel={session.isBlockedFlow ? 'Freischalten' : 'Fertig'}
+                      inputClassName="w-full resize-none rounded-[1.7rem] border border-[hsl(var(--mode-learn-border)/0.24)] bg-[hsl(var(--mode-learn-surface)/0.24)] px-5 py-4 text-sm text-foreground shadow-[0_18px_42px_hsl(var(--mode-learn-glow)/0.14)] backdrop-blur-sm transition-colors placeholder:text-foreground/38 focus:border-[hsl(var(--mode-learn-border)/0.72)] focus:outline-none"
+                      buttonClassName={tonePalettes.learn.button}
+                      optional={true}
+                      autoFocus
+                    />
+                  </div>
+                ) : (
+                  <motion.div
+                    variants={sectionStagger}
+                    initial={reduceInterfaceMotion ? false : 'hidden'}
+                    animate="show"
+                    className="flex min-h-0 min-w-0 flex-col gap-2.5 overflow-visible md:gap-3"
+                  >
+                    <CheckinTextStep
+                      stepKey="learn-emotion-context"
+                      title="Kontext zu deinen Emotionen"
+                      prompt="Schreibe kurz auf, warum du dich so fühlst (optional)."
+                      placeholder="z.B. Gestresst wegen der Arbeit, müde..."
+                      value={session.sessionEmotionContext}
+                      onChange={session.setSessionEmotionContext}
+                      onContinue={session.completeSessionTextStep}
+                      buttonLabel={session.isBlockedFlow ? 'Freischalten' : 'Fertig'}
+                      inputClassName="w-full resize-none rounded-[1.7rem] border border-[hsl(var(--mode-learn-border)/0.24)] bg-[hsl(var(--mode-learn-surface)/0.24)] px-5 py-4 text-sm text-foreground shadow-[0_18px_42px_hsl(var(--mode-learn-glow)/0.14)] backdrop-blur-sm transition-colors placeholder:text-foreground/38 focus:border-[hsl(var(--mode-learn-border)/0.72)] focus:outline-none"
+                      buttonClassName={tonePalettes.learn.button}
+                      optional={true}
+                      autoFocus
+                    />
+                  </motion.div>
                 )
               ) : !session.learningHydrated ? (
                 <GlassCard elevation="hero" surface="hero" tone="learn" className="py-10 text-center sm:py-12">
@@ -208,6 +252,7 @@ export default function LearnReviewPage() {
                     blockedEasyPulseKey={session.blockedEasyPulseKey}
                     easyRatingBlocked={session.easyRatingBlocked}
                     latestFeedbackMessage={session.latestFeedbackMessage}
+                    isBlockedFlow={session.isBlockedFlow}
                     intervalPreviews={session.intervalPreviews}
                     onCheckTypedAnswer={session.handleCheckTypedAnswer}
                     onRevealAnswer={session.handleRevealAnswer}
@@ -259,6 +304,7 @@ export default function LearnReviewPage() {
                     blockedEasyPulseKey={session.blockedEasyPulseKey}
                     easyRatingBlocked={session.easyRatingBlocked}
                     latestFeedbackMessage={session.latestFeedbackMessage}
+                    isBlockedFlow={session.isBlockedFlow}
                     intervalPreviews={session.intervalPreviews}
                     onCheckTypedAnswer={session.handleCheckTypedAnswer}
                     onRevealAnswer={session.handleRevealAnswer}

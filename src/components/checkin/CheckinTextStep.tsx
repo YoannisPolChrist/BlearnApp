@@ -20,6 +20,7 @@ interface CheckinTextStepProps {
   inputClassName: string;
   buttonClassName: string;
   autoFocus?: boolean;
+  optional?: boolean;
 }
 
 export function CheckinTextStep({
@@ -34,8 +35,9 @@ export function CheckinTextStep({
   inputClassName,
   buttonClassName,
   autoFocus,
+  optional,
 }: CheckinTextStepProps) {
-  const canContinue = value.trim().length > 0;
+  const canContinue = optional || value.trim().length > 0;
 
   return (
     <motion.div key={stepKey} {...pageTransition} className="relative z-10 flex flex-1 flex-col">

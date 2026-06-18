@@ -419,6 +419,10 @@ export function useLearnReviewSession() {
 
   const {
     completeSessionEmotionStep,
+    completeSessionTextStep,
+    awaitingEmotionContext,
+    sessionEmotionContext,
+    setSessionEmotionContext,
     toggleSessionCategory,
     toggleSessionEmotion,
   } = useLearnReviewSessionCompletion({
@@ -481,6 +485,9 @@ export function useLearnReviewSession() {
     handleUndoReview,
     hasUsableLearningDeck,
     awaitingEmotionSelection,
+    awaitingEmotionContext,
+    sessionEmotionContext,
+    setSessionEmotionContext,
     intervalPreviews,
     isBlockedFlow,
     learningHydrated,
@@ -497,6 +504,7 @@ export function useLearnReviewSession() {
     remainingCount,
     requiresTypedAnswer,
     completeSessionEmotionStep,
+    completeSessionTextStep,
     selectedSessionCategories,
     selectedSessionEmotions,
     toggleSessionCategory,

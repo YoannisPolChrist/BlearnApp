@@ -150,4 +150,53 @@ describe('useEmotionStatsData bucketing (day boundaries)', () => {
     expect(result.current.recentMoodEntries).toHaveLength(1);
     expect(result.current.recentMoodEntries[0].source).toBe('learning');
   });
+
+  it('supports total range and dynamic bucketing', () => {
+    const now = new Date('2026-06-14T12:00:00Z').getTime();
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+
+    // Ein Eintrag von heute und einer von 50 Tagen
+    const checkins = [
+      makeCheckin('today', now, ['relieved']),
+      makeCheckin('old', now - 50 * MS_DAY, ['stressed']),
+    ];
+
+    const { result } = renderHook(() => useEmotionStatsData('total', checkins, makeUserProfile()));
+
+    // Es sollten immer 12 Buckets für 'total' generiert werden
+    expect(result.current.activityData).toHaveLength(12);
+    expect(result.current.moodData).toHaveLength(12);
+
+    // Alle Einträge (auch der 50 Tage alte) fließen in die Top-Emotionen und in die Aktivität ein
+    const totalActivity = result.current.activityData.reduce(
+      (sum, day) => sum + (day.series.find((s) => s.key === 'activity')?.value ?? 0),
+      0,
+    );
+    expect(totalActivity).toBe(2);
+
+    expect(result.current.topEmotions).toHaveLength(2);
+    expect(result.current.topEmotions.find((e) => e.id === 'relieved')?.count).toBe(1);
+    expect(result.current.topEmotions.find((e) => e.id === 'stressed')?.count).toBe(1);
+  });
+
+  it('filters recent mood entries and top emotions based on active range', () => {
+    const now = new Date('2026-06-14T12:00:00Z').getTime();
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+
+    const checkins = [
+      makeCheckin('today', now, ['relieved']),
+      makeCheckin('old', now - 10 * MS_DAY, ['stressed']),
+    ];
+
+    // Für 'week' (7 Tage) sollte der 10 Tage alte Eintrag herausgefiltert sein
+    const { result: resultWeek } = renderHook(() => useEmotionStatsData('week', checkins, makeUserProfile()));
+    expect(resultWeek.current.recentMoodEntries).toHaveLength(1);
+    expect(resultWeek.current.recentMoodEntries[0].id).toBe('today');
+    expect(resultWeek.current.topEmotions.find((e) => e.id === 'stressed')).toBeUndefined();
+
+    // Für 'total' sollten beide Einträge vorhanden sein
+    const { result: resultTotal } = renderHook(() => useEmotionStatsData('total', checkins, makeUserProfile()));
+    expect(resultTotal.current.recentMoodEntries).toHaveLength(2);
+    expect(resultTotal.current.topEmotions.find((e) => e.id === 'stressed')).toBeDefined();
+  });
 });

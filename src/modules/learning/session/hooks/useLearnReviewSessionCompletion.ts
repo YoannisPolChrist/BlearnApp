@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useState,
   type Dispatch,
   type MutableRefObject,
   type SetStateAction,
@@ -182,6 +183,21 @@ export function useLearnReviewSessionCompletion({
     unlockDurationMinutes,
   ]);
 
+  const [awaitingEmotionContext, setAwaitingEmotionContext] = useState(false);
+  const [sessionEmotionContext, setSessionEmotionContext] = useState('');
+
+  const goToEmotionContextStep = useCallback(() => {
+    if (
+      !awaitingEmotionSelection ||
+      selectedSessionEmotions.length < MIN_SESSION_EMOTIONS ||
+      selectedSessionEmotions.length > MAX_SESSION_EMOTIONS
+    ) {
+      return;
+    }
+    setAwaitingEmotionSelection(false);
+    setAwaitingEmotionContext(true);
+  }, [awaitingEmotionSelection, selectedSessionEmotions, setAwaitingEmotionSelection]);
+
   const toggleSessionCategory = useCallback(
     (categoryId: string) => {
       setSelectedSessionCategories((current) =>
@@ -206,9 +222,9 @@ export function useLearnReviewSessionCompletion({
     [setSelectedSessionEmotions],
   );
 
-  const completeSessionEmotionStep = useCallback(() => {
+  const completeSessionTextStep = useCallback(() => {
     if (
-      !awaitingEmotionSelection ||
+      !awaitingEmotionContext ||
       selectedSessionEmotions.length < MIN_SESSION_EMOTIONS ||
       selectedSessionEmotions.length > MAX_SESSION_EMOTIONS
     ) {
@@ -218,11 +234,17 @@ export function useLearnReviewSessionCompletion({
     const completionKind = pendingCompletionKindRef.current;
     const sessionEmotions = [...selectedSessionEmotions];
     const completedAt = Date.now();
-    const sessionSummary = activeDeck?.name || 'Lernsession abgeschlossen';
+    const textContext = sessionEmotionContext.trim();
+    const sessionSummary = textContext
+      ? `${activeDeck?.name || 'Lernsession'}: ${textContext}`
+      : (activeDeck?.name || 'Lernsession abgeschlossen');
+
     pendingCompletionKindRef.current = null;
+    setAwaitingEmotionContext(false);
     setAwaitingEmotionSelection(false);
     setSelectedSessionCategories([]);
     setSelectedSessionEmotions([]);
+    setSessionEmotionContext('');
     setCompletedSessionVisible(false);
 
     const recordEmotionOutcome = () => {
@@ -247,12 +269,6 @@ export function useLearnReviewSessionCompletion({
     };
 
     if (completionKind === 'unlock' && targetId && activeDeck) {
-      // Emotion ZUERST in den Store schreiben, DANN freischalten. Vorher lief
-      // finishUnlock zuerst (zeigt den Erfolgs-Screen + startet die Persistenz)
-      // und das Emotions-Recording war per setTimeout(0) NACHGELAGERT — tippte der
-      // Nutzer schnell "Zur App", wurde das Overlay-WebView zerlegt, bevor das
-      // addCheckin lief → Emotion ging verloren (Check-ins syncen nicht in die
-      // Cloud). Synchron vor finishUnlock erfasst, persistiert dessen Flush sie mit.
       recordEmotionOutcome();
       void finishUnlock(activeDeck.id, sessionCreditsRequired);
       return;
@@ -264,12 +280,13 @@ export function useLearnReviewSessionCompletion({
     activeDeck,
     addCheckin,
     addInteraction,
-    awaitingEmotionSelection,
+    awaitingEmotionContext,
     finishUnlock,
     pendingCompletionKindRef,
     recordFeedback,
     selectedSessionEmotions,
     sessionCreditsRequired,
+    sessionEmotionContext,
     setAwaitingEmotionSelection,
     setCompletedSessionVisible,
     setSelectedSessionCategories,
@@ -278,7 +295,11 @@ export function useLearnReviewSessionCompletion({
   ]);
 
   return {
-    completeSessionEmotionStep,
+    completeSessionEmotionStep: goToEmotionContextStep,
+    completeSessionTextStep,
+    awaitingEmotionContext,
+    sessionEmotionContext,
+    setSessionEmotionContext,
     toggleSessionCategory,
     toggleSessionEmotion,
   };

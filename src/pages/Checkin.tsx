@@ -16,6 +16,7 @@ import { CheckinPageShell } from '@/components/checkin/CheckinPageShell';
 import { CheckinTextStep } from '@/components/checkin/CheckinTextStep';
 import { CheckinEmotionStep } from '@/components/checkin/CheckinEmotionStep';
 import { CheckinCompletionStep } from '@/components/checkin/CheckinCompletionStep';
+import { SuccessAnimation } from '@/components/ui/SuccessAnimation';
 
 function parsePositiveInteger(value: string | null) {
   const parsed = Number.parseInt(value || '', 10);
@@ -74,7 +75,9 @@ export default function CheckinPage() {
   const [whyAnswer, setWhyAnswer] = useState('');
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [emotionContext, setEmotionContext] = useState('');
   const [isContinuingToTarget, setIsContinuingToTarget] = useState(false);
+  const [showSuccessAnim, setShowSuccessAnim] = useState(false);
   const { dismissOnce } = useOverlayDismissGuard({
     active: isOverlayUnlockFlow,
     overlaySessionId,
@@ -98,7 +101,7 @@ export default function CheckinPage() {
       return;
     }
 
-    const reflection = [whatAnswer.trim(), whyAnswer.trim()].filter(Boolean).join(' - ');
+    const reflection = [whatAnswer.trim(), whyAnswer.trim(), emotionContext.trim()].filter(Boolean).join(' - ');
     const completedAt = Date.now();
     const entry = {
       id: completedAt.toString(),
@@ -133,14 +136,11 @@ export default function CheckinPage() {
       } catch (error) {
         console.warn('Check-in persistence did not settle before continuing to the blocked target:', error);
       }
-      setIsContinuingToTarget(true);
-      void handleContinueToTarget().catch(() => {
-        setIsContinuingToTarget(false);
-      });
+      setShowSuccessAnim(true);
       return;
     }
 
-    setStep(3);
+    setStep(4);
   };
 
   const handleBack = () => {
@@ -150,6 +150,7 @@ export default function CheckinPage() {
       setWhyAnswer('');
       setSelectedEmotions([]);
       setSelectedCategories([]);
+      setEmotionContext('');
       return;
     }
 
@@ -190,79 +191,111 @@ export default function CheckinPage() {
 
   return (
     <PageTransition>
-      <CheckinPageShell
-        step={step}
-        isBlockedFlow={isBlockedFlow}
-        onBack={handleBack}
-        classes={checkinClasses}
-        targetLabel={targetLabel}
-        unlockDurationMinutes={unlockDurationMinutes}
-      >
-        <AnimatePresence mode="wait">
-          {step === 0 ? (
-            <CheckinTextStep
-              stepKey="what"
-              title="Was möchtest du tun?"
-              prompt="Beschreibe kurz, was du gerade vorhast."
-              placeholder="z.B. Social Media öffnen, YouTube schauen..."
-              value={whatAnswer}
-              onChange={setWhatAnswer}
-              onContinue={() => setStep(1)}
-              buttonLabel="Weiter"
-              inputClassName={checkinClasses.input}
-              buttonClassName={checkinPalette.button}
-              autoFocus
-            />
-          ) : null}
+      <>
+        <CheckinPageShell
+          step={step}
+          isBlockedFlow={isBlockedFlow}
+          onBack={handleBack}
+          classes={checkinClasses}
+          targetLabel={targetLabel}
+          unlockDurationMinutes={unlockDurationMinutes}
+        >
+          <AnimatePresence mode="wait">
+            {step === 0 ? (
+              <CheckinTextStep
+                stepKey="what"
+                title="Was möchtest du tun?"
+                prompt="Beschreibe kurz, was du gerade vorhast."
+                placeholder="z.B. Social Media öffnen, YouTube schauen..."
+                value={whatAnswer}
+                onChange={setWhatAnswer}
+                onContinue={() => setStep(1)}
+                buttonLabel="Weiter"
+                inputClassName={checkinClasses.input}
+                buttonClassName={checkinPalette.button}
+                autoFocus
+              />
+            ) : null}
 
-          {step === 1 ? (
-            <CheckinTextStep
-              stepKey="why"
-              title="Warum möchtest du das tun?"
-              prompt="Nimm dir einen Moment, um darüber nachzudenken."
-              placeholder="Was ist der Grund dahinter?"
-              value={whyAnswer}
-              onChange={setWhyAnswer}
-              onContinue={() => setStep(2)}
-              buttonLabel="Weiter"
-              inputClassName={checkinClasses.input}
-              buttonClassName={checkinPalette.button}
-              autoFocus
-            />
-          ) : null}
+            {step === 1 ? (
+              <CheckinTextStep
+                stepKey="why"
+                title="Warum möchtest du das tun?"
+                prompt="Nimm dir einen Moment, um darüber nachzudenken."
+                placeholder="Was ist der Grund dahinter?"
+                value={whyAnswer}
+                onChange={setWhyAnswer}
+                onContinue={() => setStep(2)}
+                buttonLabel="Weiter"
+                inputClassName={checkinClasses.input}
+                buttonClassName={checkinPalette.button}
+                autoFocus
+              />
+            ) : null}
 
-          {step === 2 ? (
-            <CheckinEmotionStep
-              stepKey="emotions"
-              categories={EMOTION_CATEGORIES}
-              selectedCategories={selectedCategories}
-              selectedEmotions={selectedEmotions}
-              onToggleCategory={toggleCategory}
-              onToggleEmotion={toggleEmotion}
-              onFinish={finishCheckin}
-              canComplete={canComplete}
-              isBlockedFlow={isBlockedFlow}
-              badgeClassName={checkinPalette.badge}
-              cardClassName={checkinPalette.button}
-              summaryClassName={cn(checkinClasses.summary, checkinPalette.card)}
-              chipClassName={checkinClasses.chip}
-              finishLabel={isBlockedFlow ? 'Weiter zur App' : undefined}
-            />
-          ) : null}
+            {step === 2 ? (
+              <CheckinEmotionStep
+                stepKey="emotions"
+                categories={EMOTION_CATEGORIES}
+                selectedCategories={selectedCategories}
+                selectedEmotions={selectedEmotions}
+                onToggleCategory={toggleCategory}
+                onToggleEmotion={toggleEmotion}
+                onFinish={() => setStep(3)}
+                canComplete={canComplete}
+                isBlockedFlow={isBlockedFlow}
+                badgeClassName={checkinPalette.badge}
+                cardClassName={checkinPalette.button}
+                summaryClassName={cn(checkinClasses.summary, checkinPalette.card)}
+                chipClassName={checkinClasses.chip}
+                finishLabel="Weiter"
+              />
+            ) : null}
 
-          {step === 3 ? (
-            <CheckinCompletionStep
-              targetApp={targetApp}
-              targetId={targetId}
-              targetType={targetType}
-              targetLabel={targetLabel}
-              unlockDurationMinutes={unlockDurationMinutes}
-              streak={streak}
-              onContinue={() => void handleContinueToTarget()}
-            />
-          ) : null}
-        </AnimatePresence>
-      </CheckinPageShell>
+            {step === 3 ? (
+              <CheckinTextStep
+                stepKey="emotion-context"
+                title="Kontext zu deinen Emotionen"
+                prompt="Schreibe kurz auf, warum du dich so fühlst (optional)."
+                placeholder="z.B. Gestresst wegen der Arbeit, müde..."
+                value={emotionContext}
+                onChange={setEmotionContext}
+                onContinue={finishCheckin}
+                buttonLabel={isBlockedFlow ? 'Freischalten' : 'Fertig'}
+                inputClassName={checkinClasses.input}
+                buttonClassName={checkinPalette.button}
+                optional={true}
+                autoFocus
+              />
+            ) : null}
+
+            {step === 4 ? (
+              <CheckinCompletionStep
+                targetApp={targetApp}
+                targetId={targetId}
+                targetType={targetType}
+                targetLabel={targetLabel}
+                unlockDurationMinutes={unlockDurationMinutes}
+                streak={streak}
+                onContinue={() => void handleContinueToTarget()}
+              />
+            ) : null}
+          </AnimatePresence>
+        </CheckinPageShell>
+        <SuccessAnimation
+          visible={showSuccessAnim}
+          message={targetLabel || 'App'}
+          subMessage={unlockDurationMinutes || defaultUnlockDurationMinutes ? `Freigeschaltet für ${unlockDurationMinutes || defaultUnlockDurationMinutes} Min.` : 'Freigabe aktiv'}
+          onAnimationDone={async () => {
+            setIsContinuingToTarget(true);
+            try {
+              await handleContinueToTarget();
+            } catch (error) {
+              setIsContinuingToTarget(false);
+            }
+          }}
+        />
+      </>
     </PageTransition>
   );
 }

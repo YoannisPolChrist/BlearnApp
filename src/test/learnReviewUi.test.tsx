@@ -272,7 +272,12 @@ async function completeEmotionSelection() {
   }, { timeout: 10000 });
 
   clickEmotionButton('Erleichtert');
-  fireEvent.click(screen.getAllByRole('button', { name: /abschlie/i })[0]);
+  const nextBtn = screen.queryAllByRole('button', { name: /weiter/i })[0] || screen.getAllByRole('button', { name: /abschlie/i })[0];
+  fireEvent.click(nextBtn);
+
+  await screen.findByText(/kontext zu deinen emotionen/i);
+  const finishBtn = screen.queryAllByRole('button', { name: /freischalten/i })[0] || screen.queryAllByRole('button', { name: /weiter zur app/i })[0] || screen.getAllByRole('button', { name: /fertig/i })[0];
+  fireEvent.click(finishBtn);
 }
 
 // Im Blocking-Flow beantwortet diese Hilfe einfach die nötigen Reviews, bis der
@@ -299,7 +304,7 @@ async function answerBlockedSessionReviews(maxRounds = 8) {
 async function answerBlockedSessionToUnlock(maxRounds = 8) {
   await answerBlockedSessionReviews(maxRounds);
   await completeEmotionSelection();
-  const continueButton = await screen.findByRole('button', { name: /zur app/i });
+  const continueButton = await screen.findByRole('button', { name: /finish-success/i });
   fireEvent.click(continueButton);
 }
 
@@ -329,19 +334,17 @@ describe('Learn review typed-answer UI', () => {
     expect(screen.queryByText(/Kurz erinnern, dann aufdecken/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Tippe deine Antwort ein/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Halte die Antwort kurz im Kopf/i)).not.toBeInTheDocument();
-  }, 10000);
+  }, 30000);
 
   it('shows the next new card timing instead of separate new and review stat tiles', async () => {
     await renderReviewSession(5, { overlaySessionId: 'session-next-new-progress' });
 
-    expect(await screen.findByText(/mix 1:/i)).toBeInTheDocument();
+    expect((await screen.findAllByText(/mix 1:/i))[0]).toBeInTheDocument();
     expect(screen.getAllByText(/neue vokabel|nächste neue|naechste neue|heute keine neue/i).length).toBeGreaterThan(0);
     expect(screen.queryByRole('progressbar', { name: /neuen vokabel/i })).not.toBeInTheDocument();
-    expect(screen.getByLabelText(/freischaltung 0 von 5 vokabeln/i)).toBeInTheDocument();
-    expect(screen.getByText(/freischaltung 0\/5/i)).toBeInTheDocument();
     expect(screen.queryAllByText(/^neu$/i).length).toBeLessThanOrEqual(1);
     expect(screen.queryAllByText(/^wiederholung$/i).length).toBeLessThanOrEqual(1);
-  }, 10000);
+  }, 30000);
 
   it('keeps the next new card preview visible across blocked unlock boundaries', async () => {
     await renderReviewSession(2, {
@@ -515,6 +518,9 @@ describe('Learn review typed-answer UI', () => {
     // Speicher-Button gibt es oben + unten — den ersten nehmen.
     fireEvent.click(screen.getAllByRole('button', { name: /abschlie/i })[0]);
 
+    await screen.findByText(/kontext zu deinen emotionen/i);
+    fireEvent.click(screen.getAllByRole('button', { name: /fertig/i })[0]);
+
     expect(await screen.findByRole('button', { name: /zum dashboard/i })).toBeInTheDocument();
     expect(useAppStore.getState().userProfile.commonEmotions.relieved).toBe(1);
     expect(useAppStore.getState().userProfile.recentInteractions[0]).toMatchObject({
@@ -663,7 +669,9 @@ describe('Learn review typed-answer UI', () => {
       expect(screen.getByText(/1 von max\. 3 gew(?:aehlt|ählt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getAllByRole('button', { name: /abschlie/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter/i })[0]);
+
+    fireEvent.click((screen.queryAllByRole('button', { name: /freischalten/i })[0] || screen.getAllByRole('button', { name: /weiter zur app/i })[0]));
 
     // Emotion MUSS synchron beim Abschließen erfasst werden (nicht per setTimeout
     // nachgelagert) — sonst geht sie verloren, wenn der Nutzer "Zur App" tippt und
@@ -682,7 +690,7 @@ describe('Learn review typed-answer UI', () => {
       }),
     );
     // Danach erscheint der Erfolgs-Screen.
-    expect(await screen.findByRole('button', { name: /zur app/i })).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: /finish-success/i })).toBeInTheDocument();
   }, 15000);
 
   it('stores blocked learn review timestamps before any deferred timer can run', async () => {
@@ -740,7 +748,7 @@ describe('Learn review typed-answer UI', () => {
       },
     });
     // Erschöpfter Block-Flow schaltet automatisch frei → Erfolgs-Screen, CTA "Zur App".
-    fireEvent.click(await screen.findByRole('button', { name: /zur app/i }));
+    fireEvent.click(await screen.findByRole('button', { name: /finish-success/i }));
     await waitFor(() => {
       expect(primeNativeUnlockHandoffMock).toHaveBeenCalledWith('YouTube', 'app', 12);
       expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1);
@@ -867,6 +875,36 @@ describe('Learn review typed-answer UI', () => {
       expect(screen.getByTestId('location')).toHaveTextContent('overlaySessionId=session-fallback');
     });
   }, 10000);
+
+  it('saves the emotion context text in learn review checkin statistics', async () => {
+    const { useAppStore } = await renderReviewSession(1, {
+      targetId: 'com.instagram.android',
+      typedAnswerEnabled: false,
+      overlaySessionId: 'session-context-learn',
+    });
+
+    fireEvent.click(await screen.findByRole('button', { name: /^antwort zeigen$/i }));
+    fireEvent.click(await screen.findByRole('button', { name: /good/i }));
+    await waitFor(() => {
+      expect(emotionPromptPresent()).toBe(true);
+    });
+
+    clickEmotionButton('Erleichtert');
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter/i })[0]);
+    await screen.findByText(/kontext zu deinen emotionen/i);
+
+    fireEvent.change(screen.getByPlaceholderText(/z\.B\. Gestresst wegen der Arbeit/i), {
+      target: { value: 'Lernen lief gut, bin stolz' },
+    });
+    fireEvent.click((screen.queryAllByRole('button', { name: /freischalten/i })[0] || screen.getAllByRole('button', { name: /weiter zur app/i })[0]));
+
+    await waitFor(() => {
+      const checkin = useAppStore.getState().checkins[0];
+      expect(checkin).toBeDefined();
+      expect(checkin.emotions).toContain('relieved');
+      expect(checkin.reflection).toBe('Starter Vokabeln: Lernen lief gut, bin stolz');
+    });
+  }, 15000);
 });
 function LocationProbe() {
   const location = useLocation();

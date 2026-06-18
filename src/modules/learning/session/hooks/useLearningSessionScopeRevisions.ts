@@ -73,7 +73,7 @@ export function useLearningSessionScopeRevisions(activeDeckId: string | undefine
             cached
             && cached.activeDeckId === activeDeckId
             && cached.cardsRef === state.cards
-            && cached.reviewLogsRef === (isBlockedFlow ? state.reviewLogs : null)
+            && cached.reviewLogsRef === state.reviewLogs
             && cached.deckScopeRevision === deckScopeRevision
             && cached.presetScopeRevision === presetScopeRevision
           ) {
@@ -88,9 +88,7 @@ export function useLearningSessionScopeRevisions(activeDeckId: string | undefine
           }
 
           let reviewLogScopeRevision = EMPTY_SCOPE_REVISION;
-          const scopedReviewLogs = isBlockedFlow
-            ? Object.values(state.reviewLogs).filter((log) => log.deckId === activeDeckId)
-            : [];
+          const scopedReviewLogs = Object.values(state.reviewLogs).filter((log) => log.deckId === activeDeckId);
 
           if (scopedReviewLogs.length > 0) {
             let reviewLogScopeHash = SCOPE_REVISION_SEED;
@@ -112,7 +110,7 @@ export function useLearningSessionScopeRevisions(activeDeckId: string | undefine
           scopeRevisionCacheRef.current = {
             activeDeckId,
             cardsRef: state.cards,
-            reviewLogsRef: isBlockedFlow ? state.reviewLogs : null,
+            reviewLogsRef: state.reviewLogs,
             deckScopeRevision,
             presetScopeRevision,
             result,

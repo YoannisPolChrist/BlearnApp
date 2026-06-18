@@ -21,6 +21,7 @@ import { useModesRuntimeIssueMessages } from '@/modules/modes/useModesRuntimeIss
 import { useModesInitialDraft } from '@/modules/modes/useModesInitialDraft';
 import { useI18n } from '@/hooks/useI18n';
 import { useModeDraftStore } from '@/store/useModeDraftStore';
+import { SuccessAnimation } from '@/components/ui/SuccessAnimation';
 
 export default function ModesPage() {
   const navigate = useNavigate();
@@ -96,6 +97,7 @@ export default function ModesPage() {
   const penaltyConfirmFeedback = useInlineFeedback<'confirmed'>();
   const [isSaving, setIsSaving] = useState(false);
   const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null);
+  const [showSuccessAnim, setShowSuccessAnim] = useState(false);
   const isGerman = locale.toLowerCase().startsWith('de');
   const confirmCode = useMemo(() => t('modes.confirm.finalCode').toUpperCase(), [t]);
   const {
@@ -441,50 +443,66 @@ export default function ModesPage() {
     enablePenaltyMode: () => setPenaltyEnabled(true),
     logModesDebug,
     missingPermissionsMessage: t('modes.toasts.missingPermissions'),
+    onSaveSuccess: () => setShowSuccessAnim(true),
   });
 
-  if (locked) {
-    return (
-      <StrictLockedModeScreen
-        remaining={remaining}
-        strictLockScope={strictLockScope}
-        iconClassName={strictPalette.icon}
-        textClassName={strictPalette.text}
-        t={t}
-      />
-    );
-  }
+  const mainContent = locked ? (
+    <StrictLockedModeScreen
+      remaining={remaining}
+      strictLockScope={strictLockScope}
+      iconClassName={strictPalette.icon}
+      textClassName={strictPalette.text}
+      t={t}
+    />
+  ) : (
+    <ModesPageView {...{
+      activeModes, activeUnlocks, activateButtonDisabled, albyConnection, albyReady, appSearch,
+      assignedToOtherModes, assignedToSelectedMode, availableApps, blockTab, blockTabs,
+      commitBreathingRoundsDraft, commitIntervalDraft, commitSessionCreditsRequiredDraft,
+      commitUnlockDurationMinutesDraft, confirmCode, confirmFeedbackVisible: penaltyConfirmFeedback.active,
+      confirmText, connectionStatusMessage, currentModeConfig, deckStats, disabledButtonReason,
+      displayedAvailableApps, draftBlockedSearchTermModes, draftBlockedSearchTerms,
+      draftBlockedWebsiteModes, draftBlockedWebsites, draftBlockSchedules, endTime, expandedApp,
+      gateRule, handleActivate, handleAddSearchTerm, handleAddWebsite, handleAssignAppsToSelectedMode,
+      handleBreathingRoundsDraftChange, handleClearAppsFromSelectedMode, handleConfirmStep2,
+      handleIntervalDraftChange, handlePenaltyReadyConfirm, handleRemoveDraftBlockSchedule,
+      handleRemoveSearchTerm, handleRemoveWebsite, handleSessionCreditsRequiredDraftChange,
+      handleSetDraftBlockSchedule, handleToggleAppTarget, handleToggleSearchTarget,
+      handleToggleWebsiteTarget, handleUnlockDurationMinutesDraftChange, isGerman, isSaving,
+      learnLibraryOpen, localBreathingRoundsDraft, localIntervalDraft, localPatternId,
+      localTypedAnswerEnabled, lockedAppIdsByMode, modeDefinitions, navigate, needsPenaltyActivation,
+      newSearchTerm, newWebsite, penaltyAmountSats, penaltyReadyConfirmed, penaltySetupReady,
+      pendingAssignmentHint, permissionWarningActive, permissionWarningText, recipientAddress,
+      recipientName, recipientVerified, remainingAvailableCount, resolvedLearnDeck, retryRuntimeChecks,
+      runtimeIssueMessages, satsFormatter, saveErrorMessage, savedModeSelection, selectedMode,
+      selectedModeAssignedAppCount, selectedModeCount, selectedModeHasRequiredApp, selectedModePalette,
+      selectedModeRequiresTargets, selectedModeStrictWindowEnd, selectedModeStrictWindowStart,
+      sessionCreditsRequiredDraft, setAppSearch, setBlockTab, setConfirmText, setDeckReviewMix,
+      setExpandedApp, setLearnLibraryOpen, setLocalActiveDeckId, setLocalPatternId,
+      setLocalTypedAnswerEnabled, setNewSearchTerm, setNewWebsite, setSelectedMode,
+      setSelectedModeStrictAddonEnabled, setSelectedModeStrictWindowEnd,
+      setSelectedModeStrictWindowStart, setShowAllApps, setShowBlockConfig, setShowConfirmStep1,
+      setShowConfirmStep2, shouldShowFullAppList, showBlockConfig, showConfirmStep1,
+      showConfirmStep2, showSavedStateHint, startTime, strictAddonActiveForSelectedMode,
+      strictAddonEnabledForSelectedMode, strictDurationHours, strictDurationTooLong, t,
+      totalBlocked, unlockDurationMinutesDraft, warningPalette,
+    }} />
+  );
 
-  return <ModesPageView {...{
-    activeModes, activeUnlocks, activateButtonDisabled, albyConnection, albyReady, appSearch,
-    assignedToOtherModes, assignedToSelectedMode, availableApps, blockTab, blockTabs,
-    commitBreathingRoundsDraft, commitIntervalDraft, commitSessionCreditsRequiredDraft,
-    commitUnlockDurationMinutesDraft, confirmCode, confirmFeedbackVisible: penaltyConfirmFeedback.active,
-    confirmText, connectionStatusMessage, currentModeConfig, deckStats, disabledButtonReason,
-    displayedAvailableApps, draftBlockedSearchTermModes, draftBlockedSearchTerms,
-    draftBlockedWebsiteModes, draftBlockedWebsites, draftBlockSchedules, endTime, expandedApp,
-    gateRule, handleActivate, handleAddSearchTerm, handleAddWebsite, handleAssignAppsToSelectedMode,
-    handleBreathingRoundsDraftChange, handleClearAppsFromSelectedMode, handleConfirmStep2,
-    handleIntervalDraftChange, handlePenaltyReadyConfirm, handleRemoveDraftBlockSchedule,
-    handleRemoveSearchTerm, handleRemoveWebsite, handleSessionCreditsRequiredDraftChange,
-    handleSetDraftBlockSchedule, handleToggleAppTarget, handleToggleSearchTarget,
-    handleToggleWebsiteTarget, handleUnlockDurationMinutesDraftChange, isGerman, isSaving,
-    learnLibraryOpen, localBreathingRoundsDraft, localIntervalDraft, localPatternId,
-    localTypedAnswerEnabled, lockedAppIdsByMode, modeDefinitions, navigate, needsPenaltyActivation,
-    newSearchTerm, newWebsite, penaltyAmountSats, penaltyReadyConfirmed, penaltySetupReady,
-    pendingAssignmentHint, permissionWarningActive, permissionWarningText, recipientAddress,
-    recipientName, recipientVerified, remainingAvailableCount, resolvedLearnDeck, retryRuntimeChecks,
-    runtimeIssueMessages, satsFormatter, saveErrorMessage, savedModeSelection, selectedMode,
-    selectedModeAssignedAppCount, selectedModeCount, selectedModeHasRequiredApp, selectedModePalette,
-    selectedModeRequiresTargets, selectedModeStrictWindowEnd, selectedModeStrictWindowStart,
-    sessionCreditsRequiredDraft, setAppSearch, setBlockTab, setConfirmText, setDeckReviewMix,
-    setExpandedApp, setLearnLibraryOpen, setLocalActiveDeckId, setLocalPatternId,
-    setLocalTypedAnswerEnabled, setNewSearchTerm, setNewWebsite, setSelectedMode,
-    setSelectedModeStrictAddonEnabled, setSelectedModeStrictWindowEnd,
-    setSelectedModeStrictWindowStart, setShowAllApps, setShowBlockConfig, setShowConfirmStep1,
-    setShowConfirmStep2, shouldShowFullAppList, showBlockConfig, showConfirmStep1,
-    showConfirmStep2, showSavedStateHint, startTime, strictAddonActiveForSelectedMode,
-    strictAddonEnabledForSelectedMode, strictDurationHours, strictDurationTooLong, t,
-    totalBlocked, unlockDurationMinutesDraft, warningPalette,
-  }} />;
+  return (
+    <>
+      {mainContent}
+      <SuccessAnimation
+        visible={showSuccessAnim}
+        eyebrow={isGerman ? 'Modi' : 'Modes'}
+        message={isGerman ? 'Gespeichert' : 'Saved'}
+        subMessage={
+          isGerman
+            ? 'Deine Fokusregeln sind jetzt aktiv.'
+            : 'Your focus rules are now active.'
+        }
+        onAnimationDone={() => setShowSuccessAnim(false)}
+      />
+    </>
+  );
 }
