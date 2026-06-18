@@ -152,6 +152,8 @@ export default function InterventionPage() {
     }
 
     setSuccessHandled(true);
+    setSuccessVisible(false);
+    
     try {
       await waitForBlockingFlowPersistence();
     } catch (error) {
