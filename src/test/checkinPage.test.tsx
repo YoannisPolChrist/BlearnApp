@@ -45,6 +45,7 @@ async function loadCheckinPage(options?: { applyMocks?: () => void }) {
 
     return {
       AnimatePresence: ({ children }: { children: ReactNode }) => <>{children}</>,
+      MotionConfig: ({ children }: { children: ReactNode }) => <>{children}</>,
       motion: motionElement,
       useReducedMotion: () => true,
     };

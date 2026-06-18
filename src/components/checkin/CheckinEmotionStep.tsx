@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
 import { Check } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
 export interface CheckinEmotionEntry {
@@ -57,6 +58,13 @@ export function CheckinEmotionStep({
   maxSelections = 5,
   finishLabel = 'Abschließen',
 }: CheckinEmotionStepProps) {
+  // Auf Mobile die teuren Animationen dieses Schritts reduzieren: der Container
+  // animiert sonst `filter: blur` (Main-Thread-Repaints) und jede Emotion/Kategorie
+  // staggert einzeln herein — spürbares Ruckeln auf der letzten Blocking-Seite.
+  // reducedMotion='always' lässt Transform/Filter weg, behält aber das günstige
+  // Opacity-Fade. Scoped auf diesen Step (Atem-Animation bleibt unberührt).
+  const isMobile = useIsMobile();
+
   const selectedEmotionEntries = selectedEmotions
     .map((emotionId) => categories.flatMap((category) => category.emotions).find((emotion) => emotion.id === emotionId))
     .filter((emotion): emotion is CheckinEmotionEntry => Boolean(emotion));
@@ -80,6 +88,7 @@ export function CheckinEmotionStep({
   );
 
   return (
+    <MotionConfig reducedMotion={isMobile ? 'always' : 'user'}>
     <motion.div
       key={stepKey}
       initial={{ opacity: 0, y: 30, filter: 'blur(6px)' }}
@@ -266,5 +275,6 @@ export function CheckinEmotionStep({
         </motion.button>
       </div>
     </motion.div>
+    </MotionConfig>
   );
 }
