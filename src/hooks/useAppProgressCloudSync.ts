@@ -450,4 +450,30 @@ export function useAppProgressCloudSync(enabled = true) {
       window.clearTimeout(timerId);
     };
   }, [authReady, authStatus, authUserId, enabled, firebaseWritesEnabled, progressSourceState, setProgressSyncRuntime]);
+
+  // Periodic sync of app usage to Firestore every 5 minutes (300,000 ms)
+  useEffect(() => {
+    if (
+      !enabled
+      || !firebaseWritesEnabled
+      || !authReady
+      || authStatus === 'disabled'
+      || !authUserId
+      || !isNative
+    ) {
+      return;
+    }
+
+    const runSync = () => {
+      syncAppUsageToFirestore(authUserId).catch((err) => {
+        console.warn('[AppProgressCloudSync] Periodic app usage sync failed:', err);
+      });
+    };
+
+    const intervalId = window.setInterval(runSync, 5 * 60 * 1000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [enabled, firebaseWritesEnabled, authReady, authStatus, authUserId]);
 }
