@@ -169,16 +169,7 @@ describe('CheckinPage', () => {
       </MemoryRouter>,
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/social media/i), {
-      target: { value: 'Instagram checken' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
-    await screen.findByText(/warum/i);
-
-    fireEvent.change(screen.getByPlaceholderText(/grund/i), {
-      target: { value: 'Ich suche Ablenkung' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
+    // Blocked flow starts directly at step 2 (Emotions)
     await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
@@ -187,7 +178,7 @@ describe('CheckinPage', () => {
       expect(screen.getByText(/1 von max\. 5 gew(?:ählt|aehlt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
     });
 
-    const finishButton = screen.getAllByRole('button', { name: /weiter/i })[0];
+    const finishButton = screen.getAllByRole('button', { name: /weiter zur app/i })[0];
     await waitFor(() => {
       expect(finishButton).not.toBeDisabled();
     });
@@ -202,9 +193,7 @@ describe('CheckinPage', () => {
       expect(screen.getByText(/5 von max\. 5 gew(?:ählt|aehlt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getAllByRole('button', { name: /weiter/i })[0]);
-    await screen.findByText(/kontext zu deinen emotionen/i);
-    fireEvent.click(screen.getAllByRole('button', { name: /freischalten|weiter zur app/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
 
     await waitFor(() => {
       expect(openTargetMock).toHaveBeenCalledWith('com.instagram.android', 'app');
@@ -235,22 +224,11 @@ describe('CheckinPage', () => {
       </MemoryRouter>,
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/social media/i), {
-      target: { value: 'Instagram checken' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
-    await screen.findByText(/warum/i);
-
-    fireEvent.change(screen.getByPlaceholderText(/grund/i), {
-      target: { value: 'Ich suche Ablenkung' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
+    // Blocked flow starts directly at step 2 (Emotions)
     await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
-    fireEvent.click(screen.getAllByRole('button', { name: /weiter/i })[0]);
-    await screen.findByText(/kontext zu deinen emotionen/i);
-    fireEvent.click(screen.getAllByRole('button', { name: /freischalten|weiter zur app/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
 
     await waitFor(() => {
       expect(waitForPersistStorageIdleMock).toHaveBeenCalledWith('mindful-usage-storage', 2500);
@@ -286,22 +264,11 @@ describe('CheckinPage', () => {
       </MemoryRouter>,
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/social media/i), {
-      target: { value: 'Instagram checken' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
-    await screen.findByText(/warum/i);
-
-    fireEvent.change(screen.getByPlaceholderText(/grund/i), {
-      target: { value: 'Ich suche Ablenkung' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
+    // Blocked flow starts directly at step 2 (Emotions)
     await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
-    fireEvent.click(screen.getAllByRole('button', { name: /weiter/i })[0]);
-    await screen.findByText(/kontext zu deinen emotionen/i);
-    fireEvent.click(screen.getAllByRole('button', { name: /freischalten|weiter zur app/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
 
     await waitFor(() => {
       expect(dismissOnceMock).toHaveBeenCalledTimes(1);
@@ -317,7 +284,8 @@ describe('CheckinPage', () => {
     render(
       <MemoryRouter
         future={ROUTER_FUTURE_FLAGS}
-        initialEntries={['/checkin?targetId=com.instagram.android&targetType=app&targetLabel=Instagram&overlaySessionId=session-context']}
+        // Non-blocked flow (no overlaySessionId) to test full text steps
+        initialEntries={['/checkin?targetId=com.instagram.android&targetType=app&targetLabel=Instagram']}
       >
         <Routes>
           <Route path="/checkin" element={<CheckinPage />} />
@@ -344,11 +312,7 @@ describe('CheckinPage', () => {
     fireEvent.change(screen.getByPlaceholderText(/z\.B\. Gestresst wegen der Arbeit/i), {
       target: { value: 'Fühle mich heute etwas müde' },
     });
-    fireEvent.click(screen.getAllByRole('button', { name: /freischalten|weiter zur app/i })[0]);
-
-    await waitFor(() => {
-      expect(openTargetMock).toHaveBeenCalledWith('com.instagram.android', 'app');
-    });
+    fireEvent.click(screen.getAllByRole('button', { name: /fertig/i })[0]);
 
     const checkins = useAppStore.getState().checkins;
     expect(checkins).toHaveLength(1);
