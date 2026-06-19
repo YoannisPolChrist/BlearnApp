@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
-import { Check } from 'lucide-react';
+import { Check, Loader2 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
@@ -27,6 +27,7 @@ interface CheckinEmotionStepProps {
   onFinish: () => void;
   canComplete: boolean;
   isBlockedFlow: boolean;
+  isContinuingToTarget?: boolean;
   badgeClassName: string;
   cardClassName: string;
   summaryClassName: string;
@@ -48,6 +49,7 @@ export function CheckinEmotionStep({
   onFinish,
   canComplete,
   isBlockedFlow,
+  isContinuingToTarget = false,
   badgeClassName,
   cardClassName,
   summaryClassName,
@@ -171,7 +173,7 @@ export function CheckinEmotionStep({
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={onFinish}
-          disabled={!canComplete}
+          disabled={!canComplete || isContinuingToTarget}
           className={cn(
             'mb-6 flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-semibold disabled:opacity-30',
             cardClassName,
@@ -180,8 +182,17 @@ export function CheckinEmotionStep({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          {finishLabel}
-          <Check size={18} />
+          {isContinuingToTarget ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Wird fortgesetzt...
+            </>
+          ) : (
+            <>
+              {finishLabel}
+              <Check size={18} />
+            </>
+          )}
         </motion.button>
 
         <motion.div

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useAppStore, EMOTION_CATEGORIES } from '@/store/useAppStore';
@@ -70,7 +71,7 @@ export default function CheckinPage() {
   const checkinPalette = tonePalettes.reflection;
   const checkinClasses = reflectionCheckinClasses;
 
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(isBlockedFlow ? 2 : 0);
   const [whatAnswer, setWhatAnswer] = useState('');
   const [whyAnswer, setWhyAnswer] = useState('');
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
@@ -181,12 +182,13 @@ export default function CheckinPage() {
         await openTarget(resolvedTargetId, targetType);
       } catch (error) {
         console.warn('Target open failed:', error);
-        navigate('/');
+        // Fallback: navigate home if target open fails
+        navigate('/', { replace: true });
       }
       return;
     }
 
-    navigate('/');
+    navigate('/', { replace: true });
   };
 
   return (
@@ -241,14 +243,15 @@ export default function CheckinPage() {
                 selectedEmotions={selectedEmotions}
                 onToggleCategory={toggleCategory}
                 onToggleEmotion={toggleEmotion}
-                onFinish={() => setStep(3)}
+                onFinish={isBlockedFlow ? finishCheckin : () => setStep(3)}
                 canComplete={canComplete}
                 isBlockedFlow={isBlockedFlow}
+                isContinuingToTarget={isContinuingToTarget}
                 badgeClassName={checkinPalette.badge}
                 cardClassName={checkinPalette.button}
                 summaryClassName={cn(checkinClasses.summary, checkinPalette.card)}
                 chipClassName={checkinClasses.chip}
-                finishLabel="Weiter"
+                finishLabel={isBlockedFlow ? 'Weiter zur App' : 'Weiter'}
               />
             ) : null}
 
