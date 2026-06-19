@@ -340,22 +340,11 @@ describe('Android overlay success flows', () => {
     );
 
     expect(screen.getByText('YouTube | 12 Min frei')).toBeInTheDocument();
-    fireEvent.change(await screen.findByRole('textbox'), {
-      target: { value: 'Ich will kurz ein Video schauen.' },
-    });
-    expect(screen.getByText(/was möchtest du tun/i)).toBeInTheDocument();
-    fireEvent.click(await screen.findByRole('button', { name: /weiter/i }));
-    await screen.findByText(/warum möchtest du das tun/i);
-    fireEvent.change(await screen.findByRole('textbox'), {
-      target: { value: 'Ich brauche eine kurze Pause.' },
-    });
-    fireEvent.click(await screen.findByRole('button', { name: /weiter/i }));
     await screen.findByText(/wie fühlst du dich/i);
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click((await screen.findAllByRole('button', { name: /^weiter$/i }))[0]);
-    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app|abschlie/i }))[0]);
+    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app/i }))[0]);
     fireEvent.click(await screen.findByRole('button', { name: /finish-success/i }));
 
     expect(useAppStore.getState().unlockedTargets['app:youtube']).toBe(now + 12 * 60 * 1000);
@@ -389,21 +378,11 @@ describe('Android overlay success flows', () => {
       </MemoryRouter>,
     );
 
-    fireEvent.change(await screen.findByRole('textbox'), {
-      target: { value: 'Kurz schauen.' },
-    });
-    fireEvent.click(await screen.findByRole('button', { name: /weiter/i }));
-    await screen.findByText(/warum möchtest du das tun/i);
-    fireEvent.change(await screen.findByRole('textbox'), {
-      target: { value: 'Kurz abschalten.' },
-    });
-    fireEvent.click(await screen.findByRole('button', { name: /weiter/i }));
     await screen.findByText(/wie fühlst du dich/i);
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click((await screen.findAllByRole('button', { name: /^weiter$/i }))[0]);
-    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app|abschlie/i }))[0]);
+    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app/i }))[0]);
     fireEvent.click(await screen.findByRole('button', { name: /finish-success/i }));
 
     await waitFor(() => expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1));
@@ -441,21 +420,11 @@ describe('Android overlay success flows', () => {
       </MemoryRouter>,
     );
 
-    fireEvent.change(await screen.findByRole('textbox'), {
-      target: { value: 'Ich will kurz schauen, was neu ist.' },
-    });
-    fireEvent.click(await screen.findByRole('button', { name: /weiter/i }));
-    await screen.findByText(/warum möchtest du das tun/i);
-    fireEvent.change(await screen.findByRole('textbox'), {
-      target: { value: 'Ich brauche eine kleine Pause.' },
-    });
-    fireEvent.click(await screen.findByRole('button', { name: /weiter/i }));
     await screen.findByText(/wie fühlst du dich/i);
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click((await screen.findAllByRole('button', { name: /^weiter$/i }))[0]);
-    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app|abschlie/i }))[0]);
+    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app/i }))[0]);
     fireEvent.click(await screen.findByRole('button', { name: /finish-success/i }));
 
     expect(useAppStore.getState().unlockedTargets['app:youtube']).toBe(now + 25 * 60 * 1000);
@@ -765,21 +734,11 @@ describe('Android overlay success flows', () => {
       </MemoryRouter>,
     );
 
-    fireEvent.change(await screen.findByRole('textbox'), {
-      target: { value: 'Ich will kurz auf die Seite.' },
-    });
-    fireEvent.click(await screen.findByRole('button', { name: /weiter/i }));
-    await screen.findByText(/warum möchtest du das tun/i);
-    fireEvent.change(await screen.findByRole('textbox'), {
-      target: { value: 'Ich suche etwas Bestimmtes.' },
-    });
-    fireEvent.click(await screen.findByRole('button', { name: /weiter/i }));
     await screen.findByText(/wie fühlst du dich/i);
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click((await screen.findAllByRole('button', { name: /^weiter$/i }))[0]);
-    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app|abschlie/i }))[0]);
+    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app/i }))[0]);
     fireEvent.click(await screen.findByRole('button', { name: /finish-success/i }));
 
     expect(useAppStore.getState().unlockedTargets['website:youtube.com']).toBe(now + 7 * 60 * 1000);
