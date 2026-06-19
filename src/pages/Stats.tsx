@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, RefreshCcw } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
@@ -13,6 +13,8 @@ import type { StatsSection, TimeRange } from '@/modules/stats/types';
 import { useReviewMomentum, useVocabChartData } from '@/modules/stats/vocab';
 import { useAppStore } from '@/store/useAppStore';
 import { useLearningStore } from '@/store/useLearningStore';
+import { useAuthStore } from '@/store/useAuthStore';
+import { syncAppUsageToFirestore } from '@/services/firebaseProgressSyncService';
 
 const EMPTY_LEARNING_DECKS: Array<{ id: string; name: string }> = [];
 const EMPTY_LEARNING_CARDS: Array<{
@@ -28,6 +30,7 @@ const EMPTY_LEARNING_REVIEW_LOGS: Array<{
 
 export default function StatsPage() {
   const navigate = useNavigate();
+  const authUserId = useAuthStore((state) => state.user?.uid);
   const {
     checkins,
     userProfile,
@@ -104,8 +107,21 @@ export default function StatsPage() {
   );
   const showDeckComparison = deckComparison.length > 1;
 
+  useEffect(() => {
+    if (authUserId) {
+      void syncAppUsageToFirestore(authUserId).catch((err) => {
+        console.warn('[StatsPage] App usage sync on mount failed:', err);
+      });
+    }
+  }, [authUserId]);
+
   const handleRefresh = () => {
     void refresh();
+    if (authUserId) {
+      void syncAppUsageToFirestore(authUserId).catch((err) => {
+        console.warn('[StatsPage] App usage sync on refresh failed:', err);
+      });
+    }
   };
 
   return (

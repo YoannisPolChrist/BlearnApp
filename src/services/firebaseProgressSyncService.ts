@@ -9,6 +9,7 @@ import {
   normalizeProgressCloudState,
   type ProgressCloudState,
 } from '@/lib/progressCloudSync';
+import { isNative, getUsageForRange } from '@/services/screenTimeService';
 
 const USERS_COLLECTION = 'users';
 const PROGRESS_COLLECTION = 'progress';
@@ -260,5 +261,89 @@ export function subscribeToProgressCloudState(
   return () => {
     cancelled = true;
     unsubscribe();
+  };
+}
+
+export async function syncAppUsageToFirestore(userId: string): Promise<void> {
+  if (!isNative) return;
+
+  assertFirebaseWritesEnabled('App Usage Sync');
+  const sdk = await loadFirestoreSdk();
+  const firestore = await ensureFirestore();
+
+  const now = Date.now();
+  const ninetyDaysMs = 90 * 24 * 60 * 60 * 1000;
+  const expiresAt = now + ninetyDaysMs;
+
+  // Clean up expired app usage documents
+  try {
+    const collectionRef = sdk.collection(firestore, USERS_COLLECTION, userId, 'appUsage');
+    const snapshot = await sdk.getDocs(collectionRef);
+    const batch = sdk.writeBatch(firestore);
+    let deleteCount = 0;
+
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.expiresAt && data.expiresAt < now) {
+        batch.delete(doc.ref);
+        deleteCount++;
+      }
+    });
+
+    if (deleteCount > 0) {
+      await batch.commit();
+      console.log(`[AppUsageSync] Cleaned up ${deleteCount} expired app usage documents.`);
+    }
+  } catch (err) {
+    console.warn('[AppUsageSync] Failed to clean up expired documents:', err);
+  }
+
+  // Sync last 7 days of daily app usage
+  for (let i = 0; i < 7; i++) {
+    try {
+      const bounds = getDayBoundsLocal(i);
+      const usage = await getUsageForRange(bounds.startMs, bounds.endMs);
+
+      const apps = (usage.entries || [])
+        .filter((entry) => entry.totalTimeMs > 0)
+        .map((entry) => ({
+          packageName: entry.packageName || entry.appId,
+          label: entry.label || entry.appName,
+          totalTimeMs: entry.totalTimeMs,
+        }));
+
+      const docRef = sdk.doc(firestore, USERS_COLLECTION, userId, 'appUsage', bounds.dateKey);
+      await sdk.setDoc(docRef, {
+        date: bounds.dateKey,
+        timestamp: bounds.startMs,
+        totalScreenTimeMs: usage.totalScreenTimeMs,
+        expiresAt,
+        apps,
+      }, { merge: true });
+    } catch (err) {
+      console.warn(`[AppUsageSync] Failed to sync usage for ${i} days ago:`, err);
+    }
+  }
+}
+
+function getDayBoundsLocal(daysAgo: number) {
+  const date = new Date();
+  date.setDate(date.getDate() - daysAgo);
+
+  const start = new Date(date);
+  start.setHours(0, 0, 0, 0);
+
+  const end = new Date(date);
+  end.setHours(23, 59, 59, 999);
+
+  const year = start.getFullYear();
+  const month = String(start.getMonth() + 1).padStart(2, '0');
+  const day = String(start.getDate()).padStart(2, '0');
+  const dateKey = `${year}-${month}-${day}`;
+
+  return {
+    dateKey,
+    startMs: start.getTime(),
+    endMs: end.getTime(),
   };
 }

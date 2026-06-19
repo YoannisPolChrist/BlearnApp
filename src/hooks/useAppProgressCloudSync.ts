@@ -17,7 +17,9 @@ import {
   saveProgressCloudState,
   subscribeToProgressCloudState,
   getProgressSyncDeviceId,
+  syncAppUsageToFirestore,
 } from '@/services/firebaseProgressSyncService';
+import { isNative } from '@/services/screenTimeService';
 
 const PROGRESS_SAVE_DEBOUNCE_MS = 1200;
 const PROGRESS_STORAGE_OWNER_KEY = 'blearn-progress-storage-owner';
@@ -300,6 +302,12 @@ export function useAppProgressCloudSync(enabled = true) {
             status: 'ready',
             currentError: null,
             lastSuccessfulSyncAt: Date.now(),
+          });
+        }
+
+        if (isNative) {
+          void syncAppUsageToFirestore(authUserId).catch((err) => {
+            console.warn('[AppProgressCloudSync] App usage sync failed:', err);
           });
         }
 
