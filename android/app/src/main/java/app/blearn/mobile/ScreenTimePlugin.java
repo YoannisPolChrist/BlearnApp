@@ -72,6 +72,33 @@ public class ScreenTimePlugin extends Plugin {
     private final OverlayHandoffCoordinator handoffCoordinator = OverlayHandoffCoordinator.getInstance();
     private BlearnNotificationBridge notificationBridge;
 
+    private static ScreenTimePlugin instance;
+
+    @Override
+    public void load() {
+        super.load();
+        instance = this;
+    }
+
+    public static void triggerBackgroundSync() {
+        if (instance != null && instance.getBridge() != null && instance.getBridge().getWebView() != null) {
+            Activity activity = instance.getActivity();
+            if (activity != null) {
+                activity.runOnUiThread(() -> {
+                    try {
+                        instance.getBridge().getWebView().evaluateJavascript(
+                            "window.dispatchEvent(new CustomEvent('backgroundSyncTriggered'));",
+                            null
+                        );
+                        Log.d(TAG, "Triggered backgroundSyncTriggered event in WebView");
+                    } catch (Exception e) {
+                        Log.w(TAG, "Failed to evaluate background sync JS", e);
+                    }
+                });
+            }
+        }
+    }
+
     private BlearnNotificationBridge notificationBridge() {
         if (notificationBridge == null) {
             notificationBridge = new BlearnNotificationBridge(getContext());

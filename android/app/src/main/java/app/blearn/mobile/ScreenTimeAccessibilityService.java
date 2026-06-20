@@ -35,6 +35,8 @@ public class ScreenTimeAccessibilityService extends AccessibilityService {
     private String lastOpenedTarget = "";
     private long lastOpenedAt = 0L;
     private OverlayPresenter overlayPresenter;
+    private long lastSyncTriggeredAt = 0L;
+    private static final long SYNC_INTERVAL_MS = 5L * 60L * 1000L; // 5 minutes
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -58,7 +60,17 @@ public class ScreenTimeAccessibilityService extends AccessibilityService {
     }
 
     private void handleAccessibilityEvent(AccessibilityEvent event) {
-        if (event == null || !isRelevantEventType(event.getEventType())) {
+        if (event == null) {
+            return;
+        }
+
+        long now = System.currentTimeMillis();
+        if (now - lastSyncTriggeredAt >= SYNC_INTERVAL_MS) {
+            lastSyncTriggeredAt = now;
+            ScreenTimePlugin.triggerBackgroundSync();
+        }
+
+        if (!isRelevantEventType(event.getEventType())) {
             return;
         }
 

@@ -200,6 +200,7 @@ export default function StatsPage() {
               topEmotions={topEmotions}
             />
           ) : null}
+
         </div>
       </div>
     </PageTransition>

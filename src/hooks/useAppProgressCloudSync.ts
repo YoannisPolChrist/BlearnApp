@@ -20,6 +20,7 @@ import {
   syncAppUsageToFirestore,
 } from '@/services/firebaseProgressSyncService';
 import { isNative } from '@/services/screenTimeService';
+import { backfillHistoricalData, updateSyncState, syncBackgroundAppUsage } from '@/services/hermesSyncService';
 
 const PROGRESS_SAVE_DEBOUNCE_MS = 1200;
 const PROGRESS_STORAGE_OWNER_KEY = 'blearn-progress-storage-owner';
@@ -309,7 +310,33 @@ export function useAppProgressCloudSync(enabled = true) {
           void syncAppUsageToFirestore(authUserId).catch((err) => {
             console.warn('[AppProgressCloudSync] App usage sync failed:', err);
           });
+          void syncBackgroundAppUsage(authUserId).catch((err) => {
+            console.warn('[AppProgressCloudSync] Background app usage sync failed:', err);
+          });
         }
+
+        // Trigger backfill of historical data once when the user logs in / connects
+        const BACKFILL_STORAGE_KEY = 'blearn-coaching-backfill-completed';
+        const isBackfillDone = window.localStorage.getItem(BACKFILL_STORAGE_KEY) === authUserId;
+        if (!isBackfillDone) {
+          void backfillHistoricalData(authUserId)
+            .then(() => {
+              window.localStorage.setItem(BACKFILL_STORAGE_KEY, authUserId);
+            })
+            .catch((err) => {
+              console.warn('[Backfill] Historical data backfill failed:', err);
+            });
+        }
+
+        // Update sync state to Firestore
+        void updateSyncState({
+          userId: authUserId,
+          last_sync_at: Date.now(),
+          app_version: '1.0.0',
+          platform: isNative ? 'android' : 'ios',
+        }).catch((err) => {
+          console.warn('[SyncState] Failed to update sync state:', err);
+        });
 
         remoteSubscriptionRef.current = subscribeToProgressCloudState(
           authUserId,
@@ -469,6 +496,9 @@ export function useAppProgressCloudSync(enabled = true) {
       syncAppUsageToFirestore(authUserId).catch((err) => {
         console.warn('[AppProgressCloudSync] App usage sync failed:', err);
       });
+      syncBackgroundAppUsage(authUserId).catch((err) => {
+        console.warn('[AppProgressCloudSync] Background app usage sync failed:', err);
+      });
     };
 
     const intervalId = window.setInterval(runSync, 5 * 60 * 1000);
@@ -479,13 +509,21 @@ export function useAppProgressCloudSync(enabled = true) {
       }
     };
 
+    const handleNativeBackgroundSync = () => {
+      console.log('[AppProgressCloudSync] Received backgroundSyncTriggered event from native');
+      runSync();
+    };
+
     document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('focus', handleVisibilityChange);
+    window.addEventListener('backgroundSyncTriggered', handleNativeBackgroundSync);
 
     return () => {
       window.clearInterval(intervalId);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('focus', handleVisibilityChange);
+      window.removeEventListener('backgroundSyncTriggered', handleNativeBackgroundSync);
     };
   }, [enabled, firebaseWritesEnabled, authReady, authStatus, authUserId]);
+
 }

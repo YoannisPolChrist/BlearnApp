@@ -13,6 +13,13 @@ import { withTimeout } from '@/lib/promiseTimeout';
 import type { LearningReviewFeedbackEvent } from '@/modules/learning/store';
 import type { useAppStore } from '@/store/useAppStore';
 import type { useLearningStore } from '@/store/useLearningStore';
+import {
+  createLearningLog,
+  createEmotionLog,
+  mapEmotionsToValenceArousalEnergy
+} from '@/services/hermesSyncService';
+import { useAuthStore } from '@/store/useAuthStore';
+import { isFirebaseWriteEnabled } from '@/lib/firebase';
 
 const MIN_SESSION_EMOTIONS = 1;
 const MAX_SESSION_EMOTIONS = 3;
@@ -46,6 +53,7 @@ interface UseLearnReviewSessionCompletionInput {
   targetType: BlockTargetType;
   unlockDurationMinutes: number;
   unlockTarget: ReturnType<typeof useAppStore.getState>['unlockTarget'];
+  sessionStartedAt?: number;
 }
 
 export function useLearnReviewSessionCompletion({
@@ -71,6 +79,7 @@ export function useLearnReviewSessionCompletion({
   targetType,
   unlockDurationMinutes,
   unlockTarget,
+  sessionStartedAt,
 }: UseLearnReviewSessionCompletionInput) {
   const finishUnlock = useCallback(
     async (sourceDeckId: string, count: number) => {
@@ -266,6 +275,91 @@ export function useLearnReviewSessionCompletion({
         targetApp: targetId || undefined,
       });
       recordFeedback('toast', 'Emotion gespeichert.');
+
+      // Push to Firestore if authenticated & writes are enabled
+      const userId = useAuthStore.getState().user?.uid;
+      if (userId && isFirebaseWriteEnabled()) {
+        const metrics = mapEmotionsToValenceArousalEnergy(sessionEmotions);
+        
+        // Push Emotion Log
+        void createEmotionLog({
+          userId,
+          timestamp: completedAt,
+          trigger_type: targetId ? 'after_app_usage' : 'manual',
+          context: {
+            location_type: 'unknown',
+            activity: 'learning',
+            time_of_day: new Date(completedAt).getHours() < 12 ? 'morning' : new Date(completedAt).getHours() < 18 ? 'afternoon' : 'evening',
+            social_context: 'alone',
+          },
+          emotion: {
+            valence: metrics.valence,
+            arousal: metrics.arousal,
+            primary: sessionEmotions[0] || 'Neutral',
+            intensity: 5,
+            tags: sessionEmotions,
+          },
+          body: {
+            energy_level: metrics.energy,
+            pain_level: 0,
+            sensations: [],
+          },
+          cognition: {
+            thought_summary: textContext || undefined,
+            pattern_tags: [],
+          },
+          urge: {
+            action: targetId || undefined,
+            intensity: targetId ? 7 : 0,
+            resisted: true,
+          },
+          metadata: {
+            entry_mode: 'manual',
+          },
+        }).catch(err => console.warn('[HermesSync] Emotion log push failed:', err));
+
+        // Push Learning Log
+        const durationMs = sessionStartedAt ? (completedAt - sessionStartedAt) : (5 * 60 * 1000);
+        const durationMinutes = Math.max(1, Math.ceil(durationMs / 60000));
+        const wordsReviewed = sessionCreditsRequired || 5;
+
+        void createLearningLog({
+          userId,
+          started_at: sessionStartedAt || (completedAt - 5 * 60 * 1000),
+          ended_at: completedAt,
+          duration_minutes: durationMinutes,
+          session: {
+            type: 'vocabulary',
+            language: activeDeck?.language || 'de',
+            topic: activeDeck?.name || 'Vokabeln',
+            difficulty_level: 'B1',
+          },
+          vocabulary: {
+            words_learned: 0,
+            words_reviewed: wordsReviewed,
+            accuracy_percent: 100, // assumed 100% or high since they passed the gate
+          },
+          state_before: {
+            energy: 5,
+            focus: 6,
+            resistance: 4,
+          },
+          state_after: {
+            energy: metrics.energy,
+            focus: 7,
+            confidence: 7,
+            frustration: sessionEmotions.includes('frustrated') ? 6 : 2,
+          },
+          goal_progress: {
+            daily_goal_words: 20,
+            current_total_words: wordsReviewed,
+            percentage: Math.min(100, Math.round((wordsReviewed / 20) * 100)),
+          },
+          metadata: {
+            entry_mode: 'automatic',
+          },
+        }).catch(err => console.warn('[HermesSync] Learning log push failed:', err));
+      }
     };
 
     if (completionKind === 'unlock' && targetId && activeDeck) {
@@ -292,6 +386,7 @@ export function useLearnReviewSessionCompletion({
     setSelectedSessionCategories,
     setSelectedSessionEmotions,
     targetId,
+    sessionStartedAt,
   ]);
 
   return {

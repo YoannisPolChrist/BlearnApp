@@ -448,6 +448,7 @@ export function useLearnReviewSession() {
     targetType,
     unlockDurationMinutes,
     unlockTarget,
+    sessionStartedAt,
   });
 
   return {

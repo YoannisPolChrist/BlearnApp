@@ -18,6 +18,13 @@ import { CheckinTextStep } from '@/components/checkin/CheckinTextStep';
 import { CheckinEmotionStep } from '@/components/checkin/CheckinEmotionStep';
 import { CheckinCompletionStep } from '@/components/checkin/CheckinCompletionStep';
 import { SuccessAnimation } from '@/components/ui/SuccessAnimation';
+import {
+  createEmotionLog,
+  createAppUsageEvent,
+  mapEmotionsToValenceArousalEnergy
+} from '@/services/hermesSyncService';
+import { useAuthStore } from '@/store/useAuthStore';
+import { isFirebaseWriteEnabled } from '@/lib/firebase';
 
 function parsePositiveInteger(value: string | null) {
   const parsed = Number.parseInt(value || '', 10);
@@ -125,6 +132,85 @@ export default function CheckinPage() {
     });
     incrementCheckins();
     updateStreak();
+
+    // Push to Firestore if authenticated & writes are enabled
+    const userId = useAuthStore.getState().user?.uid;
+    if (userId && isFirebaseWriteEnabled()) {
+      const metrics = mapEmotionsToValenceArousalEnergy(selectedEmotions);
+      
+      // Push Emotion Log
+      void createEmotionLog({
+        userId,
+        timestamp: completedAt,
+        trigger_type: targetId ? 'after_app_usage' : 'manual',
+        context: {
+          location_type: 'unknown',
+          activity: targetId ? 'pause' : 'unknown',
+          time_of_day: new Date(completedAt).getHours() < 12 ? 'morning' : new Date(completedAt).getHours() < 18 ? 'afternoon' : 'evening',
+          social_context: 'alone',
+        },
+        emotion: {
+          valence: metrics.valence,
+          arousal: metrics.arousal,
+          primary: selectedEmotions[0] || 'Neutral',
+          intensity: 5,
+          tags: selectedEmotions,
+        },
+        body: {
+          energy_level: metrics.energy,
+          pain_level: 0,
+          sensations: [],
+        },
+        cognition: {
+          thought_summary: reflection || undefined,
+          pattern_tags: [],
+        },
+        urge: {
+          action: targetApp || undefined,
+          intensity: targetId ? 7 : 0,
+          resisted: false,
+        },
+        metadata: {
+          entry_mode: 'manual',
+        },
+      }).catch(err => console.warn('[HermesSync] Emotion log push failed:', err));
+
+      // Push App Usage Event if this checkin is for a blocked app intercept
+      if (targetId) {
+        const usageDuration = unlockDurationMinutes || defaultUnlockDurationMinutes || 15;
+        void createAppUsageEvent({
+          userId,
+          started_at: completedAt,
+          ended_at: completedAt + usageDuration * 60 * 1000,
+          duration_minutes: usageDuration,
+          app: {
+            name: targetApp || targetId,
+            category: 'unknown',
+          },
+          user_intent_before: 'avoidance',
+          emotion_before: {
+            valence: metrics.valence,
+            arousal: metrics.arousal,
+            energy: metrics.energy,
+            tags: selectedEmotions,
+          },
+          emotion_after: {
+            valence: metrics.valence,
+            arousal: Math.max(1, metrics.arousal - 1),
+            energy: metrics.energy,
+            tags: [],
+          },
+          delta: {
+            valence: 0,
+            arousal: -1,
+            energy: 0,
+          },
+          metadata: {
+            entry_mode: 'automatic',
+          },
+        }).catch(err => console.warn('[HermesSync] App usage log push failed:', err));
+      }
+    }
 
     if (resolvedTargetId) {
       const explicitType = (targetType === 'website' || targetType === 'search') ? targetType : 'app';
