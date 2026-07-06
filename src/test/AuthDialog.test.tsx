@@ -11,10 +11,11 @@ vi.mock('@/components/setup/appTourContext', () => ({
   }),
 }));
 
-(globalThis as any).mockIsNativePlatform = false;
+const nativePlatformMock = vi.hoisted(() => ({ value: false }));
+
 vi.mock('@/lib/platform', () => ({
   get isNativePlatform() {
-    return (globalThis as any).mockIsNativePlatform ?? false;
+    return nativePlatformMock.value;
   },
 }));
 
@@ -32,7 +33,7 @@ describe('AuthDialog', () => {
     vi.unstubAllEnvs();
     resetAuthStoreForTests();
     vi.clearAllMocks();
-    (globalThis as any).mockIsNativePlatform = false;
+    nativePlatformMock.value = false;
     vi.mocked(firebaseModule.getFirebaseGoogleWebClientId).mockReturnValue('web-client-id');
 
     useAuthStore.setState({
@@ -100,7 +101,7 @@ describe('AuthDialog', () => {
   });
 
   it('disables the native Google CTA when the web client id is missing', () => {
-    (globalThis as any).mockIsNativePlatform = true;
+    nativePlatformMock.value = true;
     vi.stubEnv('VITE_ENABLE_NATIVE_GOOGLE_LOGIN', '');
     vi.mocked(firebaseModule.getFirebaseGoogleWebClientId).mockReturnValue('');
     resetAuthStoreForTests();

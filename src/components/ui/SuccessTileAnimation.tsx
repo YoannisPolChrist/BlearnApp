@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { CheckCircle2 } from 'lucide-react';
 import { premiumEase } from '@/lib/motion';
 
 interface SuccessTileAnimationProps {
@@ -152,7 +151,31 @@ export function SuccessTileAnimation({
                 animate={{ scale: [0.3, 1.14, 1], opacity: 1 }}
                 transition={{ duration: isCompact ? 0.32 : 0.44, ease: premiumEase, delay: 0.18 }}
               >
-                <CheckCircle2 size={isCompact ? 28 : 44} strokeWidth={2.4} />
+                <svg
+                  width={isCompact ? 28 : 44}
+                  height={isCompact ? 28 : 44}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2.8}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <motion.circle
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 1 }}
+                    transition={{ duration: 0.58, ease: 'easeOut', delay: 0.1 }}
+                  />
+                  <motion.path
+                    d="M8 12.5l3 3 5-6"
+                    initial={{ pathLength: 0, opacity: 0 }}
+                    animate={{ pathLength: 1, opacity: 1 }}
+                    transition={{ duration: 0.38, ease: 'easeOut', delay: 0.48 }}
+                  />
+                </svg>
               </motion.span>
             )}
           </motion.div>

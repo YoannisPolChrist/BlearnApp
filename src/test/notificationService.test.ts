@@ -34,6 +34,7 @@ async function loadService(isAndroidPlatform: boolean) {
 
   vi.doMock('@/lib/platform', () => ({
     isAndroidPlatform,
+    isNativePlatform: isAndroidPlatform,
   }));
   vi.doMock('@/plugins/ScreenTimePlugin', () => ({
     default: screenTimeMock,

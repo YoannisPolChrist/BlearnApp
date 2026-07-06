@@ -18,6 +18,10 @@ import { StrictConfirmDialogs } from './StrictConfirmDialogs';
 
 const LearnDeckLibraryDialog = lazy(() => import('@/components/learn/LearnDeckLibraryDialog'));
 
+// Die View reicht ~40 Props des Modes-Containers unveraendert an die Sections
+// durch; eine vollstaendige Typisierung ist ein eigener Refactor (Props-Interface
+// aus useModesRuntime ableiten). `unknown` wuerde jede Destrukturierung brechen.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ModesPageViewProps = Record<string, any>;
 
 export function ModesPageView(props: ModesPageViewProps) {

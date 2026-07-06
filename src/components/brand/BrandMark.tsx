@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface BrandMarkProps {
@@ -10,6 +10,8 @@ interface BrandMarkProps {
 }
 
 export function BrandMark({ className, size = 44, withHalo = false, withAnimation = false }: BrandMarkProps) {
+  const reducedMotion = useReducedMotion();
+
   const inner = (
     <div
       className={cn(
@@ -37,44 +39,120 @@ export function BrandMark({ className, size = 44, withHalo = false, withAnimatio
           </linearGradient>
         </defs>
 
-        <rect x="6" y="6" width="76" height="76" rx="24" fill="url(#blearn-brand-bg)" />
-        <rect x="6" y="6" width="76" height="76" rx="24" fill="url(#blearn-brand-glow)" opacity="0.9" />
-        <path
-          d="M28 18V70"
-          fill="none"
-          stroke="url(#blearn-brand-stroke)"
-          strokeWidth="12"
-          strokeLinecap="round"
-        />
-        <path
-          d="M28 20H44C54 20 60 25.6 60 34C60 42.4 54 48 44 48H28"
-          fill="none"
-          stroke="url(#blearn-brand-stroke)"
-          strokeWidth="12"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M28 48H46C56.6 48 62 53.8 62 62C62 70.2 56.6 70 46 70H28"
-          fill="none"
-          stroke="url(#blearn-brand-stroke)"
-          strokeWidth="12"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {/* Accent dot — pulses gently when withAnimation is active */}
-        {withAnimation ? (
-          <motion.circle
-            cx="66"
-            cy="24"
-            r="5"
-            fill="#F8C26A"
-            animate={{ scale: [1, 1.28, 1], opacity: [0.84, 1, 0.84] }}
-            transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-            style={{ transformOrigin: '66px 24px' }}
-          />
+        {reducedMotion ? (
+          <>
+            <rect x="6" y="6" width="76" height="76" rx="24" fill="url(#blearn-brand-bg)" />
+            <rect x="6" y="6" width="76" height="76" rx="24" fill="url(#blearn-brand-glow)" opacity="0.9" />
+            <path
+              d="M28 18V70"
+              fill="none"
+              stroke="url(#blearn-brand-stroke)"
+              strokeWidth="12"
+              strokeLinecap="round"
+            />
+            <path
+              d="M28 20H44C54 20 60 25.6 60 34C60 42.4 54 48 44 48H28"
+              fill="none"
+              stroke="url(#blearn-brand-stroke)"
+              strokeWidth="12"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M28 48H46C56.6 48 62 53.8 62 62C62 70.2 56.6 70 46 70H28"
+              fill="none"
+              stroke="url(#blearn-brand-stroke)"
+              strokeWidth="12"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="66" cy="24" r="5" fill="#F8C26A" />
+          </>
         ) : (
-          <circle cx="66" cy="24" r="5" fill="#F8C26A" />
+          <>
+            <motion.rect
+              x="6"
+              y="6"
+              width="76"
+              height="76"
+              rx="24"
+              fill="url(#blearn-brand-bg)"
+              initial={{ scale: 0.84, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.44, ease: [0.16, 1, 0.3, 1] }}
+              style={{ originX: '44px', originY: '44px' }}
+            />
+            <motion.rect
+              x="6"
+              y="6"
+              width="76"
+              height="76"
+              rx="24"
+              fill="url(#blearn-brand-glow)"
+              opacity="0.9"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.9 }}
+              transition={{ duration: 0.55, delay: 0.1 }}
+            />
+            <motion.path
+              d="M28 18V70"
+              fill="none"
+              stroke="url(#blearn-brand-stroke)"
+              strokeWidth="12"
+              strokeLinecap="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 0.45, ease: 'easeOut', delay: 0.12 }}
+            />
+            <motion.path
+              d="M28 20H44C54 20 60 25.6 60 34C60 42.4 54 48 44 48H28"
+              fill="none"
+              stroke="url(#blearn-brand-stroke)"
+              strokeWidth="12"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 0.52, ease: 'easeOut', delay: 0.24 }}
+            />
+            <motion.path
+              d="M28 48H46C56.6 48 62 53.8 62 62C62 70.2 56.6 70 46 70H28"
+              fill="none"
+              stroke="url(#blearn-brand-stroke)"
+              strokeWidth="12"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 0.55, ease: 'easeOut', delay: 0.34 }}
+            />
+            {withAnimation ? (
+              <motion.circle
+                cx="66"
+                cy="24"
+                r="5"
+                fill="#F8C26A"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{
+                  scale: [1, 1.28, 1],
+                  opacity: [0.84, 1, 0.84],
+                }}
+                transition={{ duration: 3.6, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+                style={{ originX: '66px', originY: '24px' }}
+              />
+            ) : (
+              <motion.circle
+                cx="66"
+                cy="24"
+                r="5"
+                fill="#F8C26A"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 360, damping: 16, delay: 0.58 }}
+                style={{ originX: '66px', originY: '24px' }}
+              />
+            )}
+          </>
         )}
       </svg>
     </div>
@@ -85,7 +163,7 @@ export function BrandMark({ className, size = 44, withHalo = false, withAnimatio
   return (
     <motion.div
       style={{ willChange: 'transform, opacity', display: 'inline-flex' }}
-      animate={{
+      animate={reducedMotion ? {} : {
         scale: [0.97, 1.04, 0.97],
         opacity: [0.86, 1, 0.86],
       }}
