@@ -11,6 +11,17 @@ export default defineConfig({
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
     testTimeout: 30000,
     hookTimeout: 30000,
+    // Volle Parallelitaet (Kerne-1 Worker) erzeugt auf dieser Maschine so viel
+    // CPU-Contention, dass einzelne Tests mit eigenen 12-20s-Timeouts in jedem
+    // Gesamtlauf rotierend scheitern (alle bestehen isoliert). Weniger Worker
+    // machen den Lauf minimal langsamer, aber deterministisch gruen.
+    pool: "threads",
+    poolOptions: {
+      threads: {
+        maxThreads: 4,
+        minThreads: 1,
+      },
+    },
     // Hermetic Firebase config: the cloud-sync runtime tests gate on
     // isFirebaseConfigured(), which reads VITE_FIREBASE_*. Without these the
     // suite only passed on machines with a populated .env.local. All network
