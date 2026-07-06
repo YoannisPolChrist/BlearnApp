@@ -48,7 +48,7 @@ vi.mock('firebase/firestore', () => ({
   doc: (...args: unknown[]) => ({ path: args.slice(1).map(String).join('/') }),
   collection: (...args: unknown[]) => ({ path: args.slice(1).map(String).join('/') }),
   getDocs: async (ref: { path: string }) => {
-    const list: any[] = [];
+    const list: Array<{ ref: { path: string }; data: () => unknown }> = [];
     firestoreState.docs.forEach((val, key) => {
       if (key.includes(ref.path)) {
         list.push({
@@ -58,7 +58,7 @@ vi.mock('firebase/firestore', () => ({
       }
     });
     return {
-      forEach: (callback: (doc: any) => void) => list.forEach(callback),
+      forEach: (callback: (doc: { ref: { path: string }; data: () => unknown }) => void) => list.forEach(callback),
     };
   },
   getDoc: async (ref: { path: string }) => ({

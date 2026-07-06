@@ -510,7 +510,6 @@ export function useAppProgressCloudSync(enabled = true) {
     };
 
     const handleNativeBackgroundSync = () => {
-      console.log('[AppProgressCloudSync] Received backgroundSyncTriggered event from native');
       runSync();
     };
 

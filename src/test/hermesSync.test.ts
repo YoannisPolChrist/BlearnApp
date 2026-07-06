@@ -12,9 +12,9 @@ import { useAppStore } from '@/store/useAppStore';
 import { useLearningStore } from '@/store/useLearningStore';
 
 // Mock Firebase SDK
-const docMock = vi.hoisted(() => vi.fn((...args: any[]) => ({ kind: 'doc', path: args.slice(1).join('/') })));
-const collectionMock = vi.hoisted(() => vi.fn((...args: any[]) => ({ kind: 'collection', path: args.slice(1).join('/') })));
-const queryMock = vi.hoisted(() => vi.fn((firstArg: any) => firstArg));
+const docMock = vi.hoisted(() => vi.fn((...args: unknown[]) => ({ kind: 'doc', path: args.slice(1).join('/') })));
+const collectionMock = vi.hoisted(() => vi.fn((...args: unknown[]) => ({ kind: 'collection', path: args.slice(1).join('/') })));
+const queryMock = vi.hoisted(() => vi.fn((firstArg: unknown) => firstArg));
 const whereMock = vi.hoisted(() => vi.fn());
 const getDocsMock = vi.hoisted(() => vi.fn());
 const setDocMock = vi.hoisted(() => vi.fn());

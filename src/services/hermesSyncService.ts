@@ -1,12 +1,30 @@
-import type { Firestore } from 'firebase/firestore';
+import type { Firestore, Timestamp } from 'firebase/firestore';
 import {
   assertFirebaseWritesEnabled,
   ensureFirebaseFirestore,
 } from '@/lib/firebase';
+import { withTimeout } from '@/lib/promiseTimeout';
+import { sanitizeFirestoreValue } from '@/services/firebaseProgressSyncService';
 import { useAppStore } from '@/store/useAppStore';
 import { useLearningStore } from '@/store/useLearningStore';
 
 const USERS_COLLECTION = 'users';
+// Firestore-Writes laufen mit persistentLocalCache: offline resolvt setDoc erst nach
+// Server-Ack. Der Timeout verhindert, dass Sync-Schleifen unbegrenzt haengen.
+const WRITE_TIMEOUT_MS = 15_000;
+
+// Eingaben kommen als Epoch-ms, persistiert wird als Firestore-Timestamp.
+type TimestampField = Timestamp | number | Date;
+
+function toDate(value: TimestampField): Date {
+  if (value instanceof Date) {
+    return value;
+  }
+  if (typeof value === 'number') {
+    return new Date(value);
+  }
+  return value.toDate();
+}
 
 // --- TypeScript Interfaces --------------------------------------------------
 
@@ -23,11 +41,11 @@ export interface AppUsageEvent {
   schema_version: '1.0';
 
   device_id: string;
-  created_at: any; // Firestore Timestamp
-  updated_at?: any; // Firestore Timestamp
+  created_at: TimestampField;
+  updated_at?: TimestampField;
 
-  started_at: any; // Firestore Timestamp
-  ended_at: any; // Firestore Timestamp
+  started_at: TimestampField;
+  ended_at: TimestampField;
   duration_minutes: number;
   timezone: string;
 
@@ -75,11 +93,11 @@ export interface LearningLog {
   schema_version: '1.0';
 
   device_id: string;
-  created_at: any;
-  updated_at?: any;
+  created_at: TimestampField;
+  updated_at?: TimestampField;
 
-  started_at: any;
-  ended_at: any;
+  started_at: TimestampField;
+  ended_at: TimestampField;
   duration_minutes: number;
   timezone: string;
 
@@ -130,8 +148,8 @@ export interface EmotionLog {
   schema_version: '1.0';
 
   device_id: string;
-  created_at: any;
-  timestamp: any;
+  created_at: TimestampField;
+  timestamp: TimestampField;
   timezone: string;
 
   trigger_type: 'manual' | 'app_prompt' | 'after_app_usage' | 'learning_session' | 'daily_checkin' | 'other';
@@ -183,7 +201,7 @@ export interface SyncState {
   schema_version: '1.0';
 
   device_id: string;
-  last_sync_at: any;
+  last_sync_at: TimestampField;
   app_version: string;
   platform: 'ios' | 'android';
   timezone: string;
@@ -192,7 +210,7 @@ export interface SyncState {
   last_error?: {
     code: string;
     message: string;
-    timestamp: any;
+    timestamp: TimestampField;
   };
 }
 
@@ -364,12 +382,16 @@ export async function createAppUsageEvent(event: Omit<AppUsageEvent, 'source' | 
     device_id: getDeviceId(),
     timezone: getTimezone(),
     created_at: sdk.Timestamp.fromDate(new Date()),
-    started_at: sdk.Timestamp.fromDate(new Date(event.started_at)),
-    ended_at: sdk.Timestamp.fromDate(new Date(event.ended_at)),
-    updated_at: event.updated_at ? sdk.Timestamp.fromDate(new Date(event.updated_at)) : undefined,
+    started_at: sdk.Timestamp.fromDate(toDate(event.started_at)),
+    ended_at: sdk.Timestamp.fromDate(toDate(event.ended_at)),
+    updated_at: event.updated_at ? sdk.Timestamp.fromDate(toDate(event.updated_at)) : undefined,
   };
 
-  await sdk.setDoc(docRef, finalEvent);
+  await withTimeout(
+    sdk.setDoc(docRef, sanitizeFirestoreValue(finalEvent)),
+    WRITE_TIMEOUT_MS,
+    'hermes app usage write',
+  );
 }
 
 export async function createLearningLog(log: Omit<LearningLog, 'source' | 'schema_version' | 'timezone' | 'created_at' | 'device_id'>): Promise<void> {
@@ -388,12 +410,16 @@ export async function createLearningLog(log: Omit<LearningLog, 'source' | 'schem
     device_id: getDeviceId(),
     timezone: getTimezone(),
     created_at: sdk.Timestamp.fromDate(new Date()),
-    started_at: sdk.Timestamp.fromDate(new Date(log.started_at)),
-    ended_at: sdk.Timestamp.fromDate(new Date(log.ended_at)),
-    updated_at: log.updated_at ? sdk.Timestamp.fromDate(new Date(log.updated_at)) : undefined,
+    started_at: sdk.Timestamp.fromDate(toDate(log.started_at)),
+    ended_at: sdk.Timestamp.fromDate(toDate(log.ended_at)),
+    updated_at: log.updated_at ? sdk.Timestamp.fromDate(toDate(log.updated_at)) : undefined,
   };
 
-  await sdk.setDoc(docRef, finalLog);
+  await withTimeout(
+    sdk.setDoc(docRef, sanitizeFirestoreValue(finalLog)),
+    WRITE_TIMEOUT_MS,
+    'hermes learning log write',
+  );
 }
 
 export async function createEmotionLog(log: Omit<EmotionLog, 'source' | 'schema_version' | 'timezone' | 'created_at' | 'device_id'>): Promise<void> {
@@ -412,10 +438,14 @@ export async function createEmotionLog(log: Omit<EmotionLog, 'source' | 'schema_
     device_id: getDeviceId(),
     timezone: getTimezone(),
     created_at: sdk.Timestamp.fromDate(new Date()),
-    timestamp: sdk.Timestamp.fromDate(new Date(log.timestamp)),
+    timestamp: sdk.Timestamp.fromDate(toDate(log.timestamp)),
   };
 
-  await sdk.setDoc(docRef, finalLog);
+  await withTimeout(
+    sdk.setDoc(docRef, sanitizeFirestoreValue(finalLog)),
+    WRITE_TIMEOUT_MS,
+    'hermes emotion log write',
+  );
 }
 
 export async function updateSyncState(state: Omit<SyncState, 'source' | 'schema_version' | 'timezone' | 'device_id'>): Promise<void> {
@@ -433,14 +463,18 @@ export async function updateSyncState(state: Omit<SyncState, 'source' | 'schema_
     schema_version: '1.0',
     device_id: deviceId,
     timezone: getTimezone(),
-    last_sync_at: sdk.Timestamp.fromDate(new Date(state.last_sync_at)),
+    last_sync_at: sdk.Timestamp.fromDate(toDate(state.last_sync_at)),
     last_error: state.last_error ? {
       ...state.last_error,
-      timestamp: sdk.Timestamp.fromDate(new Date(state.last_error.timestamp)),
+      timestamp: sdk.Timestamp.fromDate(toDate(state.last_error.timestamp)),
     } : undefined,
   };
 
-  await sdk.setDoc(docRef, finalState);
+  await withTimeout(
+    sdk.setDoc(docRef, sanitizeFirestoreValue(finalState)),
+    WRITE_TIMEOUT_MS,
+    'hermes sync state write',
+  );
 }
 
 export async function syncBackgroundAppUsage(userId: string): Promise<void> {
@@ -501,7 +535,6 @@ export async function syncBackgroundAppUsage(userId: string): Promise<void> {
         });
 
         window.localStorage.setItem(storageKey, entry.totalTimeMs.toString());
-        console.log(`[BackgroundAppUsageSync] Synced ${entry.label} for ${durationMinutes} minutes.`);
       } catch (err) {
         console.warn(`[BackgroundAppUsageSync] Failed to sync ${entry.appId}:`, err);
       }
@@ -514,8 +547,10 @@ export async function syncBackgroundAppUsage(userId: string): Promise<void> {
 export async function backfillHistoricalData(userId: string): Promise<void> {
   const { checkins } = useAppStore.getState();
   const { reviewLogs, decks } = useLearningStore.getState();
-
-  console.log(`[Backfill] Starting historical data backfill for user: ${userId}. Checkins: ${checkins.length}, ReviewLogs: ${Object.keys(reviewLogs).length}`);
+  // Fehler werden pro Dokument gefangen, damit ein einzelner Ausfall nicht den Rest
+  // blockiert — am Ende muss der Aufrufer aber wissen, dass der Backfill unvollstaendig
+  // war, sonst wird das Completed-Flag gesetzt und die Daten fehlen dauerhaft.
+  let failureCount = 0;
 
   // 1. Backfill Check-ins to emotion_logs / app_usage
   for (const checkin of checkins) {
@@ -600,13 +635,15 @@ export async function backfillHistoricalData(userId: string): Promise<void> {
         });
       }
     } catch (err) {
+      failureCount += 1;
       console.warn(`[Backfill] Failed to push check-in ${checkin.id}:`, err);
     }
   }
 
   // 2. Backfill Review Logs to learning_logs
   // Group review logs by date (YYYY-MM-DD)
-  const logsByDate: Record<string, any[]> = {};
+  type StoredReviewLog = (typeof reviewLogs)[string];
+  const logsByDate: Record<string, StoredReviewLog[]> = {};
   for (const log of Object.values(reviewLogs)) {
     const dateKey = new Date(log.reviewedAt).toISOString().split('T')[0];
     if (!logsByDate[dateKey]) {
@@ -662,9 +699,12 @@ export async function backfillHistoricalData(userId: string): Promise<void> {
         },
       });
     } catch (err) {
+      failureCount += 1;
       console.warn(`[Backfill] Failed to push learning log for date ${dateKey}:`, err);
     }
   }
 
-  console.log('[Backfill] Historical data backfill completed.');
+  if (failureCount > 0) {
+    throw new Error(`Backfill incomplete: ${failureCount} document(s) failed to sync.`);
+  }
 }

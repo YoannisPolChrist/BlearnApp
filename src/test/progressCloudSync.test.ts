@@ -92,4 +92,39 @@ describe('progressCloudSync', () => {
 
     timezoneSpy.mockRestore();
   });
+
+  it('slices checkins and interactions in normalize and merge functions to avoid loop mismatches', () => {
+    const manyCheckins = Array.from({ length: 150 }, (_, index) => ({
+      id: `checkin-${index}`,
+      timestamp: Date.now() - index * 1000,
+      emotions: ['calm'],
+      reflection: '',
+      chatHistory: [],
+      breathingCompleted: true,
+    }));
+    const manyInteractions = Array.from({ length: 30 }, (_, index) => ({
+      id: `interaction-${index}`,
+      timestamp: Date.now() - index * 1000,
+      type: 'breathing' as const,
+      emotions: ['calm'],
+      completed: true,
+      durationMinutes: 5,
+    }));
+
+    const normalized = normalizeProgressCloudState({
+      checkins: manyCheckins,
+      interactions: manyInteractions,
+    });
+
+    expect(normalized.checkins).toHaveLength(100);
+    expect(normalized.interactions).toHaveLength(20);
+
+    const merged = mergeProgressCloudStates(
+      { checkins: manyCheckins.slice(0, 80), interactions: manyInteractions.slice(0, 15) },
+      { checkins: manyCheckins.slice(80, 150), interactions: manyInteractions.slice(15, 30) }
+    );
+
+    expect(merged.checkins).toHaveLength(100);
+    expect(merged.interactions).toHaveLength(20);
+  });
 });

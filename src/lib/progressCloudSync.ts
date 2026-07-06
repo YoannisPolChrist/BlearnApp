@@ -260,8 +260,8 @@ export function normalizeProgressCloudState(input?: Partial<ProgressCloudState> 
     : [];
 
   return {
-    checkins: mergeById(checkins, []),
-    interactions: mergeById(interactions, []),
+    checkins: mergeById(checkins, []).slice(0, 100),
+    interactions: mergeById(interactions, []).slice(0, 20),
   };
 }
 
@@ -273,8 +273,8 @@ export function mergeProgressCloudStates(
   const remote = normalizeProgressCloudState(remoteState);
 
   return {
-    checkins: mergeById(local.checkins, remote.checkins),
-    interactions: mergeById(local.interactions, remote.interactions),
+    checkins: mergeById(local.checkins, remote.checkins).slice(0, 100),
+    interactions: mergeById(local.interactions, remote.interactions).slice(0, 20),
   };
 }
 
