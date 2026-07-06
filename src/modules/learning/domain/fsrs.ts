@@ -5,6 +5,8 @@ import {
   State,
   StrategyMode,
   type TSeedStrategy,
+  type TLearningStepsStrategy,
+  type FSRSParameters,
   checkParameters,
   createEmptyCard,
   default_w,
@@ -177,11 +179,105 @@ function buildSchedulerKey(preset: LearningPreset): string {
 // `current` ist in ts-fsrs `protected`, daher strukturell typisieren und beim
 // Übergeben an useStrategy auf TSeedStrategy casten.
 const stableFuzzSeed = function (
-  this: { current: { reps: number; difficulty: number; stability: number } },
+  this: { current?: { reps?: number; difficulty?: number; stability?: number } },
 ): string {
-  const { reps, difficulty, stability } = this.current;
+  const current = this?.current;
+  if (!current) {
+    // Konstanter Fallback: Date.now() wuerde Vorschau- und Submit-Berechnung
+    // auseinanderlaufen lassen (angezeigtes != gespeichertes Intervall).
+    return '0_0';
+  }
+  const reps = current.reps ?? 0;
+  const difficulty = current.difficulty ?? 0;
+  const stability = current.stability ?? 0;
   return `${reps}_${difficulty * stability}`;
 } as unknown as TSeedStrategy;
+
+function convertStepUnitToMinutes(step: string): number {
+  const unit = step.slice(-1);
+  const value = parseInt(step.slice(0, -1), 10);
+  if (Number.isNaN(value) || !Number.isFinite(value) || value < 0) {
+    throw new Error(`Invalid step value: ${step}`);
+  }
+  switch (unit) {
+    case 'm':
+      return value;
+    case 'h':
+      return value * 60;
+    case 'd':
+      return value * 1440;
+    default:
+      throw new Error(`Invalid step unit: ${step}`);
+  }
+}
+
+const customLearningStepsStrategy = function (
+  params: FSRSParameters,
+  state: State,
+  cur_step: number,
+): Record<number, { scheduled_minutes: number; next_step: number }> {
+  const learning_steps =
+    state === State.Relearning || state === State.Review
+      ? params.relearning_steps
+      : params.learning_steps;
+  const steps_length = learning_steps.length;
+  if (steps_length === 0 || cur_step >= steps_length) return {};
+
+  const firstStep = learning_steps[0];
+  const toMinutes = convertStepUnitToMinutes;
+
+  const getAgainInterval = () => {
+    return toMinutes(firstStep);
+  };
+
+  const getHardInterval = () => {
+    if (steps_length === 1) return Math.round(toMinutes(firstStep) * 1.5);
+    const nextStep = learning_steps[1];
+    return Math.round((toMinutes(firstStep) + toMinutes(nextStep)) / 2);
+  };
+
+  const getStepInfo = (index: number) => {
+    if (index < 0 || index >= steps_length) return null;
+    return learning_steps[index];
+  };
+
+  const getGoodMinutes = (step: string) => {
+    return toMinutes(step);
+  };
+
+  const result: Record<number, { scheduled_minutes: number; next_step: number }> = {};
+  const step_info = getStepInfo(Math.max(0, cur_step));
+
+  if (state === State.Review) {
+    result[Rating.Again] = {
+      scheduled_minutes: step_info ? toMinutes(step_info) : toMinutes(firstStep),
+      next_step: 0,
+    };
+    return result;
+  } else {
+    result[Rating.Again] = {
+      scheduled_minutes: getAgainInterval(),
+      next_step: 0,
+    };
+    result[Rating.Hard] = {
+      scheduled_minutes: getHardInterval(),
+      next_step: cur_step + 1,
+    };
+
+    const next_info = getStepInfo(cur_step + 1);
+    if (next_info) {
+      const nextMin = getGoodMinutes(next_info);
+      if (nextMin) {
+        result[Rating.Good] = {
+          scheduled_minutes: Math.round(nextMin),
+          next_step: cur_step + 1,
+        };
+      }
+    }
+  }
+
+  return result;
+} as unknown as TLearningStepsStrategy;
 
 export function getFsrsScheduler(preset: LearningPreset) {
   const key = buildSchedulerKey(preset);
@@ -197,7 +293,9 @@ export function getFsrsScheduler(preset: LearningPreset) {
     enable_short_term: true,
     learning_steps: toStepUnits(preset.learningStepsMinutes),
     relearning_steps: toStepUnits(preset.relearningStepsMinutes),
-  })).useStrategy(StrategyMode.SEED, stableFuzzSeed);
+  }))
+    .useStrategy(StrategyMode.SEED, stableFuzzSeed)
+    .useStrategy(StrategyMode.LEARNING_STEPS, customLearningStepsStrategy);
 
   schedulerCache.set(key, scheduler);
   return scheduler;

@@ -2,6 +2,7 @@ import type { Firestore } from 'firebase/firestore';
 import { assertFirebaseWritesEnabled } from '@/lib/firebase';
 import {
   getLearningCloudStateSignature,
+  getLearningCloudEntitySignature,
   mergeLearningCloudStates,
   normalizeLearningCloudState,
   type LearningCloudState,
@@ -483,6 +484,7 @@ export async function pushLearningCloudMutation(
       clientUpdatedAt: now,
       lastMutationId: mutation.id,
       lastMutationAt: mutation.mutationAt,
+      entitySignature: getLearningCloudEntitySignature(normalizedNextState),
     },
   );
 

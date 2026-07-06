@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, render, waitFor } from '@testing-library/react';
 import { buildEntitiesFromRows, getDefaultLearningPresets } from '@/lib/learning';
-import { getLearningCloudStateSignature } from '@/lib/learningCloudSync';
+import { getLearningCloudStateSignature, getLearningCloudEntitySignature } from '@/lib/learningCloudSync';
 import { waitForPersistStorageIdle } from '@/lib/persistStorage';
 import { toRecordById } from './helpers/storeTestUtils';
 
@@ -720,5 +720,116 @@ describe('useLearningCloudSync account isolation', () => {
         }),
       }),
     );
+  });
+
+  it('updates metadata directly and skips database pulls if entitySignature matches local entities', async () => {
+    const { Harness, useLearningStore, useAuthStore } = await loadHarness();
+    const now = 1_700_000_000_000;
+    const entities = buildEntitiesFromRows(
+      [{ deck: 'Spanish', front: 'hola', back: 'hello', type: 'basic' }],
+      now,
+    );
+
+    const initialRemoteState = {
+      activeDeckId: null,
+      activeDeckUpdatedAt: 0,
+      decks: Object.values(entities.decks),
+      notes: Object.values(entities.notes),
+      cards: Object.values(entities.cards),
+      reviewLogs: [],
+      presets: getDefaultLearningPresets(now),
+      assignments: [],
+      gateRule: {
+        requiredCorrectReviews: 5,
+        unlockDurationMinutes: 15,
+        typedAnswerEnabled: false,
+      },
+      gateRuleUpdatedAt: now,
+      cardBrowser: {
+        searchDraft: '',
+        searchText: '',
+        selectedDeckId: null,
+        selectedCardIds: [],
+        savedSearchId: null,
+        stateFilter: 'all',
+        sortBy: 'due',
+        sortDirection: 'asc',
+        updatedAt: 0,
+      },
+      filteredDeckLiteDefinition: {
+        id: 'filtered-deck-lite-default',
+        name: 'Filtered Deck Lite',
+        selectedDeckId: null,
+        primaryQuery: '',
+        secondaryQuery: '',
+        limit: 25,
+        reschedule: true,
+        allowEmpty: false,
+        delayAgain: 10,
+        delayHard: 30,
+        delayGood: 120,
+        updatedAt: 0,
+      },
+      filteredDeckLiteDefinitions: [],
+      filteredDeckLiteRuns: [],
+    };
+
+    loadLearningCloudSyncCursorMock.mockResolvedValue({
+      mutationId: 'mut-1',
+      mutationAt: now,
+    });
+    loadLearningCloudStateMock.mockResolvedValue(initialRemoteState);
+
+    useAuthStore.setState({
+      status: 'authenticated',
+      authReady: true,
+      user: {
+        uid: 'user-sync',
+        email: 'user-sync@example.com',
+      },
+    });
+
+    await renderHarness(Harness);
+
+    await waitFor(() => {
+      expect(loadLearningCloudStateMock).toHaveBeenCalledWith('user-sync');
+    });
+
+    loadLearningCloudStateMock.mockClear();
+    pullLearningCloudMutationsMock.mockClear();
+
+    const localEntities = {
+      decks: Object.values(useLearningStore.getState().decks),
+      notes: Object.values(useLearningStore.getState().notes),
+      cards: Object.values(useLearningStore.getState().cards),
+      reviewLogs: Object.values(useLearningStore.getState().reviewLogs),
+      presets: Object.values(useLearningStore.getState().presets),
+    };
+    const localEntitySignature = getLearningCloudEntitySignature(localEntities);
+
+    await act(async () => {
+      metadataListener?.({
+        schemaVersion: 2,
+        updatedByDeviceId: 'remote-device',
+        mutationCursor: { mutationId: 'mut-2', mutationAt: now + 1000 },
+        entitySignature: localEntitySignature,
+        activeDeckId: localEntities.decks[0].id,
+        activeDeckUpdatedAt: now + 1000,
+        assignments: [],
+        gateRule: {
+          requiredCorrectReviews: 10,
+          unlockDurationMinutes: 30,
+          typedAnswerEnabled: true,
+        },
+      });
+    });
+
+    await waitFor(() => {
+      expect(useLearningStore.getState().activeDeckId).toBe(localEntities.decks[0].id);
+      expect(useLearningStore.getState().gateRule.requiredCorrectReviews).toBe(10);
+    });
+
+    expect(pullLearningCloudMutationsMock).not.toHaveBeenCalled();
+    expect(loadLearningCloudStateMock).not.toHaveBeenCalled();
   });
 });

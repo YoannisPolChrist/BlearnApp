@@ -258,6 +258,7 @@ export function useLearnReviewSession() {
     currentNote,
     currentStateMeta,
     easyRatingBlocked,
+    hardRatingBlocked,
     effectiveCorrect,
     hasRichTemplateHtml,
     hasUsableLearningDeck,
@@ -358,6 +359,7 @@ export function useLearnReviewSession() {
     handleFallbackToStrictBreathing,
     handleOverlaySuccessDone,
     openLearnHub,
+    handleReturnHome,
   } = useLearnReviewBlockedNavigation({
     dismissOnce,
     isAndroidOverlayUnlockFlow,
@@ -394,6 +396,7 @@ export function useLearnReviewSession() {
     countedReviews,
     currentCard,
     easyRatingBlocked,
+    hardRatingBlocked,
     enqueueDeferredWrite,
     handleRevealAnswer,
     isBlockedFlow,
@@ -474,6 +477,7 @@ export function useLearnReviewSession() {
     currentNote,
     currentStateMeta,
     easyRatingBlocked,
+    hardRatingBlocked,
     goBack,
     handleGoToNextCard,
     handleGoToPreviousCard,
@@ -526,5 +530,6 @@ export function useLearnReviewSession() {
     typedAnswerMatchKind,
     typedCorrect,
     unlockDurationMinutes,
+    handleReturnHome,
   };
 }

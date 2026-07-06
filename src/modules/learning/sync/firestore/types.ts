@@ -52,6 +52,7 @@ export interface LearningCloudMeta {
   clientUpdatedAt?: number;
   lastMutationId?: string;
   lastMutationAt?: number;
+  entitySignature?: string;
 }
 
 export interface LearningCloudReadOptions {

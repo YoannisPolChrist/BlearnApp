@@ -169,6 +169,13 @@ export function useLearningCloudLocalSave({
       return;
     }
 
+    const nextState = readLearningCloudStateFromStore();
+    const nextSignature = getLearningCloudStateSignature(nextState);
+    const previousSignature = getLearningCloudStateSignature(lastSyncedStateRef.current);
+    if (nextSignature === previousSignature) {
+      return;
+    }
+
     clearWindowTimer(pendingSaveTimerRef.current);
     pendingSaveTimerRef.current = window.setTimeout(() => {
       void (async () => {
@@ -177,13 +184,6 @@ export function useLearningCloudLocalSave({
           || activeUserIdRef.current !== authUserId
           || isManualLearningCloudSyncActive()
         ) {
-          return;
-        }
-
-        const nextState = readLearningCloudStateFromStore();
-        const nextSignature = getLearningCloudStateSignature(nextState);
-        const previousSignature = getLearningCloudStateSignature(lastSyncedStateRef.current);
-        if (nextSignature === previousSignature) {
           return;
         }
 

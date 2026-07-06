@@ -132,11 +132,17 @@ export function useLearnReviewDerivedState({
   const effectiveCorrect = requiresTypedAnswer ? typedCorrect === true : true;
   const remainingAttempts = Math.max(0, MAX_TYPED_ANSWER_ATTEMPTS - attemptCount);
   // "Gut"/"Einfach" sind nach einer falschen UND nach einer nur knapp ("partial",
-  // 3-Buchstaben-Tippmodus) richtigen Eingabe gesperrt: Ein Beinahe-Treffer ist
-  // kein voller Abruf und darf kein langes Easy/Good-Intervall verdienen — nur
-  // Nochmal/Schwer (Plan P2-E). Schwer gibt weiterhin Credit, terminiert aber kurz.
+  // 3-Buchstaben-Tippmodus) richtigen Eingabe oder bei direktem Aufdecken ohne Antwort gesperrt:
+  // Ein Beinahe-Treffer ist kein voller Abruf und darf kein langes Easy/Good-Intervall verdienen.
   const easyRatingBlocked =
-    requiresTypedAnswer && (typedCorrect === false || typedAnswerMatchKind === 'partial');
+    requiresTypedAnswer &&
+    (typedCorrect === false || typedCorrect === null || typedAnswerMatchKind === 'partial');
+
+  // "Schwer" ist bei einer völlig falschen Antwort (oder bei direktem Aufdecken ohne Antwort)
+  // ebenfalls gesperrt: Es bleibt dann nur "Nochmal", um eine ehrliche Wiederholung zu erzwingen.
+  const hardRatingBlocked =
+    requiresTypedAnswer &&
+    (typedCorrect === false || typedCorrect === null);
   const cardPrompt = currentCard && currentNote ? getCardPrompt(currentCard, currentNote) : '';
   const cardAnswer = currentNote ? getCardAnswer(currentNote, currentCard ?? undefined) : '';
   const cardPromptHtml = currentCard && currentNote ? getCardPromptHtml(currentCard, currentNote) : '';
@@ -242,6 +248,7 @@ export function useLearnReviewDerivedState({
     currentNote,
     currentStateMeta,
     easyRatingBlocked,
+    hardRatingBlocked,
     effectiveCorrect,
     hasRichTemplateHtml,
     hasUsableLearningDeck,

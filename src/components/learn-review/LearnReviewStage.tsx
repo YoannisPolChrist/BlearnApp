@@ -82,76 +82,6 @@ function LearnReviewStageInner({
     && revealed
     && Boolean(attemptMessage)
     && (typedAnswerMatchKind === 'exact' || typedAnswerMatchKind === 'partial');
-  const cardInner = (
-    <div className="flex min-h-[17.75rem] flex-col rounded-[1.45rem] border border-[hsl(var(--mode-learn-border)/0.28)] bg-[linear-gradient(180deg,hsl(var(--mode-learn-surface)/0.42),hsl(var(--card)/0.9))] p-3.5 shadow-[inset_0_1px_0_hsl(0_0%_100%/0.2),0_22px_56px_hsl(var(--mode-learn-glow)/0.12)] sm:min-h-[19rem] sm:p-4">
-        {mediaUrl ? (
-          <div className="mb-4 overflow-hidden rounded-[1.25rem] border border-[hsl(var(--mode-learn-border)/0.3)]">
-            <img
-              src={mediaUrl}
-              alt={revealed ? mediaAltBack : mediaAltFront}
-              className="h-32 w-full object-cover sm:h-40"
-            />
-          </div>
-        ) : null}
-
-        {!revealed ? (
-          <div
-            className={`flex flex-1 flex-col ${
-              frontUsesTemplatePresentation
-                ? 'items-stretch justify-start text-left'
-                : 'items-center justify-center text-center'
-            }`}
-          >
-            <AnkiRenderedContent
-              html={cardPromptHtml}
-              textFallback={cardPrompt}
-              cardClassName={cardTemplateClass}
-              templateCss={cardTemplateCss}
-              scopeId={`${currentCardId}-front`}
-              className={frontContentClassName}
-            />
-            {frontFeedbackVisible ? (
-              <div
-                className={`mt-5 rounded-[1.15rem] border px-4 py-3 text-sm font-bold ${getTypedFeedbackClasses('incorrect')}`}
-              >
-                {attemptMessage}
-              </div>
-            ) : null}
-          </div>
-        ) : (
-          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto pr-1">
-            {backFeedbackVisible && typedAnswerMatchKind ? (
-              <div
-                className={`mb-4 rounded-[1.15rem] border px-4 py-3 text-sm font-bold ${getTypedFeedbackClasses(typedAnswerMatchKind)}`}
-              >
-                <p>{attemptMessage}</p>
-                {submittedTypedAnswer ? (
-                  <p className="mt-1 text-xs font-semibold opacity-80">Deine Eingabe: {submittedTypedAnswer}</p>
-                ) : null}
-              </div>
-            ) : null}
-            <AnkiRenderedContent
-              html={cardAnswerHtml}
-              textFallback={cardAnswer}
-              cardClassName={cardTemplateClass}
-              templateCss={cardTemplateCss}
-              scopeId={`${currentCardId}-back`}
-              className={
-                hasRichTemplateHtml || backUsesStructuredHtml
-                  ? 'w-full max-w-full break-words text-[1rem] leading-6 text-foreground'
-                  : `break-words font-black tracking-[-0.06em] text-foreground ${
-                      answerIsLong
-                        ? 'text-[1.9rem] leading-[1.1] sm:text-[2.35rem]'
-                        : 'text-[2.15rem] leading-[1.03] sm:text-[2.65rem]'
-                    }`
-              }
-            />
-          </div>
-        )}
-    </div>
-  );
-  const cardContent = <div className="relative z-10 flex min-h-0 flex-col p-2.5 sm:p-3">{cardInner}</div>;
-
   if (reduceInterfaceMotion) {
     return (
       <section className="flex min-h-0 flex-col">
@@ -162,7 +92,74 @@ function LearnReviewStageInner({
           ambient="none"
           className="premium-shell flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.75rem] p-0"
         >
-          {cardContent}
+          <div className="relative z-10 flex min-h-0 flex-col p-2.5 sm:p-3">
+            <div className="flex min-h-[17.75rem] flex-col rounded-[1.45rem] border border-[hsl(var(--mode-learn-border)/0.28)] bg-[linear-gradient(180deg,hsl(var(--mode-learn-surface)/0.42),hsl(var(--card)/0.9))] p-3.5 shadow-[inset_0_1px_0_hsl(0_0%_100%/0.2),0_22px_56px_hsl(var(--mode-learn-glow)/0.12)] sm:min-h-[19rem] sm:p-4">
+              {mediaUrl ? (
+                <div className="mb-4 overflow-hidden rounded-[1.25rem] border border-[hsl(var(--mode-learn-border)/0.3)]">
+                  <img
+                    src={mediaUrl}
+                    alt={revealed ? mediaAltBack : mediaAltFront}
+                    className="h-32 w-full object-cover sm:h-40"
+                  />
+                </div>
+              ) : null}
+
+              {!revealed ? (
+                <div
+                  className={`flex flex-1 flex-col ${
+                    frontUsesTemplatePresentation
+                      ? 'items-stretch justify-start text-left'
+                      : 'items-center justify-center text-center'
+                  }`}
+                >
+                  <AnkiRenderedContent
+                    html={cardPromptHtml}
+                    textFallback={cardPrompt}
+                    cardClassName={cardTemplateClass}
+                    templateCss={cardTemplateCss}
+                    scopeId={`${currentCardId}-front`}
+                    className={frontContentClassName}
+                  />
+                  {frontFeedbackVisible ? (
+                    <div
+                      className={`mt-5 rounded-[1.15rem] border px-4 py-3 text-sm font-bold ${getTypedFeedbackClasses('incorrect')}`}
+                    >
+                      {attemptMessage}
+                    </div>
+                  ) : null}
+                </div>
+              ) : (
+                <div className="flex min-h-0 flex-1 flex-col overflow-y-auto pr-1">
+                  {backFeedbackVisible && typedAnswerMatchKind ? (
+                    <div
+                      className={`mb-4 rounded-[1.15rem] border px-4 py-3 text-sm font-bold ${getTypedFeedbackClasses(typedAnswerMatchKind)}`}
+                    >
+                      <p>{attemptMessage}</p>
+                      {submittedTypedAnswer ? (
+                        <p className="mt-1 text-xs font-semibold opacity-80">Deine Eingabe: {submittedTypedAnswer}</p>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  <AnkiRenderedContent
+                    html={cardAnswerHtml}
+                    textFallback={cardAnswer}
+                    cardClassName={cardTemplateClass}
+                    templateCss={cardTemplateCss}
+                    scopeId={`${currentCardId}-back`}
+                    className={
+                      hasRichTemplateHtml || backUsesStructuredHtml
+                        ? 'w-full max-w-full break-words text-[1rem] leading-6 text-foreground'
+                        : `break-words font-black tracking-[-0.06em] text-foreground ${
+                            answerIsLong
+                              ? 'text-[1.9rem] leading-[1.1] sm:text-[2.35rem]'
+                              : 'text-[2.15rem] leading-[1.03] sm:text-[2.65rem]'
+                          }`
+                    }
+                  />
+                </div>
+              )}
+            </div>
+          </div>
         </GlassCard>
       </section>
     );
@@ -178,15 +175,112 @@ function LearnReviewStageInner({
         ambient="subtle"
         className="premium-shell flex min-h-0 min-w-0 flex-col overflow-hidden rounded-[1.75rem] p-0"
       >
-        <motion.div
-          key={`${currentCardId}-${revealed ? 'answer' : 'prompt'}`}
-          initial={reduceInterfaceMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.32, ease: premiumEase }}
-          className="relative z-10 flex min-h-0 flex-col p-2.5 sm:p-3"
-        >
-          {cardInner}
-        </motion.div>
+        <div key={currentCardId} style={{ perspective: '1000px' }} className="relative z-10 flex min-h-0 flex-col p-2.5 sm:p-3 w-full">
+          <motion.div
+            animate={{ rotateY: revealed ? 180 : 0 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 120, mass: 0.8 }}
+            style={{ transformStyle: 'preserve-3d' }}
+            className="w-full relative min-h-[17.75rem] sm:min-h-[19rem]"
+          >
+            {/* Front Card Face */}
+            <div
+              style={{
+                backfaceVisibility: 'hidden',
+                position: revealed ? 'absolute' : 'relative',
+                pointerEvents: revealed ? 'none' : 'auto',
+                width: '100%',
+                height: '100%',
+              }}
+              className="left-0 top-0 flex flex-col rounded-[1.45rem] border border-[hsl(var(--mode-learn-border)/0.28)] bg-[linear-gradient(180deg,hsl(var(--mode-learn-surface)/0.42),hsl(var(--card)/0.9))] p-3.5 shadow-[inset_0_1px_0_hsl(0_0%_100%/0.2),0_22px_56px_hsl(var(--mode-learn-glow)/0.12)] sm:p-4"
+            >
+              {mediaUrl ? (
+                <div className="mb-4 overflow-hidden rounded-[1.25rem] border border-[hsl(var(--mode-learn-border)/0.3)]">
+                  <img
+                    src={mediaUrl}
+                    alt={mediaAltFront}
+                    className="h-32 w-full object-cover sm:h-40"
+                  />
+                </div>
+              ) : null}
+
+              <div
+                className={`flex flex-1 flex-col ${
+                  frontUsesTemplatePresentation
+                    ? 'items-stretch justify-start text-left'
+                    : 'items-center justify-center text-center'
+                }`}
+              >
+                <AnkiRenderedContent
+                  html={cardPromptHtml}
+                  textFallback={cardPrompt}
+                  cardClassName={cardTemplateClass}
+                  templateCss={cardTemplateCss}
+                  scopeId={`${currentCardId}-front`}
+                  className={frontContentClassName}
+                />
+                {frontFeedbackVisible ? (
+                  <div
+                    className={`mt-5 rounded-[1.15rem] border px-4 py-3 text-sm font-bold ${getTypedFeedbackClasses('incorrect')}`}
+                  >
+                    {attemptMessage}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+
+            {/* Back Card Face */}
+            <div
+              style={{
+                backfaceVisibility: 'hidden',
+                transform: 'rotateY(180deg)',
+                position: !revealed ? 'absolute' : 'relative',
+                pointerEvents: !revealed ? 'none' : 'auto',
+                width: '100%',
+                height: '100%',
+              }}
+              className="left-0 top-0 flex flex-col rounded-[1.45rem] border border-[hsl(var(--mode-learn-border)/0.28)] bg-[linear-gradient(180deg,hsl(var(--mode-learn-surface)/0.42),hsl(var(--card)/0.9))] p-3.5 shadow-[inset_0_1px_0_hsl(0_0%_100%/0.2),0_22px_56px_hsl(var(--mode-learn-glow)/0.12)] sm:p-4"
+            >
+              {mediaUrl ? (
+                <div className="mb-4 overflow-hidden rounded-[1.25rem] border border-[hsl(var(--mode-learn-border)/0.3)]">
+                  <img
+                    src={mediaUrl}
+                    alt={mediaAltBack}
+                    className="h-32 w-full object-cover sm:h-40"
+                  />
+                </div>
+              ) : null}
+
+              <div className="flex min-h-0 flex-1 flex-col overflow-y-auto pr-1">
+                {backFeedbackVisible && typedAnswerMatchKind ? (
+                  <div
+                    className={`mb-4 rounded-[1.15rem] border px-4 py-3 text-sm font-bold ${getTypedFeedbackClasses(typedAnswerMatchKind)}`}
+                  >
+                    <p>{attemptMessage}</p>
+                    {submittedTypedAnswer ? (
+                      <p className="mt-1 text-xs font-semibold opacity-80">Deine Eingabe: {submittedTypedAnswer}</p>
+                    ) : null}
+                  </div>
+                ) : null}
+                <AnkiRenderedContent
+                  html={cardAnswerHtml}
+                  textFallback={cardAnswer}
+                  cardClassName={cardTemplateClass}
+                  templateCss={cardTemplateCss}
+                  scopeId={`${currentCardId}-back`}
+                  className={
+                    hasRichTemplateHtml || backUsesStructuredHtml
+                      ? 'w-full max-w-full break-words text-[1rem] leading-6 text-foreground'
+                      : `break-words font-black tracking-[-0.06em] text-foreground ${
+                          answerIsLong
+                            ? 'text-[1.9rem] leading-[1.1] sm:text-[2.35rem]'
+                            : 'text-[2.15rem] leading-[1.03] sm:text-[2.65rem]'
+                        }`
+                  }
+                />
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </GlassCard>
     </motion.section>
   );

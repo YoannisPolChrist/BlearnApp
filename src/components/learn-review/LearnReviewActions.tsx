@@ -13,6 +13,7 @@ interface LearnReviewActionsProps {
   blockedEasyHintVisible: boolean;
   blockedEasyPulseKey: number;
   easyRatingBlocked: boolean;
+  hardRatingBlocked: boolean;
   canUndo: boolean;
   intervalPreviews: Record<ReviewRating, string> | null;
   onCheckTypedAnswer: () => void;
@@ -36,6 +37,7 @@ function LearnReviewActionsInner({
   blockedEasyHintVisible,
   blockedEasyPulseKey,
   easyRatingBlocked,
+  hardRatingBlocked,
   canUndo,
   intervalPreviews,
   onCheckTypedAnswer,
@@ -216,9 +218,13 @@ function LearnReviewActionsInner({
 
           <div className="grid grid-cols-4 gap-1.5 sm:gap-2.5">
             {(['again', 'hard', 'good', 'easy'] as ReviewRating[]).map((rating, index) => {
-              // Nach falscher Tipp-Eingabe nur "Nochmal" + "Schwer" zulassen.
-              const isDisabled = (rating === 'easy' || rating === 'good') && easyRatingBlocked;
-              const isBlockedEasy = (rating === 'easy' || rating === 'good') && easyRatingBlocked;
+              // Nach falscher Tipp-Eingabe (oder leerem Abruf) nur "Nochmal" zulassen.
+              const isDisabled =
+                ((rating === 'easy' || rating === 'good') && easyRatingBlocked) ||
+                (rating === 'hard' && hardRatingBlocked);
+              const isBlockedEasy =
+                ((rating === 'easy' || rating === 'good') && easyRatingBlocked) ||
+                (rating === 'hard' && hardRatingBlocked);
 
               return (
                 <motion.button
@@ -251,7 +257,11 @@ function LearnReviewActionsInner({
             })}
           </div>
 
-          {easyRatingBlocked || blockedEasyHintVisible ? (
+          {hardRatingBlocked ? (
+            <div className="mt-2 text-[10px] font-black uppercase tracking-[0.15em] text-foreground/68">
+              Nur Nochmal möglich.
+            </div>
+          ) : easyRatingBlocked || blockedEasyHintVisible ? (
             <div className="mt-2 text-[10px] font-black uppercase tracking-[0.15em] text-foreground/68">
               Nur Nochmal oder Schwer möglich.
             </div>

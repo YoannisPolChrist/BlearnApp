@@ -113,11 +113,16 @@ export function useLearnReviewBlockedNavigation({
     void exitBlockedLearnSession(`/breathing?${params.toString()}`);
   }, [exitBlockedLearnSession, searchParams, targetId, targetType]);
 
+  const handleReturnHome = useCallback(async () => {
+    await exitBlockedLearnSession('/');
+  }, [exitBlockedLearnSession]);
+
   return {
     goBack,
     handleContinueToTarget,
     handleFallbackToStrictBreathing,
     handleOverlaySuccessDone,
     openLearnHub,
+    handleReturnHome,
   };
 }

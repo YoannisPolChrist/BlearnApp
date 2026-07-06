@@ -4,6 +4,7 @@ import { isFirebaseConfigured, isFirebaseWriteEnabled } from '@/lib/firebase';
 import { useCloudSyncRuntimeStore } from '@/lib/cloudSyncRuntime';
 import {
   getLearningCloudStateSignature,
+  getLearningCloudEntitySignature,
   isLearningCloudStateEmpty,
   mergeLearningCloudStates,
   normalizeLearningCloudState,
@@ -97,6 +98,7 @@ export function useLearningCloudSync(enabled = true) {
   const remoteSubscriptionRef = useRef<(() => void) | null>(null);
   const pendingSaveTimerRef = useRef<number | null>(null);
   const retryInitTimerRef = useRef<number | null>(null);
+  const retryAttemptRef = useRef<number>(0);
   const remoteMutationCursorRef = useRef<LearningCloudSyncCursor | null>(null);
   const remoteLoadCursorRef = useRef<string | null>(null);
   const syncReadyRef = useRef(false);
@@ -136,6 +138,7 @@ export function useLearningCloudSync(enabled = true) {
     }
 
     let cancelled = false;
+    retryAttemptRef.current = 0;
     clearWindowTimer(pendingSaveTimerRef.current);
     pendingSaveTimerRef.current = null;
     clearWindowTimer(retryInitTimerRef.current);
@@ -325,6 +328,44 @@ export function useLearningCloudSync(enabled = true) {
             try {
               const currentLocalState = readLearningCloudStateFromStore();
 
+              if (meta.entitySignature && meta.entitySignature === getLearningCloudEntitySignature(currentLocalState)) {
+                const mergedRemoteState = normalizeLearningCloudState({
+                  ...currentLocalState,
+                  activeDeckId: meta.activeDeckId,
+                  activeDeckUpdatedAt: meta.activeDeckUpdatedAt,
+                  assignments: meta.assignments,
+                  gateRule: meta.gateRule,
+                  gateRuleUpdatedAt: meta.gateRuleUpdatedAt,
+                  cardBrowser: meta.cardBrowser,
+                  savedCardQueries: meta.savedCardQueries,
+                  filteredDeckLiteDefinition: meta.filteredDeckLiteDefinition,
+                  filteredDeckLiteDefinitions: meta.filteredDeckLiteDefinitions,
+                  filteredDeckLiteRuns: meta.filteredDeckLiteRuns,
+                });
+
+                lastSyncedStateRef.current = mergedRemoteState;
+                remoteMutationCursorRef.current = remoteMutationCursor || remoteMutationCursorRef.current;
+                cacheLearningCloudSyncBaseline(authUserId, mergedRemoteState, remoteMutationCursorRef.current);
+                remoteLoadCursorRef.current = null;
+
+                if (
+                  getLearningCloudStateSignature(mergedRemoteState)
+                  === getLearningCloudStateSignature(currentLocalState)
+                ) {
+                  return;
+                }
+
+                applyingRemoteStateRef.current = true;
+                writeLearningCloudStateToStore(mergedRemoteState);
+                applyingRemoteStateRef.current = false;
+                setLearningSyncRuntime({
+                  status: 'ready',
+                  currentError: null,
+                  lastSuccessfulSyncAt: remoteMutationCursorRef.current?.mutationAt || Date.now(),
+                });
+                return;
+              }
+
               if (remoteMutationCursor) {
                 remoteLoadCursorRef.current = remoteMutationCursor.mutationId;
                 const pulled = await withTimeout(
@@ -425,6 +466,7 @@ export function useLearningCloudSync(enabled = true) {
           },
         );
         syncReadyRef.current = true;
+        retryAttemptRef.current = 0;
       } catch (error) {
         syncReadyRef.current = false;
         setLearningSyncRuntime({
@@ -433,13 +475,18 @@ export function useLearningCloudSync(enabled = true) {
         });
         console.warn('Learning cloud sync initialization failed:', error);
         if (!cancelled && activeUserIdRef.current === authUserId && !isManualLearningCloudSyncActive()) {
+          retryAttemptRef.current += 1;
+          const retryDelay = Math.min(
+            5000 * Math.pow(2, Math.max(0, retryAttemptRef.current - 1)),
+            5 * 60 * 1000 // 5 minutes max
+          );
           clearWindowTimer(retryInitTimerRef.current);
           retryInitTimerRef.current = window.setTimeout(() => {
             retryInitTimerRef.current = null;
             if (!cancelled && activeUserIdRef.current === authUserId && !isManualLearningCloudSyncActive()) {
               void startSync();
             }
-          }, LEARNING_CLOUD_INIT_RETRY_MS);
+          }, retryDelay);
         }
       }
     };

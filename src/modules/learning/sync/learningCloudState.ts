@@ -5,6 +5,7 @@ export {
 } from './cloudState/learningCloudStateContract';
 export {
   getLearningCloudStateSignature,
+  getLearningCloudEntitySignature,
   isLearningCloudStateEmpty,
 } from './cloudState/learningCloudStateSignature';
 export type {

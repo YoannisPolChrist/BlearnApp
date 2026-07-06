@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import GlassCard from '@/components/GlassCard';
 import PageTransition from '@/components/PageTransition';
@@ -9,12 +9,15 @@ import { LearnReviewEmptyState } from '@/components/learn-review/LearnReviewEmpt
 import { LearnReviewPageHeader } from '@/components/learn-review/LearnReviewHeader';
 import { LearnReviewStage } from '@/components/learn-review/LearnReviewStage';
 import { LearnReviewSuccessState } from '@/components/learn-review/LearnReviewSuccessState';
+import { CoachRemoteBlockScreen } from '@/components/blocking/CoachRemoteBlockScreen';
 import { useLearnReviewSession } from '@/hooks/useLearnReviewSession';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { sectionStagger } from '@/lib/motion';
 import { tonePalettes } from '@/lib/semanticTones';
 import { cn } from '@/lib/utils';
 import { EMOTION_CATEGORIES } from '@/store/useAppStore';
+import { useI18n } from '@/hooks/useI18n';
+import { useAppStore } from '@/store/useAppStore';
 
 export default function LearnReviewPage() {
   const reducedMotion = useReducedMotion();
@@ -22,6 +25,23 @@ export default function LearnReviewPage() {
   const reduceInterfaceMotion = reducedMotion || isMobile;
   const showBackdropImage = !reduceInterfaceMotion;
   const session = useLearnReviewSession();
+  const { locale } = useI18n();
+  const isGerman = locale.toLowerCase().startsWith('de');
+  const remoteBlockingInstruction = useAppStore((state) => state.remoteBlockingInstruction);
+  const resolvedRemoteBlockedApps = useAppStore((state) => state.resolvedRemoteBlockedApps);
+
+  const isRemoteBlocked = useMemo(() => {
+    if (!session.targetId) return false;
+    const normalizedTarget = session.targetId.toLowerCase();
+    return resolvedRemoteBlockedApps.some((app) => app.toLowerCase() === normalizedTarget);
+  }, [resolvedRemoteBlockedApps, session.targetId]);
+
+  const isCurrentlyRemoteBlocked = Boolean(
+    isRemoteBlocked &&
+      remoteBlockingInstruction &&
+      remoteBlockingInstruction.expiresAt > Date.now()
+  );
+
   const blockingBackdropStyle = session.isBlockedFlow
     ? {
         background:
@@ -36,6 +56,22 @@ export default function LearnReviewPage() {
       behavior: 'auto',
     });
   }, []);
+
+  if (isCurrentlyRemoteBlocked) {
+    return (
+      <PageTransition variant="hero" disableMotion={reduceInterfaceMotion}>
+        <CoachRemoteBlockScreen
+          onReturnHome={session.handleReturnHome}
+          targetId={session.targetId}
+          targetLabel={session.blockedTargetLabel}
+          targetType={session.targetType}
+          expiresAt={remoteBlockingInstruction?.expiresAt}
+          isGerman={isGerman}
+          reduceInterfaceMotion={reduceInterfaceMotion}
+        />
+      </PageTransition>
+    );
+  }
 
   if (session.overlaySuccessVisible || (!session.targetId && session.success)) {
     return (
@@ -251,6 +287,7 @@ export default function LearnReviewPage() {
                     blockedEasyHintVisible={session.blockedEasyHintVisible}
                     blockedEasyPulseKey={session.blockedEasyPulseKey}
                     easyRatingBlocked={session.easyRatingBlocked}
+                    hardRatingBlocked={session.hardRatingBlocked}
                     latestFeedbackMessage={session.latestFeedbackMessage}
                     isBlockedFlow={session.isBlockedFlow}
                     intervalPreviews={session.intervalPreviews}
@@ -303,6 +340,7 @@ export default function LearnReviewPage() {
                     blockedEasyHintVisible={session.blockedEasyHintVisible}
                     blockedEasyPulseKey={session.blockedEasyPulseKey}
                     easyRatingBlocked={session.easyRatingBlocked}
+                    hardRatingBlocked={session.hardRatingBlocked}
                     latestFeedbackMessage={session.latestFeedbackMessage}
                     isBlockedFlow={session.isBlockedFlow}
                     intervalPreviews={session.intervalPreviews}

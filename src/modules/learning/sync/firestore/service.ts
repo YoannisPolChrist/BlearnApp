@@ -1,6 +1,7 @@
 import { assertFirebaseWritesEnabled } from '@/lib/firebase';
 import {
   getLearningCloudStateSignature,
+  getLearningCloudEntitySignature,
   isLearningCloudStateEmpty,
   normalizeLearningCloudState,
   type LearningCloudState,
@@ -294,6 +295,7 @@ export async function saveLearningCloudState(
       cardCount: normalizedNextState.cards.length,
       reviewLogCount: normalizedNextState.reviewLogs.length,
       presetCount: normalizedNextState.presets.length,
+      entitySignature: getLearningCloudEntitySignature(normalizedNextState),
     };
 
     await writeLearningCloudMutationAndMeta(sdk, firestore, userId, persistedMutation, meta);

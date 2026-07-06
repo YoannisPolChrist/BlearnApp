@@ -1,6 +1,7 @@
 export {
   MAX_CLOUD_REVIEW_LOGS,
   getLearningCloudStateSignature,
+  getLearningCloudEntitySignature,
   isLearningCloudStateEmpty,
   mergeLearningCloudStates,
   normalizeLearningCloudState,

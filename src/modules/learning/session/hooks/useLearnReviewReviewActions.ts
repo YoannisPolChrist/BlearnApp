@@ -10,6 +10,7 @@ export function useLearnReviewReviewActions({
   countedReviews,
   currentCard,
   easyRatingBlocked,
+  hardRatingBlocked,
   enqueueDeferredWrite,
   handleRevealAnswer,
   isBlockedFlow,
@@ -36,6 +37,7 @@ export function useLearnReviewReviewActions({
   countedReviews: number;
   currentCard?: LearningCard;
   easyRatingBlocked: boolean;
+  hardRatingBlocked: boolean;
   enqueueDeferredWrite: (write: () => void) => void;
   handleRevealAnswer: () => void;
   isBlockedFlow: boolean;
@@ -113,12 +115,18 @@ export function useLearnReviewReviewActions({
     (rating: ReviewRating) => {
       if (!currentCard || !activeDeck) return;
 
-      // Nach einer falschen Tipp-Eingabe bleiben nur "Nochmal" und "Schwer" —
-      // "Gut"/"Leicht" wären bei nicht gewusster Antwort unehrlich (FSRS-Qualität).
+      // Nach einer falschen Tipp-Eingabe (oder leerem Abruf) ist nur "Nochmal" erlaubt.
+      if (hardRatingBlocked && rating === 'hard') {
+        setBlockedEasyHintVisible(true);
+        setBlockedEasyPulseKey((current) => current + 1);
+        recordFeedback('toast', 'Nur Nochmal möglich.');
+        return;
+      }
+
       if (easyRatingBlocked && (rating === 'easy' || rating === 'good')) {
         setBlockedEasyHintVisible(true);
         setBlockedEasyPulseKey((current) => current + 1);
-        recordFeedback('toast', 'Nur Nochmal oder Schwer möglich.');
+        recordFeedback('toast', hardRatingBlocked ? 'Nur Nochmal möglich.' : 'Nur Nochmal oder Schwer möglich.');
         return;
       }
 
@@ -186,6 +194,7 @@ export function useLearnReviewReviewActions({
       countedReviews,
       currentCard,
       easyRatingBlocked,
+      hardRatingBlocked,
       enqueueDeferredWrite,
       isBlockedFlow,
       pendingCompletionKindRef,

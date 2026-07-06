@@ -132,15 +132,15 @@ export function subscribeToLearningCloudMetadata(
   onChange: (meta: LearningCloudMeta | null) => void,
   onError?: (error: Error) => void,
 ): Unsubscribe {
-  const firestore = assertFirestore();
   let cancelled = false;
   let unsubscribe: Unsubscribe = () => {};
 
-  void loadFirestoreSdk()
-    .then((sdk) => {
-      if (cancelled) {
-        return;
-      }
+  void (async () => {
+    try {
+      const firestore = await ensureFirestore();
+      if (cancelled) return;
+      const sdk = await loadFirestoreSdk();
+      if (cancelled) return;
 
       unsubscribe = sdk.onSnapshot(
         getMetaDoc(sdk, firestore, userId),
@@ -155,12 +155,12 @@ export function subscribeToLearningCloudMetadata(
           onError?.(error);
         },
       );
-    })
-    .catch((error) => {
+    } catch (error) {
       if (!cancelled) {
         onError?.(error instanceof Error ? error : new Error('Learning cloud metadata subscription failed.'));
       }
-    });
+    }
+  })();
 
   return () => {
     cancelled = true;

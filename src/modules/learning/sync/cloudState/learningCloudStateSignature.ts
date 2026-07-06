@@ -122,3 +122,19 @@ export function isLearningCloudStateEmpty(
     )
   );
 }
+
+export function getLearningCloudEntitySignature(
+  state?: Partial<LearningCloudState> | null,
+): string {
+  if (!state) {
+    return 'empty';
+  }
+
+  const decksSig = getFastArraySignature(state.decks, getDeckRevision);
+  const notesSig = getFastArraySignature(state.notes, getNoteRevision);
+  const cardsSig = getFastArraySignature(state.cards, getCardRevision);
+  const reviewLogsSig = getFastArraySignature(state.reviewLogs, getReviewLogRevision);
+  const presetsSig = getFastArraySignature(state.presets, getPresetRevision);
+
+  return `${decksSig}|${notesSig}|${cardsSig}|${reviewLogsSig}|${presetsSig}`;
+}

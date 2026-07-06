@@ -538,6 +538,36 @@ describe('learning scheduler', () => {
     expect(storedDaysByRating.good).toBeLessThanOrEqual(storedDaysByRating.easy);
   });
 
+  it('graduates a card from learning state to review state when consistently rated as hard', () => {
+    const now = 1_700_000_000_000;
+    const { cards } = buildEntitiesFromRows(
+      [{ deck: 'Deck', front: 'house', back: 'Haus', type: 'basic' }],
+      now,
+    );
+
+    // Initial state: new
+    let card = cards[0];
+    expect(card.state).toBe('new');
+
+    // 1. Good rating -> Learning state, stepIndex = 1
+    const r1 = buildReviewResult(card, 'good', true, getDefaultLearningPreset(), now);
+    card = r1.updatedCard;
+    expect(card.state).toBe('learning');
+    expect(card.stepIndex).toBe(1);
+
+    // 2. Hard rating -> Learning state, stepIndex = 2 (thanks to custom strategy!)
+    const r2 = buildReviewResult(card, 'hard', true, getDefaultLearningPreset(), now + 10 * 60 * 1000);
+    card = r2.updatedCard;
+    expect(card.state).toBe('learning');
+    expect(card.stepIndex).toBe(2);
+
+    // 3. Hard rating -> Graduates to Review state!
+    const r3 = buildReviewResult(card, 'hard', true, getDefaultLearningPreset(), now + 20 * 60 * 1000);
+    card = r3.updatedCard;
+    expect(card.state).toBe('review');
+    expect(card.scheduledDays).toBeGreaterThan(0);
+  });
+
   it('maps answer-button ratings to different future due timestamps', () => {
     const now = 1_700_000_000_000;
     const { cards } = buildEntitiesFromRows(

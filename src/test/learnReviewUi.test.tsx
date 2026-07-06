@@ -104,6 +104,7 @@ async function loadLearnReviewPage(options?: { applyMocks?: () => void }) {
 
   vi.doMock('@/lib/platform', () => ({
     isAndroidPlatform: true,
+    isNativePlatform: true,
   }));
   vi.doMock('@/lib/persistStorage', async () => {
     const actual = await vi.importActual<typeof import('@/lib/persistStorage')>('@/lib/persistStorage');
@@ -797,11 +798,20 @@ describe('Learn review typed-answer UI', () => {
   it('keeps partial typed-answer feedback visible after manually revealing the answer', async () => {
     await renderReviewSession(10);
 
-    // Ohne getippte Antwort ist nur Nochmal/Schwer erlaubt (Tip-Modus) — mit
-    // "Schwer" durch die Setup-Karten zur Zielkarte vorrücken.
+    // Die Setup-Karten mit korrekten Antworten bewerten, da leere Antworten
+    // nun die Bewertungstasten (Schwer/Gut/Einfach) sperren.
+    const correctAnswers = ['Haus', 'Apfel', null, 'Buch'];
     for (let completedCards = 0; completedCards < 4; completedCards += 1) {
+      const answer = correctAnswers[completedCards];
+      if (answer) {
+        fireEvent.change(await screen.findByPlaceholderText('Antwort eingeben'), {
+          target: { value: answer },
+        });
+        fireEvent.click(getCheckTypedAnswerButton());
+      }
       fireEvent.click(await findRevealButton());
-      fireEvent.click(await screen.findByRole('button', { name: /hard/i }));
+      const buttonName = answer ? /good/i : /hard/i;
+      fireEvent.click(await screen.findByRole('button', { name: buttonName }));
     }
 
     expect(await screen.findByText('friend')).toBeInTheDocument();
