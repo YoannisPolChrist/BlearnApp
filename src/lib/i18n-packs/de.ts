@@ -350,6 +350,28 @@ const dePack: TranslationTree = {
       },
     },
   },
+  remoteBlocking: {
+    overlay: {
+      title: 'Vom Coach gesperrt',
+      description: 'Diese App wurde remote gesperrt. Zugriff wieder bereit ab {time} Uhr (in ca. {minutes} Minuten).',
+    },
+    screen: {
+      title: 'Vom Coach gesperrt',
+      description: 'Dein Coach hat diese {targetType} ({label}) vorübergehend gesperrt, um dich vor Ablenkungen zu schützen.',
+      timeDetails: 'Freigabe erst wieder ab {time} Uhr (in ca. {minutes} Minuten).',
+      returnHome: 'Zurück zum Hauptbildschirm',
+      targetTypes: {
+        app: 'App',
+        website: 'Webseite',
+        search: 'Suchanfrage',
+      },
+    },
+    settings: {
+      title: 'Coach-Remote-Sperre',
+      subtitle: 'Steuerung zulassen',
+      description: 'Erlaubt dem Hermes-Coaching-Server, dich bei Bedarf temporär aus Apps auszusperren. Schalte dies aus, um alle Fernsperren sofort aufzuheben.',
+    },
+  },
 } as const;
 
 export default dePack;

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ShieldAlert, ArrowLeft, Globe, Search, Smartphone } from 'lucide-react';
+import { useI18n } from '@/hooks/useI18n';
 import { ctaFollowThrough, premiumEase } from '@/lib/motion';
 import { tonePalettes } from '@/lib/semanticTones';
 import { cn } from '@/lib/utils';
@@ -11,7 +12,6 @@ interface CoachRemoteBlockScreenProps {
   targetLabel?: string | null;
   targetType?: 'app' | 'website' | 'search' | null;
   expiresAt?: number | null;
-  isGerman?: boolean;
 }
 
 export function CoachRemoteBlockScreen({
@@ -21,18 +21,13 @@ export function CoachRemoteBlockScreen({
   targetLabel,
   targetType,
   expiresAt,
-  isGerman = true,
 }: CoachRemoteBlockScreenProps) {
+  const { t, locale } = useI18n();
   // Use warning/reflection palette for coach block to feel protective and clear
   const palette = tonePalettes.reflection;
-  
-  const defaultLabel = targetType === 'website' 
-    ? (isGerman ? 'Webseite' : 'Website') 
-    : targetType === 'search' 
-      ? (isGerman ? 'Suchanfrage' : 'Search') 
-      : (isGerman ? 'App' : 'App');
-      
-  const displayLabel = targetLabel?.trim() || targetId?.trim() || defaultLabel;
+
+  const targetTypeLabel = t(`remoteBlocking.screen.targetTypes.${targetType === 'website' || targetType === 'search' ? targetType : 'app'}`);
+  const displayLabel = targetLabel?.trim() || targetId?.trim() || targetTypeLabel;
 
   const TargetIcon = (() => {
     if (targetType === 'website') {
@@ -45,7 +40,7 @@ export function CoachRemoteBlockScreen({
   })();
 
   const timeString = expiresAt
-    ? new Date(expiresAt).toLocaleTimeString(isGerman ? 'de-DE' : 'en-US', {
+    ? new Date(expiresAt).toLocaleTimeString(locale, {
         hour: '2-digit',
         minute: '2-digit',
       })
@@ -55,19 +50,15 @@ export function CoachRemoteBlockScreen({
     ? Math.max(0, Math.ceil((expiresAt - Date.now()) / 60_000))
     : 0;
 
-  const title = isGerman ? 'Vom Coach gesperrt' : 'Remotely Blocked';
-  
-  const description = isGerman
-    ? `Dein Coach hat diese ${targetType === 'website' ? 'Webseite' : targetType === 'search' ? 'Suchanfrage' : 'App'} (${displayLabel}) vorübergehend gesperrt, um dich vor Ablenkungen zu schützen.`
-    : `Your coach has temporarily blocked this ${targetType === 'website' ? 'website' : targetType === 'search' ? 'search request' : 'app'} (${displayLabel}) to protect you from distractions.`;
-
+  const title = t('remoteBlocking.screen.title');
+  const description = t('remoteBlocking.screen.description', {
+    targetType: targetTypeLabel,
+    label: displayLabel,
+  });
   const timeDetails = timeString
-    ? (isGerman 
-        ? `Freigabe erst wieder ab ${timeString} Uhr (in ca. ${diffMins} Minuten).`
-        : `Access will be restored at ${timeString} (in about ${diffMins} minutes).`)
+    ? t('remoteBlocking.screen.timeDetails', { time: timeString, minutes: diffMins })
     : '';
-
-  const buttonLabel = isGerman ? 'Zurück zum Hauptbildschirm' : 'Back to Main Screen';
+  const buttonLabel = t('remoteBlocking.screen.returnHome');
 
   return (
     <div className="app-page app-page-compact page-shell-clip section-stack min-h-screen flex items-center justify-center bg-background px-6">

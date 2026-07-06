@@ -25,8 +25,6 @@ export default function LearnReviewPage() {
   const reduceInterfaceMotion = reducedMotion || isMobile;
   const showBackdropImage = !reduceInterfaceMotion;
   const session = useLearnReviewSession();
-  const { locale } = useI18n();
-  const isGerman = locale.toLowerCase().startsWith('de');
   const remoteBlockingInstruction = useAppStore((state) => state.remoteBlockingInstruction);
   const resolvedRemoteBlockedApps = useAppStore((state) => state.resolvedRemoteBlockedApps);
 
@@ -66,7 +64,6 @@ export default function LearnReviewPage() {
           targetLabel={session.blockedTargetLabel}
           targetType={session.targetType}
           expiresAt={remoteBlockingInstruction?.expiresAt}
-          isGerman={isGerman}
           reduceInterfaceMotion={reduceInterfaceMotion}
         />
       </PageTransition>

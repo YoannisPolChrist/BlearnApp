@@ -95,10 +95,10 @@ export function BlockingSettingsSection({
                 </div>
                 <div className="min-w-0">
                   <p className="font-semibold text-foreground">
-                    {isGerman ? 'Coach-Remote-Sperre' : 'Coach Remote Control'}
+                    {t('remoteBlocking.settings.title')}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {isGerman ? 'Steuerung zulassen' : 'Allow remote locking'}
+                    {t('remoteBlocking.settings.subtitle')}
                   </p>
                 </div>
               </div>
@@ -111,9 +111,7 @@ export function BlockingSettingsSection({
             </div>
             <div className="premium-divider" />
             <p className="text-xs leading-relaxed text-muted-foreground/90">
-              {isGerman
-                ? 'Erlaubt dem Hermes-Coaching-Server, dich bei Bedarf temporär aus Apps auszusperren. Schalte dies aus, um alle Fernsperren sofort aufzuheben.'
-                : 'Allows the Hermes coaching server to temporarily block distracting apps. Turn off to immediately disable and lift all remote locks.'}
+              {t('remoteBlocking.settings.description')}
             </p>
           </GlassCard>
         </motion.div>

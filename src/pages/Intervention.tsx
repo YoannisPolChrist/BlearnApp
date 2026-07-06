@@ -33,8 +33,7 @@ export default function InterventionPage() {
   const { deductPenalty } = usePenaltyActions();
   const { unlockTarget } = useAppStore();
 
-  const { locale } = useI18n();
-  const isGerman = locale.toLowerCase().startsWith('de');
+  const { t, locale } = useI18n();
   const remoteBlockingInstruction = useAppStore((state) => state.remoteBlockingInstruction);
   const resolvedRemoteBlockedApps = useAppStore((state) => state.resolvedRemoteBlockedApps);
 
@@ -100,22 +99,20 @@ export default function InterventionPage() {
 
     const expiresAt = remoteBlockingInstruction.expiresAt;
     const date = new Date(expiresAt);
-    const timeString = date.toLocaleTimeString(isGerman ? 'de-DE' : 'en-US', {
+    const timeString = date.toLocaleTimeString(locale, {
       hour: '2-digit',
       minute: '2-digit',
     });
     const diffMs = expiresAt - Date.now();
     const diffMins = Math.max(0, Math.ceil(diffMs / 60_000));
 
-    const title = isGerman ? 'Vom Coach gesperrt' : 'Coach Remote Lock';
-    const description = isGerman
-      ? `Diese App wurde remote gesperrt. Zugriff wieder bereit ab ${timeString} Uhr (in ca. ${diffMins} Minuten).`
-      : `This app has been remotely blocked by your coach. Access restored at ${timeString} (in about ${diffMins} minutes).`;
-
-    return { title, description };
+    return {
+      title: t('remoteBlocking.overlay.title'),
+      description: t('remoteBlocking.overlay.description', { time: timeString, minutes: diffMins }),
+    };
     // remoteBlockTick haelt den Countdown aktuell, obwohl er im Body nicht vorkommt.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCurrentlyRemoteBlocked, remoteBlockingInstruction, isGerman, remoteBlockTick]);
+  }, [isCurrentlyRemoteBlocked, remoteBlockingInstruction, locale, t, remoteBlockTick]);
 
   const rawMode = searchParams.get('mode');
   const mode: InterventionMode = rawMode === 'learn'
@@ -371,7 +368,6 @@ export default function InterventionPage() {
           targetLabel={targetLabel}
           targetType={blockType}
           expiresAt={remoteBlockingInstruction.expiresAt}
-          isGerman={isGerman}
         />
       ) : successVisible ? (
         <BlockingUnlockSuccessScreen

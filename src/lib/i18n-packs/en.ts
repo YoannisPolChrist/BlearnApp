@@ -350,6 +350,28 @@ const enPack: TranslationTree = {
       },
     },
   },
+  remoteBlocking: {
+    overlay: {
+      title: 'Coach Remote Lock',
+      description: 'This app has been remotely blocked by your coach. Access restored at {time} (in about {minutes} minutes).',
+    },
+    screen: {
+      title: 'Remotely Blocked',
+      description: 'Your coach has temporarily blocked this {targetType} ({label}) to protect you from distractions.',
+      timeDetails: 'Access will be restored at {time} (in about {minutes} minutes).',
+      returnHome: 'Back to Main Screen',
+      targetTypes: {
+        app: 'app',
+        website: 'website',
+        search: 'search request',
+      },
+    },
+    settings: {
+      title: 'Coach Remote Control',
+      subtitle: 'Allow remote locking',
+      description: 'Allows the Hermes coaching server to temporarily block distracting apps. Turn off to immediately disable and lift all remote locks.',
+    },
+  },
 } as const;
 
 export default enPack;
