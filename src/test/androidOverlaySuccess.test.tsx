@@ -102,6 +102,7 @@ async function loadCheckinPage(options?: { applyMocks?: () => void }) {
 
   vi.doMock('@/lib/platform', () => ({
     isAndroidPlatform: true,
+    isNativePlatform: true,
   }));
   vi.doMock('@/lib/persistStorage', async () => {
     const actual = await vi.importActual<typeof import('@/lib/persistStorage')>('@/lib/persistStorage');
@@ -145,6 +146,7 @@ async function loadInterventionPage(options?: { applyMocks?: () => void }) {
 
   vi.doMock('@/lib/platform', () => ({
     isAndroidPlatform: true,
+    isNativePlatform: true,
   }));
   vi.doMock('@/lib/persistStorage', async () => {
     const actual = await vi.importActual<typeof import('@/lib/persistStorage')>('@/lib/persistStorage');
@@ -223,6 +225,7 @@ async function loadLearnReviewPage(options?: { applyMocks?: () => void }) {
 
   vi.doMock('@/lib/platform', () => ({
     isAndroidPlatform: true,
+    isNativePlatform: true,
   }));
   vi.doMock('@/lib/persistStorage', async () => {
     const actual = await vi.importActual<typeof import('@/lib/persistStorage')>('@/lib/persistStorage');
@@ -267,6 +270,7 @@ async function loadBreathingPage(options?: { autoComplete?: boolean }) {
 
   vi.doMock('@/lib/platform', () => ({
     isAndroidPlatform: true,
+    isNativePlatform: true,
   }));
   vi.doMock('@/hooks/useBreathingEngine', () => ({
     useBreathingEngine: ({ onComplete }: { onComplete: () => void }) => ({
@@ -340,11 +344,23 @@ describe('Android overlay success flows', () => {
     );
 
     expect(screen.getByText('YouTube | 12 Min frei')).toBeInTheDocument();
+    await screen.findByText(/was möchtest du tun/i);
+    fireEvent.change(screen.getByPlaceholderText(/social media/i), {
+      target: { value: 'Kurz YouTube schauen' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
+    await screen.findByText(/warum/i);
+    fireEvent.change(screen.getByPlaceholderText(/grund/i), {
+      target: { value: 'Pause machen' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
     await screen.findByText(/wie fühlst du dich/i);
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app/i }))[0]);
+    fireEvent.click((await screen.findAllByRole('button', { name: /weiter zur app/i }))[0]);
+    await screen.findByText(/kontext zu deinen emotionen/i);
+    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten/i }))[0]);
     fireEvent.click(await screen.findByRole('button', { name: /finish-success/i }));
 
     expect(useAppStore.getState().unlockedTargets['app:youtube']).toBe(now + 12 * 60 * 1000);
@@ -378,11 +394,23 @@ describe('Android overlay success flows', () => {
       </MemoryRouter>,
     );
 
+    await screen.findByText(/was möchtest du tun/i);
+    fireEvent.change(screen.getByPlaceholderText(/social media/i), {
+      target: { value: 'Kurz YouTube schauen' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
+    await screen.findByText(/warum/i);
+    fireEvent.change(screen.getByPlaceholderText(/grund/i), {
+      target: { value: 'Pause machen' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
     await screen.findByText(/wie fühlst du dich/i);
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app/i }))[0]);
+    fireEvent.click((await screen.findAllByRole('button', { name: /weiter zur app/i }))[0]);
+    await screen.findByText(/kontext zu deinen emotionen/i);
+    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten/i }))[0]);
     fireEvent.click(await screen.findByRole('button', { name: /finish-success/i }));
 
     await waitFor(() => expect(dismissBlockingOverlayMock).toHaveBeenCalledTimes(1));
@@ -420,11 +448,23 @@ describe('Android overlay success flows', () => {
       </MemoryRouter>,
     );
 
+    await screen.findByText(/was möchtest du tun/i);
+    fireEvent.change(screen.getByPlaceholderText(/social media/i), {
+      target: { value: 'Kurz YouTube schauen' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
+    await screen.findByText(/warum/i);
+    fireEvent.change(screen.getByPlaceholderText(/grund/i), {
+      target: { value: 'Pause machen' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
     await screen.findByText(/wie fühlst du dich/i);
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app/i }))[0]);
+    fireEvent.click((await screen.findAllByRole('button', { name: /weiter zur app/i }))[0]);
+    await screen.findByText(/kontext zu deinen emotionen/i);
+    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten/i }))[0]);
     fireEvent.click(await screen.findByRole('button', { name: /finish-success/i }));
 
     expect(useAppStore.getState().unlockedTargets['app:youtube']).toBe(now + 25 * 60 * 1000);
@@ -734,11 +774,23 @@ describe('Android overlay success flows', () => {
       </MemoryRouter>,
     );
 
+    await screen.findByText(/was möchtest du tun/i);
+    fireEvent.change(screen.getByPlaceholderText(/social media/i), {
+      target: { value: 'Kurz YouTube schauen' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
+    await screen.findByText(/warum/i);
+    fireEvent.change(screen.getByPlaceholderText(/grund/i), {
+      target: { value: 'Pause machen' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
     await screen.findByText(/wie fühlst du dich/i);
     fireEvent.click((await screen.findByText(/^Erleichtert$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Zufrieden$/i)).closest('button') as HTMLButtonElement);
     fireEvent.click((await screen.findByText(/^Hoffnungsvoll$/i)).closest('button') as HTMLButtonElement);
-    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten|weiter zur app/i }))[0]);
+    fireEvent.click((await screen.findAllByRole('button', { name: /weiter zur app/i }))[0]);
+    await screen.findByText(/kontext zu deinen emotionen/i);
+    fireEvent.click((await screen.findAllByRole('button', { name: /freischalten/i }))[0]);
     fireEvent.click(await screen.findByRole('button', { name: /finish-success/i }));
 
     expect(useAppStore.getState().unlockedTargets['website:youtube.com']).toBe(now + 7 * 60 * 1000);

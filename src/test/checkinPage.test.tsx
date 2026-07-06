@@ -7,6 +7,8 @@ import { ROUTER_FUTURE_FLAGS } from '@/lib/routerFuture';
 const openTargetMock = vi.fn<(targetId: string, targetType: 'app' | 'website' | 'search') => Promise<void>>();
 const dismissOnceMock = vi.fn<() => Promise<boolean>>();
 const waitForPersistStorageIdleMock = vi.fn<(storageKey: string, timeoutMs?: number) => Promise<void>>();
+const createEmotionLogMock = vi.fn<() => Promise<void>>();
+const createAppUsageEventMock = vi.fn<() => Promise<void>>();
 
 function isSelectionCount(node: Element | null, count: number) {
   return node?.tagName === 'P' && new RegExp(`${count} von max\\. 5 gew(?:ählt|aehlt|Ã¤hlt)`, 'i').test(node.textContent ?? '');
@@ -17,8 +19,12 @@ async function loadCheckinPage(options?: { applyMocks?: () => void }) {
   openTargetMock.mockReset();
   dismissOnceMock.mockReset();
   waitForPersistStorageIdleMock.mockReset();
+  createEmotionLogMock.mockReset();
+  createAppUsageEventMock.mockReset();
   dismissOnceMock.mockResolvedValue(true);
   waitForPersistStorageIdleMock.mockResolvedValue(undefined);
+  createEmotionLogMock.mockResolvedValue(undefined);
+  createAppUsageEventMock.mockResolvedValue(undefined);
   options?.applyMocks?.();
 
   vi.doMock('framer-motion', () => {
@@ -99,6 +105,7 @@ async function loadCheckinPage(options?: { applyMocks?: () => void }) {
   }));
   vi.doMock('@/lib/platform', () => ({
     isAndroidPlatform: true,
+    isNativePlatform: true,
   }));
   vi.doMock('@/services/screenTimeService', () => ({
     grantManualOverride: vi.fn().mockResolvedValue({
@@ -110,6 +117,23 @@ async function loadCheckinPage(options?: { applyMocks?: () => void }) {
       maxAttempts: 3,
     }),
     openTarget: openTargetMock,
+  }));
+  vi.doMock('@/services/hermesSyncService', () => ({
+    createEmotionLog: createEmotionLogMock,
+    createAppUsageEvent: createAppUsageEventMock,
+    mapEmotionsToValenceArousalEnergy: () => ({
+      valence: 6,
+      arousal: 5,
+      energy: 4,
+    }),
+  }));
+  vi.doMock('@/store/useAuthStore', () => ({
+    useAuthStore: {
+      getState: () => ({ user: { uid: 'test-user' } }),
+    },
+  }));
+  vi.doMock('@/lib/firebase', () => ({
+    isFirebaseWriteEnabled: () => true,
   }));
 
   const [{ default: CheckinPage }, { useAppStore }] = await Promise.all([
@@ -133,10 +157,28 @@ afterEach(() => {
   vi.doUnmock('framer-motion');
   vi.doUnmock('@/lib/platform');
   vi.doUnmock('@/services/screenTimeService');
+  vi.doUnmock('@/services/hermesSyncService');
+  vi.doUnmock('@/store/useAuthStore');
+  vi.doUnmock('@/lib/firebase');
   vi.resetModules();
 });
 
 describe('CheckinPage', () => {
+  async function completeBlockedTextSteps() {
+    fireEvent.change(screen.getByPlaceholderText(/social media/i), {
+      target: { value: 'Instagram checken' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
+
+    await screen.findByText(/warum/i);
+    fireEvent.change(screen.getByPlaceholderText(/grund/i), {
+      target: { value: 'Ich suche Ablenkung' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
+
+    await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
+  }
+
   it('uses the blue reflection tone on the default check-in flow', async () => {
     const { CheckinPage, useAppStore } = await loadCheckinPage();
     useAppStore.setState(useAppStore.getInitialState(), true);
@@ -169,8 +211,7 @@ describe('CheckinPage', () => {
       </MemoryRouter>,
     );
 
-    // Blocked flow starts directly at step 2 (Emotions)
-    await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
+    await completeBlockedTextSteps();
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
 
@@ -195,9 +236,29 @@ describe('CheckinPage', () => {
 
     fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
 
+    await screen.findByText(/kontext zu deinen emotionen/i);
+    fireEvent.change(screen.getByPlaceholderText(/gestresst wegen der arbeit/i), {
+      target: { value: 'Ich bin nach einem langen Tag angespannt' },
+    });
+    fireEvent.click(screen.getAllByRole('button', { name: /freischalten/i })[0]);
+
     await waitFor(() => {
       expect(openTargetMock).toHaveBeenCalledWith('com.instagram.android', 'app');
     });
+    expect(useAppStore.getState().checkins[0]).toMatchObject({
+      emotions: ['relieved', 'curious', 'tense', 'worried', 'hopeful'],
+      reflection: 'Instagram checken - Ich suche Ablenkung - Ich bin nach einem langen Tag angespannt',
+      targetApp: 'Instagram',
+    });
+    expect(createEmotionLogMock).toHaveBeenCalledWith(expect.objectContaining({
+      userId: 'test-user',
+      emotion: expect.objectContaining({
+        tags: ['relieved', 'curious', 'tense', 'worried', 'hopeful'],
+      }),
+      cognition: expect.objectContaining({
+        thought_summary: 'Instagram checken - Ich suche Ablenkung - Ich bin nach einem langen Tag angespannt',
+      }),
+    }));
     expect(screen.queryByRole('button', { name: /continue-to-target/i })).not.toBeInTheDocument();
   }, 20000);
 
@@ -224,11 +285,12 @@ describe('CheckinPage', () => {
       </MemoryRouter>,
     );
 
-    // Blocked flow starts directly at step 2 (Emotions)
-    await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
+    await completeBlockedTextSteps();
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
     fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
+    await screen.findByText(/kontext zu deinen emotionen/i);
+    fireEvent.click(screen.getAllByRole('button', { name: /freischalten/i })[0]);
 
     await waitFor(() => {
       expect(waitForPersistStorageIdleMock).toHaveBeenCalledWith('mindful-usage-storage', 2500);
@@ -264,11 +326,12 @@ describe('CheckinPage', () => {
       </MemoryRouter>,
     );
 
-    // Blocked flow starts directly at step 2 (Emotions)
-    await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
+    await completeBlockedTextSteps();
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
     fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
+    await screen.findByText(/kontext zu deinen emotionen/i);
+    fireEvent.click(screen.getAllByRole('button', { name: /freischalten/i })[0]);
 
     await waitFor(() => {
       expect(dismissOnceMock).toHaveBeenCalledTimes(1);

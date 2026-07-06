@@ -78,7 +78,7 @@ export default function CheckinPage() {
   const checkinPalette = tonePalettes.reflection;
   const checkinClasses = reflectionCheckinClasses;
 
-  const [step, setStep] = useState(isBlockedFlow ? 2 : 0);
+  const [step, setStep] = useState(0);
   const [whatAnswer, setWhatAnswer] = useState('');
   const [whyAnswer, setWhyAnswer] = useState('');
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
@@ -329,7 +329,7 @@ export default function CheckinPage() {
                 selectedEmotions={selectedEmotions}
                 onToggleCategory={toggleCategory}
                 onToggleEmotion={toggleEmotion}
-                onFinish={isBlockedFlow ? finishCheckin : () => setStep(3)}
+                onFinish={() => setStep(3)}
                 canComplete={canComplete}
                 isBlockedFlow={isBlockedFlow}
                 isContinuingToTarget={isContinuingToTarget}
