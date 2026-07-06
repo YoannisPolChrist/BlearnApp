@@ -1,8 +1,9 @@
 import type { Firestore } from 'firebase/firestore';
 import {
-  ensureFirebaseFirestore,
-  getFirebaseFirestore,
-} from '@/lib/firebase';
+  assertFirestore,
+  ensureFirestore,
+  loadFirestoreSdk,
+} from '@/lib/firestoreTransport';
 import {
   COLLECTIONS,
   DEVICE_ID_STORAGE_KEY,
@@ -14,33 +15,7 @@ import {
 } from './constants';
 import type { FirestoreSdk } from './types';
 
-let firestoreSdkPromise: Promise<FirestoreSdk> | null = null;
-
-export function loadFirestoreSdk(): Promise<FirestoreSdk> {
-  if (!firestoreSdkPromise) {
-    firestoreSdkPromise = import('firebase/firestore');
-  }
-
-  return firestoreSdkPromise;
-}
-
-export function assertFirestore(): Firestore {
-  const firestore = getFirebaseFirestore();
-  if (!firestore) {
-    throw new Error('Firestore ist nicht konfiguriert. Setze alle VITE_FIREBASE_* Variablen.');
-  }
-
-  return firestore;
-}
-
-export async function ensureFirestore(): Promise<Firestore> {
-  const firestore = await ensureFirebaseFirestore();
-  if (!firestore) {
-    throw new Error('Firestore ist nicht konfiguriert. Setze alle VITE_FIREBASE_* Variablen.');
-  }
-
-  return firestore;
-}
+export { assertFirestore, ensureFirestore, loadFirestoreSdk };
 
 export function getMetaDoc(sdk: FirestoreSdk, firestore: Firestore, userId: string) {
   return sdk.doc(firestore, USERS_COLLECTION, userId, META_COLLECTION, META_DOCUMENT_ID);

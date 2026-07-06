@@ -5,6 +5,7 @@ import { StrictLockedModeScreen } from '@/components/modes/StrictLockedModeScree
 import { useAppTour } from '@/components/setup/appTourContext';
 import { isStrictAddonModeId } from '@/lib/targetModes';
 import { useInlineFeedback } from '@/hooks/useInlineFeedback';
+import { useVisibilityGatedInterval } from '@/hooks/useVisibilityGatedInterval';
 import { useModesActivationState } from '@/modules/modes/useModesActivationState';
 import { useModesAssignmentHandlers } from '@/modules/modes/useModesAssignmentHandlers';
 import { useModesDraftControls, usePersistModesDraft } from '@/modules/modes/useModesDraftControls';
@@ -125,11 +126,7 @@ export default function ModesPage() {
     setShowBlockConfig(true);
   }, [currentStepId, isTourOpen]);
 
-  useEffect(() => {
-    if (!locked) return;
-    const timer = window.setInterval(() => setRemaining(getStrictLockRemaining()), 1000);
-    return () => window.clearInterval(timer);
-  }, [getStrictLockRemaining, locked]);
+  useVisibilityGatedInterval(() => setRemaining(getStrictLockRemaining()), 1000, locked);
 
   const activeUnlocks = useModesActiveUnlocks({
     blockedApps,
@@ -355,7 +352,7 @@ export default function ModesPage() {
     });
   }, [blockSchedules, blockedAppModes, blockedApps, blockedSearchTermModes, blockedSearchTerms, blockedWebsiteModes, blockedWebsites, hasAssignmentChanges, replaceDraftBlockingState]);
 
-  useEffect(() => setPenaltyReadyConfirmed(false), [albyReady, accountabilityPartner?.lightningAddress, accountabilityPartner?.name, connectionTestPassed, penaltyAmountSats, penaltyTargetsCount]);
+  useEffect(() => setPenaltyReadyConfirmed(false), [albyReady, accountabilityPartner?.lightningAddress, accountabilityPartner?.name, connectionTestPassed, penaltyAmountSats, penaltyTargetsCount, setPenaltyReadyConfirmed]);
 
   const { persistModeChanges } = useModesPersistence({
     blockingDraftRef,

@@ -1,8 +1,9 @@
-import type { Firestore, Timestamp } from 'firebase/firestore';
+import type { Timestamp } from 'firebase/firestore';
 import {
   assertFirebaseWritesEnabled,
   ensureFirebaseFirestore,
 } from '@/lib/firebase';
+import { loadFirestoreSdk } from '@/lib/firestoreTransport';
 import { withTimeout } from '@/lib/promiseTimeout';
 import { sanitizeFirestoreValue } from '@/services/firebaseProgressSyncService';
 import { useAppStore } from '@/store/useAppStore';
@@ -334,15 +335,6 @@ export function mapEmotionsToValenceArousalEnergy(emotions: string[]): EmotionMe
 
 // --- Firestore Sync Helper Functions ----------------------------------------
 
-let firestoreSdkPromise: Promise<typeof import('firebase/firestore')> | null = null;
-
-function loadFirestoreSdk() {
-  if (!firestoreSdkPromise) {
-    firestoreSdkPromise = import('firebase/firestore');
-  }
-  return firestoreSdkPromise;
-}
-
 export function getTimezone(): string {
   try {
     return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Paris';
@@ -494,6 +486,18 @@ export async function syncBackgroundAppUsage(userId: string): Promise<void> {
   const usage = await getUsageForRange(startMs, endMs);
 
   if (!usage || !usage.entries) return;
+
+  // Baselines vergangener Tage entsorgen: die Keys sind pro App und Datum und
+  // wuerden localStorage sonst unbegrenzt anwachsen lassen.
+  const baselinePrefix = `blearn-last-usage-${userId}-`;
+  const staleKeys: string[] = [];
+  for (let index = 0; index < window.localStorage.length; index += 1) {
+    const key = window.localStorage.key(index);
+    if (key && key.startsWith(baselinePrefix) && !key.endsWith(`-${todayDateKey}`)) {
+      staleKeys.push(key);
+    }
+  }
+  staleKeys.forEach((key) => window.localStorage.removeItem(key));
 
   for (const entry of usage.entries) {
     if (entry.totalTimeMs <= 0) continue;

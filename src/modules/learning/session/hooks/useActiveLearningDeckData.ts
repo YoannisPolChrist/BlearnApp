@@ -52,6 +52,5 @@ export function useActiveLearningDeckData({
     activeDeckDataRevision,
     activeDeckId,
     getResolvedPresetForDeck,
-    isBlockedFlow,
   ]);
 }

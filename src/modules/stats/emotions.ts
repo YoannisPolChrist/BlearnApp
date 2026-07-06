@@ -225,9 +225,9 @@ function useChartData(
 }
 
 export function useEmotionStatsData(range: TimeRange, checkins: CheckinEntry[], userProfile: UserProfile) {
-  const recentInteractions = userProfile.recentInteractions ?? [];
+  const recentInteractions = userProfile.recentInteractions;
   const allMoodEntries = useMemo(
-    () => buildMoodEntries(checkins, recentInteractions),
+    () => buildMoodEntries(checkins, recentInteractions ?? []),
     [checkins, recentInteractions],
   );
 

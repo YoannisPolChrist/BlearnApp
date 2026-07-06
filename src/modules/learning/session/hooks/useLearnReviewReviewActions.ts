@@ -191,7 +191,6 @@ export function useLearnReviewReviewActions({
     },
     [
       activeDeck,
-      countedReviews,
       currentCard,
       easyRatingBlocked,
       hardRatingBlocked,
@@ -202,9 +201,7 @@ export function useLearnReviewReviewActions({
       requiresTypedAnswer,
       reviewedCardIdsRef,
       sessionControllerRef,
-      sessionCreditsRequired,
       setAwaitingEmotionSelection,
-      setBlockedUnlockSignal,
       setBlockedEasyHintVisible,
       setBlockedEasyPulseKey,
       setCompletedSessionVisible,

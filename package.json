@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check:android-sources": "node scripts/check-android-sources.mjs",
-    "check:copy-budget": "node scripts/copy-budget.mjs"
+    "check:copy-budget": "node scripts/copy-budget.mjs",
+    "check:bundle-budget": "node scripts/check-bundle-budget.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.2.0",

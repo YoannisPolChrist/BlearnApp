@@ -2,6 +2,7 @@ package app.blearn.mobile;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,6 +15,20 @@ final class PolicySnapshotReader {
     private static final String MONITORING_ACTIVE_KEY = "monitoring_active";
     private static final String WEBSITE_BLOCKING_ACTIVE_KEY = "vpn_active";
 
+    // read() laeuft bei jedem relevanten Accessibility-Event — inkl.
+    // WINDOW_CONTENT_CHANGED, das beim Scrollen mehrfach pro Sekunde feuert.
+    // Der kurze TTL-Cache erspart das JSON-Parsen pro Event. Bewusst nur 1s:
+    // ManualOverrideStore mutiert den Snapshot nach read(), und Unlock-/Lock-
+    // Abläufe werden beim Parse gegen `now` gefiltert — mit laengerer TTL
+    // wuerden abgelaufene Overrides/Unlocks zu lange weiterwirken.
+    private static final long CACHE_TTL_MS = 1_000L;
+    private static final Object CACHE_LOCK = new Object();
+    private static String cachedRawSnapshot;
+    private static boolean cachedMonitoringActive;
+    private static boolean cachedWebsiteBlockingActive;
+    private static long cachedAtElapsedRealtime;
+    private static PolicySnapshotReadResult cachedResult;
+
     private PolicySnapshotReader() {
     }
 
@@ -25,8 +40,27 @@ final class PolicySnapshotReader {
         String rawSnapshot = prefs.getString(POLICY_SNAPSHOT_KEY, "{}");
         boolean monitoringActive = prefs.getBoolean(MONITORING_ACTIVE_KEY, false);
         boolean websiteBlockingActive = prefs.getBoolean(WEBSITE_BLOCKING_ACTIVE_KEY, false);
-        long now = StrictLockClockGuard.effectiveNow(context, System.currentTimeMillis());
-        return parse(rawSnapshot, monitoringActive, websiteBlockingActive, now);
+
+        synchronized (CACHE_LOCK) {
+            long elapsed = SystemClock.elapsedRealtime();
+            boolean cacheUsable = cachedResult != null
+                && elapsed - cachedAtElapsedRealtime < CACHE_TTL_MS
+                && monitoringActive == cachedMonitoringActive
+                && websiteBlockingActive == cachedWebsiteBlockingActive
+                && rawSnapshot.equals(cachedRawSnapshot);
+            if (cacheUsable) {
+                return cachedResult;
+            }
+
+            long now = StrictLockClockGuard.effectiveNow(context, System.currentTimeMillis());
+            PolicySnapshotReadResult result = parse(rawSnapshot, monitoringActive, websiteBlockingActive, now);
+            cachedRawSnapshot = rawSnapshot;
+            cachedMonitoringActive = monitoringActive;
+            cachedWebsiteBlockingActive = websiteBlockingActive;
+            cachedAtElapsedRealtime = elapsed;
+            cachedResult = result;
+            return result;
+        }
     }
 
     static PolicySnapshotReadResult parse(

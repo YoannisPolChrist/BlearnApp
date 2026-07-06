@@ -1,9 +1,10 @@
 import type { Firestore, Unsubscribe } from 'firebase/firestore';
+import { assertFirebaseWritesEnabled } from '@/lib/firebase';
 import {
-  assertFirebaseWritesEnabled,
-  ensureFirebaseFirestore,
-  getFirebaseFirestore,
-} from '@/lib/firebase';
+  ensureFirestore,
+  loadFirestoreSdk,
+  type FirestoreSdk,
+} from '@/lib/firestoreTransport';
 import {
   getProgressCloudStateSignature,
   normalizeProgressCloudState,
@@ -17,13 +18,9 @@ const PROGRESS_COLLECTION = 'progress';
 const PROGRESS_DOCUMENT_ID = 'profile';
 const DEVICE_ID_STORAGE_KEY = 'blearn-progress-sync-device-id';
 
-type FirestoreSdk = typeof import('firebase/firestore');
-
 export interface ProgressCloudReadOptions {
   source?: 'default' | 'server';
 }
-
-let firestoreSdkPromise: Promise<FirestoreSdk> | null = null;
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
   if (!value || typeof value !== 'object') {
@@ -52,32 +49,6 @@ export function sanitizeFirestoreValue<T>(value: T): T {
         : [[key, sanitizeFirestoreValue(entry)]]
     )),
   ) as T;
-}
-
-function loadFirestoreSdk(): Promise<FirestoreSdk> {
-  if (!firestoreSdkPromise) {
-    firestoreSdkPromise = import('firebase/firestore');
-  }
-
-  return firestoreSdkPromise;
-}
-
-function assertFirestore(): Firestore {
-  const firestore = getFirebaseFirestore();
-  if (!firestore) {
-    throw new Error('Firestore ist nicht konfiguriert. Setze alle VITE_FIREBASE_* Variablen.');
-  }
-
-  return firestore;
-}
-
-async function ensureFirestore(): Promise<Firestore> {
-  const firestore = await ensureFirebaseFirestore();
-  if (!firestore) {
-    throw new Error('Firestore ist nicht konfiguriert. Setze alle VITE_FIREBASE_* Variablen.');
-  }
-
-  return firestore;
 }
 
 function getProgressDoc(sdk: FirestoreSdk, firestore: Firestore, userId: string) {

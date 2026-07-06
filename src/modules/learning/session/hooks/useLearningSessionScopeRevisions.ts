@@ -118,7 +118,7 @@ export function useLearningSessionScopeRevisions(activeDeckId: string | undefine
 
           return result;
         },
-        [activeDeckId, isBlockedFlow],
+        [activeDeckId],
       ),
     ),
   );

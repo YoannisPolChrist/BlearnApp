@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useVisibilityGatedInterval } from '@/hooks/useVisibilityGatedInterval';
 import { cn } from '@/lib/utils';
 
 interface SessionTimerProps {
@@ -26,15 +27,11 @@ export function SessionTimer({ startedAt, className, visible = true }: SessionTi
 
   useEffect(() => {
     setElapsedMs(Math.max(0, Date.now() - startedAt));
-
-    const intervalId = window.setInterval(() => {
-      setElapsedMs(Math.max(0, Date.now() - startedAt));
-    }, 1000);
-
-    return () => {
-      window.clearInterval(intervalId);
-    };
   }, [startedAt]);
+
+  useVisibilityGatedInterval(() => {
+    setElapsedMs(Math.max(0, Date.now() - startedAt));
+  }, 1000);
 
   if (!visible) {
     return null;
