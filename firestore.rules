@@ -2,6 +2,16 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Bewusste Entscheidung: Der Nutzer hat volles Schreibrecht auf seinen
+    // eigenen Teilbaum — auch auf remoteBlocking/latest. Die Coach-Sperre ist
+    // damit eine "weiche" Selbstkontroll-Sperre (sie ist ohnehin per Settings-
+    // Toggle abschaltbar) und die Hermes-Analytics sind client-seitig nicht
+    // manipulationssicher. Soll die Sperre hart werden: remoteBlocking fuer
+    // Client-Writes sperren (Server schreibt via Admin SDK an Rules vorbei):
+    //   match /users/{userId}/remoteBlocking/{doc} {
+    //     allow read: if request.auth != null && request.auth.uid == userId;
+    //     allow write: if false;
+    //   }
     match /users/{userId}/{document=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }

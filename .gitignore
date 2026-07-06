@@ -52,3 +52,10 @@ jdk-21*
 /res/
 vitest.config.ts.timestamp*
 .tools/jdk/
+
+# Device-debugging dumps and external advisory docs (session artifacts, not sources)
+/artifacts/
+
+# Python bytecode (scripts/hermes-smart-lock)
+__pycache__/
+*.pyc
