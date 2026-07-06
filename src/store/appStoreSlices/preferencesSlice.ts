@@ -8,6 +8,15 @@ import {
   defaultNotificationPreferences,
 } from '@/store/appStore.shared';
 
+// ApplicationInfo.category-Konstanten (Android API 26+); der native Layer
+// reicht sie via getInstalledApps durch. Die OS-Kategorie ist das
+// verlaesslichere Signal — die Namens-Regexe bleiben nur als Fallback fuer
+// Apps ohne deklarierte Kategorie (CATEGORY_UNDEFINED = -1).
+const ANDROID_CATEGORY_GAME = 0;
+const ANDROID_CATEGORY_AUDIO = 1;
+const ANDROID_CATEGORY_VIDEO = 2;
+const ANDROID_CATEGORY_SOCIAL = 4;
+
 const matchesCategory = (
   appName: string,
   pkgName: string,
@@ -16,14 +25,17 @@ const matchesCategory = (
 ): boolean => {
   const name = (appName + ' ' + pkgName).toLowerCase();
   if (category === 'social_media') {
-    return /instagram|tiktok|facebook|twitter|snapchat|pinterest|linkedin|reddit/.test(name);
+    return androidCategory === ANDROID_CATEGORY_SOCIAL
+      || /instagram|tiktok|facebook|twitter|snapchat|pinterest|linkedin|reddit/.test(name);
   }
   if (category === 'games') {
-    return androidCategory === 0
+    return androidCategory === ANDROID_CATEGORY_GAME
       || /game|candy|clash|pokemon|angrybirds|pubg|fortnite|minecraft|nintendo/.test(name);
   }
   if (category === 'entertainment' || category === 'streaming') {
-    return /netflix|youtube|twitch|prime|disney|hbo|spotify|deezer/.test(name);
+    return androidCategory === ANDROID_CATEGORY_VIDEO
+      || androidCategory === ANDROID_CATEGORY_AUDIO
+      || /netflix|youtube|twitch|prime|disney|hbo|spotify|deezer/.test(name);
   }
   if (category === 'browser') {
     return /chrome|firefox|opera|browser|safari|edge|duckduckgo/.test(name);
