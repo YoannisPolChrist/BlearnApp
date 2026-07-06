@@ -67,7 +67,10 @@ async function loadInterventionPage() {
   waitForPersistStorageIdleMock.mockReset();
   waitForPersistStorageIdleMock.mockResolvedValue(undefined);
 
-  vi.doMock('@/lib/platform', () => ({ isAndroidPlatform: true }));
+  vi.doMock('@/lib/platform', () => ({
+    isAndroidPlatform: true,
+    isNativePlatform: true,
+  }));
   vi.doMock('@/lib/persistStorage', async () => {
     const actual = await vi.importActual<typeof import('@/lib/persistStorage')>('@/lib/persistStorage');
     return { ...actual, waitForPersistStorageIdle: waitForPersistStorageIdleMock };

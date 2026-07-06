@@ -5,6 +5,7 @@ import { useLearningCloudSync, useLearningStoreRehydration } from '@/hooks/useLe
 import { useNotificationScheduler } from '@/hooks/useNotificationScheduler';
 import { useNativeSync } from '@/hooks/useNativeSync';
 import { useStrictLockExpirySync } from '@/hooks/useStrictLockExpirySync';
+import { useRemoteBlockingSync } from '@/hooks/useRemoteBlockingSync';
 import { isAndroidPlatform } from '@/lib/platform';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useAppStore } from '@/store/useAppStore';
@@ -103,6 +104,7 @@ function LearningCloudRuntimeManager({ remoteEnabled }: { remoteEnabled: boolean
   useLearningStoreRehydration(runtimeEnabled);
   useLearningCloudSync(runtimeEnabled && remoteEnabled);
   useAppProgressCloudSync(runtimeEnabled && remoteEnabled);
+  useRemoteBlockingSync();
   // Keep media/runtime helpers, but do not run a second learning cloud merge loop
   // in parallel with the Firestore-backed sync authority.
   useLearningBackgroundRuntime(runtimeEnabled && remoteEnabled, { syncEnabled: false });

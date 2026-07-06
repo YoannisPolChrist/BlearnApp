@@ -147,6 +147,7 @@ export function usePreferenceActions() {
       setNotificationsEnabled: state.setNotificationsEnabled,
       setNotificationPreference: state.setNotificationPreference,
       setNotificationPermissionPromptSeen: state.setNotificationPermissionPromptSeen,
+      setRemoteBlockingEnabled: state.setRemoteBlockingEnabled,
     })),
   );
 }
@@ -194,6 +195,7 @@ export function usePermissionStatus() {
       strictLockScope: state.strictLockScope,
       userProfile: state.userProfile ?? defaultProfile,
       isStrictLocked: state.isStrictLocked,
+      remoteBlockingEnabled: state.remoteBlockingEnabled,
     })),
   );
 }

@@ -64,6 +64,9 @@ final class PolicySnapshot {
     boolean monitoringActive = false;
     boolean websiteBlockingActive = false;
     boolean fullLockBlocksAllApps = false;
+    boolean remoteBlockingActive = false;
+    long remoteBlockingExpiresAt = 0L;
+    final Set<String> remoteOnlyBlockedApps = new HashSet<>();
     long strictLockUntil = 0L;
     long strictAddonProtectionUntil = 0L;
 
@@ -103,7 +106,7 @@ final class PolicySnapshot {
     }
 
     boolean isBlockingActive() {
-        return !activeModes.isEmpty()
+        return (remoteBlockingActive || !activeModes.isEmpty())
             && ((monitoringActive && (fullLockBlocksAllApps || !appTargets.isEmpty() || !searchTargets.isEmpty()))
                 || (websiteBlockingActive && !websiteTargets.isEmpty())
             );
@@ -219,6 +222,24 @@ final class PolicySnapshot {
 
     boolean hasStrictAddonProtection() {
         return activeModes.contains("strict") && strictAddonProtectionUntil > 0L;
+    }
+
+    /**
+     * The JS runtime normally clears an expired remote block and pushes a fresh
+     * snapshot. If the app was killed or the device rebooted, that push never
+     * happens — without this native expiry the remote-blocked apps would stay
+     * blocked forever. Uses the clock-guard-corrected {@code now} from the
+     * reader, so forward clock manipulation cannot end the block early.
+     */
+    void expireRemoteBlockingIfNeeded(long now) {
+        if (!remoteBlockingActive || remoteBlockingExpiresAt <= 0L || remoteBlockingExpiresAt > now) {
+            return;
+        }
+
+        remoteBlockingActive = false;
+        appTargets.entrySet().removeIf((entry) -> remoteOnlyBlockedApps.contains(normalize(entry.getKey())));
+        blockedPackages.removeIf((packageName) -> remoteOnlyBlockedApps.contains(normalize(packageName)));
+        remoteOnlyBlockedApps.clear();
     }
 
     void expireStrictLockIfNeeded(long now) {

@@ -126,7 +126,7 @@ public class BlockingOverlayActivity extends MainActivity {
         return true;
     }
 
-    private void dismissAndClose(String reason) {
+    public void dismissAndClose(String reason) {
         String sessionId = resolveBootstrapSessionId();
         BlockingFlowState.dismiss(this, sessionId, reason);
         recordAbortSuppression();

@@ -316,4 +316,34 @@ describe('useAppStore behavior', () => {
       },
     });
   });
+
+  it('prunes expired target unlocks and performs pure checks', () => {
+    const store = useAppStore.getState();
+    const nowSpy = vi.spyOn(Date, 'now');
+
+    nowSpy.mockReturnValue(1_000);
+    // Unlock target A for 1 minute (expires at 61,000)
+    store.unlockTarget('com.example.youtube', 'app', 1);
+    // Unlock target B for 10 minutes (expires at 601,000)
+    store.unlockTarget('com.example.instagram', 'app', 10);
+
+    expect(useAppStore.getState().unlockedTargets).toEqual({
+      'app:com.example.youtube': 1_000 + 60_000,
+      'app:com.example.instagram': 1_000 + 600_000,
+    });
+
+    // Advance time past expiry of YouTube but before Instagram
+    nowSpy.mockReturnValue(70_000);
+
+    // isTargetUnlocked should be pure and NOT mutate the store state
+    expect(store.isTargetUnlocked('com.example.youtube', 'app')).toBe(false);
+    expect(useAppStore.getState().unlockedTargets).toHaveProperty('app:com.example.youtube');
+
+    // Run pruneExpiredUnlocks, which should mutate the store state and remove the expired target
+    store.pruneExpiredUnlocks();
+    expect(useAppStore.getState().unlockedTargets).not.toHaveProperty('app:com.example.youtube');
+    expect(useAppStore.getState().unlockedTargets).toHaveProperty('app:com.example.instagram');
+
+    nowSpy.mockRestore();
+  });
 });

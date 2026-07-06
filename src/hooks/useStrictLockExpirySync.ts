@@ -97,4 +97,42 @@ export function useStrictLockExpirySync() {
       window.clearTimeout(timeout);
     };
   }, [clearExpiredStrictAddons, forceReleaseAddonLocks, strictAddons]);
+
+  // ── Prune expired target unlocks ──────────────────────────────────────────
+  const unlockedTargets = useAppStore((state) => state.unlockedTargets);
+  const pruneExpiredUnlocks = useAppStore((state) => state.pruneExpiredUnlocks);
+
+  useEffect(() => {
+    pruneExpiredUnlocks();
+
+    const interval = window.setInterval(() => {
+      pruneExpiredUnlocks();
+    }, 30000);
+
+    const now = Date.now();
+    let nextExpiry: number | null = null;
+
+    for (const expiry of Object.values(unlockedTargets)) {
+      if (typeof expiry === 'number' && expiry > now) {
+        if (nextExpiry === null || expiry < nextExpiry) {
+          nextExpiry = expiry;
+        }
+      }
+    }
+
+    let timeout: number | null = null;
+    if (nextExpiry !== null) {
+      const delay = Math.max(0, nextExpiry - now);
+      timeout = window.setTimeout(() => {
+        pruneExpiredUnlocks();
+      }, delay);
+    }
+
+    return () => {
+      window.clearInterval(interval);
+      if (timeout !== null) {
+        window.clearTimeout(timeout);
+      }
+    };
+  }, [unlockedTargets, pruneExpiredUnlocks]);
 }

@@ -65,4 +65,21 @@ describe('InterventionOverlayScreen', () => {
     expect(screen.getByText('App bleibt blockiert')).toBeInTheDocument();
     expect(screen.getByTestId('intervention-root')).toHaveAttribute('data-intervention-tone', 'strict');
   });
+
+  it('renders titleOverride and descriptionOverride when provided', () => {
+    render(
+      <InterventionOverlayScreen
+        open
+        blockedTarget="YouTube"
+        blockType="website"
+        mode="lock"
+        titleOverride="Vom Coach gesperrt"
+        descriptionOverride="Zugriff wieder bereit ab 18:30 Uhr."
+        onPrimaryAction={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Vom Coach gesperrt')).toBeInTheDocument();
+    expect(screen.getByText('Zugriff wieder bereit ab 18:30 Uhr.')).toBeInTheDocument();
+  });
 });

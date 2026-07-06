@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -61,6 +62,12 @@ public class ScreenTimeAccessibilityService extends AccessibilityService {
 
     private void handleAccessibilityEvent(AccessibilityEvent event) {
         if (event == null) {
+            return;
+        }
+
+        if (!isDeviceInteractive()) {
+            debug("skip: device not interactive");
+            hideOverlayIfIdle();
             return;
         }
 
@@ -312,6 +319,14 @@ public class ScreenTimeAccessibilityService extends AccessibilityService {
             overlayPresenter = new OverlayPresenter(this, mainHandler);
         }
         return overlayPresenter;
+    }
+
+    private boolean isDeviceInteractive() {
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        return DeviceInteractivePolicy.shouldProcess(
+            powerManager != null,
+            powerManager != null && powerManager.isInteractive()
+        );
     }
 
     private void hideOverlayIfIdle() {

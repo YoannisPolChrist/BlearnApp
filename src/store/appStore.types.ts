@@ -170,6 +170,16 @@ export interface LastModeActivationSnapshot {
   activatedAt: number;
 }
 
+export interface RemoteBlockingInstruction {
+  id: string;
+  blockedApps?: string[];
+  blockedCategories?: string[];
+  expiresAt: number;
+  createdAt: number;
+  mode?: TargetModeId;
+  durationMinutes?: number;
+}
+
 export interface AppState {
   activeMode: ActiveMode;
   activeModes: ActiveModeId[];
@@ -261,6 +271,7 @@ export interface AppState {
   /** Anzahl der heutigen Freischaltungen (lokale Mitternacht als Grenze). */
   getUnlocksToday: () => number;
   isTargetUnlocked: (targetId: string, targetType: 'app' | 'website' | 'search') => boolean;
+  pruneExpiredUnlocks: () => void;
 
   blockSchedules: Record<string, { from: string; to: string }>;
   setBlockSchedule: (app: string, from: string, to: string) => void;
@@ -284,6 +295,12 @@ export interface AppState {
   setNotificationPreference: (key: keyof NotificationPreferences, enabled: boolean) => void;
   setNotificationPermissionPromptSeen: (seen: boolean) => void;
   setAppIntroSeen: (seen: boolean) => void;
+
+  remoteBlockingEnabled: boolean;
+  setRemoteBlockingEnabled: (enabled: boolean) => void;
+  remoteBlockingInstruction: RemoteBlockingInstruction | null;
+  resolvedRemoteBlockedApps: string[];
+  setRemoteBlockingInstruction: (instruction: RemoteBlockingInstruction | null) => Promise<void>;
 
   penaltyAmountSats: number | null;
   penaltyEnabled: boolean;

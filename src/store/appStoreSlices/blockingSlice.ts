@@ -323,11 +323,24 @@ export const createBlockingSlice: AppStoreSlice<Partial<AppState>> = (set, get) 
 
     const expiry = unlockedTargets[key];
     if (!expiry) return false;
-    if (Date.now() < expiry) return true;
+    return Date.now() < expiry;
+  },
+  pruneExpiredUnlocks: () => {
+    const { unlockedTargets } = get();
+    const now = Date.now();
+    let hasChanges = false;
     const updated = { ...unlockedTargets };
-    delete updated[key];
-    set({ unlockedTargets: updated });
-    return false;
+
+    for (const [key, expiry] of Object.entries(unlockedTargets)) {
+      if (typeof expiry === 'number' && now >= expiry) {
+        delete updated[key];
+        hasChanges = true;
+      }
+    }
+
+    if (hasChanges) {
+      set({ unlockedTargets: updated });
+    }
   },
 
   nativeRuntimeIssues: {

@@ -18,7 +18,7 @@ import java.util.Iterator;
  * for the aborted target long enough for the user to navigate away.
  */
 final class AbortSuppressionStore {
-    static final long DEFAULT_SUPPRESSION_MS = 30_000L;
+    static final long DEFAULT_SUPPRESSION_MS = 3_000L;
 
     private static final String PREFS = "blearn_screen_time";
     private static final String KEY_SUPPRESSIONS = "abort_suppressions";

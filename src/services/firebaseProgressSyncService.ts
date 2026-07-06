@@ -10,6 +10,7 @@ import {
   type ProgressCloudState,
 } from '@/lib/progressCloudSync';
 import { isNative, getUsageForRange } from '@/services/screenTimeService';
+import type { RemoteBlockingInstruction } from '@/store/appStore.types';
 
 const USERS_COLLECTION = 'users';
 const PROGRESS_COLLECTION = 'progress';
@@ -33,7 +34,7 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return prototype === Object.prototype || prototype === null;
 }
 
-function sanitizeFirestoreValue<T>(value: T): T {
+export function sanitizeFirestoreValue<T>(value: T): T {
   if (Array.isArray(value)) {
     return value
       .filter((entry) => entry !== undefined)
@@ -228,15 +229,15 @@ export function subscribeToProgressCloudState(
   onChange: (state: ProgressCloudState | null) => void,
   onError?: (error: Error) => void,
 ): Unsubscribe {
-  const firestore = assertFirestore();
   let cancelled = false;
   let unsubscribe: Unsubscribe = () => {};
 
-  void loadFirestoreSdk()
-    .then((sdk) => {
-      if (cancelled) {
-        return;
-      }
+  void (async () => {
+    try {
+      const firestore = await ensureFirestore();
+      if (cancelled) return;
+      const sdk = await loadFirestoreSdk();
+      if (cancelled) return;
 
       unsubscribe = sdk.onSnapshot(
         getProgressDoc(sdk, firestore, userId),
@@ -251,12 +252,12 @@ export function subscribeToProgressCloudState(
           onError?.(error);
         },
       );
-    })
-    .catch((error) => {
+    } catch (error) {
       if (!cancelled) {
         onError?.(error instanceof Error ? error : new Error('Progress cloud metadata subscription failed.'));
       }
-    });
+    }
+  })();
 
   return () => {
     cancelled = true;
@@ -264,7 +265,10 @@ export function subscribeToProgressCloudState(
   };
 }
 
-export async function syncAppUsageToFirestore(userId: string): Promise<void> {
+export async function syncAppUsageToFirestore(
+  userId: string,
+  options?: { forceAllDays?: boolean; forceCleanup?: boolean },
+): Promise<void> {
   if (!isNative) return;
 
   assertFirebaseWritesEnabled('App Usage Sync');
@@ -273,33 +277,49 @@ export async function syncAppUsageToFirestore(userId: string): Promise<void> {
 
   const now = Date.now();
   const ninetyDaysMs = 90 * 24 * 60 * 60 * 1000;
-  const expiresAt = now + ninetyDaysMs;
+
+  const lastFullSyncStorageKey = `blearn-appusage-full-sync-last-${userId}`;
+  const lastCleanupStorageKey = `blearn-appusage-cleanup-last-${userId}`;
+  const lastTodayPayloadStorageKey = `blearn-appusage-today-payload-${userId}`;
+
+  const lastFullSync = typeof window !== 'undefined' ? window.localStorage.getItem(lastFullSyncStorageKey) : null;
+  const lastCleanup = typeof window !== 'undefined' ? window.localStorage.getItem(lastCleanupStorageKey) : null;
+
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  const shouldRunCleanup = options?.forceCleanup || !lastCleanup || (now - parseInt(lastCleanup, 10) > oneDayMs);
+  const shouldRunFullSync = options?.forceAllDays || !lastFullSync || (now - parseInt(lastFullSync, 10) > oneDayMs);
 
   // Clean up expired app usage documents
-  try {
-    const collectionRef = sdk.collection(firestore, USERS_COLLECTION, userId, 'appUsage');
-    const snapshot = await sdk.getDocs(collectionRef);
-    const batch = sdk.writeBatch(firestore);
-    let deleteCount = 0;
+  if (shouldRunCleanup) {
+    try {
+      const collectionRef = sdk.collection(firestore, USERS_COLLECTION, userId, 'appUsage');
+      const snapshot = await sdk.getDocs(collectionRef);
+      const batch = sdk.writeBatch(firestore);
+      let deleteCount = 0;
 
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      if (data.expiresAt && data.expiresAt < now) {
-        batch.delete(doc.ref);
-        deleteCount++;
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.expiresAt && data.expiresAt < now) {
+          batch.delete(doc.ref);
+          deleteCount++;
+        }
+      });
+
+      if (deleteCount > 0) {
+        await batch.commit();
       }
-    });
-
-    if (deleteCount > 0) {
-      await batch.commit();
-      console.log(`[AppUsageSync] Cleaned up ${deleteCount} expired app usage documents.`);
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(lastCleanupStorageKey, now.toString());
+      }
+    } catch (err) {
+      console.warn('[AppUsageSync] Failed to clean up expired documents:', err);
     }
-  } catch (err) {
-    console.warn('[AppUsageSync] Failed to clean up expired documents:', err);
   }
 
-  // Sync last 7 days of daily app usage
-  for (let i = 0; i < 7; i++) {
+  // Sync daily app usage: past 7 days if full sync is due, otherwise just today
+  const daysToSync = shouldRunFullSync ? 7 : 1;
+
+  for (let i = 0; i < daysToSync; i++) {
     try {
       const bounds = getDayBoundsLocal(i);
       const usage = await getUsageForRange(bounds.startMs, bounds.endMs);
@@ -312,17 +332,38 @@ export async function syncAppUsageToFirestore(userId: string): Promise<void> {
           totalTimeMs: entry.totalTimeMs,
         }));
 
-      const docRef = sdk.doc(firestore, USERS_COLLECTION, userId, 'appUsage', bounds.dateKey);
-      await sdk.setDoc(docRef, {
+      const expiresAt = bounds.startMs + ninetyDaysMs; // Stable expiresAt based on day bounds
+      const payload = {
         date: bounds.dateKey,
         timestamp: bounds.startMs,
         totalScreenTimeMs: usage.totalScreenTimeMs,
         expiresAt,
         apps,
-      }, { merge: true });
+      };
+
+      const docRef = sdk.doc(firestore, USERS_COLLECTION, userId, 'appUsage', bounds.dateKey);
+
+      if (i === 0) {
+        // Today's sync: compare payload with last written to skip redundant writes
+        const payloadStr = JSON.stringify(payload);
+        const lastPayloadStr = typeof window !== 'undefined' ? window.localStorage.getItem(lastTodayPayloadStorageKey) : null;
+        if (payloadStr !== lastPayloadStr) {
+          await sdk.setDoc(docRef, payload, { merge: true });
+          if (typeof window !== 'undefined') {
+            window.localStorage.setItem(lastTodayPayloadStorageKey, payloadStr);
+          }
+        }
+      } else {
+        // Past days: write directly since this full sync only runs once a day
+        await sdk.setDoc(docRef, payload, { merge: true });
+      }
     } catch (err) {
       console.warn(`[AppUsageSync] Failed to sync usage for ${i} days ago:`, err);
     }
+  }
+
+  if (shouldRunFullSync && typeof window !== 'undefined') {
+    window.localStorage.setItem(lastFullSyncStorageKey, now.toString());
   }
 }
 
@@ -345,5 +386,87 @@ function getDayBoundsLocal(daysAgo: number) {
     dateKey,
     startMs: start.getTime(),
     endMs: end.getTime(),
+  };
+}
+
+function toStringArray(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+  const entries = value.filter((entry): entry is string => typeof entry === 'string');
+  return entries.length > 0 ? entries : undefined;
+}
+
+/**
+ * Firestore-Dokumente sind hier client-seitig schreibbar; ein Blind-Cast wuerde
+ * NaN-Vergleiche und undefiniertes Blocking-Verhalten zulassen. Ungueltige
+ * Dokumente werden wie "keine Instruktion" behandelt.
+ */
+export function parseRemoteBlockingInstruction(data: unknown): RemoteBlockingInstruction | null {
+  if (!data || typeof data !== 'object') {
+    return null;
+  }
+
+  const record = data as Record<string, unknown>;
+  if (typeof record.expiresAt !== 'number' || !Number.isFinite(record.expiresAt)) {
+    return null;
+  }
+
+  return {
+    id: typeof record.id === 'string' ? record.id : 'latest',
+    expiresAt: record.expiresAt,
+    createdAt: typeof record.createdAt === 'number' && Number.isFinite(record.createdAt)
+      ? record.createdAt
+      : Date.now(),
+    blockedApps: toStringArray(record.blockedApps),
+    blockedCategories: toStringArray(record.blockedCategories),
+    mode: typeof record.mode === 'string'
+      ? (record.mode as RemoteBlockingInstruction['mode'])
+      : undefined,
+    durationMinutes: typeof record.durationMinutes === 'number' && Number.isFinite(record.durationMinutes)
+      ? record.durationMinutes
+      : undefined,
+  };
+}
+
+export function subscribeToRemoteBlockingInstruction(
+  userId: string,
+  onChange: (instruction: RemoteBlockingInstruction | null) => void,
+  onError?: (error: Error) => void,
+): Unsubscribe {
+  let cancelled = false;
+  let unsubscribe: Unsubscribe = () => {};
+
+  void (async () => {
+    try {
+      const firestore = await ensureFirestore();
+      if (cancelled) return;
+      const sdk = await loadFirestoreSdk();
+      if (cancelled) return;
+
+      const docRef = sdk.doc(firestore, USERS_COLLECTION, userId, 'remoteBlocking', 'latest');
+      unsubscribe = sdk.onSnapshot(
+        docRef,
+        (snapshot) => {
+          if (snapshot.exists()) {
+            onChange(parseRemoteBlockingInstruction(snapshot.data()));
+          } else {
+            onChange(null);
+          }
+        },
+        (error) => {
+          onError?.(error);
+        },
+      );
+    } catch (error) {
+      if (!cancelled) {
+        onError?.(error instanceof Error ? error : new Error('Remote blocking subscription failed.'));
+      }
+    }
+  })();
+
+  return () => {
+    cancelled = true;
+    unsubscribe();
   };
 }

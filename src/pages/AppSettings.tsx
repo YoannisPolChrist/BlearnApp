@@ -64,11 +64,13 @@ export default function AppSettings() {
     installedAppLanguagePacks,
     notificationsEnabled,
     blockedWebsites,
+    remoteBlockingEnabled,
   } = usePermissionStatus();
   const {
     setAppLanguage,
     installAppLanguagePack,
     setNotificationsEnabled,
+    setRemoteBlockingEnabled,
   } = usePreferenceActions();
   const { forceReleaseLock } = useModeActions();
   const { strictStartTime, strictEndTime } = useModeSettings();
@@ -425,6 +427,8 @@ export default function AppSettings() {
             blockedSearchTermsCount={blockedSearchTermsCount}
             isGerman={isGerman}
             locked={locked}
+            remoteBlockingEnabled={remoteBlockingEnabled}
+            onRemoteBlockingToggle={setRemoteBlockingEnabled}
             onForceReleaseLock={forceReleaseLock}
             onOpenModes={() => navigate('/modes')}
             onOpenWallet={() => navigate('/wallet')}

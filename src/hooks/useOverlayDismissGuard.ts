@@ -22,9 +22,9 @@ function wait(ms: number) {
  * once after a short backoff, and if that also fails we abandon the pending
  * navigation so the native side clears its blocking flow state.
  */
-async function dismissWithRecovery(sessionId: string | null): Promise<void> {
+async function dismissWithRecovery(sessionId: string | null, goToHome?: boolean): Promise<void> {
   try {
-    await dismissBlockingOverlay(sessionId);
+    await dismissBlockingOverlay(sessionId, goToHome);
     return;
   } catch (firstError) {
     console.warn('Blocking overlay dismiss failed, retrying once:', firstError);
@@ -33,7 +33,7 @@ async function dismissWithRecovery(sessionId: string | null): Promise<void> {
   await wait(DISMISS_RETRY_DELAY_MS);
 
   try {
-    await dismissBlockingOverlay(sessionId);
+    await dismissBlockingOverlay(sessionId, goToHome);
     return;
   } catch (retryError) {
     console.error('Blocking overlay dismiss failed after retry, forcing abandon:', retryError);
@@ -97,14 +97,14 @@ export function useOverlayDismissGuard({
     }
   }, []);
 
-  const dismissOnce = useCallback(async () => {
+  const dismissOnce = useCallback(async (goToHome?: boolean) => {
     if (!activeRef.current || dismissedRef.current) {
       return false;
     }
 
     dismissedRef.current = true;
     try {
-      await dismissWithRecovery(sessionIdRef.current);
+      await dismissWithRecovery(sessionIdRef.current, goToHome);
       return true;
     } catch (error) {
       dismissedRef.current = false;

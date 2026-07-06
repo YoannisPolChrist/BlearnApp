@@ -171,4 +171,68 @@ public class PolicySnapshotReaderTest {
         assertFalse(result.snapshot.isBlockingActive());
         assertNotNull(result.parseError);
     }
+
+    @Test
+    public void keepsRemoteBlockingActiveBeforeExpiry() {
+        long now = 1_700_000_000_000L;
+        String snapshotJson = "{"
+            + "\"activeModes\":[],"
+            + "\"remoteBlockingActive\":true,"
+            + "\"remoteBlockingExpiresAt\":" + (now + 60_000L) + ","
+            + "\"remoteOnlyBlockedApps\":[\"com.instagram.android\"],"
+            + "\"targets\":[{\"id\":\"com.instagram.android\",\"type\":\"app\",\"mode\":\"strict\",\"enabled\":true}],"
+            + "\"blockedPackages\":[\"com.instagram.android\"]"
+            + "}";
+
+        PolicySnapshotReadResult result = PolicySnapshotReader.parse(snapshotJson, true, false, now);
+
+        assertNull(result.parseError);
+        assertTrue(result.snapshot.remoteBlockingActive);
+        assertEquals(1, result.snapshot.appTargets.size());
+        assertTrue(result.snapshot.isBlockingActive());
+    }
+
+    @Test
+    public void expiresRemoteOnlyTargetsWithoutJsRuntime() {
+        long now = 1_700_000_000_000L;
+        String snapshotJson = "{"
+            + "\"activeModes\":[],"
+            + "\"remoteBlockingActive\":true,"
+            + "\"remoteBlockingExpiresAt\":" + (now - 1_000L) + ","
+            + "\"remoteOnlyBlockedApps\":[\"com.instagram.android\"],"
+            + "\"targets\":[{\"id\":\"com.instagram.android\",\"type\":\"app\",\"mode\":\"strict\",\"enabled\":true}],"
+            + "\"blockedPackages\":[\"com.instagram.android\"]"
+            + "}";
+
+        PolicySnapshotReadResult result = PolicySnapshotReader.parse(snapshotJson, true, false, now);
+
+        assertNull(result.parseError);
+        assertFalse(result.snapshot.remoteBlockingActive);
+        assertTrue(result.snapshot.appTargets.isEmpty());
+        assertFalse(result.snapshot.isBlockingActive());
+    }
+
+    @Test
+    public void keepsLocallyBlockedAppsWhenRemoteBlockExpires() {
+        long now = 1_700_000_000_000L;
+        String snapshotJson = "{"
+            + "\"activeModes\":[\"learn\"],"
+            + "\"remoteBlockingActive\":true,"
+            + "\"remoteBlockingExpiresAt\":" + (now - 1_000L) + ","
+            + "\"remoteOnlyBlockedApps\":[\"com.instagram.android\"],"
+            + "\"targets\":["
+            + "{\"id\":\"com.instagram.android\",\"type\":\"app\",\"mode\":\"strict\",\"enabled\":true},"
+            + "{\"id\":\"com.netflix.mediaclient\",\"type\":\"app\",\"mode\":\"learn\",\"enabled\":true}"
+            + "],"
+            + "\"blockedPackages\":[\"com.instagram.android\",\"com.netflix.mediaclient\"]"
+            + "}";
+
+        PolicySnapshotReadResult result = PolicySnapshotReader.parse(snapshotJson, true, false, now);
+
+        assertNull(result.parseError);
+        assertFalse(result.snapshot.remoteBlockingActive);
+        assertEquals(1, result.snapshot.appTargets.size());
+        assertNotNull(result.snapshot.appTargets.get("com.netflix.mediaclient"));
+        assertTrue(result.snapshot.isBlockingActive());
+    }
 }

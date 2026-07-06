@@ -497,6 +497,9 @@ export function buildPersistedAppState(state: AppState) {
     notificationPreferences: state.notificationPreferences ?? defaultNotificationPreferences,
     notificationPermissionPromptSeen: state.notificationPermissionPromptSeen ?? false,
     appIntroSeen: state.appIntroSeen,
+    remoteBlockingEnabled: state.remoteBlockingEnabled,
+    remoteBlockingInstruction: state.remoteBlockingInstruction,
+    resolvedRemoteBlockedApps: state.resolvedRemoteBlockedApps ?? [],
     penaltyAmountSats: state.penaltyAmountSats,
     penaltyEnabled: state.penaltyEnabled,
     penaltyTransactions: buildPersistedPenaltyTransactions(state.penaltyTransactions),
@@ -741,6 +744,7 @@ export function mergePersistedAppState(persistedState: unknown, currentState: Ap
     accountabilityPartner,
     installedAppLanguagePacks,
     penaltyEnabled,
+    remoteBlockingEnabled: typeof persisted?.remoteBlockingEnabled === 'boolean' ? persisted.remoteBlockingEnabled : true,
     notificationPreferences: {
       ...defaultNotificationPreferences,
       ...(persisted?.notificationPreferences as Partial<NotificationPreferences> | undefined),

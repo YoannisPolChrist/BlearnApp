@@ -515,11 +515,11 @@ public class ScreenTimePlugin extends Plugin {
         JSObject snapshot = call.getObject("snapshot");
         String rawSnapshot = snapshot == null ? "{}" : snapshot.toString();
         PolicySnapshot parsedSnapshot = PolicySnapshotReader.parse(rawSnapshot, true, true, System.currentTimeMillis()).snapshot;
-        boolean hasMonitoringRules = !parsedSnapshot.activeModes.isEmpty()
+        boolean hasMonitoringRules = (parsedSnapshot.remoteBlockingActive || !parsedSnapshot.activeModes.isEmpty())
             && (parsedSnapshot.fullLockBlocksAllApps
                 || !parsedSnapshot.appTargets.isEmpty()
                 || !parsedSnapshot.searchTargets.isEmpty());
-        boolean hasWebsiteRules = !parsedSnapshot.activeModes.isEmpty() && !parsedSnapshot.websiteTargets.isEmpty();
+        boolean hasWebsiteRules = (parsedSnapshot.remoteBlockingActive || !parsedSnapshot.activeModes.isEmpty()) && !parsedSnapshot.websiteTargets.isEmpty();
 
         if (!saveJsonArray("blocked_packages", snapshot == null ? null : snapshot.optJSONArray("blockedPackages"))) {
             call.reject("Blocked packages could not be persisted");
@@ -807,18 +807,32 @@ public class ScreenTimePlugin extends Plugin {
     @PluginMethod
     public void dismissBlockingOverlay(PluginCall call) {
         String sessionId = call.getString("sessionId");
+        boolean goToHome = call.getBoolean("goToHome", false);
         BlockingFlowState.dismiss(getContext(), sessionId, "blocking_overlay_dismissed");
-        debug("blocking_overlay_dismissed");
+        debug("blocking_overlay_dismissed toHome=" + goToHome);
 
         Activity activity = getActivity();
         if (activity != null) {
             activity.runOnUiThread(() -> {
                 if (activity instanceof BlockingOverlayActivity) {
                     try {
-                        activity.finishAndRemoveTask();
-                        activity.overridePendingTransition(0, 0);
+                        if (goToHome) {
+                            ((BlockingOverlayActivity) activity).dismissAndClose("blocking_overlay_dismissed_to_home");
+                        } else {
+                            activity.finishAndRemoveTask();
+                            activity.overridePendingTransition(0, 0);
+                        }
                     } catch (Exception e) {
                         debug("Failed to finish overlay activity: " + e.getMessage());
+                    }
+                } else if (goToHome) {
+                    try {
+                        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+                        homeIntent.addCategory(Intent.CATEGORY_HOME);
+                        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        getContext().startActivity(homeIntent);
+                    } catch (Exception e) {
+                        Log.d(TAG, "launcher home navigation failed", e);
                     }
                 }
                 call.resolve();
@@ -1292,6 +1306,9 @@ public class ScreenTimePlugin extends Plugin {
         try {
             ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, 0);
             label = packageManager.getApplicationLabel(applicationInfo).toString();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                item.put("category", applicationInfo.category);
+            }
         } catch (PackageManager.NameNotFoundException ignored) {
             // Keep fallback label.
         }

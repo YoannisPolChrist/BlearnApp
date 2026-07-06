@@ -12,6 +12,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.PathInterpolator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,6 +43,7 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
     private boolean launching;
     private String lastMode = "strict";
     private PrimaryAction primaryAction;
+    private ObjectAnimator glowAnimator;
 
     OverlayPresenter(AccessibilityService service, Handler mainHandler) {
         this.service = service;
@@ -175,13 +181,14 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
     public void showLaunchingState() {
         mainHandler.post(() -> {
             launching = true;
+            cancelBreathingAnimation();
             if (overlayRootView != null) {
                 overlayRootView.animate().cancel();
                 overlayRootView.setBackgroundColor(Color.parseColor(resolveScrimColor(lastMode)));
                 overlayRootView.animate()
                     .alpha(1f)
                     .setDuration(SCRIM_ENTER_MS)
-                    .setInterpolator(new DecelerateInterpolator(1.6f))
+                    .setInterpolator(new PathInterpolator(0.22f, 1f, 0.36f, 1f))
                     .start();
             }
             if (overlayGlowView != null) {
@@ -194,7 +201,8 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
                     .scaleX(1.18f)
                     .scaleY(1.18f)
                     .setDuration(GLOW_ENTER_MS)
-                    .setInterpolator(new DecelerateInterpolator(1.8f))
+                    .setInterpolator(new PathInterpolator(0.34f, 1.35f, 0.64f, 1f))
+                    .withEndAction(this::startBreathingAnimation)
                     .start();
             }
             if (manualLaunchCard != null) {
@@ -212,13 +220,14 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
     public void showManualLaunchState() {
         mainHandler.post(() -> {
             launching = false;
+            cancelBreathingAnimation();
             if (overlayRootView != null) {
                 overlayRootView.animate().cancel();
                 overlayRootView.setBackgroundColor(Color.parseColor(resolveScrimColor(lastMode)));
                 overlayRootView.animate()
                     .alpha(0.96f)
                     .setDuration(SCRIM_ENTER_MS)
-                    .setInterpolator(new DecelerateInterpolator(1.4f))
+                    .setInterpolator(new PathInterpolator(0.22f, 1f, 0.36f, 1f))
                     .start();
             }
             if (manualLaunchTitleView != null) {
@@ -259,6 +268,8 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
         WindowManager currentWindowManager = windowManager;
         View currentOverlayView = overlayView;
 
+        cancelBreathingAnimation();
+
         try {
             if (currentWindowManager != null && currentOverlayView != null) {
                 currentOverlayView.animate().cancel();
@@ -277,6 +288,30 @@ final class OverlayPresenter implements OverlayHandoffCoordinator.OverlayHandle 
             launching = false;
             primaryAction = null;
             debug("overlay hidden");
+        }
+    }
+
+    private void startBreathingAnimation() {
+        if (overlayGlowView == null) {
+            return;
+        }
+        cancelBreathingAnimation();
+
+        PropertyValuesHolder scaleX = PropertyValuesHolder.ofFloat("scaleX", 1.12f, 1.22f);
+        PropertyValuesHolder scaleY = PropertyValuesHolder.ofFloat("scaleY", 1.12f, 1.22f);
+
+        glowAnimator = ObjectAnimator.ofPropertyValuesHolder(overlayGlowView, scaleX, scaleY);
+        glowAnimator.setDuration(1400L);
+        glowAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        glowAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        glowAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        glowAnimator.start();
+    }
+
+    private void cancelBreathingAnimation() {
+        if (glowAnimator != null) {
+            glowAnimator.cancel();
+            glowAnimator = null;
         }
     }
 

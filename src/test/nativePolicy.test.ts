@@ -52,6 +52,7 @@ describe('native policy helpers', () => {
       unlockedTargets: { 'app:com.instagram.android': expect.any(Number) },
       penaltyAmountSats: 200,
       accountabilityPartnerName: 'Alex',
+      remoteBlockingActive: false,
       targets: [
         {
           id: 'com.instagram.android',
@@ -388,5 +389,167 @@ describe('native policy helpers', () => {
         }),
       ]),
     );
+  });
+
+  it('overrides local target modes with higher priority modes from strict addons and remote instructions', () => {
+    const strictAddonUntil = Date.now() + 60_000;
+    const strictAddons = createDefaultStrictAddonMap({
+      strict: {
+        enabled: true,
+        lockUntil: strictAddonUntil,
+        lockedAppIds: ['com.instagram.android'], // Strict addon locks Instagram
+      },
+    });
+
+    const snapshot = buildDevicePolicySnapshot({
+      activeModes: ['learn'],
+      gateRule: {
+        requiredCorrectReviews: 3,
+        unlockDurationMinutes: 15,
+        typedAnswerMaxWords: 3,
+        typedAnswerEnabled: false,
+      },
+      blockedApps: ['com.instagram.android', 'com.netflix.mediaclient'],
+      blockedAppModes: {
+        'com.instagram.android': 'learn', // Instagram configured locally as 'learn'
+        'com.netflix.mediaclient': 'penalty', // Netflix configured locally as 'penalty'
+      },
+      blockedWebsites: [],
+      blockedWebsiteModes: {},
+      blockedSearchTerms: [],
+      blockedSearchTermModes: {},
+      assignments: [],
+      unlockedTargets: {},
+      strictAddons,
+      remoteBlockingEnabled: true,
+      remoteBlockingInstruction: {
+        id: 'remote_instr',
+        createdAt: Date.now(),
+        expiresAt: Date.now() + 120_000,
+        blockedApps: ['com.netflix.mediaclient'], // Remote instruction blocks Netflix
+        mode: 'strict', // in strict mode
+      },
+      resolvedRemoteBlockedApps: ['com.netflix.mediaclient'],
+      penaltyAmountSats: 200,
+    });
+
+    // Check targets array to make sure modes were overridden based on priority
+    const instagramTarget = snapshot.targets.find(t => t.id === 'com.instagram.android');
+    const netflixTarget = snapshot.targets.find(t => t.id === 'com.netflix.mediaclient');
+
+    // Instagram local 'learn' overridden by strict addon's 'strict'
+    expect(instagramTarget?.mode).toBe('strict');
+
+    // Netflix local 'penalty' overridden by remote blocking's 'strict'
+    expect(netflixTarget?.mode).toBe('strict');
+  });
+
+  it('should filter out active remote blocked apps from unlockedTargets to prevent bypass', () => {
+    const snapshot = buildDevicePolicySnapshot({
+      activeModes: ['learn'],
+      gateRule: {
+        requiredCorrectReviews: 3,
+        unlockDurationMinutes: 15,
+        typedAnswerMaxWords: 3,
+        typedAnswerEnabled: false,
+      },
+      blockedApps: ['com.instagram.android', 'com.netflix.mediaclient'],
+      blockedAppModes: {
+        'com.instagram.android': 'learn',
+        'com.netflix.mediaclient': 'learn',
+      },
+      blockedWebsites: [],
+      blockedWebsiteModes: {},
+      blockedSearchTerms: [],
+      blockedSearchTermModes: {},
+      assignments: [],
+      unlockedTargets: {
+        'com.instagram.android': Date.now() + 60_000,
+        'app:com.netflix.mediaclient': Date.now() + 60_000,
+      },
+      remoteBlockingEnabled: true,
+      remoteBlockingInstruction: {
+        id: 'remote_instr',
+        createdAt: Date.now(),
+        expiresAt: Date.now() + 120_000,
+        blockedApps: ['com.netflix.mediaclient'],
+        mode: 'strict',
+      },
+      resolvedRemoteBlockedApps: ['com.netflix.mediaclient'],
+    });
+
+    expect(snapshot.unlockedTargets['app:com.netflix.mediaclient']).toBeUndefined();
+    expect(snapshot.unlockedTargets['app:com.instagram.android']).toBeGreaterThan(Date.now());
+  });
+
+  it('exposes remoteBlockingExpiresAt and remote-only apps so the native side can expire the block itself', () => {
+    const expiresAt = Date.now() + 120_000;
+    const snapshot = buildDevicePolicySnapshot({
+      activeModes: [],
+      gateRule: {
+        requiredCorrectReviews: 3,
+        unlockDurationMinutes: 15,
+        typedAnswerMaxWords: 3,
+        typedAnswerEnabled: false,
+      },
+      blockedApps: ['com.netflix.mediaclient'],
+      blockedAppModes: {
+        'com.netflix.mediaclient': 'learn',
+      },
+      blockedWebsites: [],
+      blockedWebsiteModes: {},
+      blockedSearchTerms: [],
+      blockedSearchTermModes: {},
+      assignments: [],
+      unlockedTargets: {},
+      remoteBlockingEnabled: true,
+      remoteBlockingInstruction: {
+        id: 'remote_instr',
+        createdAt: Date.now(),
+        expiresAt,
+        blockedApps: ['com.instagram.android', 'com.netflix.mediaclient'],
+        mode: 'strict',
+      },
+      resolvedRemoteBlockedApps: ['com.instagram.android', 'com.netflix.mediaclient'],
+    });
+
+    expect(snapshot.remoteBlockingActive).toBe(true);
+    expect(snapshot.remoteBlockingExpiresAt).toBe(expiresAt);
+    // Netflix ist auch lokal geblockt und darf nach Remote-Ablauf nicht freigegeben werden.
+    expect(snapshot.remoteOnlyBlockedApps).toEqual(['com.instagram.android']);
+  });
+
+  it('omits remote expiry fields when the instruction is already expired', () => {
+    const snapshot = buildDevicePolicySnapshot({
+      activeModes: [],
+      gateRule: {
+        requiredCorrectReviews: 3,
+        unlockDurationMinutes: 15,
+        typedAnswerMaxWords: 3,
+        typedAnswerEnabled: false,
+      },
+      blockedApps: [],
+      blockedAppModes: {},
+      blockedWebsites: [],
+      blockedWebsiteModes: {},
+      blockedSearchTerms: [],
+      blockedSearchTermModes: {},
+      assignments: [],
+      unlockedTargets: {},
+      remoteBlockingEnabled: true,
+      remoteBlockingInstruction: {
+        id: 'remote_instr',
+        createdAt: Date.now() - 120_000,
+        expiresAt: Date.now() - 60_000,
+        blockedApps: ['com.instagram.android'],
+        mode: 'strict',
+      },
+      resolvedRemoteBlockedApps: ['com.instagram.android'],
+    });
+
+    expect(snapshot.remoteBlockingActive).toBe(false);
+    expect(snapshot.remoteBlockingExpiresAt).toBeUndefined();
+    expect(snapshot.remoteOnlyBlockedApps).toBeUndefined();
+    expect(snapshot.targets.find((target) => target.id === 'com.instagram.android')).toBeUndefined();
   });
 });

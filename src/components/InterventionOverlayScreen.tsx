@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Clock3, Globe, Search, Shield, Smartphone } from 'lucide-react';
+import { CuteLock } from '@/components/ui/CuteLock';
 import { ctaFollowThrough, premiumEase } from '@/lib/motion';
 import { getModePalette } from '@/lib/semanticTones';
 import { formatUnlockDurationLabel } from '@/lib/unlockDuration';
@@ -21,6 +22,8 @@ interface InterventionOverlayScreenProps {
   penaltyErrorMessage?: string;
   unlockDurationMinutes?: number | null;
   closeLabel?: string;
+  titleOverride?: string;
+  descriptionOverride?: string;
   onPrimaryAction: () => void;
   onClose?: () => void;
 }
@@ -108,6 +111,8 @@ export default function InterventionOverlayScreen({
   penaltyErrorMessage,
   unlockDurationMinutes,
   closeLabel = 'Abbrechen',
+  titleOverride,
+  descriptionOverride,
   onPrimaryAction,
   onClose,
 }: InterventionOverlayScreenProps) {
@@ -123,7 +128,7 @@ export default function InterventionOverlayScreen({
     return null;
   }
 
-  const title =
+  const title = titleOverride || (
     mode === 'penalty'
       ? penaltyConfirmStep === 1
         ? 'Freigabe kostet'
@@ -132,9 +137,10 @@ export default function InterventionOverlayScreen({
         ? 'Learn vor Freigabe'
         : mode === 'lock'
           ? 'App bleibt blockiert'
-          : 'Reflexion vor Freigabe';
+          : 'Reflexion vor Freigabe'
+  );
 
-  const description =
+  const description = descriptionOverride || (
     mode === 'penalty'
       ? penaltyConfirmStep === 1
         ? `Freigabe kostet ${penaltyAmountLabel} an ${recipientLabel}.`
@@ -143,7 +149,8 @@ export default function InterventionOverlayScreen({
         ? 'Starte jetzt deine Lernrunde, um den Zugriff freizuschalten.'
         : mode === 'lock'
           ? 'Dieser Schutzmodus lässt gerade keine Freischaltung zu.'
-          : 'Starte jetzt kurz die Reflexion, um den Zugriff freizuschalten.';
+          : 'Starte jetzt kurz die Reflexion, um den Zugriff freizuschalten.'
+  );
 
   const primaryLabel =
     mode === 'penalty'
@@ -200,11 +207,12 @@ export default function InterventionOverlayScreen({
           className="flex flex-1 flex-col justify-between gap-10"
         >
           <div className="space-y-6">
-            <motion.div variants={overlayItem} className="flex items-center gap-3">
+            <motion.div variants={overlayItem} className="flex items-center justify-between gap-4">
               <span className={cn('inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.16em]', palette.badge)}>
                 <Shield size={15} />
                 Blearn
               </span>
+              <CuteLock mode={mode} className="shrink-0" />
             </motion.div>
 
             <motion.div variants={overlayItem} className="max-w-xl space-y-3">

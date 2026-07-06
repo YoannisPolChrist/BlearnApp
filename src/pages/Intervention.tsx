@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import InterventionOverlayScreen, {
@@ -6,11 +6,15 @@ import InterventionOverlayScreen, {
   type InterventionMode,
 } from '@/components/InterventionOverlayScreen';
 import { BlockingUnlockSuccessScreen } from '@/components/blocking/BlockingUnlockSuccessScreen';
+import { CoachRemoteBlockScreen } from '@/components/blocking/CoachRemoteBlockScreen';
 import { useOverlayDismissGuard } from '@/hooks/useOverlayDismissGuard';
+import { useI18n } from '@/hooks/useI18n';
 import { getBlockingFlowQueryContext } from '@/lib/blockingFlowContext';
 import { waitForBlockingFlowPersistence } from '@/lib/blockingFlowPersistence';
 import { primeNativeUnlockHandoff } from '@/lib/nativeUnlockHandoff';
 import { createBlockingFlowSearchParams } from '@/lib/nativeOverlayRuntime';
+import { getActiveStrictAddonLockedAppsByMode } from '@/lib/targetModes';
+import { buildUnlockedTargetKey } from '@/lib/unlockedTargets';
 import { abandonPendingNavigation } from '@/services/screenTimeService';
 import { useModeSettings, usePenaltyActions, usePenaltyStatus } from '@/store/selectors';
 import { useAppStore } from '@/store/useAppStore';
@@ -29,6 +33,11 @@ export default function InterventionPage() {
   const { deductPenalty } = usePenaltyActions();
   const { unlockTarget } = useAppStore();
 
+  const { locale } = useI18n();
+  const isGerman = locale.toLowerCase().startsWith('de');
+  const remoteBlockingInstruction = useAppStore((state) => state.remoteBlockingInstruction);
+  const resolvedRemoteBlockedApps = useAppStore((state) => state.resolvedRemoteBlockedApps);
+
   const [penaltyConfirmStep, setPenaltyConfirmStep] = useState<1 | 2>(1);
   const [penaltyBusy, setPenaltyBusy] = useState(false);
   // Synchroner Reentrancy-Schutz: `penaltyBusy` (React-State) wird erst beim
@@ -42,6 +51,72 @@ export default function InterventionPage() {
 
   const targetId = blockingFlow.targetId || '';
   const targetLabel = blockingFlow.targetLabel || targetId;
+
+  const isRemoteBlocked = useMemo(() => {
+    return resolvedRemoteBlockedApps.includes(targetId.toLowerCase());
+  }, [resolvedRemoteBlockedApps, targetId]);
+
+  // Waehrend des Blocking-Flows sind die GlobalRuntimeManagers (und damit der
+  // Expiry-Timeout von useRemoteBlockingSync) deaktiviert. Ohne eigenen Ticker
+  // wuerde der Ablauf der Coach-Sperre hier nie einen Re-Render ausloesen:
+  // weder Auto-Dismiss noch der Countdown wuerden reagieren.
+  const [remoteBlockTick, setRemoteBlockTick] = useState(0);
+
+  useEffect(() => {
+    if (!remoteBlockingInstruction) {
+      return undefined;
+    }
+
+    const remainingMs = remoteBlockingInstruction.expiresAt - Date.now();
+    if (remainingMs <= 0) {
+      return undefined;
+    }
+
+    const interval = window.setInterval(() => {
+      setRemoteBlockTick((tick) => tick + 1);
+    }, 30_000);
+    const timeout = window.setTimeout(() => {
+      setRemoteBlockTick((tick) => tick + 1);
+    }, Math.min(remainingMs + 250, 2 ** 31 - 1));
+
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timeout);
+    };
+  }, [remoteBlockingInstruction]);
+
+  const isCurrentlyRemoteBlocked = Boolean(
+    isRemoteBlocked &&
+      remoteBlockingInstruction &&
+      remoteBlockingInstruction.expiresAt > Date.now()
+  );
+
+  const remoteBlockDetails = useMemo(() => {
+    // An den Live-Zustand koppeln: Nach Ablauf darf der Coach-Titel nicht mehr
+    // den regulaeren Overlay-Text ueberschreiben.
+    if (!isCurrentlyRemoteBlocked || !remoteBlockingInstruction) {
+      return null;
+    }
+
+    const expiresAt = remoteBlockingInstruction.expiresAt;
+    const date = new Date(expiresAt);
+    const timeString = date.toLocaleTimeString(isGerman ? 'de-DE' : 'en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const diffMs = expiresAt - Date.now();
+    const diffMins = Math.max(0, Math.ceil(diffMs / 60_000));
+
+    const title = isGerman ? 'Vom Coach gesperrt' : 'Coach Remote Lock';
+    const description = isGerman
+      ? `Diese App wurde remote gesperrt. Zugriff wieder bereit ab ${timeString} Uhr (in ca. ${diffMins} Minuten).`
+      : `This app has been remotely blocked by your coach. Access restored at ${timeString} (in about ${diffMins} minutes).`;
+
+    return { title, description };
+    // remoteBlockTick haelt den Countdown aktuell, obwohl er im Body nicht vorkommt.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCurrentlyRemoteBlocked, remoteBlockingInstruction, isGerman, remoteBlockTick]);
+
   const rawMode = searchParams.get('mode');
   const mode: InterventionMode = rawMode === 'learn'
     || rawMode === 'penalty'
@@ -58,6 +133,104 @@ export default function InterventionPage() {
     autoDismissOnUnmount: Boolean(overlaySessionId) && mode === 'penalty',
     overlaySessionId,
   });
+
+  const blockedApps = useAppStore((state) => state.blockedApps);
+  const blockedAppModes = useAppStore((state) => state.blockedAppModes);
+  const blockedWebsites = useAppStore((state) => state.blockedWebsites);
+  const blockedWebsiteModes = useAppStore((state) => state.blockedWebsiteModes);
+  const blockedSearchTerms = useAppStore((state) => state.blockedSearchTerms);
+  const blockedSearchTermModes = useAppStore((state) => state.blockedSearchTermModes);
+  const strictLockUntil = useAppStore((state) => state.strictLockUntil);
+  const strictLockScope = useAppStore((state) => state.strictLockScope);
+  const strictAddons = useAppStore((state) => state.strictAddons);
+  const unlockedTargets = useAppStore((state) => state.unlockedTargets);
+
+  const isUnlocked = useMemo(() => {
+    const key = buildUnlockedTargetKey(targetId, blockType);
+    if (!key) return false;
+    const expiry = unlockedTargets[key];
+    return expiry ? Date.now() < expiry : false;
+  }, [unlockedTargets, targetId, blockType]);
+
+  const isBlockedLocally = useMemo(() => {
+    if (!targetId) return false;
+    if (isUnlocked) return false;
+
+    if (blockType === 'app') {
+      const normalized = targetId.toLowerCase();
+
+      const isFullStrictLockActive = strictLockUntil !== null &&
+        Date.now() < strictLockUntil &&
+        strictLockScope === 'full';
+      if (isFullStrictLockActive) {
+        return true;
+      }
+
+      const strictAddonLockedApps = getActiveStrictAddonLockedAppsByMode(strictAddons);
+      const isLockedByAddon = Object.values(strictAddonLockedApps).some((appSet) => appSet.has(normalized));
+      if (isLockedByAddon) {
+        return true;
+      }
+
+      const hasLocalBlock = blockedApps.some((app) => app.toLowerCase() === normalized) &&
+        Boolean(blockedAppModes[normalized]);
+      if (hasLocalBlock) {
+        return true;
+      }
+    } else if (blockType === 'website') {
+      const normalized = targetId.toLowerCase();
+      const hasLocalBlock = blockedWebsites.some((site) => site.toLowerCase() === normalized) &&
+        Boolean(blockedWebsiteModes[normalized]);
+      if (hasLocalBlock) {
+        return true;
+      }
+    } else if (blockType === 'search') {
+      const normalized = targetId.toLowerCase();
+      const hasLocalBlock = blockedSearchTerms.some((term) => term.toLowerCase() === normalized) &&
+        Boolean(blockedSearchTermModes[normalized]);
+      if (hasLocalBlock) {
+        return true;
+      }
+    }
+
+    return false;
+  }, [
+    targetId,
+    blockType,
+    isUnlocked,
+    blockedApps,
+    blockedAppModes,
+    blockedWebsites,
+    blockedWebsiteModes,
+    blockedSearchTerms,
+    blockedSearchTermModes,
+    strictLockUntil,
+    strictLockScope,
+    strictAddons,
+  ]);
+
+  const wasRemoteBlockedRef = useRef(false);
+
+  useEffect(() => {
+    if (isCurrentlyRemoteBlocked) {
+      wasRemoteBlockedRef.current = true;
+    }
+  }, [isCurrentlyRemoteBlocked]);
+
+  useEffect(() => {
+    if (wasRemoteBlockedRef.current && !isCurrentlyRemoteBlocked && !isBlockedLocally) {
+      void dismissOnce()
+        .then((dismissed) => {
+          if (!dismissed) {
+            navigate('/', { replace: true });
+          }
+        })
+        .catch((error) => {
+          console.warn('[Intervention] Auto-dismiss failed, falling back to home route:', error);
+          navigate('/', { replace: true });
+        });
+    }
+  }, [isCurrentlyRemoteBlocked, isBlockedLocally, dismissOnce, navigate]);
   const penaltyAmountLabel = useMemo(
     () => `${(penaltyAmountSats || 0).toLocaleString('de-DE')} sats`,
     [penaltyAmountSats],
@@ -95,16 +268,24 @@ export default function InterventionPage() {
   };
 
   const handleAbortOverlay = async () => {
-    await abandonOverlaySession();
-    const dismissed = await dismissOnce();
-    if (!dismissed) {
-      navigate('/', { replace: true });
+    try {
+      await abandonOverlaySession();
+      const dismissed = await dismissOnce(true);
+      if (!dismissed) {
+        navigate('/', { replace: true });
+      }
+    } catch (error) {
+      console.warn('Intervention abort overlay failed:', error);
     }
   };
 
   const handleReturnHome = async () => {
-    await abandonOverlaySession();
-    await dismissOnce();
+    try {
+      await abandonOverlaySession();
+      await dismissOnce(true);
+    } catch (error) {
+      console.warn('Intervention return home failed:', error);
+    }
     navigate('/', { replace: true });
   };
 
@@ -180,9 +361,19 @@ export default function InterventionPage() {
     }
   };
 
+
   return (
     <div className="min-h-screen bg-background">
-      {successVisible ? (
+      {isCurrentlyRemoteBlocked ? (
+        <CoachRemoteBlockScreen
+          onReturnHome={handleReturnHome}
+          targetId={targetId}
+          targetLabel={targetLabel}
+          targetType={blockType}
+          expiresAt={remoteBlockingInstruction.expiresAt}
+          isGerman={isGerman}
+        />
+      ) : successVisible ? (
         <BlockingUnlockSuccessScreen
           buttonLabel={targetId ? 'App freischalten' : 'Zum Dashboard'}
           onContinue={handleSuccessDone}
@@ -206,6 +397,8 @@ export default function InterventionPage() {
             penaltyErrorMessage={penaltyErrorMessage || undefined}
             unlockDurationMinutes={unlockDurationMinutes}
             closeLabel="Abbrechen"
+            titleOverride={remoteBlockDetails?.title}
+            descriptionOverride={remoteBlockDetails?.description}
             onPrimaryAction={() => void handlePrimaryAction()}
             onClose={() => void handleAbortOverlay()}
           />

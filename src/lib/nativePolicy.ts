@@ -13,6 +13,7 @@ import {
 } from "@/lib/targetModes";
 import { sanitizeBlockedAppTargetIds } from "@/lib/blockableApps";
 import { normalizeUnlockedTargets } from "@/lib/unlockedTargets";
+import type { RemoteBlockingInstruction } from "@/store/appStore.types";
 
 export interface NativePolicyAssignment {
   targetId: string;
@@ -40,6 +41,9 @@ export interface BuildDevicePolicySnapshotOptions {
   penaltyRuntimeActive?: boolean;
   penaltyAmountSats?: number | null;
   accountabilityPartnerName?: string;
+  remoteBlockingEnabled?: boolean;
+  remoteBlockingInstruction?: RemoteBlockingInstruction | null;
+  resolvedRemoteBlockedApps?: string[];
 }
 
 const STRICT_LOCK_SETTINGS_PACKAGE = "com.android.settings";
@@ -110,6 +114,14 @@ function getStrictAddonLockedApps(strictAddons?: StrictAddonMap) {
   return activeAddonModes.flatMap((mode) => strictAddons[mode].lockedAppIds);
 }
 
+const TARGET_MODE_PRIORITY: Record<TargetModeId | "lock", number> = {
+  lock: 5,
+  strict: 4,
+  penalty: 3,
+  learn: 2,
+  reflection: 1,
+};
+
 function applyStrictAddonModeOverrides(
   blockedAppModes: Record<string, TargetModeId>,
   strictAddons?: StrictAddonMap,
@@ -118,10 +130,26 @@ function applyStrictAddonModeOverrides(
   const next = { ...blockedAppModes };
   getActiveStrictAddonModes(strictAddons).forEach((mode) => {
     strictAddons[mode].lockedAppIds.forEach((appId) => {
-      if (!next[appId]) {
+      const currentMode = next[appId];
+      if (!currentMode || TARGET_MODE_PRIORITY[mode] > TARGET_MODE_PRIORITY[currentMode]) {
         next[appId] = mode;
       }
     });
+  });
+  return next;
+}
+
+function applyRemoteModeOverrides(
+  blockedAppModes: Record<string, TargetModeId>,
+  remoteBlockedApps: string[],
+  remoteMode: TargetModeId,
+) {
+  const next = { ...blockedAppModes };
+  remoteBlockedApps.forEach((appId) => {
+    const currentMode = next[appId];
+    if (!currentMode || TARGET_MODE_PRIORITY[remoteMode] > TARGET_MODE_PRIORITY[currentMode]) {
+      next[appId] = remoteMode;
+    }
   });
   return next;
 }
@@ -143,12 +171,15 @@ export function buildDevicePolicySnapshot({
   penaltyRuntimeActive = true,
   penaltyAmountSats,
   accountabilityPartnerName,
+  remoteBlockingEnabled,
+  remoteBlockingInstruction,
+  resolvedRemoteBlockedApps,
 }: BuildDevicePolicySnapshotOptions): DevicePolicySnapshot {
   const strictLockExpiresAt =
     activeModes.includes("lock") && strictLockUntil && strictLockUntil > Date.now()
       ? strictLockUntil
       : null;
-  const effectiveActiveModes = strictLockExpiresAt
+  const initialActiveModes = strictLockExpiresAt
     ? activeModes
     : activeModes.filter((mode) => mode !== "lock");
   const strictAddonLockedApps = getStrictAddonLockedApps(strictAddons);
@@ -157,8 +188,22 @@ export function buildDevicePolicySnapshot({
   const strictAddonProtectedPackages = strictAddonProtectionMode
     ? getStrictAddonProtectedPackages(strictAddons)
     : [];
-  const extendedBlockedApps = [...blockedApps, ...strictAddonLockedApps];
-  const extendedBlockedAppModes = applyStrictAddonModeOverrides(blockedAppModes, strictAddons);
+
+  const isRemoteActive = Boolean(
+    remoteBlockingEnabled &&
+      remoteBlockingInstruction &&
+      remoteBlockingInstruction.expiresAt > Date.now()
+  );
+  const remoteBlockedApps = isRemoteActive ? (resolvedRemoteBlockedApps || []) : [];
+  const remoteMode = (remoteBlockingInstruction?.mode as TargetModeId) || "strict";
+
+  const effectiveActiveModes = initialActiveModes;
+
+  const extendedBlockedApps = [...blockedApps, ...strictAddonLockedApps, ...remoteBlockedApps];
+  let extendedBlockedAppModes = applyStrictAddonModeOverrides(blockedAppModes, strictAddons);
+  if (isRemoteActive) {
+    extendedBlockedAppModes = applyRemoteModeOverrides(extendedBlockedAppModes, remoteBlockedApps, remoteMode);
+  }
   const effectiveBlockingTargets = deriveEffectiveBlockingTargets({
     blockedApps: extendedBlockedApps,
     blockedAppModes: extendedBlockedAppModes,
@@ -175,10 +220,30 @@ export function buildDevicePolicySnapshot({
     ...strictLockProtectedPackages,
     ...strictAddonProtectedPackages,
   ])];
+  const activeRemoteBlockedApps = isRemoteActive ? (resolvedRemoteBlockedApps || []) : [];
+  const filteredUnlockedTargets = { ...unlockedTargets };
+  if (isRemoteActive) {
+    activeRemoteBlockedApps.forEach((appId) => {
+      const lowerAppId = appId.toLowerCase();
+      delete filteredUnlockedTargets[lowerAppId];
+      delete filteredUnlockedTargets[`app:${lowerAppId}`];
+    });
+  }
+
+  // Apps, die ausschliesslich wegen der Remote-Sperre geblockt sind: Die native
+  // Seite kann sie nach remoteBlockingExpiresAt selbst freigeben, auch wenn die
+  // JS-Runtime (App gekillt / Geraet neu gestartet) keinen neuen Snapshot pusht.
+  const locallyBlockedLower = new Set(
+    [...blockedApps, ...strictAddonLockedApps].map((appId) => appId.toLowerCase()),
+  );
+  const remoteOnlyBlockedApps = activeRemoteBlockedApps
+    .map((appId) => appId.toLowerCase())
+    .filter((appId) => !locallyBlockedLower.has(appId));
+
   const assignmentByTarget = new Map(
     assignments.map((assignment) => [`${assignment.targetType}:${assignment.targetId}`, assignment]),
   );
-  const normalizedUnlockedTargets = normalizeUnlockedTargets(unlockedTargets);
+  const normalizedUnlockedTargets = normalizeUnlockedTargets(filteredUnlockedTargets);
   const targets: DevicePolicyTarget[] = [
     ...sanitizedBlockedApps.map((id) => ({
       id,
@@ -237,6 +302,13 @@ export function buildDevicePolicySnapshot({
     fullLockBlocksAllApps: effectiveActiveModes.includes("lock") && strictLockScope === "full",
     penaltyAmountSats,
     accountabilityPartnerName,
+    remoteBlockingActive: isRemoteActive,
+    ...(isRemoteActive && remoteBlockingInstruction
+      ? {
+          remoteBlockingExpiresAt: remoteBlockingInstruction.expiresAt,
+          remoteOnlyBlockedApps,
+        }
+      : {}),
     targets,
   };
 }

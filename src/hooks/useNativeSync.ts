@@ -9,6 +9,8 @@ import { isPenaltyRuntimeActive } from '@/lib/penaltyRuntime';
 import { useAppStore } from '@/store/useAppStore';
 import { useLearningStore } from '@/store/useLearningStore';
 
+const POLICY_SYNC_RETRY_MS = 15_000;
+
 /**
  * Syncs blocked apps, websites, and search terms to native Android services
  * whenever they change. Mount once in App.tsx.
@@ -32,6 +34,9 @@ export function useNativeSync(enabled = true) {
     albyConnectionTest,
     unlockedTargets,
     appHydrated,
+    remoteBlockingEnabled,
+    remoteBlockingInstruction,
+    resolvedRemoteBlockedApps,
     setNativeRuntimeIssue,
     clearNativeRuntimeIssue,
   } = useAppStore(
@@ -53,6 +58,9 @@ export function useNativeSync(enabled = true) {
       albyConnectionTest: state.albyConnectionTest,
       unlockedTargets: state.unlockedTargets,
       appHydrated: state.hasHydrated,
+      remoteBlockingEnabled: state.remoteBlockingEnabled,
+      remoteBlockingInstruction: state.remoteBlockingInstruction,
+      resolvedRemoteBlockedApps: state.resolvedRemoteBlockedApps,
       setNativeRuntimeIssue: state.setNativeRuntimeIssue,
       clearNativeRuntimeIssue: state.clearNativeRuntimeIssue,
     })),
@@ -72,6 +80,8 @@ export function useNativeSync(enabled = true) {
     albyConnectionTest,
   });
   const lastSyncedSnapshotKeyRef = useRef<string | null>(null);
+  const retryTimerRef = useRef<number | null>(null);
+  const [policyRetryNonce, setPolicyRetryNonce] = useState(0);
   const getNativeIssueMessage = useCallback((error: unknown) => {
     if (error instanceof Error && error.message) return error.message;
     if (typeof error === 'string') return error;
@@ -94,6 +104,9 @@ export function useNativeSync(enabled = true) {
     penaltyRuntimeActive,
     penaltyAmountSats,
     accountabilityPartnerName: accountabilityPartner?.name,
+    remoteBlockingEnabled,
+    remoteBlockingInstruction,
+    resolvedRemoteBlockedApps,
   }), [
     accountabilityPartner?.name,
     activeModes,
@@ -111,6 +124,9 @@ export function useNativeSync(enabled = true) {
     strictLockScope,
     strictAddons,
     unlockedTargets,
+    remoteBlockingEnabled,
+    remoteBlockingInstruction,
+    resolvedRemoteBlockedApps,
   ]);
   const snapshotKey = useMemo(() => JSON.stringify(snapshot), [snapshot]);
 
@@ -155,6 +171,16 @@ export function useNativeSync(enabled = true) {
         if (cancelled) {
           return;
         }
+        // Den Key wieder freigeben und einen Retry planen: sonst bliebe der
+        // native Blocking-Zustand nach einem transienten Fehler dauerhaft stale,
+        // weil derselbe Snapshot nie erneut gepusht wuerde.
+        if (lastSyncedSnapshotKeyRef.current === snapshotKey) {
+          lastSyncedSnapshotKeyRef.current = null;
+        }
+        retryTimerRef.current = window.setTimeout(() => {
+          retryTimerRef.current = null;
+          setPolicyRetryNonce((nonce) => nonce + 1);
+        }, POLICY_SYNC_RETRY_MS);
         const message = getNativeIssueMessage(error);
         console.warn('Native policy sync failed:', error);
         setNativeRuntimeIssue('policySync', message);
@@ -180,6 +206,10 @@ export function useNativeSync(enabled = true) {
 
     return () => {
       cancelled = true;
+      if (retryTimerRef.current !== null) {
+        window.clearTimeout(retryTimerRef.current);
+        retryTimerRef.current = null;
+      }
     };
   }, [
     clearNativeRuntimeIssue,
@@ -187,6 +217,7 @@ export function useNativeSync(enabled = true) {
     enabled,
     getNativeIssueMessage,
     learningHydrated,
+    policyRetryNonce,
     setNativeRuntimeIssue,
     snapshot,
     snapshotKey,

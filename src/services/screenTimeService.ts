@@ -246,15 +246,15 @@ export async function abandonPendingNavigation(sessionId?: string | null): Promi
   );
 }
 
-export async function dismissBlockingOverlay(sessionId?: string | null): Promise<void> {
+export async function dismissBlockingOverlay(
+  sessionId?: string | null,
+  goToHome?: boolean,
+): Promise<void> {
   ensureAndroidSupport("Blocking overlay dismissal");
-  await ScreenTime.dismissBlockingOverlay(
-    sessionId?.trim()
-      ? {
-          sessionId: sessionId.trim(),
-        }
-      : undefined,
-  );
+  await ScreenTime.dismissBlockingOverlay({
+    sessionId: sessionId?.trim() || undefined,
+    goToHome: goToHome ?? false,
+  });
 }
 
 export async function getManualOverrideStatus(

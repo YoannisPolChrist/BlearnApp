@@ -45,6 +45,7 @@ export interface ScreenTimeSummary {
 export interface InstalledApp {
   appId: string;
   label: string;
+  category?: number;
   processName?: string;
   executablePath?: string;
   icon?: string;
@@ -76,6 +77,9 @@ export interface DevicePolicySnapshot {
   fullLockBlocksAllApps?: boolean;
   penaltyAmountSats?: number | null;
   accountabilityPartnerName?: string;
+  remoteBlockingActive?: boolean;
+  remoteBlockingExpiresAt?: number;
+  remoteOnlyBlockedApps?: string[];
 }
 
 export interface MonitoringStatus {
@@ -216,7 +220,7 @@ export interface ScreenTimePlugin {
   consumePendingNavigation(): Promise<PendingNativeNavigationPayload | void>;
   completePendingNavigation(options?: { sessionId?: string }): Promise<void>;
   abandonPendingNavigation(options?: { sessionId?: string }): Promise<void>;
-  dismissBlockingOverlay(options?: { sessionId?: string }): Promise<void>;
+  dismissBlockingOverlay(options?: { sessionId?: string; goToHome?: boolean }): Promise<void>;
   getManualOverrideStatus(options: { targetId: string; targetType: BlockTargetType }): Promise<ManualOverrideStatus>;
   grantManualOverride(options: {
     targetId: string;

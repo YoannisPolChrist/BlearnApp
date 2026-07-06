@@ -88,6 +88,9 @@ final class PolicySnapshotReader {
             readNormalizedStringArray(json.optJSONArray("blockedDomains"), snapshot.blockedDomains);
             readNormalizedStringArray(json.optJSONArray("blockedSearchTerms"), snapshot.blockedSearchTerms);
             snapshot.fullLockBlocksAllApps = json.optBoolean("fullLockBlocksAllApps", false);
+            snapshot.remoteBlockingActive = json.optBoolean("remoteBlockingActive", false);
+            snapshot.remoteBlockingExpiresAt = Math.max(0L, json.optLong("remoteBlockingExpiresAt", 0L));
+            readNormalizedStringArray(json.optJSONArray("remoteOnlyBlockedApps"), snapshot.remoteOnlyBlockedApps);
             snapshot.strictLockUntil = Math.max(0L, json.optLong("strictLockUntil", 0L));
             snapshot.strictAddonProtectionUntil = Math.max(0L, json.optLong("strictAddonProtectionUntil", 0L));
             readUnlockedTargets(json.optJSONObject("unlockedTargets"), snapshot.unlockedTargets, now, null);
@@ -103,6 +106,7 @@ final class PolicySnapshotReader {
 
         snapshot.expireStrictLockIfNeeded(now);
         snapshot.expireStrictAddonProtectionIfNeeded(now);
+        snapshot.expireRemoteBlockingIfNeeded(now);
         snapshot.sanitizeAppTargets();
         snapshot.ensureLegacyTargets();
         return new PolicySnapshotReadResult(snapshot, null);

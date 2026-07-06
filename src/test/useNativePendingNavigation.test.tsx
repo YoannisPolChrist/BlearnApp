@@ -53,6 +53,7 @@ async function loadHarness() {
 
   vi.doMock('@/lib/platform', () => ({
     isAndroidPlatform: true,
+    isNativePlatform: true,
   }));
   vi.doMock('@/lib/routeLoaders', () => ({
     preloadRoute: preloadRouteMock,

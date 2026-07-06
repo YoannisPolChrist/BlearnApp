@@ -61,7 +61,7 @@ describe('useOverlayDismissGuard', () => {
       });
 
       expect(abandonPendingNavigationMock).toHaveBeenCalledWith('session-hidden');
-      expect(dismissBlockingOverlayMock).toHaveBeenCalledWith('session-hidden');
+      expect(dismissBlockingOverlayMock).toHaveBeenCalledWith('session-hidden', undefined);
 
       await act(async () => {
         await dismissOnce();
@@ -115,8 +115,8 @@ describe('useOverlayDismissGuard', () => {
     // caller or leave inconsistent state — the guard retries internally.
     await expect(dismissOnce()).resolves.toBe(true);
 
-    expect(dismissBlockingOverlayMock).toHaveBeenNthCalledWith(1, 'session-retry');
-    expect(dismissBlockingOverlayMock).toHaveBeenNthCalledWith(2, 'session-retry');
+    expect(dismissBlockingOverlayMock).toHaveBeenNthCalledWith(1, 'session-retry', undefined);
+    expect(dismissBlockingOverlayMock).toHaveBeenNthCalledWith(2, 'session-retry', undefined);
     expect(abandonPendingNavigationMock).not.toHaveBeenCalled();
   });
 
