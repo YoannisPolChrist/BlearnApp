@@ -370,6 +370,13 @@ const enPack: TranslationTree = {
       title: 'Coach Remote Control',
       subtitle: 'Allow remote locking',
       description: 'Allows the Hermes coaching server to temporarily block distracting apps. Turn off to immediately disable and lift all remote locks.',
+      status: {
+        notSignedIn: 'Not signed in — the coach server cannot reach this device.',
+        idle: 'Connected — no active coach lock right now.',
+        expired: 'Last coach lock ended at {time}.',
+        active: 'Active until {time} — {count} app(s) blocked.',
+        activeNoApps: 'Lock until {time} received, but no matching app found — check the categories.',
+      },
     },
   },
 } as const;

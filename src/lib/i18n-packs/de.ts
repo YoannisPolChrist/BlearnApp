@@ -370,6 +370,13 @@ const dePack: TranslationTree = {
       title: 'Coach-Remote-Sperre',
       subtitle: 'Steuerung zulassen',
       description: 'Erlaubt dem Hermes-Coaching-Server, dich bei Bedarf temporär aus Apps auszusperren. Schalte dies aus, um alle Fernsperren sofort aufzuheben.',
+      status: {
+        notSignedIn: 'Nicht angemeldet — der Coach-Server kann dieses Gerät nicht erreichen.',
+        idle: 'Verbunden — aktuell keine aktive Coach-Sperre.',
+        expired: 'Letzte Coach-Sperre endete um {time} Uhr.',
+        active: 'Aktiv bis {time} Uhr — {count} App(s) gesperrt.',
+        activeNoApps: 'Sperre bis {time} Uhr empfangen, aber keine passende App gefunden — Kategorien prüfen.',
+      },
     },
   },
 } as const;

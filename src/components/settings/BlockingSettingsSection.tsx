@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Shield, ShieldCheck, Wallet, Radio } from 'lucide-react';
 import type { UserProfile } from '@/store/appStore.types';
 import GlassCard from '@/components/GlassCard';
+import { RemoteBlockingStatus } from '@/components/settings/RemoteBlockingStatus';
 import { Switch } from '@/components/ui/switch';
 import { cardCascade, cardCascadeItem, sectionItem } from '@/lib/motion';
 
@@ -113,6 +114,7 @@ export function BlockingSettingsSection({
             <p className="text-xs leading-relaxed text-muted-foreground/90">
               {t('remoteBlocking.settings.description')}
             </p>
+            <RemoteBlockingStatus enabled={remoteBlockingEnabled} />
           </GlassCard>
         </motion.div>
 
