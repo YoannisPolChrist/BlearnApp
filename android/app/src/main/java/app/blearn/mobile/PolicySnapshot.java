@@ -242,6 +242,38 @@ final class PolicySnapshot {
         remoteOnlyBlockedApps.clear();
     }
 
+    /**
+     * Layers an FCM-delivered remote block on top of the parsed snapshot. Only
+     * adds packages that are not already blocked (so a manual block is never
+     * turned into a remote-only one that would vanish on expiry) and marks the
+     * newly added ones as remote-only so {@link #expireRemoteBlockingIfNeeded}
+     * cleans them up. Forces monitoring on, since the accessibility matcher only
+     * inspects app targets while monitoring is active.
+     */
+    void applyRemoteOverlay(Set<String> overlayPackages, long overlayExpiresAt, String overlayMode, long now) {
+        if (overlayPackages == null || overlayPackages.isEmpty() || overlayExpiresAt <= now) {
+            return;
+        }
+        String mode = hasText(overlayMode) ? normalize(overlayMode) : "strict";
+        boolean addedAny = false;
+        for (String pkg : overlayPackages) {
+            String normalizedPackage = normalize(pkg);
+            if (!isBlockableAppTargetId(normalizedPackage) || appTargets.containsKey(normalizedPackage)) {
+                continue;
+            }
+            appTargets.put(normalizedPackage, new PolicyTarget(normalizedPackage, "app", mode, null, 0, 0));
+            blockedPackages.add(normalizedPackage);
+            remoteOnlyBlockedApps.add(normalizedPackage);
+            addedAny = true;
+        }
+        if (!addedAny && appTargets.isEmpty()) {
+            return;
+        }
+        remoteBlockingActive = true;
+        remoteBlockingExpiresAt = Math.max(remoteBlockingExpiresAt, overlayExpiresAt);
+        monitoringActive = true;
+    }
+
     void expireStrictLockIfNeeded(long now) {
         if (!activeModes.contains("lock") || strictLockUntil <= 0L || strictLockUntil > now) {
             return;

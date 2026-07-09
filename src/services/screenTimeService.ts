@@ -257,6 +257,15 @@ export async function dismissBlockingOverlay(
   });
 }
 
+export async function getFcmToken(): Promise<string | null> {
+  if (!isNative) {
+    return null;
+  }
+  const result = await ScreenTime.getFcmToken();
+  const token = result?.token;
+  return typeof token === "string" && token.trim().length > 0 ? token : null;
+}
+
 export async function getManualOverrideStatus(
   targetId: string,
   targetType: "app" | "website" | "search",

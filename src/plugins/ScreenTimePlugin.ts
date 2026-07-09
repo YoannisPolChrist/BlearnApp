@@ -221,6 +221,7 @@ export interface ScreenTimePlugin {
   completePendingNavigation(options?: { sessionId?: string }): Promise<void>;
   abandonPendingNavigation(options?: { sessionId?: string }): Promise<void>;
   dismissBlockingOverlay(options?: { sessionId?: string; goToHome?: boolean }): Promise<void>;
+  getFcmToken(): Promise<{ token?: string | null }>;
   getManualOverrideStatus(options: { targetId: string; targetType: BlockTargetType }): Promise<ManualOverrideStatus>;
   grantManualOverride(options: {
     targetId: string;

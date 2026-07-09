@@ -195,6 +195,32 @@ export async function saveProgressCloudState(
   saveUploadedIds(userId, uploadedIds);
 }
 
+/**
+ * Registers this device's FCM token under users/{uid}/devices/{deviceId} so the
+ * Hermes coach server knows where to push remote-block instructions. Without a
+ * registered token the server writes the Firestore doc but cannot wake a closed
+ * app, which is the whole reason the block "doesn't switch" on aggressive OEMs.
+ */
+export async function registerDeviceFcmToken(
+  userId: string,
+  token: string,
+  deviceId = getProgressSyncDeviceId(),
+): Promise<void> {
+  assertFirebaseWritesEnabled('FCM Device Registration');
+  const sdk = await loadFirestoreSdk();
+  const firestore = await ensureFirestore();
+  const docRef = sdk.doc(firestore, USERS_COLLECTION, userId, 'devices', deviceId);
+  await sdk.setDoc(
+    docRef,
+    sanitizeFirestoreValue({
+      fcmToken: token,
+      platform: 'android',
+      updatedAt: Date.now(),
+    }),
+    { merge: true },
+  );
+}
+
 export function subscribeToProgressCloudState(
   userId: string,
   onChange: (state: ProgressCloudState | null) => void,

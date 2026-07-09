@@ -63,6 +63,14 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".BlearnMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <receiver
             android:name=".BlearnDeviceAdminReceiver"
             android:label="@string/device_admin_label"

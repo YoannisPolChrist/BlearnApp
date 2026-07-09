@@ -24,6 +24,7 @@ final class PolicySnapshotReader {
     private static final long CACHE_TTL_MS = 1_000L;
     private static final Object CACHE_LOCK = new Object();
     private static String cachedRawSnapshot;
+    private static String cachedOverlayRaw;
     private static boolean cachedMonitoringActive;
     private static boolean cachedWebsiteBlockingActive;
     private static long cachedAtElapsedRealtime;
@@ -35,11 +36,14 @@ final class PolicySnapshotReader {
     /**
      * Reads the stored snapshot using the clock-guard-corrected time, so that a
      * forward-manipulated wall clock cannot expire strict-lock targets early.
+     * Also layers on the FCM-delivered {@link RemoteBlockOverlay} (if any), so a
+     * coach block engages even when the JS layer never pushed a fresh snapshot.
      */
     static PolicySnapshotReadResult read(Context context, SharedPreferences prefs) {
         String rawSnapshot = prefs.getString(POLICY_SNAPSHOT_KEY, "{}");
         boolean monitoringActive = prefs.getBoolean(MONITORING_ACTIVE_KEY, false);
         boolean websiteBlockingActive = prefs.getBoolean(WEBSITE_BLOCKING_ACTIVE_KEY, false);
+        String overlayRaw = RemoteBlockOverlayStore.readRaw(context);
 
         synchronized (CACHE_LOCK) {
             long elapsed = SystemClock.elapsedRealtime();
@@ -47,20 +51,40 @@ final class PolicySnapshotReader {
                 && elapsed - cachedAtElapsedRealtime < CACHE_TTL_MS
                 && monitoringActive == cachedMonitoringActive
                 && websiteBlockingActive == cachedWebsiteBlockingActive
-                && rawSnapshot.equals(cachedRawSnapshot);
+                && rawSnapshot.equals(cachedRawSnapshot)
+                && equalsNullable(overlayRaw, cachedOverlayRaw);
             if (cacheUsable) {
                 return cachedResult;
             }
 
             long now = StrictLockClockGuard.effectiveNow(context, System.currentTimeMillis());
             PolicySnapshotReadResult result = parse(rawSnapshot, monitoringActive, websiteBlockingActive, now);
+            applyRemoteOverlay(context, result.snapshot, overlayRaw, now);
             cachedRawSnapshot = rawSnapshot;
+            cachedOverlayRaw = overlayRaw;
             cachedMonitoringActive = monitoringActive;
             cachedWebsiteBlockingActive = websiteBlockingActive;
             cachedAtElapsedRealtime = elapsed;
             cachedResult = result;
             return result;
         }
+    }
+
+    private static void applyRemoteOverlay(Context context, PolicySnapshot snapshot, String overlayRaw, long now) {
+        RemoteBlockOverlay overlay = RemoteBlockOverlay.fromStoredJson(overlayRaw);
+        if (overlay == null) {
+            return;
+        }
+        if (!overlay.isActive(now)) {
+            // Expired or empty — drop it so it stops invalidating the cache.
+            RemoteBlockOverlayStore.clear(context);
+            return;
+        }
+        snapshot.applyRemoteOverlay(overlay.packages, overlay.expiresAt, overlay.mode, now);
+    }
+
+    private static boolean equalsNullable(String left, String right) {
+        return left == null ? right == null : left.equals(right);
     }
 
     static PolicySnapshotReadResult parse(

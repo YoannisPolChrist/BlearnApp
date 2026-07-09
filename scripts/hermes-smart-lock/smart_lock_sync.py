@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Literal, Mapping
 from zoneinfo import ZoneInfo
 
+from fcm_push import push_block, push_clear, resolve_block_packages
 from smart_lock_policy import (
     SMART_LOCK_OWNER_ID,
     RemoteBlockDecision,
@@ -189,10 +190,23 @@ def main() -> int:
         print("DRY_RUN " + json.dumps(summary, ensure_ascii=True, sort_keys=True))
         return 0
 
+    pushed = 0
     if action == "write":
-        remote_ref.set(build_instruction(decision, now=now))
+        instruction = build_instruction(decision, now=now)
+        remote_ref.set(instruction)
+        # Wake the device so the block engages even with the app closed.
+        packages = resolve_block_packages(decision.categories, usage_apps)
+        pushed = push_block(
+            db,
+            USER_ID,
+            packages=packages,
+            expires_at_ms=instruction["expiresAt"],
+            mode=instruction.get("mode", "strict"),
+        )
     elif action == "delete":
         remote_ref.delete()
+        pushed = push_clear(db, USER_ID)
+    summary["pushedDevices"] = pushed
     print("SMART_LOCK " + json.dumps(summary, ensure_ascii=True, sort_keys=True))
     return 0
 

@@ -255,8 +255,13 @@ public class ScreenTimePlugin extends Plugin {
 
     @PluginMethod
     public void getTodayUsage(PluginCall call) {
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        calendar.set(java.util.Calendar.MINUTE, 0);
+        calendar.set(java.util.Calendar.SECOND, 0);
+        calendar.set(java.util.Calendar.MILLISECOND, 0);
+        long start = calendar.getTimeInMillis();
         long end = System.currentTimeMillis();
-        long start = end - DAY_MS;
         resolveUsageForRange(call, start, end);
     }
 
@@ -839,6 +844,29 @@ public class ScreenTimePlugin extends Plugin {
             });
         } else {
             call.resolve();
+        }
+    }
+
+    @PluginMethod
+    public void getFcmToken(PluginCall call) {
+        try {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    JSObject result = new JSObject();
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        String token = task.getResult();
+                        BlearnMessagingService.persistToken(getContext(), token);
+                        result.put("token", token);
+                    } else {
+                        String cached = prefs().getString(BlearnMessagingService.KEY_FCM_TOKEN, null);
+                        result.put("token", cached);
+                    }
+                    call.resolve(result);
+                });
+        } catch (Exception error) {
+            JSObject result = new JSObject();
+            result.put("token", prefs().getString(BlearnMessagingService.KEY_FCM_TOKEN, null));
+            call.resolve(result);
         }
     }
 
