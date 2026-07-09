@@ -376,6 +376,7 @@ const dePack: TranslationTree = {
         expired: 'Letzte Coach-Sperre endete um {time} Uhr.',
         active: 'Aktiv bis {time} Uhr — {count} App(s) gesperrt.',
         activeNoApps: 'Sperre bis {time} Uhr empfangen, aber keine passende App gefunden — Kategorien prüfen.',
+        deviceId: 'Konto-ID (muss im Coach-Server als USER_ID hinterlegt sein): {uid}',
       },
     },
   },

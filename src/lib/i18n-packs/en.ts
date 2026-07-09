@@ -376,6 +376,7 @@ const enPack: TranslationTree = {
         expired: 'Last coach lock ended at {time}.',
         active: 'Active until {time} — {count} app(s) blocked.',
         activeNoApps: 'Lock until {time} received, but no matching app found — check the categories.',
+        deviceId: 'Account ID (must be set as USER_ID on the coach server): {uid}',
       },
     },
   },

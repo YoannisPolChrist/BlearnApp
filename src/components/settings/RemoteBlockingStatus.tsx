@@ -14,6 +14,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 export function RemoteBlockingStatus({ enabled }: { enabled: boolean }) {
   const { t, locale } = useI18n();
   const authStatus = useAuthStore((state) => state.status);
+  const authUid = useAuthStore((state) => state.user?.uid);
   const instruction = useAppStore((state) => state.remoteBlockingInstruction);
   const resolvedApps = useAppStore((state) => state.resolvedRemoteBlockedApps);
 
@@ -63,11 +64,23 @@ export function RemoteBlockingStatus({ enabled }: { enabled: boolean }) {
   }
 
   return (
-    <p
-      data-testid="remote-blocking-status"
-      className={cn('text-xs font-semibold leading-relaxed', toneClassName)}
-    >
-      {label}
-    </p>
+    <div className="space-y-1">
+      <p
+        data-testid="remote-blocking-status"
+        className={cn('text-xs font-semibold leading-relaxed', toneClassName)}
+      >
+        {label}
+      </p>
+      {authStatus === 'authenticated' && authUid ? (
+        // Macht den haeufigsten stillen Fehler sichtbar: Handy-Konto-ID muss der
+        // USER_ID im Coach-Server entsprechen, sonst schreibt Hermes ins Leere.
+        <p
+          data-testid="remote-blocking-uid"
+          className="select-all break-all text-[10px] leading-relaxed text-muted-foreground/70"
+        >
+          {t('remoteBlocking.settings.status.deviceId', { uid: authUid })}
+        </p>
+      ) : null}
+    </div>
   );
 }
