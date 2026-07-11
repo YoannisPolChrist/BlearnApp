@@ -233,14 +233,14 @@ describe('session controller', () => {
     });
     const controller = createLearningSessionController(snapshot);
 
-    // 1. + 2. Fehlversuch → Re-Queue, kein Credit, Session bleibt aktiv.
+    // 1. Fehlversuch → Re-Queue, kein Credit, Session bleibt aktiv.
     controller.grade('again', { cardId: 'card-1', wasCorrect: false, now: now + 1 });
-    controller.grade('again', { cardId: 'card-1', wasCorrect: false, now: now + 2 });
     expect(controller.getSnapshot().status).toBe('active');
     expect(controller.getSnapshot().countedReviews).toBe(0);
 
-    // 3. Fehlversuch → Cap erreicht → Exposition zählt als Credit → abgeschlossen.
-    controller.grade('again', { cardId: 'card-1', wasCorrect: false, now: now + 3 });
+    // 2. Fehlversuch → Cap erreicht → Exposition zählt als Credit → abgeschlossen.
+    // Eine durchgehend falsch beantwortete Karte erscheint damit genau 2×.
+    controller.grade('again', { cardId: 'card-1', wasCorrect: false, now: now + 2 });
     expect(controller.getSnapshot().status).toBe('completed');
     expect(controller.getSnapshot().countedReviews).toBe(1);
   });

@@ -22,7 +22,9 @@ export { getMaxTypedAnswerAttempts, getSessionCardAnswer, getSessionCardPrompt, 
 const MAX_HISTORY_ENTRIES = 25;
 // Höchstzahl Re-Queues einer falsch beantworteten Karte im Unlock-Flow, bevor
 // die Exposition als Credit gewertet wird (Frust-Loop-Schutz, siehe Plan P0.2).
-const MAX_UNLOCK_REQUEUES = 2;
+// 1 = eine falsch beantwortete Karte erscheint insgesamt genau 2× (erste
+// Exposition + ein Re-Queue), dann zählt sie als Credit.
+const MAX_UNLOCK_REQUEUES = 1;
 
 function nowTimestamp(now?: number) {
   return now ?? Date.now();
