@@ -12,7 +12,6 @@ interface LearnReviewPageHeaderProps {
   isBlockedFlow: boolean;
   nextNewCardLabel: string;
   onBack: () => void;
-  reviewMixLabel: string;
   sessionCardCount: number;
   sessionStartedAt?: number;
   showTimer?: boolean;
@@ -28,7 +27,6 @@ function LearnReviewPageHeaderInner({
   isBlockedFlow,
   nextNewCardLabel,
   onBack,
-  reviewMixLabel,
   sessionCardCount,
   sessionStartedAt,
   showTimer = true,
@@ -81,9 +79,6 @@ function LearnReviewPageHeaderInner({
                 {currentCardKindLabel}
               </p>
               <div className="flex max-w-[13rem] flex-wrap justify-end gap-1">
-                <span className="rounded-full border border-[hsl(var(--mode-learn-border)/0.34)] bg-[hsl(var(--mode-learn-surface)/0.46)] px-2 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-[hsl(var(--mode-learn-foreground)/0.68)]">
-                  Mix {reviewMixLabel}
-                </span>
                 <span className="rounded-full border border-[hsl(var(--mode-learn-border)/0.48)] bg-[hsl(var(--mode-learn-glow)/0.12)] px-2 py-1 text-[10px] font-extrabold leading-tight text-[hsl(var(--mode-learn-foreground))]">
                   {nextNewCardLabel}
                 </span>

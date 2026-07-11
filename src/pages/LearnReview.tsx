@@ -124,7 +124,6 @@ export default function LearnReviewPage() {
                 isBlockedFlow={session.isBlockedFlow}
                 nextNewCardLabel={session.nextNewCardLabel}
                 onBack={session.goBack}
-                reviewMixLabel={session.reviewMixLabel}
                 sessionCardCount={session.sessionCardCount}
                 sessionStartedAt={session.sessionStartedAt}
                 showTimer={session.showTimer}

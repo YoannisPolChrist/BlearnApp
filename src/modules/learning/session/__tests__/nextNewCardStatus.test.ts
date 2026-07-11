@@ -57,10 +57,11 @@ function makePreset(overrides: Partial<LearningPreset> = {}): LearningPreset {
 }
 
 describe('buildNextNewCardLabel', () => {
-  it('shows the offset when a new vocabulary is already in the remaining queue', () => {
+  it('shows X/Y progress when a new vocabulary is one card away in the queue', () => {
     const reviewCard = makeCard('review-1');
     const newCard = makeCard('new-1', { state: 'new', dueAt: NOW - 60_000 });
 
+    // interval=5, offset=1 -> 4/5 done (fills to 5/5 right when the new card is due)
     expect(
       buildNextNewCardLabel({
         cards: [reviewCard, newCard],
@@ -74,14 +75,15 @@ describe('buildNextNewCardLabel', () => {
         },
         now: NOW,
       }),
-    ).toBe('Nächste neue Vokabel in 1 Karte');
+    ).toBe('Neue Vokabel: 4/5');
   });
 
-  it('builds progress for a new vocabulary already queued in the current session', () => {
+  it('builds X/Y progress for a new vocabulary already queued in the current session', () => {
     const firstReview = makeCard('review-1');
     const secondReview = makeCard('review-2');
     const newCard = makeCard('new-1', { state: 'new', dueAt: NOW - 60_000 });
 
+    // interval=5, offset=2 -> 3/5 done
     const status = buildNextNewCardStatus({
       cards: [firstReview, secondReview, newCard],
       deckId: DECK_ID,
@@ -97,13 +99,29 @@ describe('buildNextNewCardLabel', () => {
     });
 
     expect(status).toMatchObject({
-      label: 'Nächste neue Vokabel in 2 Karten',
+      label: 'Neue Vokabel: 3/5',
       detail: 'Kommt in dieser Session.',
-      valueNow: 1,
-      valueMax: 3,
+      valueNow: 3,
+      valueMax: 5,
       available: true,
     });
-    expect(status.progressPercent).toBeCloseTo(33.33333333333333);
+    expect(status.progressPercent).toBeCloseTo(60);
+  });
+
+  it('shows the current card as new when the offset is zero', () => {
+    const newCard = makeCard('new-1', { state: 'new', dueAt: NOW - 60_000 });
+
+    expect(
+      buildNextNewCardLabel({
+        cards: [newCard],
+        deckId: DECK_ID,
+        preset: makePreset(),
+        reviewLogs: [],
+        remainingCandidateIds: [newCard.id],
+        cardStateById: { [newCard.id]: newCard.state },
+        now: NOW,
+      }),
+    ).toBe('Neue Vokabel: jetzt');
   });
 
   it('does not announce another new vocabulary after the daily new-card limit is reached', () => {

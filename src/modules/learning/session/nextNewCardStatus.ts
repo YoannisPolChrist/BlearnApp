@@ -24,14 +24,6 @@ export interface NextNewCardStatus {
   available: boolean;
 }
 
-function formatOffsetLabel(nextNewCardOffset: number) {
-  if (nextNewCardOffset === 0) {
-    return 'Neue Vokabel: jetzt';
-  }
-
-  return `Nächste neue Vokabel in ${nextNewCardOffset} ${nextNewCardOffset === 1 ? 'Karte' : 'Karten'}`;
-}
-
 function clampPercent(value: number) {
   return Math.min(100, Math.max(0, value));
 }
@@ -45,20 +37,39 @@ export function buildNextNewCardStatus({
   cardStateById,
   now = Date.now(),
 }: BuildNextNewCardLabelOptions): NextNewCardStatus {
+  const resolvedPreset = migrateLearningPreset(preset);
+  const reviewsPerNewCard = Math.max(1, Math.round(resolvedPreset.reviewsBetweenNewCards));
+
   const nextNewCardOffset = remainingCandidateIds.findIndex((cardId) => cardStateById[cardId] === 'new');
   if (nextNewCardOffset >= 0) {
-    const totalSteps = Math.max(1, nextNewCardOffset + 1);
+    if (nextNewCardOffset === 0) {
+      return {
+        label: 'Neue Vokabel: jetzt',
+        detail: 'Die aktuelle Karte ist neu.',
+        progressPercent: 100,
+        valueNow: reviewsPerNewCard,
+        valueMax: reviewsPerNewCard,
+        available: true,
+      };
+    }
+
+    // Fortschritt X/Y bis zur nächsten neuen Vokabel: zählt mit jeder
+    // Wiederholung hoch und erreicht Y/Y genau dann, wenn die neue Karte kommt
+    // (bei offset 0). So passt der Zähler immer zum tatsächlichen Auftauchen.
+    const completedReviews = Math.min(
+      reviewsPerNewCard,
+      Math.max(0, reviewsPerNewCard - nextNewCardOffset),
+    );
     return {
-      label: formatOffsetLabel(nextNewCardOffset),
-      detail: nextNewCardOffset === 0 ? 'Die aktuelle Karte ist neu.' : 'Kommt in dieser Session.',
-      progressPercent: clampPercent(((totalSteps - nextNewCardOffset) / totalSteps) * 100),
-      valueNow: totalSteps - nextNewCardOffset,
-      valueMax: totalSteps,
+      label: `Neue Vokabel: ${completedReviews}/${reviewsPerNewCard}`,
+      detail: 'Kommt in dieser Session.',
+      progressPercent: clampPercent((completedReviews / reviewsPerNewCard) * 100),
+      valueNow: completedReviews,
+      valueMax: reviewsPerNewCard,
       available: true,
     };
   }
 
-  const resolvedPreset = migrateLearningPreset(preset);
   const resolvedDeckId = deckId || cards[0]?.deckId;
   if (!resolvedDeckId) {
     return {
@@ -101,7 +112,6 @@ export function buildNextNewCardStatus({
     };
   }
 
-  const reviewsPerNewCard = Math.max(1, Math.round(resolvedPreset.reviewsBetweenNewCards));
   const reviewsSinceLastNewCard = countReviewsSinceLastNewCard(reviewLogs, resolvedDeckId, now);
   const remainingReviews = Math.max(1, reviewsPerNewCard - (reviewsSinceLastNewCard % reviewsPerNewCard));
   const completedReviews = Math.max(0, reviewsPerNewCard - remainingReviews);

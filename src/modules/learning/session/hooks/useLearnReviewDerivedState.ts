@@ -17,7 +17,7 @@ import {
   type LearningPreset,
   type ReviewLog,
 } from '@/lib/learning';
-import { buildLearnReviewProgress, formatReviewMixLabel } from '@/lib/view-models/learn';
+import { buildLearnReviewProgress } from '@/lib/view-models/learn';
 import type { LearningReviewFeedbackEvent } from '@/modules/learning/store';
 import type { LearningSessionSnapshot } from '@/modules/learning/session';
 import { buildNextNewCardStatus } from '@/modules/learning/session/nextNewCardStatus';
@@ -216,7 +216,6 @@ export function useLearnReviewDerivedState({
   );
   const nextNewCardLabel = nextNewCardStatus.label;
   const currentCardKindLabel = currentCard?.state === 'new' ? 'Neu' : currentCard ? 'Wiederholung' : 'Session';
-  const reviewMixLabel = formatReviewMixLabel(activePreset?.reviewsBetweenNewCards ?? 15);
   const blockedFlowExhausted = Boolean(
     learningHydrated
     && isBlockedFlow
@@ -263,7 +262,6 @@ export function useLearnReviewDerivedState({
     remainingReviewCount,
     requiresTypedAnswer,
     revealed,
-    reviewMixLabel,
     sessionCardCount,
     sessionStartedAt,
     showTimer,

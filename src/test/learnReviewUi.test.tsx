@@ -340,8 +340,9 @@ describe('Learn review typed-answer UI', () => {
   it('shows the next new card timing instead of separate new and review stat tiles', async () => {
     await renderReviewSession(5, { overlaySessionId: 'session-next-new-progress' });
 
-    expect((await screen.findAllByText(/mix 1:/i))[0]).toBeInTheDocument();
-    expect(screen.getAllByText(/neue vokabel|nächste neue|naechste neue|heute keine neue/i).length).toBeGreaterThan(0);
+    // Das statische "Mix 1:15"-Badge wurde durch den Live-Zaehler ersetzt.
+    expect(screen.queryByText(/mix 1:/i)).not.toBeInTheDocument();
+    expect((await screen.findAllByText(/neue vokabel|heute keine neue/i)).length).toBeGreaterThan(0);
     expect(screen.queryByRole('progressbar', { name: /neuen vokabel/i })).not.toBeInTheDocument();
     expect(screen.queryAllByText(/^neu$/i).length).toBeLessThanOrEqual(1);
     expect(screen.queryAllByText(/^wiederholung$/i).length).toBeLessThanOrEqual(1);
@@ -384,7 +385,8 @@ describe('Learn review typed-answer UI', () => {
       },
     });
 
-    expect(await screen.findByText(/nächste neue vokabel in 2 karten|naechste neue vokabel in 2 karten/i)).toBeInTheDocument();
+    // Offset 2 bei Default-Intervall 15 → Fortschritt 13/15 bis zur neuen Vokabel.
+    expect(await screen.findByText(/neue vokabel: 13\/15/i)).toBeInTheDocument();
   }, 10000);
 
   it('does not recompute deck scope revisions when an unrelated gate-rule update leaves deck data unchanged', async () => {
