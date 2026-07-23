@@ -26,6 +26,17 @@ type CommitLearningStateOptions = {
   blockedSearchTerms: string[];
 };
 
+function hasSameAssignmentContent(left: DeckAssignment, right: DeckAssignment) {
+  return left.id === right.id
+    && left.targetId === right.targetId
+    && left.targetType === right.targetType
+    && left.deckId === right.deckId
+    && left.sessionCreditsRequired === right.sessionCreditsRequired
+    && left.requiredCorrectReviews === right.requiredCorrectReviews
+    && left.unlockDurationMinutes === right.unlockDurationMinutes
+    && left.enabled === right.enabled;
+}
+
 function resolveLearnDeckId(localActiveDeckId?: string) {
   const learningState = useLearningStore.getState();
   // Never seed fallback learning data before persisted vocab has hydrated.
@@ -109,7 +120,14 @@ function buildNextLearnAssignments(
           updatedAt: Date.now(),
         };
 
-    updatedAssignmentsByKey.set(key, migrateDeckAssignment(rawAssignment, deckCardCount));
+    const nextAssignment = migrateDeckAssignment(rawAssignment, deckCardCount);
+    // A mode save must not turn an unchanged Learn binding into a fresh store
+    // write. With a large imported deck, that otherwise serializes the whole
+    // vocabulary snapshot just for a new updatedAt timestamp.
+    updatedAssignmentsByKey.set(
+      key,
+      existing && hasSameAssignmentContent(existing, nextAssignment) ? existing : nextAssignment,
+    );
   });
 
   const nextAssignments = learningState.assignments.flatMap((assignment) => {
@@ -149,7 +167,7 @@ export function commitLearningState({
   blockedApps,
   blockedWebsites,
   blockedSearchTerms,
-}: CommitLearningStateOptions) {
+}: CommitLearningStateOptions): boolean {
   const deckId = resolveLearnDeckId(localActiveDeckId);
   if (deckId && localActiveDeckId !== deckId) {
     setLocalActiveDeckId(deckId);
@@ -195,5 +213,8 @@ export function commitLearningState({
 
   if (Object.keys(learningUpdates).length > 0) {
     useLearningStore.setState(learningUpdates);
+    return true;
   }
+
+  return false;
 }

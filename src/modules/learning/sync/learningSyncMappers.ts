@@ -49,6 +49,58 @@ export function getCardRevision(card: LearningCard): number {
   );
 }
 
+/**
+ * Card scheduling is not ordinary document metadata: a template refresh or a
+ * stale device can legitimately get a fresh `updatedAt` without containing
+ * the user's latest review.  Use the actual review event as the primary
+ * causal marker so such a document can never roll a reviewed card back.
+ */
+export function mergeCardsById(
+  localCards: LearningCard[],
+  remoteCards: LearningCard[],
+): LearningCard[] {
+  const merged = new Map<string, LearningCard>();
+
+  for (const card of localCards) {
+    merged.set(card.id, card);
+  }
+
+  for (const incoming of remoteCards) {
+    const existing = merged.get(incoming.id);
+    if (!existing) {
+      merged.set(incoming.id, incoming);
+      continue;
+    }
+
+    const existingReviewedAt = normalizeRevisionTimestamp(existing.lastReviewedAt);
+    const incomingReviewedAt = normalizeRevisionTimestamp(incoming.lastReviewedAt);
+
+    if (incomingReviewedAt !== existingReviewedAt) {
+      merged.set(incoming.id, incomingReviewedAt > existingReviewedAt ? incoming : existing);
+      continue;
+    }
+
+    // Equal review timestamps can occur when two snapshots contain the same
+    // review.  Keep the state with at least as much accumulated progress;
+    // only use normal document metadata before either side was reviewed.
+    if (existingReviewedAt > 0) {
+      if (incoming.reps !== existing.reps) {
+        merged.set(incoming.id, incoming.reps > existing.reps ? incoming : existing);
+      } else if (incoming.lapses !== existing.lapses) {
+        merged.set(incoming.id, incoming.lapses > existing.lapses ? incoming : existing);
+      }
+      continue;
+    }
+
+    merged.set(
+      incoming.id,
+      getCardRevision(incoming) > getCardRevision(existing) ? incoming : existing,
+    );
+  }
+
+  return Array.from(merged.values());
+}
+
 export function getReviewLogRevision(log: ReviewLog): number {
   return log.reviewedAt || 0;
 }

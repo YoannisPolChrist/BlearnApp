@@ -65,15 +65,41 @@ export function preloadCriticalBlockingRoutes() {
   return Promise.all(CRITICAL_BLOCKING_ROUTE_PATHS.map((path) => preloadRoute(path)));
 }
 
-// Die fünf Haupt-Tabs (Bottom-Nav). Im Idle nach dem Start vorgeladen, damit ein
-// Tab-Wechsel nie einen kalten Chunk trifft (keine weißen Frames, < 200 ms).
+// Die fünf Haupt-Tabs (Bottom-Nav) werden erst nach einem stabilen ersten
+// Paint vorgeladen. Kritische Blocking-Routen bleiben davon getrennt und
+// werden sofort geladen, damit dieser Komfort-Preload nie einen Handoff bremst.
 const MAIN_TAB_ROUTE_PATHS = ['/', '/modes', '/learn', '/stats', '/settings'] as const;
+const MAIN_TAB_PRELOAD_DELAY_MS = 3_000;
 
 export function preloadMainTabRoutes() {
   const run = () => MAIN_TAB_ROUTE_PATHS.forEach((path) => void preloadRoute(path));
-  if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-    (window as Window & { requestIdleCallback: (cb: () => void) => number }).requestIdleCallback(run);
-  } else if (typeof window !== 'undefined') {
-    window.setTimeout(run, 1200);
+  if (typeof window === 'undefined') {
+    return () => undefined;
   }
+
+  const idleWindow = window as Window & {
+    cancelIdleCallback?: (handle: number) => void;
+    requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+  };
+  let idleHandle: number | null = null;
+  let cancelled = false;
+  const delayHandle = window.setTimeout(() => {
+    if (cancelled) return;
+    if (typeof idleWindow.requestIdleCallback === 'function') {
+      idleHandle = idleWindow.requestIdleCallback(() => {
+        idleHandle = null;
+        if (!cancelled) run();
+      }, { timeout: 2_000 });
+      return;
+    }
+    run();
+  }, MAIN_TAB_PRELOAD_DELAY_MS);
+
+  return () => {
+    cancelled = true;
+    window.clearTimeout(delayHandle);
+    if (idleHandle !== null) {
+      idleWindow.cancelIdleCallback?.(idleHandle);
+    }
+  };
 }

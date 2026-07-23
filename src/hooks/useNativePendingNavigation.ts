@@ -12,10 +12,9 @@ import {
   consumePendingNavigation,
   getMonitoringStatus,
   peekPendingNavigation,
+  subscribeToPendingNavigationAvailable,
 } from '@/services/screenTimeService';
 
-const VISIBLE_IDLE_CONSUME_POLL_MS = 250;
-const HIDDEN_IDLE_CONSUME_POLL_MS = 1_000;
 const ERROR_RETRY_BASE_MS = 500;
 const ERROR_RETRY_MAX_MS = 2_500;
 const RETRY_DEBOUNCE_MS = 250;
@@ -169,17 +168,6 @@ export function useNativePendingNavigation() {
       errorRetryDelayRef.current = ERROR_RETRY_BASE_MS;
     };
 
-    const scheduleIdleRetry = (reason: string, delayMs?: number) => {
-      errorRetryDelayRef.current = ERROR_RETRY_BASE_MS;
-      scheduleRetry(
-        reason,
-        delayMs
-          ?? (document.visibilityState === 'visible'
-            ? VISIBLE_IDLE_CONSUME_POLL_MS
-            : HIDDEN_IDLE_CONSUME_POLL_MS),
-      );
-    };
-
     const scheduleErrorRetry = (reason: string, delayMs?: number) => {
       const nextDelay = Math.max(ERROR_RETRY_BASE_MS, delayMs ?? errorRetryDelayRef.current);
       scheduleRetry(reason, nextDelay);
@@ -199,7 +187,7 @@ export function useNativePendingNavigation() {
           'missing-route',
           'pending navigation payload did not include a route, showing the emergency fallback',
         );
-        scheduleErrorRetry('missing-route', HIDDEN_IDLE_CONSUME_POLL_MS);
+        scheduleErrorRetry('missing-route');
         return true;
       }
 
@@ -217,11 +205,7 @@ export function useNativePendingNavigation() {
           overlaySessionId: nextNavigation.sessionId ?? null,
           targetId: nextNavigation.targetId ?? null,
           targetType: nextNavigation.targetType ?? null,
-          delayMs: document.visibilityState === 'visible'
-            ? VISIBLE_IDLE_CONSUME_POLL_MS
-            : HIDDEN_IDLE_CONSUME_POLL_MS,
         });
-        scheduleIdleRetry('ignored-non-blockable-target');
         return true;
       }
 
@@ -338,12 +322,8 @@ export function useNativePendingNavigation() {
           recordNativeOverlayRuntimeEvent({
             stage: 'retry-scheduled',
             source: 'hook',
-            message: 'no pending navigation available, returning to idle and keeping a fast retry loop warm',
-            delayMs: document.visibilityState === 'visible'
-              ? VISIBLE_IDLE_CONSUME_POLL_MS
-              : HIDDEN_IDLE_CONSUME_POLL_MS,
+            message: 'no pending navigation available, returning to idle until Android or the app lifecycle signals another check',
           });
-          scheduleIdleRetry(reason);
           return;
         }
 
@@ -417,6 +397,18 @@ export function useNativePendingNavigation() {
     })();
     window.addEventListener('focus', handleVisibility);
     document.addEventListener('visibilitychange', handleVisibility);
+    const unsubscribePendingNavigation = subscribeToPendingNavigationAvailable(() => {
+      if (cancelled) {
+        return;
+      }
+
+      recordNativeOverlayRuntimeEvent({
+        stage: 'pending-navigation',
+        source: 'hook',
+        message: 'Android reported that a pending navigation is available',
+      });
+      void consume(true, 'native-event');
+    });
     const unsubscribeRouteReady = subscribeToNativeRouteReady(() => {
       if (!cancelled) {
         recordNativeOverlayRuntimeEvent({
@@ -443,6 +435,7 @@ export function useNativePendingNavigation() {
       clearRetryTimer();
       window.removeEventListener('focus', handleVisibility);
       document.removeEventListener('visibilitychange', handleVisibility);
+      unsubscribePendingNavigation();
       unsubscribeRouteReady();
     };
   }, []);

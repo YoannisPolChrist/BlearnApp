@@ -10,7 +10,6 @@ import {
 } from '@/modules/learning/sync/learningSyncMappers';
 
 const EMPTY_SCOPE_REVISION = '';
-const SCOPE_REVISION_SEED = 0x811c9dc5;
 const EMPTY_SCOPE_REVISION_STATE = {
   deckScopeRevision: EMPTY_SCOPE_REVISION,
   presetScopeRevision: EMPTY_SCOPE_REVISION,
@@ -32,21 +31,6 @@ interface ScopeRevisionCacheEntry {
   deckScopeRevision: string;
   presetScopeRevision: string;
   result: ScopeRevisionState;
-}
-
-function updateScopeRevisionHash(hash: number, token: string) {
-  let nextHash = hash;
-  for (let index = 0; index < token.length; index += 1) {
-    nextHash ^= token.charCodeAt(index);
-    nextHash = Math.imul(nextHash, 0x01000193);
-  }
-
-  nextHash ^= 0x1f;
-  return Math.imul(nextHash, 0x01000193);
-}
-
-function finalizeScopeRevisionHash(hash: number) {
-  return (hash >>> 0).toString(36);
 }
 
 export function useLearningSessionScopeRevisions(activeDeckId: string | undefined, isBlockedFlow: boolean) {
@@ -80,31 +64,31 @@ export function useLearningSessionScopeRevisions(activeDeckId: string | undefine
             return cached.result;
           }
 
-          let cardScopeHash = SCOPE_REVISION_SEED;
-          const scopedCards = Object.values(state.cards).filter((card) => card.deckId === activeDeckId);
-          for (const card of scopedCards) {
-            cardScopeHash = updateScopeRevisionHash(cardScopeHash, card.id);
-            cardScopeHash = updateScopeRevisionHash(cardScopeHash, String(getCardRevision(card)));
+          let scopedCardCount = 0;
+          let latestCardRevision = 0;
+          for (const card of Object.values(state.cards)) {
+            if (card.deckId !== activeDeckId) continue;
+            scopedCardCount += 1;
+            latestCardRevision = Math.max(latestCardRevision, getCardRevision(card));
           }
 
-          let reviewLogScopeRevision = EMPTY_SCOPE_REVISION;
-          const scopedReviewLogs = Object.values(state.reviewLogs).filter((log) => log.deckId === activeDeckId);
-
-          if (scopedReviewLogs.length > 0) {
-            let reviewLogScopeHash = SCOPE_REVISION_SEED;
-            for (const log of scopedReviewLogs) {
-              reviewLogScopeHash = updateScopeRevisionHash(reviewLogScopeHash, log.id);
-              reviewLogScopeHash = updateScopeRevisionHash(reviewLogScopeHash, `${log.id}:${getReviewLogRevision(log)}`);
-            }
-
-            reviewLogScopeRevision = finalizeScopeRevisionHash(reviewLogScopeHash);
+          let scopedReviewLogCount = 0;
+          let latestReviewLogRevision = 0;
+          for (const log of Object.values(state.reviewLogs)) {
+            if (log.deckId !== activeDeckId) continue;
+            scopedReviewLogCount += 1;
+            latestReviewLogRevision = Math.max(latestReviewLogRevision, getReviewLogRevision(log));
           }
 
           const result: ScopeRevisionState = {
             deckScopeRevision,
             presetScopeRevision,
-            cardScopeRevision: scopedCards.length > 0 ? finalizeScopeRevisionHash(cardScopeHash) : EMPTY_SCOPE_REVISION,
-            reviewLogScopeRevision,
+            cardScopeRevision: scopedCardCount > 0
+              ? `${scopedCardCount}:${latestCardRevision}`
+              : EMPTY_SCOPE_REVISION,
+            reviewLogScopeRevision: scopedReviewLogCount > 0
+              ? `${scopedReviewLogCount}:${latestReviewLogRevision}`
+              : EMPTY_SCOPE_REVISION,
           };
 
           scopeRevisionCacheRef.current = {

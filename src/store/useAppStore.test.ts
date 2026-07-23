@@ -150,6 +150,52 @@ describe('useAppStore', () => {
     vi.useRealTimers();
   });
 
+  it('only freezes apps that belong to the strict add-on mode', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2023, 1, 1, 12, 0, 0));
+
+    useAppStore.getState().toggleBlockedApp('Learn App', 'learn');
+    useAppStore.getState().toggleBlockedApp('Strict App', 'strict');
+    useAppStore.getState().activateStrictAddon('learn', ['learn app', 'strict app']);
+
+    expect(useAppStore.getState().strictAddons.learn.lockedAppIds).toEqual(['learn app']);
+
+    vi.useRealTimers();
+  });
+
+  it('preserves a frozen app\'s original mode when a blocking draft is persisted', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2023, 1, 1, 12, 0, 0));
+
+    useAppStore.getState().toggleBlockedApp('Learn App', 'learn');
+    useAppStore.getState().activateStrictAddon('learn', ['learn app']);
+    useAppStore.getState().replaceBlockingState({
+      blockedApps: [],
+      blockedAppModes: {},
+      blockedWebsites: [],
+      blockedWebsiteModes: {},
+      blockedSearchTerms: [],
+      blockedSearchTermModes: {},
+      blockSchedules: {},
+    });
+
+    expect(useAppStore.getState().blockedApps).toEqual(['learn app']);
+    expect(useAppStore.getState().blockedAppModes).toEqual({ 'learn app': 'learn' });
+
+    vi.useRealTimers();
+  });
+
+  it('uses a full scope for the global strict lock by default', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2023, 1, 1, 12, 0, 0));
+
+    useAppStore.getState().activateStrictLock();
+
+    expect(useAppStore.getState().strictLockScope).toBe('full');
+
+    vi.useRealTimers();
+  });
+
   it('activates an overnight strict lock when triggered after midnight', () => {
     vi.useFakeTimers();
     // 02:00, inside the morning portion of a 22:00 -> 06:00 window.

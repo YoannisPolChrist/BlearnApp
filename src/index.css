@@ -109,7 +109,7 @@
     --background: 198 40% 9%;
     --foreground: 42 28% 95%;
 
-    --card: 198 30% 11%;
+    --card: 198 28% 14%;
     --card-foreground: 42 28% 95%;
 
     --popover: 198 30% 11%;
@@ -140,10 +140,10 @@
     --input: 200 20% 24%;
     --ring: 190 72% 60%;
 
-    --surface-hero: 197 28% 14%;
-    --surface-feature: 198 26% 12%;
-    --surface-subtle: 198 26% 11%;
-    --surface-muted: 200 18% 16%;
+    --surface-hero: 197 28% 17%;
+    --surface-feature: 198 26% 15%;
+    --surface-subtle: 198 26% 14%;
+    --surface-muted: 200 18% 18%;
 
     --ambient-primary: 190 72% 46%;
     --ambient-secondary: 40 72% 54%;
@@ -177,9 +177,9 @@
     --mode-penalty-glow: 10 78% 58%;
 
     --mode-learn: 45 96% 62%;
-    --mode-learn-foreground: 42 100% 90%;
-    --mode-learn-surface: 35 44% 20%;
-    --mode-learn-border: 42 58% 52%;
+    --mode-learn-foreground: 44 100% 94%;
+    --mode-learn-surface: 35 42% 27%;
+    --mode-learn-border: 42 58% 58%;
     --mode-learn-glow: 44 98% 58%;
 
     --mode-breathing: 204 78% 68%;

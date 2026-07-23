@@ -240,19 +240,14 @@ export function useManualLearningCloudSync() {
         } else if (localRemoteCursor && areLearningCloudSyncCursorsEqual(localRemoteCursor, remoteCursor)) {
           remoteState = hasLocalPendingChanges ? null : localState;
         } else if (localRemoteCursor) {
-          const pulled = await withTimeout(
-            pullLearningCloudMutations(authUserId, localRemoteCursor),
+          // A complete Firestore entity snapshot is authoritative. Mutation
+          // retention is deliberately bounded, so it cannot be used alone to
+          // repair a device that may have been offline for a long time.
+          remoteState = await withTimeout(
+            loadLearningCloudState(authUserId),
             MANUAL_LEARNING_CLOUD_LOAD_TIMEOUT_MS,
-            'learning cloud mutation pull',
+            'learning cloud state load',
           );
-          effectiveRemoteCursor = pulled.cursor || remoteCursor;
-          remoteState = pulled.mutations.length > 0
-            ? applyLearningCloudMutations(localState, pulled.mutations)
-            : await withTimeout(
-                loadLearningCloudState(authUserId),
-                MANUAL_LEARNING_CLOUD_LOAD_TIMEOUT_MS,
-                'learning cloud state load',
-              );
         } else {
           remoteState = await withTimeout(
             loadLearningCloudState(authUserId),
@@ -287,13 +282,26 @@ export function useManualLearningCloudSync() {
             MANUAL_LEARNING_CLOUD_SAVE_TIMEOUT_MS,
             'learning cloud save',
           );
-          const savedCursor = getLearningCloudMetaCursor(savedMeta);
-          cacheLearningCloudSyncBaseline(authUserId, mergedState, savedCursor);
-          useLearningStore.getState().markLearningCloudSyncCompleted(
-            savedMeta?.lastMutationAt || Date.now(),
-            savedCursor,
-            getLearningCloudStateSignature(mergedState),
-          );
+          const savedState = savedMeta?.resolvedState || mergedState;
+          if (savedMeta) {
+            if (getLearningCloudStateSignature(savedState) !== getLearningCloudStateSignature(readLearningCloudStateFromStore())) {
+              writeLearningCloudStateToStore(savedState);
+            }
+            const savedCursor = getLearningCloudMetaCursor(savedMeta);
+            cacheLearningCloudSyncBaseline(authUserId, savedState, savedCursor);
+            useLearningStore.getState().markLearningCloudSyncCompleted(
+              savedMeta.lastMutationAt || Date.now(),
+              savedCursor,
+              getLearningCloudStateSignature(savedState),
+            );
+          } else {
+            cacheLearningCloudSyncBaseline(authUserId, mergedState, effectiveRemoteCursor);
+            useLearningStore.getState().markLearningCloudSyncCompleted(
+              effectiveRemoteCursor?.mutationAt || Date.now(),
+              effectiveRemoteCursor,
+              getLearningCloudStateSignature(mergedState),
+            );
+          }
           pushedChanges = true;
         } else {
           cacheLearningCloudSyncBaseline(authUserId, mergedState, effectiveRemoteCursor);

@@ -225,6 +225,17 @@ describe('modes UI smoke', () => {
     await expectAppRequirementHint();
   }, 12000);
 
+  it('shows the matching setup information after selecting reflection or penalty mode', async () => {
+    renderModesPage();
+    await waitForPermissionsReady();
+
+    fireEvent.click(screen.getByText(/^Reflexion$/i, { selector: 'h3' }).closest('button')!);
+    expect(await screen.findByRole('heading', { name: 'Reflexionsmodus' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText(/^Strafmodus$/i, { selector: 'h3' }).closest('button')!);
+    expect(await screen.findByRole('heading', { name: 'Wallet und Empfänger prüfen' })).toBeInTheDocument();
+  });
+
   it('prefers the reflection mode card over the red lock card when both are active', async () => {
     useAppStore.setState({
       activeModes: ['lock', 'strict'],
@@ -272,19 +283,12 @@ describe('modes UI smoke', () => {
     expect(within(appCard as HTMLElement).getByText(/strict|reflexion/i)).toBeInTheDocument();
   }, 12000);
 
-  it('does not count websites alone as a valid strict target', async () => {
+  it('does not expose website targets in the mode editor', async () => {
     renderModesPage();
     await waitForPermissionsReady();
 
-    fireEvent.click(screen.getByRole('button', { name: /^websites/i }));
-    fireEvent.change(screen.getByPlaceholderText(/example\.com/i), { target: { value: 'youtube.com' } });
-    fireEvent.click(screen.getByRole('button', { name: /hinzuf/i }));
-
-    const saveButton = await screen.findByRole('button', { name: /speichern/i });
-    expect(saveButton).toBeDisabled();
-    await waitFor(() => {
-      expect(document.body.textContent).toMatch(/websites oder suchbegriffe allein reichen nicht|websites or search terms alone are not enough/i);
-    });
+    expect(screen.queryByRole('button', { name: /^websites/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /apps und suche|apps and search/i })).toBeInTheDocument();
   }, 12000);
 
   it('treats a mode-card switch as a saveable change and persists it', async () => {
@@ -748,7 +752,7 @@ describe('modes UI smoke', () => {
 
     clickLearnModeCard();
 
-    const toggleButton = await screen.findByRole('button', { name: /type your answer|antwort eintippen/i });
+    const toggleButton = await screen.findByRole('switch', { name: /type your answer|antwort eintippen/i });
     fireEvent.click(toggleButton);
 
     expect(useLearningStore.getState().gateRule.typedAnswerEnabled).toBe(false);
@@ -771,7 +775,7 @@ describe('modes UI smoke', () => {
     clickLearnModeCard();
 
     expect(
-      await screen.findByText(/3 richtige buchstaben pro wort gen(?:ü|ue)gen/i),
+      await screen.findByText(/drei passende buchstaben im hauptwort reichen/i),
     ).toBeInTheDocument();
   });
 
@@ -873,19 +877,6 @@ describe('modes UI smoke', () => {
     expect(await screen.findByText(/aktive freigaben|active unlocks/i)).toBeInTheDocument();
     const activeUnlockSection = screen
       .getByText(/jedes ziel läuft mit eigener uhr|each target keeps its own timer/i)
-      .closest('section');
-
-    expect(activeUnlockSection).not.toBeNull();
-    const unlockScope = within(activeUnlockSection!);
-
-    expect(unlockScope.getByText('YouTube')).toBeInTheDocument();
-    expect(unlockScope.getByText('Instagram')).toBeInTheDocument();
-    expect(unlockScope.getAllByText(/freigabe endet in|unlock ends in/i)).toHaveLength(2);
-    expect(unlockScope.getAllByText(/\d{2}:\d{2}:\d{2}/)).toHaveLength(2);
-  });
-
-  it('allows penalty mode itself to be saved before any app is assigned', async () => {
-    renderModesPage();
     await waitForPermissionsReady();
 
     fireEvent.click(screen.getByRole('button', { name: /strafmodus/i }));

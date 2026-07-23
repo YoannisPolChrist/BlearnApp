@@ -145,7 +145,7 @@ function AppInner() {
 
   // Haupt-Tabs im Idle vorladen → flüssige Tab-Wechsel ohne weiße Frames (4b).
   useEffect(() => {
-    preloadMainTabRoutes();
+    return preloadMainTabRoutes();
   }, []);
 
   useEffect(() => {

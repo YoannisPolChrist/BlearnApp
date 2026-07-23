@@ -2,7 +2,7 @@ import type { TranslationTree } from '@/lib/i18n';
 
 const arPack: TranslationTree = {
   nav: {
-    focus: 'التركيز',
+    focus: 'الرئيسية',
     screen: 'الشاشة',
     learn: 'تعلّم',
     stats: 'الإحصاءات',

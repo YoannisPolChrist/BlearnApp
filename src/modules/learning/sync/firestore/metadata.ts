@@ -37,6 +37,7 @@ export function normalizeLearningCloudMeta(meta?: Partial<LearningCloudMeta> | n
     filteredDeckLiteDefinition: meta.filteredDeckLiteDefinition,
     filteredDeckLiteDefinitions: meta.filteredDeckLiteDefinitions,
     filteredDeckLiteRuns: meta.filteredDeckLiteRuns,
+    entityTombstones: meta.entityTombstones,
     assignments: meta.assignments,
     gateRule: meta.gateRule,
     gateRuleUpdatedAt: Number.isFinite(meta.gateRuleUpdatedAt) ? Math.max(0, Math.round(meta.gateRuleUpdatedAt as number)) : undefined,
@@ -47,6 +48,7 @@ export function normalizeLearningCloudMeta(meta?: Partial<LearningCloudMeta> | n
     clientUpdatedAt: Number.isFinite(meta.clientUpdatedAt) ? Math.max(0, Math.round(meta.clientUpdatedAt as number)) : undefined,
     lastMutationId: typeof meta.lastMutationId === 'string' ? meta.lastMutationId : undefined,
     lastMutationAt: Number.isFinite(meta.lastMutationAt) ? Math.max(0, Math.round(meta.lastMutationAt as number)) : undefined,
+    deckScopedMigrationCompleted: meta.deckScopedMigrationCompleted === true,
   };
 }
 

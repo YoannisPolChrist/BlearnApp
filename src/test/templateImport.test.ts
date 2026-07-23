@@ -4,10 +4,13 @@ import * as path from 'node:path';
 import {
   buildEntitiesFromRows,
   buildReviewQueue,
+  getDefaultLearningPreset,
   getFeaturedDeckTemplates,
   normalizeImportPayload,
 } from '@/lib/learning';
 import { useLearningStore } from '@/store/useLearningStore';
+import { buildLearnHubSummary } from '@/lib/view-models/learn';
+
 
 describe('template imports', () => {
   beforeEach(() => {
@@ -39,7 +42,7 @@ describe('template imports', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  it('replaces a legacy Jean-Paul deck with the Jean Paul 2.0 template state', async () => {
+  it('updates a legacy Jean-Paul deck without deleting unmatched cards or review history', async () => {
     const template = getFeaturedDeckTemplates().find((entry) => entry.id === 'jean-paul');
     const existing = buildEntitiesFromRows(
       [{ deck: 'Jean-Paul', front: 'salam', back: 'hallo', type: 'basic', language: 'fr' }],
@@ -120,14 +123,176 @@ describe('template imports', () => {
     expect(Object.values(useLearningStore.getState().decks)).toHaveLength(1);
     expect(Object.values(useLearningStore.getState().decks)[0]?.id).toBe(existing.decks[0]?.id);
     expect(Object.values(useLearningStore.getState().decks)[0]?.name).toBe('Jean Paul');
-    expect(Object.values(useLearningStore.getState().notes)).toHaveLength(1);
-    expect(Object.values(useLearningStore.getState().notes)[0]?.front).toBe('nouveau');
-    expect(Object.values(useLearningStore.getState().cards)).toHaveLength(1);
-    expect(Object.values(useLearningStore.getState().cards)[0]?.deckId).toBe(existing.decks[0]?.id);
-    expect(Object.values(useLearningStore.getState().cards)[0]?.reps).toBe(8);
-    expect(Object.values(useLearningStore.getState().reviewLogs)).toHaveLength(0);
+    expect(Object.values(useLearningStore.getState().notes)).toHaveLength(2);
+    expect(Object.values(useLearningStore.getState().notes).some((note) => note.front === 'nouveau')).toBe(true);
+    expect(Object.values(useLearningStore.getState().notes).some((note) => note.front === 'salam')).toBe(true);
+    expect(Object.values(useLearningStore.getState().cards)).toHaveLength(2);
+    expect(Object.values(useLearningStore.getState().cards).every((card) => card.deckId === existing.decks[0]?.id)).toBe(true);
+    expect(Object.values(useLearningStore.getState().reviewLogs)).toHaveLength(1);
     expect(useLearningStore.getState().assignments[0]?.deckId).toBe(existing.decks[0]?.id);
     expect(useLearningStore.getState().unlockGrants[0]?.sourceDeckId).toBe(existing.decks[0]?.id);
+  });
+
+  it('updates Jean Paul without removing private cards or their review history', async () => {
+    const template = getFeaturedDeckTemplates().find((entry) => entry.id === 'jean-paul');
+    const sourceRow = {
+      deck: 'Jean Paul',
+      front: 'ancien',
+      back: 'alt',
+      type: 'basic' as const,
+      language: 'fr',
+      anki: {
+        deck: { deckId: '42', collectionCreatedAt: 1_700_000_000_000 },
+        note: { noteId: '100', modelId: '12', modelName: 'Basic', sortField: 'ancien', tags: [], fields: [], noteModifiedAt: 1_700_000_000_000 },
+        card: { cardId: '200', noteId: '100', deckId: '42', templateOrdinal: 0, templateName: 'Karte 1', queue: 0, cardType: 0, due: 0, interval: 0, factor: 2500, reps: 0, lapses: 0, leftCount: 0, cardModifiedAt: 1_700_000_000_000 },
+      },
+    };
+    const source = buildEntitiesFromRows([sourceRow], 1_700_000_000_000, {
+      sourceTemplateId: 'jean-paul',
+      sourceType: 'template',
+    });
+    const privateEntities = buildEntitiesFromRows(
+      [{ deck: 'Private additions', front: 'meine karte', back: 'my card', type: 'basic', language: 'fr' }],
+      1_700_000_100_000,
+    );
+    const deckId = source.decks[0].id;
+    const privateNote = { ...privateEntities.notes[0], deckId };
+    const privateCard = { ...privateEntities.cards[0], deckId, noteId: privateNote.id };
+
+    useLearningStore.setState({
+      decks: {
+        [deckId]: {
+          ...source.decks[0],
+          cardIds: [...source.decks[0].cardIds, privateCard.id],
+        },
+      },
+      notes: {
+        [source.notes[0].id]: source.notes[0],
+        [privateNote.id]: privateNote,
+      },
+      cards: {
+        [source.cards[0].id]: source.cards[0],
+        [privateCard.id]: privateCard,
+      },
+      reviewLogs: {
+        private_review: {
+          id: 'private_review',
+          deckId,
+          cardId: privateCard.id,
+          reviewedAt: 1_700_000_200_000,
+          rating: 'good',
+          previousState: 'new',
+          newState: 'learning',
+          scheduledDays: 1,
+          elapsedDays: 0,
+          wasCorrect: true,
+          memoryStateBefore: null,
+          memoryStateAfter: null,
+        },
+      },
+    });
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => [{ ...sourceRow, front: 'neu', back: 'new' }],
+    } as Response);
+
+    const result = await useLearningStore.getState().importTemplateDeck(template!.id);
+
+    expect(result.status).toBe('imported');
+    expect(useLearningStore.getState().notes[privateNote.id]).toMatchObject({ front: 'meine karte', deckId });
+    expect(useLearningStore.getState().cards[privateCard.id]).toMatchObject({ deckId, noteId: privateNote.id });
+    expect(useLearningStore.getState().reviewLogs.private_review).toMatchObject({ cardId: privateCard.id });
+    expect(useLearningStore.getState().decks[deckId]?.cardIds).toContain(privateCard.id);
+  });
+
+  it('repairs a Jean-Paul deck without losing matching Anki scheduling or review history', async () => {
+    const template = getFeaturedDeckTemplates().find((entry) => entry.id === 'jean-paul');
+    const importedRow = {
+      deck: 'Jean Paul',
+      front: 'mari',
+      back: 'le mari',
+      type: 'basic' as const,
+      language: 'fr',
+      anki: {
+        deck: {
+          deckId: '42',
+          originalName: 'Jean Paul',
+          collectionCreatedAt: 1_700_000_000_000,
+        },
+        note: {
+          noteId: '9001',
+          modelId: '12',
+          modelName: 'Basic',
+          sortField: 'mari',
+          tags: [],
+          fields: [],
+          noteModifiedAt: 1_700_000_000_000,
+        },
+        card: {
+          cardId: '9002',
+          noteId: '9001',
+          deckId: '42',
+          templateOrdinal: 0,
+          templateName: 'Karte 1',
+          queue: 2,
+          cardType: 2,
+          due: 8,
+          interval: 14,
+          factor: 2500,
+          reps: 4,
+          lapses: 1,
+          leftCount: 0,
+          cardModifiedAt: 1_700_000_000_000,
+          lastReviewAt: 1_700_000_000_000,
+        },
+      },
+    };
+    const existing = buildEntitiesFromRows([importedRow], 1_700_000_000_000);
+    const legacyCard = {
+      ...existing.cards[0],
+      id: 'legacy-card',
+      noteId: 'legacy-note',
+      state: 'review' as const,
+      dueAt: 1_800_000_000_000,
+      intervalDays: 30,
+      reps: 11,
+      lapses: 2,
+      lastReviewedAt: 1_799_000_000_000,
+    };
+
+    useLearningStore.setState({
+      decks: Object.fromEntries(existing.decks.map((deck) => [deck.id, deck])),
+      notes: {},
+      cards: { [legacyCard.id]: legacyCard },
+      reviewLogs: {
+        log_legacy: {
+          id: 'log_legacy',
+          deckId: existing.decks[0].id,
+          cardId: legacyCard.id,
+          reviewedAt: 1_799_000_000_000,
+          rating: 'good',
+          previousState: 'learning',
+          newState: 'review',
+          scheduledDays: 30,
+          elapsedDays: 12,
+          wasCorrect: true,
+          memoryStateBefore: null,
+          memoryStateAfter: null,
+        },
+      },
+    });
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => [importedRow],
+    } as Response);
+
+    const result = await useLearningStore.getState().importTemplateDeck(template!.id);
+    const repairedCard = Object.values(useLearningStore.getState().cards)[0];
+    const repairedLog = Object.values(useLearningStore.getState().reviewLogs)[0];
+
+    expect(result.status).toBe('imported');
+    expect(repairedCard).toMatchObject({ reps: 11, dueAt: 1_800_000_000_000, state: 'review' });
+    expect(repairedLog).toMatchObject({ id: 'log_legacy', cardId: repairedCard.id });
   });
 
   it('keeps the bundled Jean Paul template lean and immediately reviewable', () => {
@@ -182,5 +347,46 @@ describe('template imports', () => {
       && card.lastReviewedAt === undefined
     )).toBe(true);
     expect(queue.length).toBeGreaterThan(0);
+  });
+
+  it('keeps template decks with starter tags visible, including imports saved before source metadata existed', () => {
+    const importedTemplateDeck = {
+      id: 'jp-es',
+      name: 'Jean Paul Spanisch',
+      description: 'Deutsch-Spanisch Starterdeck',
+      language: 'es',
+      tags: ['jean-paul-spanish', 'spanish', 'starter', 'freq-1'],
+      cardIds: [],
+      sourceTemplateId: 'jean-paul-spanish',
+      sourceType: 'template',
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    };
+    const legacyImportedTemplateDeck = {
+      ...importedTemplateDeck,
+      id: 'legacy-jp-es',
+      sourceTemplateId: undefined,
+      sourceType: undefined,
+    };
+    const legacyStarterDeck = {
+      ...importedTemplateDeck,
+      id: 'legacy-starter',
+      name: 'Starter Vokabeln',
+      sourceTemplateId: undefined,
+      sourceType: undefined,
+    };
+
+    const summary = buildLearnHubSummary({
+      activeDeckId: 'jp-es',
+      decks: [importedTemplateDeck, legacyImportedTemplateDeck, legacyStarterDeck],
+      getDeckStats: () => null,
+      getResolvedPresetForDeck: () => ({
+        ...getDefaultLearningPreset(),
+        reviewsBetweenNewCards: 15,
+      }),
+    });
+
+    expect(summary.starterDeckCount).toBe(1);
+    expect(summary.deckStats.map((deck) => deck.id)).toEqual(['jp-es', 'legacy-jp-es']);
   });
 });

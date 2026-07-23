@@ -36,8 +36,6 @@ export function useLearnReviewSessionBootstrap({
   sessionCreditsRequired,
   setActiveDeck,
   setAwaitingEmotionSelection,
-  setBlockedEasyHintVisible,
-  setBlockedEasyPulseKey,
   setCompletedSessionVisible,
   setFeedbackEvents,
   setSelectedSessionCategories,
@@ -66,8 +64,6 @@ export function useLearnReviewSessionBootstrap({
   sessionCreditsRequired: number;
   setActiveDeck: (deckId: string) => void;
   setAwaitingEmotionSelection: Dispatch<SetStateAction<boolean>>;
-  setBlockedEasyHintVisible: Dispatch<SetStateAction<boolean>>;
-  setBlockedEasyPulseKey: Dispatch<SetStateAction<number>>;
   setCompletedSessionVisible: Dispatch<SetStateAction<boolean>>;
   setFeedbackEvents: Dispatch<SetStateAction<LearningReviewFeedbackEvent[]>>;
   setSelectedSessionCategories: Dispatch<SetStateAction<string[]>>;
@@ -149,8 +145,6 @@ export function useLearnReviewSessionBootstrap({
         setSelectedSessionEmotions([]);
         setCompletedSessionVisible(false);
         pendingCompletionKindRef.current = null;
-        setBlockedEasyHintVisible(false);
-        setBlockedEasyPulseKey(0);
         return;
       }
     }
@@ -168,6 +162,7 @@ export function useLearnReviewSessionBootstrap({
       unlockDurationMinutes,
       ignoreNewCardsLimit: true,
       includeReviewAhead: false,
+      isBlockedFlow,
       excludeCardIds: reviewedCardIdsRef.current,
       precomputedQueueIds:
         reviewedCardIdsRef.current.size === 0 && initialUnlockQueueIds.length > 0
@@ -192,8 +187,6 @@ export function useLearnReviewSessionBootstrap({
     setSelectedSessionEmotions([]);
     setCompletedSessionVisible(false);
     pendingCompletionKindRef.current = null;
-    setBlockedEasyHintVisible(false);
-    setBlockedEasyPulseKey(0);
   }, [
     activeDeckCards,
     activeDeckId,
@@ -213,8 +206,6 @@ export function useLearnReviewSessionBootstrap({
     sessionControllerRef,
     sessionCreditsRequired,
     setAwaitingEmotionSelection,
-    setBlockedEasyHintVisible,
-    setBlockedEasyPulseKey,
     setCompletedSessionVisible,
     setFeedbackEvents,
     setSelectedSessionCategories,

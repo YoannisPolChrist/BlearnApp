@@ -91,14 +91,16 @@ export function evaluateTypedAnswer(
     hasDirective || shouldRequireTypedAnswer(card, note, typedAnswerMaxWords, typedAnswerEnabled);
   const matchKind = requiresTypedAnswer ? getTypedAnswerMatchKind(card, note, answer) : 'exact';
   const correct = matchKind !== 'incorrect';
-  const attemptCount = correct ? 0 : 1;
-  const attemptsLeft = Math.max(0, maxAttempts - attemptCount);
+  // Die Eingabe ist ein Lernhinweis, keine Zugangssperre: Auch nach einer
+  // nicht erkannten Antwort bleibt die Bewertung vollständig beim Nutzer.
+  const attemptCount = 0;
+  const attemptsLeft = maxAttempts;
 
   return {
     correct,
     attemptsLeft,
     attemptCount,
-    autoReveal: requiresTypedAnswer && !correct && attemptsLeft === 0,
+    autoReveal: false,
     hasDirective,
     matchKind,
     message:
@@ -106,9 +108,7 @@ export function evaluateTypedAnswer(
         ? 'Richtig'
         : matchKind === 'partial'
           ? 'Das war fast richtig.'
-          : attemptsLeft > 0
-            ? `Falsch. ${attemptsLeft} Versuch${attemptsLeft === 1 ? '' : 'e'} uebrig`
-            : 'Falsch. Antwort wird aufgedeckt',
+          : 'Nicht erkannt. Du kannst die Karte trotzdem selbst bewerten.',
   };
 }
 

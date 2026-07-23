@@ -140,8 +140,13 @@ export const createBlockingSlice: AppStoreSlice<Partial<AppState>> = (set, get) 
 
       Object.entries(lockedByMode).forEach(([mode, lockedSet]) => {
         lockedSet.forEach((appId) => {
-          nextBlockedAppModes[appId] = mode as TargetModeId;
-          nextBlockSchedules[appId] = nextBlockSchedules[appId] ?? { ...DEFAULT_ALL_DAY_BLOCK_SCHEDULE };
+          // Keep the assignment that was committed when the add-on started.
+          // A strict add-on freezes configuration; it must never rewrite a
+          // Learn/Penalty/Reflection target into the strict intervention flow.
+          nextBlockedAppModes[appId] = state.blockedAppModes[appId] ?? (mode as TargetModeId);
+          nextBlockSchedules[appId] = nextBlockSchedules[appId]
+            ?? state.blockSchedules[appId]
+            ?? { ...DEFAULT_ALL_DAY_BLOCK_SCHEDULE };
         });
       });
 

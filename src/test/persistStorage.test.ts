@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { createQuotaResilientJsonStorage, waitForPersistStorageIdle } from '@/lib/persistStorage';
+import {
+  createDebouncedIndexedDbJsonStorage,
+  createQuotaResilientJsonStorage,
+  waitForPersistStorageIdle,
+} from '@/lib/persistStorage';
 
 type IndexedDbHarness = ReturnType<typeof createIndexedDbHarness>;
 
@@ -188,6 +192,31 @@ describe('createQuotaResilientJsonStorage', () => {
     expect(setItemSpy).toHaveBeenCalledTimes(2);
     expect(window.localStorage.getItem('quota-test')).toContain('"savedModeSelection":"strict"');
     expect(window.localStorage.getItem('quota-test')).not.toContain('"tooBig":true');
+  });
+});
+
+describe('createDebouncedIndexedDbJsonStorage', () => {
+  it('coalesces rapid snapshot writes and flushes the latest value on demand', async () => {
+    const storage = createDebouncedIndexedDbJsonStorage<{ reviewCount: number }>('learning-debounce-test', 10_000);
+
+    const firstWrite = storage.setItem('learning-debounce-test', {
+      state: { reviewCount: 1 },
+      version: 0,
+    });
+    const secondWrite = storage.setItem('learning-debounce-test', {
+      state: { reviewCount: 2 },
+      version: 0,
+    });
+
+    expect(await storage.getItem('learning-debounce-test')).toBeNull();
+
+    await waitForPersistStorageIdle('learning-debounce-test');
+    await Promise.all([firstWrite, secondWrite]);
+
+    expect(await storage.getItem('learning-debounce-test')).toEqual({
+      state: { reviewCount: 2 },
+      version: 0,
+    });
   });
 });
 

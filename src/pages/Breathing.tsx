@@ -53,6 +53,7 @@ export default function BreathingPage() {
     incrementBreathingSessions(Math.round(totalSeconds / 60));
 
     const params = createBlockingFlowSearchParams(searchParams);
+    params.set('breathingCompleted', '1');
     navigate(params.toString() ? `/checkin?${params.toString()}` : '/checkin', { replace: true });
   }, [activePattern, effectiveTargetCycles, incrementBreathingSessions, navigate, searchParams]);
 

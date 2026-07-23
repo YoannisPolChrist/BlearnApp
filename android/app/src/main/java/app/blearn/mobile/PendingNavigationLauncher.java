@@ -46,6 +46,7 @@ final class PendingNavigationLauncher {
                 HANDOFF_COORDINATOR.reset("pending_navigation_save_failed");
                 return false;
             }
+            ScreenTimePlugin.notifyPendingNavigationAvailable(navigation);
         } catch (Exception error) {
             HANDOFF_COORDINATOR.reset("pending_navigation_save_failed");
             debug(context, "pending navigation save failed", error);

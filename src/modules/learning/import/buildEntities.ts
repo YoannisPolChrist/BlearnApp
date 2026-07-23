@@ -4,6 +4,14 @@ import { DEFAULT_PASSIVE_PRESET_ID } from '../domain/entities';
 import { createId } from '../domain/id';
 import { extractClozeOccurrences } from './preview';
 
+function createPortableAnkiId(prefix: string, collectionCreatedAt: number | undefined, entityId: string | undefined) {
+  if (!collectionCreatedAt || !entityId) return undefined;
+  // Anki stores collection.crt in seconds; mobile exposes it as milliseconds.
+  // This canonical namespace deliberately matches the desktop importer.
+  const collectionId = String(Math.floor(collectionCreatedAt / 1000));
+  return `${prefix}_anki_${encodeURIComponent(collectionId)}_${encodeURIComponent(entityId)}`;
+}
+
 export function parseCsv(content: string): ImportableRow[] {
   const lines = content.replace(/\r/g, '').split('\n').filter(Boolean);
   if (lines.length <= 1) return [];
@@ -106,6 +114,7 @@ export function buildEntitiesFromRows(
   cards: LearningCard[];
 } {
   const deckMap = new Map<string, LearningDeck>();
+  const noteMap = new Map<string, LearningNote>();
   const notes: LearningNote[] = [];
   const cards: LearningCard[] = [];
 
@@ -113,11 +122,13 @@ export function buildEntitiesFromRows(
     if (!row.front.trim() && !row.clozeText?.trim()) return;
 
     const deckName = row.deck.trim() || 'Imported Deck';
-    const existingDeck = deckMap.get(deckName);
+    const portableDeckId = createPortableAnkiId('deck', row.anki?.deck?.collectionCreatedAt, row.anki?.deck?.deckId);
+    const deckKey = portableDeckId || deckName;
+    const existingDeck = deckMap.get(deckKey);
     const deck =
       existingDeck ||
       {
-        id: createId('deck'),
+        id: portableDeckId || createId('deck'),
         name: deckName,
         description: row.deckDescription || `Importiert aus ${row.type === 'cloze' ? 'Cloze' : 'Basic'}-Karten`,
         language: row.language || 'de',
@@ -131,10 +142,10 @@ export function buildEntitiesFromRows(
       updatedAt: row.card?.lastReviewedAt ?? row.card?.createdAt ?? now,
     };
 
-    deckMap.set(deckName, deck);
+    deckMap.set(deckKey, deck);
 
-    const noteId = createId('note');
-    const cardId = createId('card');
+    const noteId = createPortableAnkiId('note', row.anki?.deck?.collectionCreatedAt, row.anki?.note?.noteId) || createId('note');
+    const cardId = createPortableAnkiId('card', row.anki?.deck?.collectionCreatedAt, row.anki?.card?.cardId) || createId('card');
     const noteCreatedAt = row.note?.createdAt ?? row.card?.createdAt ?? now;
     const noteUpdatedAt =
       row.note?.updatedAt
@@ -142,7 +153,7 @@ export function buildEntitiesFromRows(
       ?? row.card?.lastReviewedAt
       ?? row.card?.createdAt
       ?? noteCreatedAt;
-    const note: LearningNote = {
+    const note: LearningNote = noteMap.get(noteId) || {
       id: noteId,
       deckId: deck.id,
       type: row.type === 'cloze' ? 'cloze' : 'basic',
@@ -212,7 +223,10 @@ export function buildEntitiesFromRows(
     deck.createdAt = Math.min(deck.createdAt, note.createdAt);
     deck.updatedAt = Math.max(deck.updatedAt, note.updatedAt ?? note.createdAt);
 
-    notes.push(note);
+    if (!noteMap.has(noteId)) {
+      noteMap.set(noteId, note);
+      notes.push(note);
+    }
   });
 
   return {

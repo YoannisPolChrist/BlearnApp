@@ -47,6 +47,7 @@ export function useModesComputedViewData(options: {
   installedApps: Parameters<typeof buildVisibleApps>[0]['installedApps'];
   interventionInterval: number;
   interventionPatternId: string;
+  learnLibraryOpen: boolean;
   localActiveDeckId?: string;
   localBreathingRoundsDraft: string;
   localIntervalDraft: string;
@@ -75,7 +76,15 @@ export function useModesComputedViewData(options: {
     blockedSearchTerms: options.blockedSearchTerms,
     blockedSearchTermModes: options.blockedSearchTermModes,
     blockSchedules: options.blockSchedules,
-  }), [options]);
+  }), [
+    options.blockSchedules,
+    options.blockedAppModes,
+    options.blockedApps,
+    options.blockedSearchTermModes,
+    options.blockedSearchTerms,
+    options.blockedWebsiteModes,
+    options.blockedWebsites,
+  ]);
 
   const { filteredVisibleApps, shouldShowFullAppList } = useMemo(
     () =>
@@ -86,7 +95,13 @@ export function useModesComputedViewData(options: {
         query: options.deferredAppSearch,
         showAllApps: options.showAllApps,
       }),
-    [options],
+    [
+      options.deferredAppSearch,
+      options.draftBlockedApps,
+      options.installedApps,
+      options.showAllApps,
+      options.usage,
+    ],
   );
 
   const normalizedBreathingRounds = normalizeIntegerDraft(options.localBreathingRoundsDraft, BREATHING_ROUNDS_CONSTRAINTS);
@@ -94,8 +109,14 @@ export function useModesComputedViewData(options: {
   const normalizedSessionCreditsRequired = normalizeIntegerDraft(options.sessionCreditsRequiredDraft, SESSION_CREDITS_CONSTRAINTS);
   const normalizedUnlockDurationMinutes = normalizeIntegerDraft(options.unlockDurationMinutesDraft, UNLOCK_DURATION_CONSTRAINTS);
 
+  const shouldBuildDeckStats = options.selectedMode === 'learn' || options.learnLibraryOpen;
   const { deckStats, resolvedLearnDeck } = useMemo(
-    () => buildDeckStats({
+    () => {
+      if (!shouldBuildDeckStats) {
+        return { deckStats: [], resolvedLearnDeck: null };
+      }
+
+      return buildDeckStats({
       decks: options.decks,
       cards: options.cards,
       reviewLogs: options.reviewLogs,
@@ -109,8 +130,21 @@ export function useModesComputedViewData(options: {
       activeDeckId: options.localActiveDeckId,
       getDueCardsForDecks: options.getDueCardsForDecks,
       getResolvedPresetForDeck: options.getResolvedPresetForDeck,
-    }),
-    [normalizedSessionCreditsRequired, normalizedUnlockDurationMinutes, options],
+      });
+    },
+    [
+      normalizedSessionCreditsRequired,
+      normalizedUnlockDurationMinutes,
+      options.cards,
+      options.decks,
+      options.gateRule,
+      options.getDueCardsForDecks,
+      options.getResolvedPresetForDeck,
+      options.localActiveDeckId,
+      options.presets,
+      options.reviewLogs,
+      shouldBuildDeckStats,
+    ],
   );
 
   const editableMode = options.selectedMode === 'strict' || options.selectedMode === 'learn' || options.selectedMode === 'penalty'
@@ -151,7 +185,6 @@ export function useModesComputedViewData(options: {
       buildBlockTabs({
         t: options.t,
         blockedAppsCount: options.draftBlockedApps.length,
-        blockedWebsitesCount: options.draftBlockedWebsites.length,
         blockedSearchTermsCount: options.draftBlockedSearchTerms.length,
       }),
     [options.draftBlockedApps.length, options.draftBlockedSearchTerms.length, options.draftBlockedWebsites.length, options.t],

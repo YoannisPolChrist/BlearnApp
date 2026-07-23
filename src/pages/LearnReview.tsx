@@ -280,10 +280,6 @@ export default function LearnReviewPage() {
                   <LearnReviewActions
                     canUndo={session.canUndo}
                     attemptMessage={session.attemptMessage}
-                    blockedEasyHintVisible={session.blockedEasyHintVisible}
-                    blockedEasyPulseKey={session.blockedEasyPulseKey}
-                    easyRatingBlocked={session.easyRatingBlocked}
-                    hardRatingBlocked={session.hardRatingBlocked}
                     latestFeedbackMessage={session.latestFeedbackMessage}
                     isBlockedFlow={session.isBlockedFlow}
                     intervalPreviews={session.intervalPreviews}
@@ -293,7 +289,6 @@ export default function LearnReviewPage() {
                     onUndoReview={session.handleUndoReview}
                     onTypedAnswerChange={session.setTypedAnswer}
                     reduceInterfaceMotion={reduceInterfaceMotion}
-                    remainingAttempts={session.remainingAttempts}
                     requiresTypedAnswer={session.requiresTypedAnswer}
                     revealed={session.revealed}
                     typedAnswer={session.typedAnswer}
@@ -333,10 +328,6 @@ export default function LearnReviewPage() {
                   <LearnReviewActions
                     canUndo={session.canUndo}
                     attemptMessage={session.attemptMessage}
-                    blockedEasyHintVisible={session.blockedEasyHintVisible}
-                    blockedEasyPulseKey={session.blockedEasyPulseKey}
-                    easyRatingBlocked={session.easyRatingBlocked}
-                    hardRatingBlocked={session.hardRatingBlocked}
                     latestFeedbackMessage={session.latestFeedbackMessage}
                     isBlockedFlow={session.isBlockedFlow}
                     intervalPreviews={session.intervalPreviews}
@@ -346,7 +337,6 @@ export default function LearnReviewPage() {
                     onUndoReview={session.handleUndoReview}
                     onTypedAnswerChange={session.setTypedAnswer}
                     reduceInterfaceMotion={reduceInterfaceMotion}
-                    remainingAttempts={session.remainingAttempts}
                     requiresTypedAnswer={session.requiresTypedAnswer}
                     revealed={session.revealed}
                     typedAnswer={session.typedAnswer}

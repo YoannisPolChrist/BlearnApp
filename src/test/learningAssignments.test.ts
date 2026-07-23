@@ -263,4 +263,51 @@ describe('learning assignments', () => {
       hasHydratedSpy.mockRestore();
     }
   });
+
+  it('does not rewrite unchanged Learn bindings during a mode save', () => {
+    const hasHydratedSpy = vi.spyOn(useLearningStore.persist, 'hasHydrated').mockReturnValue(true);
+    try {
+      const assignment = {
+        id: 'assignment_app_com_google_android_youtube_focus',
+        targetId: 'com.google.android.youtube',
+        targetType: 'app' as const,
+        deckId: 'deck-focus',
+        sessionCreditsRequired: 1,
+        requiredCorrectReviews: 1,
+        unlockDurationMinutes: 15,
+        enabled: true,
+        updatedAt: 100,
+      };
+      useLearningStore.setState({
+        activeDeckId: 'deck-focus',
+        decks: {
+          'deck-focus': {
+            id: 'deck-focus', name: 'Focus Deck', description: '', language: 'de', tags: [], cardIds: [], createdAt: 1, updatedAt: 1,
+          },
+        },
+        assignments: [assignment],
+      });
+
+      const changed = commitLearningState({
+        localActiveDeckId: 'deck-focus',
+        setLocalActiveDeckId: vi.fn(),
+        nextGateRule: {
+          sessionCreditsRequired: useLearningStore.getState().gateRule.sessionCreditsRequired,
+          unlockDurationMinutes: 15,
+          typedAnswerEnabled: useLearningStore.getState().gateRule.typedAnswerEnabled,
+        },
+        nextDraftState: {
+          blockedApps: ['com.google.android.youtube'],
+          blockedAppModes: { 'com.google.android.youtube': 'learn' },
+          blockedWebsites: [], blockedWebsiteModes: {}, blockedSearchTerms: [], blockedSearchTermModes: {}, blockSchedules: {},
+        },
+        blockedApps: ['com.google.android.youtube'], blockedWebsites: [], blockedSearchTerms: [],
+      });
+
+      expect(changed).toBe(false);
+      expect(useLearningStore.getState().assignments[0]).toBe(assignment);
+    } finally {
+      hasHydratedSpy.mockRestore();
+    }
+  });
 });

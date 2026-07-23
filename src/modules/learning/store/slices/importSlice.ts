@@ -4,12 +4,13 @@ import {
   buildEntitiesFromRows,
   getFeaturedDeckTemplates,
   getStarterDeckRows,
-  loadFeaturedDeckTemplateRows,
   migrateLearningDeck,
   migrateLearningCard,
   migrateReviewLog,
   normalizeImportPayload,
   parseCsv,
+  type LearningCard,
+  type ReviewLog,
 } from '@/lib/learning';
 import { appendLearningCloudTombstones } from '@/lib/learningCloudLocalSyncState';
 import type { LearningImportSlice, LearningManualCardInput, LearningStore } from '../types';
@@ -22,6 +23,7 @@ import {
   mergeLearningImportedEntities,
   registerLearningMediaArtifacts,
 } from '../helpers';
+import { buildFeaturedTemplateEntities } from '../../workers/templateImportWorker';
 
 function remapImportedDeckIds(
   entities: {
@@ -59,13 +61,63 @@ function remapImportedDeckIds(
   };
 }
 
+function getAnkiCardId(card: Pick<LearningCard, 'anki'>) {
+  const cardId = card.anki?.cardId;
+  return cardId ? String(cardId) : undefined;
+}
+
+function preserveReplacementCardProgress(
+  replacementCards: LearningCard[],
+  previousCards: LearningCard[],
+) {
+  const previousCardsById = new Map(previousCards.map((card) => [card.id, card]));
+  const previousCardsByAnkiId = new Map(
+    previousCards.flatMap((card) => {
+      const ankiCardId = getAnkiCardId(card);
+      return ankiCardId ? [[ankiCardId, card] as const] : [];
+    }),
+  );
+
+  return replacementCards.map((replacementCard) => {
+    const ankiCardId = getAnkiCardId(replacementCard);
+    const previousCard = previousCardsById.get(replacementCard.id)
+      || (ankiCardId ? previousCardsByAnkiId.get(ankiCardId) : undefined);
+    if (!previousCard) {
+      return replacementCard;
+    }
+
+    return {
+      ...replacementCard,
+      // Anki IDs are stable template identities. Retaining the existing local
+      // ID keeps review logs and private scheduling references intact even if
+      // the bundled template was regenerated.
+      id: previousCard.id,
+      noteId: previousCard.noteId,
+      deckId: previousCard.deckId,
+      state: previousCard.state,
+      dueAt: previousCard.dueAt,
+      intervalDays: previousCard.intervalDays,
+      easeFactor: previousCard.easeFactor,
+      reps: previousCard.reps,
+      lapses: previousCard.lapses,
+      stepIndex: previousCard.stepIndex,
+      scheduledDays: previousCard.scheduledDays,
+      elapsedDays: previousCard.elapsedDays,
+      memoryState: previousCard.memoryState,
+      lastReviewedAt: previousCard.lastReviewedAt,
+      createdAt: previousCard.createdAt,
+      updatedAt: previousCard.updatedAt,
+    };
+  });
+}
+
 export const createLearningImportSlice: StateCreator<LearningStore, [], [], LearningImportSlice> = (set, get) => ({
   seedStarterDeck: () => {
     if (Object.keys(get().decks).length > 0) {
       return;
     }
 
-    const entities = buildEntitiesFromRows(getStarterDeckRows());
+    const entities = buildEntitiesFromRows(getStarterDeckRows(), Date.now(), { sourceType: 'starter' });
     const importJob = createLearningImportJob(
       'starter-vokabeln.json',
       'template',
@@ -110,11 +162,7 @@ export const createLearningImportSlice: StateCreator<LearningStore, [], [], Lear
     }
 
     try {
-      const rows = await loadFeaturedDeckTemplateRows(templateId);
-      const importedEntities = buildEntitiesFromRows(rows, Date.now(), {
-        sourceTemplateId: template.id,
-        sourceType: 'template',
-      });
+      const importedEntities = await buildFeaturedTemplateEntities(template, Date.now());
       const replacementDeckId = template.replaceExistingOnImport ? existingDecks[0]?.id : undefined;
       const entities = replacementDeckId
         ? remapImportedDeckIds(importedEntities, replacementDeckId)
@@ -127,94 +175,43 @@ export const createLearningImportSlice: StateCreator<LearningStore, [], [], Lear
       );
 
       if (template.replaceExistingOnImport && existingDecks.length > 0) {
-        const replacedDeckIds = new Set(existingDecks.map((deck) => deck.id));
-        const removedCardIds = new Set(
-          Object.values(get().cards)
-            .filter((card) => replacedDeckIds.has(card.deckId))
-            .map((card) => card.id),
-        );
-        const removedNoteIds = new Set(
-          Object.values(get().notes)
-            .filter((note) => replacedDeckIds.has(note.deckId))
-            .map((note) => note.id),
-        );
-        const removedReviewLogIds = new Set(
-          Object.values(get().reviewLogs)
-            .filter((log) => replacedDeckIds.has(log.deckId) || removedCardIds.has(log.cardId))
-            .map((log) => log.id),
-        );
-        const nextDeckId = entities.decks[0]?.id;
-        const now = Date.now();
-
         set((state) => {
-          const filteredState = {
-            ...state,
-            activeDeckId: state.activeDeckId && replacedDeckIds.has(state.activeDeckId)
-              ? nextDeckId
-              : state.activeDeckId,
-            activeDeckUpdatedAt: state.activeDeckId && replacedDeckIds.has(state.activeDeckId)
-              ? now
-              : state.activeDeckUpdatedAt,
-            decks: Object.fromEntries(Object.entries(state.decks).filter(([k]) => !replacedDeckIds.has(k))),
-            notes: Object.fromEntries(Object.entries(state.notes).filter(([, note]) => !replacedDeckIds.has(note.deckId))),
-            cards: Object.fromEntries(Object.entries(state.cards).filter(([, card]) => !replacedDeckIds.has(card.deckId))),
-            importJobs: state.importJobs,
-            mediaRegistry: state.mediaRegistry,
-            mediaTransferQueue: state.mediaTransferQueue,
+          const nextDeckId = entities.decks[0]?.id;
+          const previousCards = Object.values(state.cards).filter((card) => card.deckId === nextDeckId);
+          const refreshedCards = preserveReplacementCardProgress(entities.cards, previousCards);
+          const existingDeck = nextDeckId ? state.decks[nextDeckId] : undefined;
+          const refreshedEntities = {
+            ...entities,
+            cards: refreshedCards,
+            decks: entities.decks.map((deck, index) => {
+              if (index !== 0 || !existingDeck) return deck;
+
+              const preservedCardIds = Object.values(state.cards)
+                .filter((card) => card.deckId === deck.id)
+                .map((card) => card.id);
+              return {
+                ...existingDeck,
+                ...deck,
+                id: existingDeck.id,
+                cardIds: Array.from(new Set([
+                  ...preservedCardIds,
+                  ...refreshedCards.filter((card) => card.deckId === deck.id).map((card) => card.id),
+                ])),
+                createdAt: Math.min(existingDeck.createdAt, deck.createdAt),
+                updatedAt: Date.now(),
+              };
+            }),
           };
-          const merged = mergeLearningImportedEntities(filteredState, entities, importJob);
+          const merged = mergeLearningImportedEntities(state, refreshedEntities, importJob);
 
           return applyLearningStoreIndexes({
             ...merged,
-            reviewLogs: Object.fromEntries(Object.entries(state.reviewLogs).filter(
-              ([, log]) => !replacedDeckIds.has(log.deckId) && !removedCardIds.has(log.cardId),
-            )),
-            assignments: nextDeckId
-              ? state.assignments.map((assignment) =>
-                  replacedDeckIds.has(assignment.deckId)
-                    ? {
-                        ...assignment,
-                        deckId: nextDeckId,
-                        updatedAt: now,
-                      }
-                    : assignment
-                )
-              : state.assignments,
-            unlockGrants: nextDeckId
-              ? state.unlockGrants.map((grant) =>
-                  replacedDeckIds.has(grant.sourceDeckId)
-                    ? {
-                        ...grant,
-                        sourceDeckId: nextDeckId,
-                      }
-                    : grant
-                )
-              : state.unlockGrants,
-            learningCloudLocalSyncState: {
-              ...state.learningCloudLocalSyncState,
-              deletedDecks: nextDeckId
-                ? state.learningCloudLocalSyncState.deletedDecks
-                : appendLearningCloudTombstones(
-                    state.learningCloudLocalSyncState.deletedDecks,
-                    Array.from(replacedDeckIds),
-                    now,
-                  ),
-              deletedNotes: appendLearningCloudTombstones(
-                state.learningCloudLocalSyncState.deletedNotes,
-                Array.from(removedNoteIds),
-                now,
-              ),
-              deletedCards: appendLearningCloudTombstones(
-                state.learningCloudLocalSyncState.deletedCards,
-                Array.from(removedCardIds),
-                now,
-              ),
-              deletedReviewLogs: appendLearningCloudTombstones(
-                state.learningCloudLocalSyncState.deletedReviewLogs,
-                Array.from(removedReviewLogIds),
-                now,
-              ),
-            },
+            // A template refresh is additive: custom cards, review logs,
+            // assignments and unlock history remain owned by the user.
+            reviewLogs: state.reviewLogs,
+            assignments: state.assignments,
+            unlockGrants: state.unlockGrants,
+            learningCloudLocalSyncState: state.learningCloudLocalSyncState,
           });
         });
       } else {
@@ -321,10 +318,10 @@ export const createLearningImportSlice: StateCreator<LearningStore, [], [], Lear
 
   importFromAnkiPackage: async (filename, content) => {
     try {
-      // Lazy: sql.js (~MBs incl. wasm loader) is only needed for Anki
-      // imports and must not ride in the store's initial chunk chain.
-      const { parseAnkiPackage } = await import('@/lib/ankiImport');
-      const { rows, reviewLogs } = await parseAnkiPackage(filename, content);
+      // Lazy: sql.js is only needed for Anki imports. The worker also keeps
+      // ZIP, SQLite, media, and card-template work off the UI thread.
+      const { parseAnkiPackageInWorker } = await import('@/modules/learning/workers/ankiImportWorker');
+      const { rows, reviewLogs } = await parseAnkiPackageInWorker(filename, content);
       const entities = buildEntitiesFromRows(rows, Date.now(), {
         sourceType: 'anki',
       });

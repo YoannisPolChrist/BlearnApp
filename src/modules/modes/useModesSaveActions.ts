@@ -42,13 +42,12 @@ type UseModesSaveActionsOptions = {
   setIsSaving: (value: boolean) => void;
   setSaveErrorMessage: (message: string | null) => void;
   clearDraftSnapshot: () => void;
-  persistModeChanges: () => void;
+  persistModeChanges: () => boolean;
   activateStrictLock: () => void;
   activateStrictAddon: () => void;
   enablePenaltyMode: () => void;
   logModesDebug: (reason: string) => void;
   missingPermissionsMessage: string;
-  onSaveSuccess?: () => void;
 };
 
 export function useModesSaveActions({
@@ -78,7 +77,6 @@ export function useModesSaveActions({
   enablePenaltyMode,
   logModesDebug,
   missingPermissionsMessage,
-  onSaveSuccess,
 }: UseModesSaveActionsOptions) {
   const syncCurrentNativePolicies = useCallback(async () => {
     if (!isNative) return;
@@ -171,11 +169,11 @@ export function useModesSaveActions({
     ]);
   }, []);
 
-  const waitForModePersistence = useCallback(async () => {
-    await Promise.all([
-      waitForPersistStorageIdle('mindful-usage-storage'),
-      waitForPersistStorageIdle('blearn-learning-storage'),
-    ]);
+  const waitForModePersistence = useCallback(async (learningStateChanged: boolean) => {
+    await waitForPersistStorageIdle('mindful-usage-storage');
+    if (learningStateChanged) {
+      await waitForPersistStorageIdle('blearn-learning-storage');
+    }
   }, []);
 
   const markModeSaveSuccess = useCallback((label?: string) => {
@@ -187,8 +185,7 @@ export function useModesSaveActions({
         ? 'Deine Fokusregeln sind jetzt aktiv.'
         : 'Your focus rules are now active.',
     });
-    onSaveSuccess?.();
-  }, [clearDraftSnapshot, isGerman, onSaveSuccess]);
+  }, [clearDraftSnapshot, isGerman]);
 
   const getModeSaveErrorMessage = useCallback(() => (
     isGerman
@@ -250,7 +247,7 @@ export function useModesSaveActions({
       await ensurePersistedStoresHydrated();
       logModesDebug('save-hydration-done');
 
-      persistModeChanges();
+      const learningStateChanged = persistModeChanges();
       if (needsPenaltyActivation) {
         enablePenaltyMode();
       }
@@ -260,7 +257,7 @@ export function useModesSaveActions({
 
       const savePipeline = async () => {
         logModesDebug('save-persist-start');
-        await waitForModePersistence();
+        await waitForModePersistence(learningStateChanged);
         logModesDebug('save-persist-done');
 
         logModesDebug('save-sync-start');
@@ -340,12 +337,12 @@ export function useModesSaveActions({
       await ensurePersistedStoresHydrated();
       logModesDebug('lock-hydration-done');
 
-      persistModeChanges();
+      const learningStateChanged = persistModeChanges();
       activateStrictLock();
 
       const savePipeline = async () => {
         logModesDebug('lock-persist-start');
-        await waitForModePersistence();
+        await waitForModePersistence(learningStateChanged);
         logModesDebug('lock-persist-done');
 
         logModesDebug('lock-sync-start');

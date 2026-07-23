@@ -2,7 +2,7 @@ import type { TranslationTree } from '@/lib/i18n';
 
 const frPack: TranslationTree = {
   nav: {
-    focus: 'Focus',
+    focus: 'Accueil',
     modes: 'Modes',
     screen: 'Ecran',
     learn: 'Learn',
@@ -273,10 +273,10 @@ const frPack: TranslationTree = {
       correctAnswers: 'Cartes par deblocage',
       unlockMinutes: 'Deblocage (minutes)',
       useLatest: 'Utiliser le dernier deck',
-      typedAnswerOn: 'Saisie de reponse active',
-      typedAnswerOff: 'Saisie de reponse inactive',
+      typedAnswerOn: 'Active',
+      typedAnswerOff: 'Inactive',
       typedAnswerLabel: 'Saisie de reponse',
-      typedAnswerHint: 'Tape la reponse — 3 bonnes lettres par mot suffisent.',
+      typedAnswerHint: 'Tu peux saisir la reponse complete. Trois lettres correspondantes du mot principal suffisent.',
     },
     strictAddon: {
       eyebrow: 'Ajouter strict',

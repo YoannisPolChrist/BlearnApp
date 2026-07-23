@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { isFirebaseConfigured, isFirebaseWriteEnabled } from '@/lib/firebase';
 import { useCloudSyncRuntimeStore } from '@/lib/cloudSyncRuntime';
@@ -23,6 +23,8 @@ import { isNative } from '@/services/screenTimeService';
 import { backfillHistoricalData, updateSyncState, syncBackgroundAppUsage } from '@/services/hermesSyncService';
 
 const PROGRESS_SAVE_DEBOUNCE_MS = 1200;
+const APP_USAGE_RESUME_DEBOUNCE_MS = 900;
+const APP_USAGE_RESUME_MIN_INTERVAL_MS = 45_000;
 const PROGRESS_STORAGE_OWNER_KEY = 'blearn-progress-storage-owner';
 const PROGRESS_STORAGE_BACKUP_PREFIX = 'blearn-progress-storage-backup:';
 
@@ -152,6 +154,94 @@ function getProgressCloudRuntimeErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : 'Progress cloud sync failed.';
 }
 
+/**
+ * Focus and visibilitychange commonly arrive as a pair when Android resumes
+ * the WebView. Keep the two expensive usage readers single-flight and merge
+ * those signals into one bounded follow-up instead of querying UsageStats twice.
+ */
+function useCoalescedAppUsageSync() {
+  const syncStateRef = useRef<{
+    inFlight: Promise<void> | null;
+    lastStartedAt: number;
+    timerId: number | null;
+    userId: string | null;
+  }>({
+    inFlight: null,
+    lastStartedAt: 0,
+    timerId: null,
+    userId: null,
+  });
+
+  const clearScheduledSync = useCallback(() => {
+    const state = syncStateRef.current;
+    if (state.timerId !== null) {
+      window.clearTimeout(state.timerId);
+      state.timerId = null;
+    }
+  }, []);
+
+  const runSync = useCallback((userId: string) => {
+    const state = syncStateRef.current;
+    if (state.userId !== userId) {
+      clearScheduledSync();
+      state.userId = userId;
+      state.lastStartedAt = 0;
+    }
+
+    if (state.inFlight) {
+      return state.inFlight;
+    }
+
+    state.lastStartedAt = Date.now();
+    const syncPromise = Promise.all([
+      syncAppUsageToFirestore(userId).catch((error) => {
+        console.warn('[AppProgressCloudSync] App usage sync failed:', error);
+      }),
+      syncBackgroundAppUsage(userId).catch((error) => {
+        console.warn('[AppProgressCloudSync] Background app usage sync failed:', error);
+      }),
+    ]).then(() => undefined);
+    state.inFlight = syncPromise;
+
+    void syncPromise.finally(() => {
+      if (syncStateRef.current.inFlight === syncPromise) {
+        syncStateRef.current.inFlight = null;
+      }
+    });
+
+    return syncPromise;
+  }, [clearScheduledSync]);
+
+  const scheduleSync = useCallback((
+    userId: string,
+    options: { delayMs?: number; minIntervalMs?: number } = {},
+  ) => {
+    const state = syncStateRef.current;
+    if (state.userId !== userId) {
+      clearScheduledSync();
+      state.userId = userId;
+      state.lastStartedAt = 0;
+    }
+
+    const minIntervalMs = options.minIntervalMs ?? 0;
+    if (state.inFlight || Date.now() - state.lastStartedAt < minIntervalMs || state.timerId !== null) {
+      return;
+    }
+
+    const delayMs = options.delayMs ?? 0;
+    state.timerId = window.setTimeout(() => {
+      state.timerId = null;
+      void runSync(userId);
+    }, delayMs);
+  }, [clearScheduledSync, runSync]);
+
+  useEffect(() => () => {
+    clearScheduledSync();
+  }, [clearScheduledSync]);
+
+  return { scheduleSync };
+}
+
 export function useAppProgressCloudSync(enabled = true) {
   const firebaseConfigured = isFirebaseConfigured();
   const firebaseWritesEnabled = isFirebaseWriteEnabled();
@@ -173,6 +263,7 @@ export function useAppProgressCloudSync(enabled = true) {
   const remoteSubscriptionRef = useRef<(() => void) | null>(null);
   const pendingSaveTimerRef = useRef<number | null>(null);
   const lastSyncedSignatureRef = useRef<string | null>(null);
+  const { scheduleSync: scheduleAppUsageSync } = useCoalescedAppUsageSync();
 
   useEffect(() => {
     if (!enabled) {
@@ -307,12 +398,7 @@ export function useAppProgressCloudSync(enabled = true) {
         }
 
         if (isNative) {
-          void syncAppUsageToFirestore(authUserId).catch((err) => {
-            console.warn('[AppProgressCloudSync] App usage sync failed:', err);
-          });
-          void syncBackgroundAppUsage(authUserId).catch((err) => {
-            console.warn('[AppProgressCloudSync] Background app usage sync failed:', err);
-          });
+          scheduleAppUsageSync(authUserId);
         }
 
         // Trigger backfill of historical data once when the user logs in / connects
@@ -423,6 +509,7 @@ export function useAppProgressCloudSync(enabled = true) {
     firebaseConfigured,
     firebaseWritesEnabled,
     resetProgressSyncRuntime,
+    scheduleAppUsageSync,
     setProgressSyncRuntime,
   ]);
 
@@ -476,7 +563,7 @@ export function useAppProgressCloudSync(enabled = true) {
     return () => {
       window.clearTimeout(timerId);
     };
-  }, [authReady, authStatus, authUserId, enabled, firebaseWritesEnabled, progressSourceState, setProgressSyncRuntime]);
+  }, [authReady, authStatus, authUserId, enabled, firebaseWritesEnabled, progressSourceState, scheduleAppUsageSync, setProgressSyncRuntime]);
 
   // Periodic sync of app usage to Firestore every 5 minutes (300,000 ms)
   // and immediately on application visibility resume.
@@ -493,24 +580,25 @@ export function useAppProgressCloudSync(enabled = true) {
     }
 
     const runSync = () => {
-      syncAppUsageToFirestore(authUserId).catch((err) => {
-        console.warn('[AppProgressCloudSync] App usage sync failed:', err);
-      });
-      syncBackgroundAppUsage(authUserId).catch((err) => {
-        console.warn('[AppProgressCloudSync] Background app usage sync failed:', err);
-      });
+      scheduleAppUsageSync(authUserId);
     };
 
     const intervalId = window.setInterval(runSync, 5 * 60 * 1000);
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
-        runSync();
+        scheduleAppUsageSync(authUserId, {
+          delayMs: APP_USAGE_RESUME_DEBOUNCE_MS,
+          minIntervalMs: APP_USAGE_RESUME_MIN_INTERVAL_MS,
+        });
       }
     };
 
     const handleNativeBackgroundSync = () => {
-      runSync();
+      scheduleAppUsageSync(authUserId, {
+        delayMs: APP_USAGE_RESUME_DEBOUNCE_MS,
+        minIntervalMs: APP_USAGE_RESUME_MIN_INTERVAL_MS,
+      });
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -523,6 +611,6 @@ export function useAppProgressCloudSync(enabled = true) {
       window.removeEventListener('focus', handleVisibilityChange);
       window.removeEventListener('backgroundSyncTriggered', handleNativeBackgroundSync);
     };
-  }, [enabled, firebaseWritesEnabled, authReady, authStatus, authUserId]);
+  }, [enabled, firebaseWritesEnabled, authReady, authStatus, authUserId, scheduleAppUsageSync]);
 
 }

@@ -61,6 +61,20 @@ vi.mock('firebase/firestore', () => ({
       forEach: (callback: (doc: { ref: { path: string }; data: () => unknown }) => void) => list.forEach(callback),
     };
   },
+  getDocsFromServer: async (ref: { path: string }) => {
+    const list: Array<{ ref: { path: string }; data: () => unknown }> = [];
+    firestoreState.docs.forEach((val, key) => {
+      if (key.includes(ref.path)) {
+        list.push({
+          ref: { path: key },
+          data: () => clone(val),
+        });
+      }
+    });
+    return {
+      forEach: (callback: (doc: { ref: { path: string }; data: () => unknown }) => void) => list.forEach(callback),
+    };
+  },
   getDoc: async (ref: { path: string }) => ({
     exists: () => firestoreState.docs.has(ref.path),
     data: () => clone(firestoreState.docs.get(ref.path)),
@@ -119,6 +133,13 @@ describe('firebaseProgressSyncService', () => {
           targetApp: undefined,
           chatHistory: [],
           breathingCompleted: true,
+          blockingContext: {
+            flow: 'breathing',
+            targetId: 'com.youtube.android',
+            targetType: 'app',
+            targetLabel: 'YouTube',
+            overlaySessionId: 'overlay-1',
+          },
         },
       ],
       interactions: [
@@ -128,6 +149,13 @@ describe('firebaseProgressSyncService', () => {
           type: 'breathing',
           emotions: ['calm'],
           completed: true,
+          blockingContext: {
+            flow: 'breathing',
+            targetId: 'com.youtube.android',
+            targetType: 'app',
+            targetLabel: 'YouTube',
+            overlaySessionId: 'overlay-1',
+          },
           intention: undefined,
           targetApp: undefined,
           challenge: undefined,
@@ -151,6 +179,13 @@ describe('firebaseProgressSyncService', () => {
           reflection: 'Bleibe ruhig',
           chatHistory: [],
           breathingCompleted: true,
+          blockingContext: {
+            flow: 'breathing',
+            targetId: 'com.youtube.android',
+            targetType: 'app',
+            targetLabel: 'YouTube',
+            overlaySessionId: 'overlay-1',
+          },
         },
       ],
       interactions: [
@@ -160,6 +195,13 @@ describe('firebaseProgressSyncService', () => {
           type: 'breathing',
           emotions: ['calm'],
           completed: true,
+          blockingContext: {
+            flow: 'breathing',
+            targetId: 'com.youtube.android',
+            targetType: 'app',
+            targetLabel: 'YouTube',
+            overlaySessionId: 'overlay-1',
+          },
         },
       ],
     });
@@ -173,6 +215,13 @@ describe('firebaseProgressSyncService', () => {
       reflection: 'Bleibe ruhig',
       chatHistory: [],
       breathingCompleted: true,
+      blockingContext: {
+        flow: 'breathing',
+        targetId: 'com.youtube.android',
+        targetType: 'app',
+        targetLabel: 'YouTube',
+        overlaySessionId: 'overlay-1',
+      },
     });
 
     const interactionWrite = firestoreState.writes.find((w) => w.path === 'users/user-progress/interactions/interaction-1');
@@ -183,6 +232,13 @@ describe('firebaseProgressSyncService', () => {
       type: 'breathing',
       emotions: ['calm'],
       completed: true,
+      blockingContext: {
+        flow: 'breathing',
+        targetId: 'com.youtube.android',
+        targetType: 'app',
+        targetLabel: 'YouTube',
+        overlaySessionId: 'overlay-1',
+      },
     });
   });
 

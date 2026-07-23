@@ -2,7 +2,7 @@ import type { TranslationTree } from '@/lib/i18n';
 
 const itPack: TranslationTree = {
   nav: {
-    focus: 'Focus',
+    focus: 'Home',
     modes: 'Modalita',
     screen: 'Schermo',
     learn: 'Learn',

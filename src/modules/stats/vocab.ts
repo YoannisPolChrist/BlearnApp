@@ -2,26 +2,55 @@ import { useMemo } from 'react';
 import { stateMeta } from '@/components/learn-review/meta';
 import type { LearningCardState } from '@/lib/learning';
 import { MS_DAY, REVIEW_TREND_LABEL_FORMATTER, VOCAB_STATE_COLORS, VOCAB_STATE_ORDER } from './constants';
-import type { VocabDeckComparisonDatum } from './types';
+import type { TimeRange, VocabDeckComparisonDatum } from './types';
 
-function getStartOfToday(now = Date.now()) {
-  const date = new Date(now);
-  date.setHours(0, 0, 0, 0);
-  return date.getTime();
-}
-
-function countUniqueReviewedCardsBetween(
-  reviewLogs: Array<{ cardId: string; reviewedAt: number }>,
+export function countUniqueNewCardsBetween(
+  reviewLogs: Array<{ cardId: string; reviewedAt: number; previousState: LearningCardState }>,
   start: number,
   end = Number.POSITIVE_INFINITY,
 ) {
   const reviewedCardIds = new Set<string>();
   for (const entry of reviewLogs) {
-    if (entry.reviewedAt >= start && entry.reviewedAt < end) {
+    if (entry.previousState === 'new' && entry.reviewedAt >= start && entry.reviewedAt < end) {
       reviewedCardIds.add(entry.cardId);
     }
   }
   return reviewedCardIds.size;
+}
+
+function getStartOfLocalDay(date: Date) {
+  const start = new Date(date);
+  start.setHours(0, 0, 0, 0);
+  return start;
+}
+
+export function getLearningRangeBounds(
+  range: TimeRange,
+  monthReference = new Date(),
+  now = Date.now(),
+) {
+  if (range === 'total') {
+    return { startMs: Number.NEGATIVE_INFINITY, endMs: now };
+  }
+
+  let start: Date;
+  let end: Date;
+
+  if (range === 'month') {
+    start = new Date(monthReference.getFullYear(), monthReference.getMonth(), 1);
+    end = new Date(monthReference.getFullYear(), monthReference.getMonth() + 1, 1);
+  } else if (range === 'week') {
+    start = getStartOfLocalDay(monthReference);
+    start.setDate(start.getDate() - ((start.getDay() + 6) % 7));
+    end = new Date(start);
+    end.setDate(end.getDate() + 7);
+  } else {
+    start = getStartOfLocalDay(monthReference);
+    end = new Date(start);
+    end.setDate(end.getDate() + 1);
+  }
+
+  return { startMs: start.getTime(), endMs: Math.min(end.getTime(), now) };
 }
 
 export function useVocabChartData(
@@ -127,17 +156,14 @@ export function useVocabChartData(
   }, [cards, decks, getDeckStats, reviewLogs]);
 }
 
-export function useReviewMomentum(reviewLogs: Array<{ cardId: string; reviewedAt: number }>) {
+export function useReviewMomentum(
+  reviewLogs: Array<{ cardId: string; reviewedAt: number; previousState: LearningCardState }>,
+  range: TimeRange = 'day',
+  monthReference = new Date(),
+) {
   return useMemo(() => {
-    const now = Date.now();
-    const todayStart = getStartOfToday(now);
-    const lastSevenDaysStart = todayStart - 6 * MS_DAY;
-    const monthStart = new Date(new Date(now).getFullYear(), new Date(now).getMonth(), 1).getTime();
-
-    return {
-      today: countUniqueReviewedCardsBetween(reviewLogs, todayStart),
-      lastSevenDays: countUniqueReviewedCardsBetween(reviewLogs, lastSevenDaysStart),
-      month: countUniqueReviewedCardsBetween(reviewLogs, monthStart),
-    };
-  }, [reviewLogs]);
+    const referenceDate = range === 'month' ? monthReference : new Date();
+    const { startMs, endMs } = getLearningRangeBounds(range, referenceDate);
+    return countUniqueNewCardsBetween(reviewLogs, startMs, endMs);
+  }, [monthReference, range, reviewLogs]);
 }

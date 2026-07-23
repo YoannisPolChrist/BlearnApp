@@ -11,6 +11,8 @@ const REFRESH_INTERVAL_MS = 30_000;
 export interface UseProtectionHealthResult {
   health: ProtectionHealth;
   supported: boolean;
+  /** Der erste native Monitoring-Check ist abgeschlossen. */
+  isReady: boolean;
   refresh: () => Promise<void>;
   /** True, sobald für die aktive Konfiguration Schutz konfiguriert ist. */
   active: boolean;
@@ -21,19 +23,24 @@ export interface UseProtectionHealthResult {
 interface MonitoringPollState {
   status: MonitoringStatus;
   supported: boolean;
+  resolved: boolean;
 }
 
-let pollState: MonitoringPollState = { status: EMPTY_MONITORING_STATUS, supported: true };
+let pollState: MonitoringPollState = {
+  status: EMPTY_MONITORING_STATUS,
+  supported: true,
+  resolved: false,
+};
 const subscribers = new Set<(state: MonitoringPollState) => void>();
 let intervalId: number | null = null;
 let monitoringVisibilityHandler: (() => void) | null = null;
 
 async function refreshMonitoringStatus() {
   try {
-    pollState = { status: await getMonitoringStatus(), supported: true };
+    pollState = { status: await getMonitoringStatus(), supported: true, resolved: true };
   } catch (error) {
     if (isUnsupportedPlatformError(error)) {
-      pollState = { ...pollState, supported: false };
+      pollState = { ...pollState, supported: false, resolved: true };
     }
   }
   subscribers.forEach((notify) => notify(pollState));
@@ -73,7 +80,7 @@ function subscribeMonitoring(notify: (state: MonitoringPollState) => void): () =
  * und der aktiven Blocking-Konfiguration ab.
  */
 export function useProtectionHealth(): UseProtectionHealthResult {
-  const [{ status, supported }, setPollState] = useState<MonitoringPollState>(() => pollState);
+  const [{ status, supported, resolved }, setPollState] = useState<MonitoringPollState>(() => pollState);
   const { activeModes, blockedApps, blockedSearchTerms, blockedWebsites, isStrictLocked } =
     useAppStore(
       useShallow((state) => ({
@@ -104,6 +111,7 @@ export function useProtectionHealth(): UseProtectionHealthResult {
   return {
     health,
     supported,
+    isReady: resolved,
     refresh,
     active: health.overall !== 'inactive',
   };

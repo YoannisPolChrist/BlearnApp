@@ -1,7 +1,9 @@
 package app.blearn.mobile;
 
 import android.content.Intent;
+import android.animation.ValueAnimator;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,11 +26,13 @@ import java.lang.ref.WeakReference;
 public class BlockingOverlayActivity extends MainActivity {
     private static final String TAG = "BlearnBlockingActivity";
     private static final Object INSTANCE_LOCK = new Object();
-    private static final long LOADING_SHELL_DELAY_MS = 300L;
     private static final long LOADING_SHELL_RETRY_MS = 50L;
+    private static final long SPLASH_ENTER_MS = 180L;
+    private static final long SPLASH_EXIT_MS = 120L;
     private static WeakReference<BlockingOverlayActivity> currentInstance = new WeakReference<>(null);
     private PendingNativeNavigation bootstrapNavigation;
     private View blockingSplashView;
+    private ValueAnimator splashPulseAnimator;
     private boolean userLeavingTask;
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final Runnable showBlockingSplashRunnable = this::showBlockingSplashNow;
@@ -65,6 +69,32 @@ public class BlockingOverlayActivity extends MainActivity {
         } catch (RuntimeException error) {
             handleBootstrapFailure("blocking_overlay_load_failed", error);
         }
+    }
+
+    /**
+     * BlockingOverlayActivity is singleTask so Android delivers every later blocking
+     * handoff to this existing host. Re-promote the payload here instead of leaving
+     * the old session as the activity's owner; otherwise a second blocked target can
+     * remain on the first flow until the process is restarted.
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        PendingNativeNavigation nextNavigation = resolveBootstrapNavigation(intent);
+        if (nextNavigation == null || !nextNavigation.isValid()) {
+            return;
+        }
+
+        bootstrapNavigation = PendingNavigationStore.promoteToActive(
+            this,
+            nextNavigation,
+            "blocking host reused for a later launch payload"
+        );
+        userLeavingTask = false;
+        registerCurrentInstance();
+        scheduleBlockingSplash();
+        overridePendingTransition(0, 0);
     }
 
     @Override
@@ -130,7 +160,7 @@ public class BlockingOverlayActivity extends MainActivity {
         String sessionId = resolveBootstrapSessionId();
         BlockingFlowState.dismiss(this, sessionId, reason);
         recordAbortSuppression();
-        navigateToLauncherHome();
+        openNormalBlearnApp();
         finishAndRemoveTask();
         overridePendingTransition(0, 0);
     }
@@ -138,8 +168,9 @@ public class BlockingOverlayActivity extends MainActivity {
     /**
      * Abort contract: leaving the blocking flow must never drop the user back
      * into the still-foregrounded blocked app, which would immediately
-     * re-trigger the overlay and create a loop. We suppress re-triggers for
-     * the aborted target briefly and send the user to the launcher instead.
+     * re-trigger the overlay and create a loop. Clear the handoff first,
+     * suppress that target briefly, then return to the normal Blearn task so
+     * the user can adjust settings without reopening the stale blocking host.
      */
     private void recordAbortSuppression() {
         if (bootstrapNavigation == null || !bootstrapNavigation.isValid()) {
@@ -152,14 +183,17 @@ public class BlockingOverlayActivity extends MainActivity {
         );
     }
 
-    private void navigateToLauncherHome() {
+    private void openNormalBlearnApp() {
         try {
-            Intent homeIntent = new Intent(Intent.ACTION_MAIN);
-            homeIntent.addCategory(Intent.CATEGORY_HOME);
-            homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(homeIntent);
+            Intent appIntent = new Intent(this, MainActivity.class);
+            appIntent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    | Intent.FLAG_ACTIVITY_SINGLE_TOP
+            );
+            startActivity(appIntent);
         } catch (RuntimeException error) {
-            Log.d(TAG, "launcher home navigation failed", error);
+            Log.d(TAG, "normal Blearn return failed", error);
         }
     }
 
@@ -268,7 +302,9 @@ public class BlockingOverlayActivity extends MainActivity {
 
     private void scheduleBlockingSplash() {
         mainHandler.removeCallbacks(showBlockingSplashRunnable);
-        mainHandler.postDelayed(showBlockingSplashRunnable, LOADING_SHELL_DELAY_MS);
+        // The accessibility overlay hands off immediately. Build this continuation
+        // shell on the next UI turn so there is no blank 300 ms gap on cold starts.
+        mainHandler.post(showBlockingSplashRunnable);
     }
 
     private void showBlockingSplashNow() {
@@ -286,11 +322,14 @@ public class BlockingOverlayActivity extends MainActivity {
         splash.setClickable(true);
         splash.setFocusable(true);
         splash.setBackgroundColor(Color.parseColor(resolveSplashColor()));
+        splash.setAlpha(0f);
 
         LinearLayout content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
         content.setGravity(Gravity.CENTER_HORIZONTAL);
         content.setPadding(dp(28), dp(28), dp(28), dp(28));
+        content.setAlpha(0f);
+        content.setTranslationY(dp(14));
 
         TextView eyebrowView = new TextView(this);
         eyebrowView.setText(resolveSplashEyebrow());
@@ -301,11 +340,29 @@ public class BlockingOverlayActivity extends MainActivity {
         eyebrowView.setTypeface(eyebrowView.getTypeface(), android.graphics.Typeface.BOLD);
         content.addView(eyebrowView);
 
+        FrameLayout logoShell = new FrameLayout(this);
+        LinearLayout.LayoutParams logoShellParams = new LinearLayout.LayoutParams(dp(120), dp(120));
+        logoShellParams.topMargin = dp(12);
+        content.addView(logoShell, logoShellParams);
+
+        View logoHaloView = new View(this);
+        GradientDrawable haloBackground = new GradientDrawable();
+        haloBackground.setShape(GradientDrawable.OVAL);
+        haloBackground.setColor(withAlpha(resolveSplashEyebrowColor(), 0x1F));
+        haloBackground.setStroke(dp(1), withAlpha(resolveSplashEyebrowColor(), 0x59));
+        logoHaloView.setBackground(haloBackground);
+        logoHaloView.setAlpha(0.48f);
+        logoShell.addView(
+            logoHaloView,
+            new FrameLayout.LayoutParams(dp(112), dp(112), Gravity.CENTER)
+        );
+
         ImageView logoView = new ImageView(this);
         logoView.setImageResource(getApplicationInfo().icon);
-        LinearLayout.LayoutParams logoParams = new LinearLayout.LayoutParams(dp(88), dp(88));
-        logoParams.topMargin = dp(18);
-        content.addView(logoView, logoParams);
+        logoShell.addView(
+            logoView,
+            new FrameLayout.LayoutParams(dp(88), dp(88), Gravity.CENTER)
+        );
 
         TextView titleView = new TextView(this);
         titleView.setText("Blearn");
@@ -349,6 +406,28 @@ public class BlockingOverlayActivity extends MainActivity {
             )
         );
         blockingSplashView = splash;
+        splash.animate()
+            .alpha(1f)
+            .setDuration(SPLASH_ENTER_MS)
+            .setInterpolator(new android.view.animation.DecelerateInterpolator())
+            .start();
+        content.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setDuration(SPLASH_ENTER_MS)
+            .setStartDelay(35L)
+            .setInterpolator(new android.view.animation.DecelerateInterpolator())
+            .start();
+        logoView.setScaleX(0.86f);
+        logoView.setScaleY(0.86f);
+        logoView.animate()
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(260L)
+            .setStartDelay(65L)
+            .setInterpolator(new android.view.animation.OvershootInterpolator(0.72f))
+            .start();
+        startSplashPulse(logoHaloView);
     }
 
     private void hideBlockingSplash() {
@@ -357,11 +436,22 @@ public class BlockingOverlayActivity extends MainActivity {
             return;
         }
 
-        ViewGroup parent = (ViewGroup) blockingSplashView.getParent();
-        if (parent != null) {
-            parent.removeView(blockingSplashView);
-        }
+        View splash = blockingSplashView;
         blockingSplashView = null;
+        stopSplashPulse();
+        splash.animate().cancel();
+        splash.animate()
+            .alpha(0f)
+            .translationY(-dp(4))
+            .setDuration(SPLASH_EXIT_MS)
+            .setInterpolator(new android.view.animation.DecelerateInterpolator())
+            .withEndAction(() -> {
+                ViewGroup parent = (ViewGroup) splash.getParent();
+                if (parent != null) {
+                    parent.removeView(splash);
+                }
+            })
+            .start();
     }
 
     private String resolveSplashMessage() {
@@ -422,6 +512,34 @@ public class BlockingOverlayActivity extends MainActivity {
 
     private int dp(int value) {
         return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    private void startSplashPulse(View haloView) {
+        stopSplashPulse();
+        splashPulseAnimator = ValueAnimator.ofFloat(0f, 1f);
+        splashPulseAnimator.setDuration(1_450L);
+        splashPulseAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        splashPulseAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        splashPulseAnimator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        splashPulseAnimator.addUpdateListener(animation -> {
+            float progress = (float) animation.getAnimatedValue();
+            haloView.setScaleX(1f + (0.1f * progress));
+            haloView.setScaleY(1f + (0.1f * progress));
+            haloView.setAlpha(0.48f - (0.2f * progress));
+        });
+        splashPulseAnimator.start();
+    }
+
+    private void stopSplashPulse() {
+        if (splashPulseAnimator == null) {
+            return;
+        }
+        splashPulseAnimator.cancel();
+        splashPulseAnimator = null;
+    }
+
+    private int withAlpha(String color, int alpha) {
+        return (Color.parseColor(color) & 0x00FFFFFF) | ((alpha & 0xFF) << 24);
     }
 
     private void handleBootstrapFailure(String reason, RuntimeException error) {

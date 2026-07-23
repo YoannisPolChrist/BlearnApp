@@ -42,7 +42,7 @@ const FIX_LABELS: Partial<Record<ProtectionItemKey, { de: string; en: string }>>
 };
 
 export function ProtectionStatusCard({ isGerman }: { isGerman: boolean }) {
-  const { health, supported, refresh } = useProtectionHealth();
+  const { health, isReady, supported, refresh } = useProtectionHealth();
   const blockedWebsites = useAppStore(useShallow((state) => state.blockedWebsites));
 
   const runFix = useCallback(
@@ -67,7 +67,7 @@ export function ProtectionStatusCard({ isGerman }: { isGerman: boolean }) {
 
   // Im grünen Zustand genügt das Header-Schild — die Karte erscheint nur, wenn
   // es etwas zu beheben gibt (gelb/rot). Spart Dashboard-Fläche und Erklär-Copy.
-  if (!supported || health.overall === 'inactive' || health.overall === 'ok') {
+  if (!isReady || !supported || health.overall === 'inactive' || health.overall === 'ok') {
     return null;
   }
 

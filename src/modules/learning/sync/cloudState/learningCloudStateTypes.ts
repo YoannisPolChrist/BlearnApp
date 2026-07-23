@@ -82,6 +82,22 @@ export interface FilteredDeckLiteRun {
   updatedAt?: number;
 }
 
+export type LearningCloudEntityTombstoneCollection =
+  | 'decks'
+  | 'notes'
+  | 'cards'
+  | 'reviewLogs'
+  | 'presets';
+
+/**
+ * Delete-wins markers stored with the cloud snapshot. They intentionally use
+ * the original entity id: an explicit restore must create a new id rather than
+ * allowing an offline copy to silently resurrect deleted learning data.
+ */
+export type LearningCloudEntityTombstones = Partial<
+  Record<LearningCloudEntityTombstoneCollection, Record<string, number>>
+>;
+
 export interface LearningCloudState {
   activeDeckId?: string;
   activeDeckUpdatedAt?: number;
@@ -98,4 +114,5 @@ export interface LearningCloudState {
   filteredDeckLiteDefinition: FilteredDeckLiteDefinition;
   filteredDeckLiteDefinitions: FilteredDeckLiteDefinition[];
   filteredDeckLiteRuns: FilteredDeckLiteRun[];
+  entityTombstones?: LearningCloudEntityTombstones;
 }

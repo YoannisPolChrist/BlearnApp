@@ -8,6 +8,7 @@ const consumePendingNavigationMock = vi.fn();
 const peekPendingNavigationMock = vi.fn();
 const getMonitoringStatusMock = vi.fn();
 const nativeRouteReadySubscribers = new Set<() => void>();
+const nativePendingNavigationSubscribers = new Set<() => void>();
 const runtimeEvents: Array<Record<string, unknown>> = [];
 const recordNativeOverlayRuntimeEventMock = vi.fn((event: Record<string, unknown>) => {
   runtimeEvents.push(event);
@@ -48,6 +49,7 @@ async function loadHarness() {
     activeBlockingStage: null,
   });
   nativeRouteReadySubscribers.clear();
+  nativePendingNavigationSubscribers.clear();
   runtimeEvents.length = 0;
   recordNativeOverlayRuntimeEventMock.mockClear();
 
@@ -72,6 +74,12 @@ async function loadHarness() {
     consumePendingNavigation: consumePendingNavigationMock,
     peekPendingNavigation: peekPendingNavigationMock,
     getMonitoringStatus: getMonitoringStatusMock,
+    subscribeToPendingNavigationAvailable: (listener: () => void) => {
+      nativePendingNavigationSubscribers.add(listener);
+      return () => {
+        nativePendingNavigationSubscribers.delete(listener);
+      };
+    },
   }));
   const { useNativePendingNavigation } = await import('@/hooks/useNativePendingNavigation');
 
@@ -216,7 +224,7 @@ describe('useNativePendingNavigation', () => {
     });
   });
 
-  it('keeps idle polling on a sub-second visible-state interval instead of backing off into multi-second gaps', async () => {
+  it('waits idle without polling and consumes when Android reports a pending navigation', async () => {
     vi.useFakeTimers();
     consumePendingNavigationMock.mockResolvedValue(null);
 
@@ -238,22 +246,21 @@ describe('useNativePendingNavigation', () => {
     expect(consumePendingNavigationMock).toHaveBeenCalledTimes(1);
 
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(249);
+      await vi.advanceTimersByTimeAsync(5_000);
     });
 
     expect(consumePendingNavigationMock).toHaveBeenCalledTimes(1);
 
+    act(() => {
+      nativePendingNavigationSubscribers.forEach((listener) => listener());
+    });
+
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(1);
+      await Promise.resolve();
+      await Promise.resolve();
     });
 
     expect(consumePendingNavigationMock).toHaveBeenCalledTimes(2);
-
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(250);
-    });
-
-    expect(consumePendingNavigationMock).toHaveBeenCalledTimes(3);
   }, 10_000);
 
   it('clears the pending flag on failures and retries on the next visibility event', async () => {
@@ -420,6 +427,10 @@ describe('useNativePendingNavigation', () => {
       expect(screen.getByTestId('pending-active')).toHaveTextContent('false');
     });
 
+    act(() => {
+      nativePendingNavigationSubscribers.forEach((listener) => listener());
+    });
+
     await waitFor(
       () => {
         expect(consumePendingNavigationMock).toHaveBeenCalledTimes(3);
@@ -460,6 +471,10 @@ describe('useNativePendingNavigation', () => {
       expect(screen.getByTestId('pending-active')).toHaveTextContent('false');
     });
 
+    act(() => {
+      nativePendingNavigationSubscribers.forEach((listener) => listener());
+    });
+
     await waitFor(
       () => {
         expect(consumePendingNavigationMock).toHaveBeenCalledTimes(3);
@@ -472,7 +487,7 @@ describe('useNativePendingNavigation', () => {
     expect(screen.getByTestId('pending-active')).toHaveTextContent('true');
   });
 
-  it('emits a readable runtime trail from pending navigation to the next pending item', async () => {
+  it('emits a readable runtime trail from a pending-navigation event to the next blocking item', async () => {
     consumePendingNavigationMock
       .mockResolvedValueOnce({ route: '/intervention?target=instagram&overlaySessionId=session-1' })
       .mockResolvedValueOnce({ route: '/learn/review?target=youtube&overlaySessionId=session-2' });
@@ -493,14 +508,19 @@ describe('useNativePendingNavigation', () => {
       nativeRouteReadySubscribers.forEach((listener) => listener());
     });
 
+    act(() => {
+      nativePendingNavigationSubscribers.forEach((listener) => listener());
+    });
+
     await waitFor(() => {
       expect(screen.getByTestId('location')).toHaveTextContent('/learn/review');
     });
 
     const stages = runtimeEvents.map((event) => event.stage);
     expect(stages).toEqual(
-      expect.arrayContaining(['pending-navigation', 'route-preload', 'handoff-complete', 'next-pending-item']),
+      expect.arrayContaining(['pending-navigation', 'route-preload', 'handoff-complete']),
     );
+    expect(stages.filter((stage) => stage === 'pending-navigation')).toHaveLength(3);
     expect(recordNativeOverlayRuntimeEventMock).toHaveBeenCalled();
   });
 });

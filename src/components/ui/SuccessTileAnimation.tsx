@@ -46,8 +46,8 @@ export function SuccessTileAnimation({
     [isCompact],
   );
   const shellClassName = isCompact
-    ? 'rounded-[1.6rem] border border-success/18 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(244,255,249,0.98))] px-4 py-4 text-center shadow-[0_20px_52px_rgba(16,185,129,0.16)] sm:px-5 sm:py-4'
-    : 'rounded-[2.25rem] border border-success/18 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(242,255,249,0.96))] px-6 py-7 text-center shadow-[0_26px_70px_rgba(16,185,129,0.16)] sm:px-7 sm:py-8';
+    ? 'rounded-[1.6rem] border border-success/40 bg-[linear-gradient(180deg,hsl(var(--card)/0.98),hsl(var(--success)/0.18))] px-4 py-4 text-center shadow-[0_20px_52px_hsl(var(--success)/0.16)] sm:px-5 sm:py-4'
+    : 'rounded-[2.25rem] border border-success/24 bg-[linear-gradient(180deg,hsl(var(--card)/0.98),hsl(var(--success)/0.14))] px-6 py-7 text-center shadow-[0_26px_70px_hsl(var(--success)/0.18)] sm:px-7 sm:py-8';
   const haloClassName = isCompact
     ? 'absolute left-1/2 top-3.5 h-20 w-20 -translate-x-1/2 rounded-full bg-success/12 blur-2xl'
     : 'absolute left-1/2 top-6 h-28 w-28 -translate-x-1/2 rounded-full bg-success/12 blur-2xl';
@@ -64,16 +64,17 @@ export function SuccessTileAnimation({
     ? `${eyebrow ? 'mt-1.5' : ''} text-lg font-black tracking-[-0.04em] text-foreground`
     : `${eyebrow ? 'mt-2' : ''} text-3xl font-black tracking-[-0.05em] text-foreground`;
   const descriptionClassName = isCompact
-    ? 'mx-auto mt-1.5 max-w-[15rem] text-[12px] font-medium leading-relaxed text-foreground/72'
+    ? 'mx-auto mt-1.5 max-w-[15rem] text-[12px] font-medium leading-relaxed text-foreground/82'
     : 'mx-auto mt-3 max-w-[18rem] text-sm font-medium leading-relaxed text-foreground/72 sm:text-[15px]';
   const detailClassName = isCompact
-    ? 'mx-auto mt-1 max-w-[14rem] text-[10px] font-black uppercase tracking-[0.14em] text-foreground/46'
+    ? 'mx-auto mt-1 max-w-[14rem] text-[10px] font-black uppercase tracking-[0.14em] text-foreground/66'
     : 'mx-auto mt-2 max-w-[16rem] text-[11px] font-black uppercase tracking-[0.16em] text-foreground/46';
 
   return (
     <div
       data-feedback-variant={variant}
       className={`relative overflow-hidden ${shellClassName} ${className ?? ''}`}
+      style={isCompact ? { backgroundColor: 'hsl(var(--card))' } : undefined}
     >
       <motion.div
         aria-hidden="true"
@@ -184,7 +185,7 @@ export function SuccessTileAnimation({
         {eyebrow ? (
           <motion.p
             className={isCompact
-              ? 'text-[10px] font-black uppercase tracking-[0.18em] text-success/78'
+              ? 'text-[10px] font-black uppercase tracking-[0.18em] text-success'
               : 'text-[11px] font-black uppercase tracking-[0.22em] text-success/78'}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}

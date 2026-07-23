@@ -85,6 +85,7 @@ export function useLearnReviewSession() {
           preferredDeckIds: [assignment?.deckId, deckId, state.activeDeckId],
           decks: Object.values(state.decks),
           cards: Object.values(state.cards),
+          notes: Object.values(state.notes),
         }),
       [assignment?.deckId, deckId],
     ),
@@ -124,8 +125,6 @@ export function useLearnReviewSession() {
   const [selectedSessionCategories, setSelectedSessionCategories] = useState<string[]>([]);
   const [selectedSessionEmotions, setSelectedSessionEmotions] = useState<string[]>([]);
   const [completedSessionVisible, setCompletedSessionVisible] = useState(false);
-  const [blockedEasyHintVisible, setBlockedEasyHintVisible] = useState(false);
-  const [blockedEasyPulseKey, setBlockedEasyPulseKey] = useState(0);
   const [blockedUnlockSignal, setBlockedUnlockSignal] = useState(0);
   const [typedAnswerDraft, setTypedAnswerDraft] = useState('');
   const [sessionSnapshot, setSessionSnapshot] = useState<LearningSessionSnapshot>();
@@ -194,8 +193,6 @@ export function useLearnReviewSession() {
     sessionCreditsRequired,
     setActiveDeck,
     setAwaitingEmotionSelection,
-    setBlockedEasyHintVisible,
-    setBlockedEasyPulseKey,
     setCompletedSessionVisible,
     setFeedbackEvents,
     setSelectedSessionCategories,
@@ -257,9 +254,6 @@ export function useLearnReviewSession() {
     currentCardPosition,
     currentNote,
     currentStateMeta,
-    easyRatingBlocked,
-    hardRatingBlocked,
-    effectiveCorrect,
     hasRichTemplateHtml,
     hasUsableLearningDeck,
     latestFeedbackMessage,
@@ -267,7 +261,6 @@ export function useLearnReviewSession() {
     nextNewCardStatus,
     progressPercent,
     promptIsLong,
-    remainingAttempts,
     remainingCount,
     remainingNewCount,
     remainingReviewCount,
@@ -345,12 +338,12 @@ export function useLearnReviewSession() {
 
     const now = Date.now();
     return {
-      again: getReviewIntervalPreview(currentCard, 'again', effectiveCorrect, activePreset, now),
-      hard: getReviewIntervalPreview(currentCard, 'hard', effectiveCorrect, activePreset, now),
-      good: getReviewIntervalPreview(currentCard, 'good', effectiveCorrect, activePreset, now),
-      easy: getReviewIntervalPreview(currentCard, 'easy', effectiveCorrect, activePreset, now),
+      again: getReviewIntervalPreview(currentCard, 'again', false, activePreset, now),
+      hard: getReviewIntervalPreview(currentCard, 'hard', true, activePreset, now),
+      good: getReviewIntervalPreview(currentCard, 'good', true, activePreset, now),
+      easy: getReviewIntervalPreview(currentCard, 'easy', true, activePreset, now),
     };
-  }, [activePreset, currentCard, effectiveCorrect]);
+  }, [activePreset, currentCard]);
 
   const {
     goBack,
@@ -394,29 +387,23 @@ export function useLearnReviewSession() {
     activeDeck,
     countedReviews,
     currentCard,
-    easyRatingBlocked,
-    hardRatingBlocked,
     enqueueDeferredWrite,
     handleRevealAnswer,
     isBlockedFlow,
     pendingCompletionKindRef,
     recordFeedback,
-    requiresTypedAnswer,
     reviewedCardIdsRef,
     revealed,
     sessionControllerRef,
     sessionCreditsRequired,
     setAwaitingEmotionSelection,
     setBlockedUnlockSignal,
-    setBlockedEasyHintVisible,
-    setBlockedEasyPulseKey,
     setCompletedSessionVisible,
     setSelectedSessionCategories,
     setSelectedSessionEmotions,
     submitReview,
     syncSessionSnapshot,
     targetId,
-    typedCorrect,
   });
 
   const {
@@ -431,6 +418,7 @@ export function useLearnReviewSession() {
     activeDeck,
     addCheckin,
     addInteraction,
+    isBlockedFlow,
     awaitingEmotionSelection,
     blockedFlowExhausted,
     blockedUnlockSignal,
@@ -457,8 +445,6 @@ export function useLearnReviewSession() {
     activeDeck,
     answerIsLong,
     attemptMessage,
-    blockedEasyHintVisible,
-    blockedEasyPulseKey,
     blockedFlowExhausted,
     blockedTargetLabel,
     canUndo,
@@ -475,8 +461,6 @@ export function useLearnReviewSession() {
     currentCardPosition,
     currentNote,
     currentStateMeta,
-    easyRatingBlocked,
-    hardRatingBlocked,
     goBack,
     handleGoToNextCard,
     handleGoToPreviousCard,
@@ -504,7 +488,6 @@ export function useLearnReviewSession() {
     nextNewCardStatus,
     remainingNewCount,
     remainingReviewCount,
-    remainingAttempts,
     remainingCount,
     requiresTypedAnswer,
     completeSessionEmotionStep,

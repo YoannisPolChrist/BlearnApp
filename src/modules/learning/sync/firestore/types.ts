@@ -42,6 +42,7 @@ export interface LearningCloudMeta {
   filteredDeckLiteDefinition?: LearningCloudState['filteredDeckLiteDefinition'];
   filteredDeckLiteDefinitions?: LearningCloudState['filteredDeckLiteDefinitions'];
   filteredDeckLiteRuns?: LearningCloudState['filteredDeckLiteRuns'];
+  entityTombstones?: LearningCloudState['entityTombstones'];
   assignments?: LearningCloudState['assignments'];
   gateRule?: LearningCloudState['gateRule'];
   gateRuleUpdatedAt?: number;
@@ -53,6 +54,31 @@ export interface LearningCloudMeta {
   lastMutationId?: string;
   lastMutationAt?: number;
   entitySignature?: string;
+  /**
+   * Runtime-only result of the server-side save guard. This is deliberately
+   * not persisted as part of the Firestore metadata document.
+   */
+  resolvedState?: LearningCloudState;
+  /**
+   * When true, the deck-scoped migration (moving cards/notes/reviewLogs from
+   * the old global bucket format into per-deck subcollections) has been
+   * completed for this user.
+   */
+  deckScopedMigrationCompleted?: boolean;
+}
+
+/**
+ * Per-deck sync metadata document stored at:
+ *   users/{uid}/learningDecks/{deckId}/meta
+ */
+export interface DeckSyncMeta {
+  deckId: string;
+  lastUpdatedAt?: number;
+  cardCount?: number;
+  noteCount?: number;
+  reviewLogCount?: number;
+  syncedAt?: number;
+  syncedByDeviceId?: string;
 }
 
 export interface LearningCloudReadOptions {

@@ -275,6 +275,29 @@ export function buildDeckStats(options: {
   getDueCardsForDecks: (deckIds?: string[]) => Array<unknown>;
   getResolvedPresetForDeck: (deckId: string) => LearningPreset;
 }) {
+  // `getDeckLearningStats` scopes its inputs by deck. Feeding every deck the
+  // complete card/review collection made the Modes view rescan the same large
+  // learning history once per deck. Group once here so opening or updating the
+  // page stays linear in the total number of learning entities.
+  const cardsByDeckId = new Map<string, typeof options.cards>();
+  for (const card of options.cards) {
+    const cards = cardsByDeckId.get(card.deckId);
+    if (cards) {
+      cards.push(card);
+    } else {
+      cardsByDeckId.set(card.deckId, [card]);
+    }
+  }
+  const reviewLogsByDeckId = new Map<string, ReviewLog[]>();
+  for (const reviewLog of options.reviewLogs) {
+    const reviewLogs = reviewLogsByDeckId.get(reviewLog.deckId);
+    if (reviewLogs) {
+      reviewLogs.push(reviewLog);
+    } else {
+      reviewLogsByDeckId.set(reviewLog.deckId, [reviewLog]);
+    }
+  }
+
   const deckStats = options.decks.map((deck) => {
     const preset = options.getResolvedPresetForDeck(deck.id);
 
@@ -282,10 +305,11 @@ export function buildDeckStats(options: {
       ...deck,
       ...getDeckLearningStats({
         deck,
-        cards: options.cards,
-        reviewLogs: options.reviewLogs,
+        cards: cardsByDeckId.get(deck.id) || [],
+        reviewLogs: reviewLogsByDeckId.get(deck.id) || [],
         preset,
         gateRule: options.gateRule,
+        cardsAreScopedAndNormalized: true,
       }),
       reviewsBetweenNewCards: preset.reviewsBetweenNewCards,
       reviewMixLabel: formatReviewMixLabel(preset.reviewsBetweenNewCards),

@@ -94,6 +94,10 @@ export function useSettingsPermissions({
     }
   }, [refreshPermissions]);
 
+  const openAccessibilitySettings = useCallback(async () => {
+    await runPermissionAction('accessibility', requestAccessibilityPermission);
+  }, [runPermissionAction]);
+
   const allPermissionsGranted =
     permissionStatus.usageStats
     && permissionStatus.overlay
@@ -244,9 +248,7 @@ export function useSettingsPermissions({
         actionStateLabel: 'Bedienungshilfe erteilt',
         completed: accessibilityCheckpointState === 'granted',
         icon: Wand2,
-        onAction: async () => {
-          await runPermissionAction('accessibility', requestAccessibilityPermission);
-        },
+        onAction: openAccessibilitySettings,
       },
       {
         id: 'websiteBlocking',
@@ -278,6 +280,7 @@ export function useSettingsPermissions({
       overlayCheckpointState,
       permissionStatus,
       runPermissionAction,
+      openAccessibilitySettings,
       usageCheckpointState,
       websiteBlockingCheckpointState,
     ],
@@ -316,9 +319,7 @@ export function useSettingsPermissions({
       statusLabel: getPermissionCheckpointStatusLabel(accessibilityCheckpointState),
       statusTone: getPermissionCheckpointTone(accessibilityCheckpointState),
       buttonLabel: getPermissionCheckpointButtonLabel(accessibilityCheckpointState),
-      action: async () => {
-        await runPermissionAction('accessibility', requestAccessibilityPermission);
-      },
+      action: openAccessibilitySettings,
     },
     {
       key: 'websiteBlocking',
@@ -374,6 +375,7 @@ export function useSettingsPermissions({
     permissionStatus,
     permissionSummaryLabel,
     permissionsNeedAttention,
+    openAccessibilitySettings,
     refreshPermissions,
     setShowPermissionGuide,
     showPermissionGuide,

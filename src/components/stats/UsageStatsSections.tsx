@@ -1,4 +1,4 @@
-import { Activity, Clock3, TrendingUp } from 'lucide-react';
+import { Activity, ChevronLeft, ChevronRight, Clock3, TrendingUp } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import { MetricCard } from '@/components/ui/MetricCard';
 import { SectionHeader } from '@/components/ui/SectionHeader';
@@ -8,18 +8,25 @@ import {
   formatTimeLabel,
   getAppLookupKeys,
 } from '@/modules/stats/screenTime';
+import type { TimeRange } from '@/modules/stats/types';
 
 type UsageOverviewSectionProps = {
   error: string | null;
   onOpenPermissions: () => void;
+  onNextMonth: () => void;
+  onPreviousMonth: () => void;
   onRefresh: () => void;
+  onRangeChange: (range: TimeRange) => void;
+  periodLabel: string;
+  range: TimeRange;
   topUsageEntry?: AppUsageEntry;
-  unlocksToday: number;
+  unlocks: number;
   usage: ScreenTimeSummary | null;
 };
 
 type UsageAppListSectionProps = {
   appDetails: Map<string, InstalledApp>;
+  periodLabel: string;
   strongestEntryTime: number;
   topEntries: AppUsageEntry[];
 };
@@ -27,33 +34,87 @@ type UsageAppListSectionProps = {
 export function UsageOverviewSection({
   error,
   onOpenPermissions,
+  onNextMonth,
+  onPreviousMonth,
   onRefresh,
+  onRangeChange,
+  periodLabel,
+  range,
   topUsageEntry,
-  unlocksToday,
+  unlocks,
   usage,
 }: UsageOverviewSectionProps) {
   return (
-    <section id="stats-section-usage">
+    <section id="stats-section-usage" data-tour-id="tour-stats-usage">
       <GlassCard elevation="raised" className="space-y-5">
         <SectionHeader
-          eyebrow="Heute"
+          eyebrow={periodLabel}
           title="App-Nutzung"
-          description="Wie lange welche App heute genutzt wurde, direkt in einer Ansicht."
+          description="Aktive Vordergrund-Apps bei eingeschaltetem Bildschirm im gewählten Zeitraum."
         />
+
+        <div className="space-y-3">
+          <div role="tablist" aria-label="Zeitraum der App-Nutzung" className="grid grid-cols-4 gap-2 rounded-2xl bg-muted/60 p-1">
+            {([
+              ['day', 'Tag'],
+              ['week', 'Woche'],
+              ['month', 'Monat'],
+              ['total', 'Gesamt'],
+            ] as const).map(([nextRange, label]) => (
+              <button
+                key={nextRange}
+                type="button"
+                role="tab"
+                aria-selected={range === nextRange}
+                onClick={() => onRangeChange(nextRange)}
+                className={`rounded-xl px-2 py-2 text-xs font-bold transition-colors ${
+                  range === nextRange
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {range === 'month' ? (
+            <div className="flex items-center justify-between rounded-2xl border border-border/60 bg-background/55 px-2 py-1.5">
+              <button
+                type="button"
+                aria-label="Vorheriger Monat"
+                onClick={onPreviousMonth}
+                className="btn-press rounded-xl p-2 text-foreground hover:bg-muted"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <p aria-live="polite" className="text-sm font-bold text-foreground">{periodLabel}</p>
+              <button
+                type="button"
+                aria-label="Nächster Monat"
+                onClick={onNextMonth}
+                className="btn-press rounded-xl p-2 text-foreground hover:bg-muted disabled:cursor-not-allowed disabled:opacity-35"
+                disabled={periodLabel === 'Dieser Monat'}
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          ) : null}
+        </div>
 
         <div className="grid grid-cols-1 gap-3">
           <MetricCard
             icon={Clock3}
             label="Gesamtzeit"
             value={usage ? formatScreenTime(usage.totalScreenTimeMs) : '--'}
-            hint="Bildschirmzeit heute"
+            hint={`Bildschirmzeit: ${periodLabel}`}
             tone="primary"
           />
           <MetricCard
             icon={Activity}
             label="Entsperrt"
-            value={unlocksToday}
-            hint="Freischaltungen heute"
+            value={unlocks}
+            hint={`Freischaltungen: ${periodLabel}`}
             tone="accent"
           />
           <MetricCard
@@ -91,14 +152,14 @@ export function UsageOverviewSection({
   );
 }
 
-export function UsageAppListSection({ appDetails, strongestEntryTime, topEntries }: UsageAppListSectionProps) {
+export function UsageAppListSection({ appDetails, periodLabel, strongestEntryTime, topEntries }: UsageAppListSectionProps) {
   return (
     <section>
       <GlassCard elevation="raised" className="space-y-5">
         <SectionHeader
           eyebrow="Nach App"
-          title="Nutzung heute"
-          description="Die laengsten Nutzungszeiten direkt im Vergleich."
+          title={`Nutzung: ${periodLabel}`}
+          description="Die längsten Nutzungszeiten direkt im Vergleich."
         />
 
         <div className="space-y-3">

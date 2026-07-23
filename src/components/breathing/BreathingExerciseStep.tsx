@@ -59,6 +59,9 @@ export function BreathingExerciseStep({
           duration={engine.currentPhase?.duration || 4}
           isActive={engine.isActive}
           tone={sphereTone}
+          completedOrbitSegments={
+            engine.currentCycle * engine.pattern.phases.length + engine.currentPhaseIndex
+          }
           reducedMotion={reducedMotion}
         />
 

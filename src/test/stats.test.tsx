@@ -27,6 +27,17 @@ vi.mock('@/services/screenTimeService', async () => {
         },
       ],
     }),
+    getUsageForRange: vi.fn().mockResolvedValue({
+      totalScreenTimeMs: 7_200_000,
+      entries: [
+        {
+          packageName: 'com.youtube',
+          appName: 'YouTube',
+          totalTimeMs: 4_200_000,
+          lastUsedTimestamp: Date.now(),
+        },
+      ],
+    }),
     getMonitoringStatus: vi.fn().mockResolvedValue({
       monitoringActive: true,
       overlayPermission: true,
@@ -194,7 +205,7 @@ describe('StatsPage', () => {
     expect(screen.getByText('Entsperrt')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('Top-App')).toBeInTheDocument();
-    expect(screen.getByText('Nutzung heute')).toBeInTheDocument();
+    expect(screen.getByText('Nutzung: Heute')).toBeInTheDocument();
     expect(screen.queryByText('Aktive App')).not.toBeInTheDocument();
     expect(screen.queryByText('Zuletzt aktualisiert')).not.toBeInTheDocument();
     expect(screen.queryByText('Android Runtime')).not.toBeInTheDocument();
@@ -220,9 +231,7 @@ describe('StatsPage', () => {
     });
     await flushAsyncUi();
     expect(screen.getByText('Lernfortschritt')).toBeInTheDocument();
-    expect(screen.getByText('Heute gelernt')).toBeInTheDocument();
-    expect(screen.getByText('Letzte 7 Tage')).toBeInTheDocument();
-    expect(screen.getByText('Diesen Monat')).toBeInTheDocument();
+    expect(screen.getByText('Gelernt')).toBeInTheDocument();
     expect(screen.getByText('Offen')).toBeInTheDocument();
     expect(screen.getByText('Kartenstatus')).toBeInTheDocument();
     expect(screen.queryByText('Offene Vokabeln pro Deck')).not.toBeInTheDocument();
@@ -322,6 +331,72 @@ describe('StatsPage', () => {
 
     const icon = await screen.findByAltText('YouTube Icon');
     expect(icon).toHaveAttribute('src', 'data:image/png;base64,yt-icon');
+  });
+
+  it('loads usage for day, week, month, and total, with month-by-month navigation', async () => {
+    await renderStatsPage();
+
+    expect(screen.getByRole('tab', { name: 'Tag' })).toHaveAttribute('aria-selected', 'true');
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: 'Woche' }));
+    });
+    await flushAsyncUi();
+    expect(screen.getByRole('tab', { name: 'Woche' })).toHaveAttribute('aria-selected', 'true');
+    expect(screenTimeService.getUsageForRange).toHaveBeenCalled();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: 'Monat' }));
+    });
+    await flushAsyncUi();
+    expect(screen.getByRole('button', { name: 'Vorheriger Monat' })).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Vorheriger Monat' }));
+    });
+    await flushAsyncUi();
+    expect(screen.getByRole('button', { name: 'Nächster Monat' })).toBeEnabled();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: 'Gesamt' }));
+    });
+    await flushAsyncUi();
+    expect(screen.getByRole('tab', { name: 'Gesamt' })).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('switches learning progress between day, week, month, and total with month navigation', async () => {
+    await renderStatsPage();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: /^lernen$/i }));
+    });
+    await flushAsyncUi();
+
+    expect(screen.getByRole('tab', { name: 'Tag' })).toHaveAttribute('aria-selected', 'true');
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: 'Woche' }));
+    });
+    await flushAsyncUi();
+    expect(screen.getByRole('tab', { name: 'Woche' })).toHaveAttribute('aria-selected', 'true');
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: 'Monat' }));
+    });
+    await flushAsyncUi();
+    expect(screen.getByRole('button', { name: 'Vorheriger Lernmonat' })).toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Vorheriger Lernmonat' }));
+    });
+    await flushAsyncUi();
+    expect(screen.getByRole('button', { name: 'Nächster Lernmonat' })).toBeEnabled();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: 'Gesamt' }));
+    });
+    await flushAsyncUi();
+    expect(screen.getByRole('tab', { name: 'Gesamt' })).toHaveAttribute('aria-selected', 'true');
   });
 });
 

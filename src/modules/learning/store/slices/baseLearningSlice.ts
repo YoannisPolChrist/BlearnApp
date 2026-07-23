@@ -32,6 +32,29 @@ export const createLearningBaseSlice: StateCreator<LearningStore, [], [], Learni
       };
     }),
 
+  removeDeckFromLibrary: (deckId) =>
+    set((state) => {
+      if (!state.decks[deckId] || state.hiddenDeckIds.includes(deckId)) {
+        return state;
+      }
+
+      const hiddenDeckIds = [...state.hiddenDeckIds, deckId];
+      const nextActiveDeckId = state.activeDeckId === deckId
+        ? Object.keys(state.decks).find((id) => !hiddenDeckIds.includes(id))
+        : state.activeDeckId;
+
+      return {
+        hiddenDeckIds,
+        activeDeckId: nextActiveDeckId,
+        activeDeckUpdatedAt: nextActiveDeckId ? Date.now() : state.activeDeckUpdatedAt,
+      };
+    }),
+
+  restoreDeckToLibrary: (deckId) =>
+    set((state) => ({
+      hiddenDeckIds: state.hiddenDeckIds.filter((id) => id !== deckId),
+    })),
+
   setGateRule: (rule) =>
     set((state) => ({
       gateRule: migrateGateRule({

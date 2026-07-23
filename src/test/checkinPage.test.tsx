@@ -164,18 +164,7 @@ afterEach(() => {
 });
 
 describe('CheckinPage', () => {
-  async function completeBlockedTextSteps() {
-    fireEvent.change(screen.getByPlaceholderText(/social media/i), {
-      target: { value: 'Instagram checken' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
-
-    await screen.findByText(/warum/i);
-    fireEvent.change(screen.getByPlaceholderText(/grund/i), {
-      target: { value: 'Ich suche Ablenkung' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
-
+  async function openEmotionStep() {
     await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
   }
 
@@ -191,7 +180,8 @@ describe('CheckinPage', () => {
       </MemoryRouter>,
     );
 
-    const continueButton = screen.getByRole('button', { name: /weiter/i });
+    fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
+    const continueButton = screen.getAllByRole('button', { name: /^weiter$/i })[0];
     expect(continueButton.className).toContain('mode-reflection');
     expect(continueButton.className).not.toContain('mode-strict');
   });
@@ -203,7 +193,7 @@ describe('CheckinPage', () => {
     render(
       <MemoryRouter
         future={ROUTER_FUTURE_FLAGS}
-        initialEntries={['/checkin?targetId=com.instagram.android&targetType=app&targetLabel=Instagram&overlaySessionId=session-emotions']}
+        initialEntries={['/checkin?targetId=com.instagram.android&targetType=app&targetLabel=Instagram&overlaySessionId=session-emotions&breathingCompleted=1']}
       >
         <Routes>
           <Route path="/checkin" element={<CheckinPage />} />
@@ -211,7 +201,7 @@ describe('CheckinPage', () => {
       </MemoryRouter>,
     );
 
-    await completeBlockedTextSteps();
+    await openEmotionStep();
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
 
@@ -219,7 +209,7 @@ describe('CheckinPage', () => {
       expect(screen.getByText(/1 von max\. 5 gew(?:ählt|aehlt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
     });
 
-    const finishButton = screen.getAllByRole('button', { name: /weiter zur app/i })[0];
+    const finishButton = screen.getAllByRole('button', { name: /^weiter$/i })[0];
     await waitFor(() => {
       expect(finishButton).not.toBeDisabled();
     });
@@ -234,7 +224,7 @@ describe('CheckinPage', () => {
       expect(screen.getByText(/5 von max\. 5 gew(?:ählt|aehlt|Ã¤hlt)/i, { selector: 'p' })).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /^weiter$/i })[0]);
 
     await screen.findByText(/kontext zu deinen emotionen/i);
     fireEvent.change(screen.getByPlaceholderText(/gestresst wegen der arbeit/i), {
@@ -247,17 +237,24 @@ describe('CheckinPage', () => {
     });
     expect(useAppStore.getState().checkins[0]).toMatchObject({
       emotions: ['relieved', 'curious', 'tense', 'worried', 'hopeful'],
-      reflection: 'Instagram checken - Ich suche Ablenkung - Ich bin nach einem langen Tag angespannt',
+      reflection: 'Ich bin nach einem langen Tag angespannt',
       targetApp: 'Instagram',
+      blockingContext: expect.objectContaining({
+        flow: 'breathing',
+        targetId: 'com.instagram.android',
+        targetType: 'app',
+      }),
     });
     expect(createEmotionLogMock).toHaveBeenCalledWith(expect.objectContaining({
+      id: useAppStore.getState().checkins[0]?.id,
       userId: 'test-user',
       emotion: expect.objectContaining({
         tags: ['relieved', 'curious', 'tense', 'worried', 'hopeful'],
       }),
       cognition: expect.objectContaining({
-        thought_summary: 'Instagram checken - Ich suche Ablenkung - Ich bin nach einem langen Tag angespannt',
+        thought_summary: 'Ich bin nach einem langen Tag angespannt',
       }),
+      blocking_context: expect.objectContaining({ flow: 'breathing' }),
     }));
     expect(screen.queryByRole('button', { name: /continue-to-target/i })).not.toBeInTheDocument();
   }, 20000);
@@ -285,10 +282,10 @@ describe('CheckinPage', () => {
       </MemoryRouter>,
     );
 
-    await completeBlockedTextSteps();
+    await openEmotionStep();
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
-    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /^weiter$/i })[0]);
     await screen.findByText(/kontext zu deinen emotionen/i);
     fireEvent.click(screen.getAllByRole('button', { name: /freischalten/i })[0]);
 
@@ -326,10 +323,10 @@ describe('CheckinPage', () => {
       </MemoryRouter>,
     );
 
-    await completeBlockedTextSteps();
+    await openEmotionStep();
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
-    fireEvent.click(screen.getAllByRole('button', { name: /weiter zur app/i })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: /^weiter$/i })[0]);
     await screen.findByText(/kontext zu deinen emotionen/i);
     fireEvent.click(screen.getAllByRole('button', { name: /freischalten/i })[0]);
 
@@ -356,17 +353,7 @@ describe('CheckinPage', () => {
       </MemoryRouter>,
     );
 
-    fireEvent.change(screen.getByPlaceholderText(/social media/i), {
-      target: { value: 'Instagram checken' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
-    await screen.findByText(/warum/i);
-
-    fireEvent.change(screen.getByPlaceholderText(/grund/i), {
-      target: { value: 'Ich suche Ablenkung' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: /weiter/i }));
-    await screen.findByRole('heading', { name: /wie f(?:ü|ue|Ã¼)hlst du dich/i });
+    await openEmotionStep();
 
     fireEvent.click(screen.getByRole('button', { name: /erleichtert/i }));
     fireEvent.click(screen.getAllByRole('button', { name: /weiter/i })[0]);
@@ -380,7 +367,6 @@ describe('CheckinPage', () => {
     const checkins = useAppStore.getState().checkins;
     expect(checkins).toHaveLength(1);
     expect(checkins[0].reflection).toContain('Fühle mich heute etwas müde');
-    expect(checkins[0].reflection).toContain('Instagram checken');
-    expect(checkins[0].reflection).toContain('Ich suche Ablenkung');
+    expect(checkins[0].reflection).toBe('Fühle mich heute etwas müde');
   });
 });

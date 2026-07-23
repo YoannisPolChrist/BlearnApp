@@ -56,11 +56,9 @@ export function CheckinPageShell({
         )}
         <div className="flex-1 text-center">
           <span className="text-xs font-bold uppercase tracking-[3px] text-muted-foreground">
-            {step === 0 && 'REFLEXION'}
-            {step === 1 && 'REFLEXION'}
-            {step === 2 && 'EMOTIONEN'}
-            {step === 3 && 'KONTEXT'}
-            {step === 4 && 'FERTIG'}
+            {step === 0 && 'EMOTIONEN'}
+            {step === 1 && 'KONTEXT'}
+            {step === 2 && 'FERTIG'}
           </span>
           {isBlockedFlow && unlockDurationLabel ? (
             <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/68">
@@ -72,7 +70,7 @@ export function CheckinPageShell({
       </div>
 
       <div className="relative z-10 mb-8 flex justify-center gap-2">
-        {[0, 1, 2, 3].map((indicatorStep) => (
+        {[0, 1].map((indicatorStep) => (
           <motion.div
             key={indicatorStep}
             className={`h-1 rounded-full transition-all duration-500 ${

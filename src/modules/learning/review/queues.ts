@@ -289,18 +289,22 @@ export function countDailyReviewActivity(reviewLogs: ReviewLog[], deckId: string
   };
 }
 
-export function buildUnlockSessionCandidateIds({
-  cards,
-  deckId,
-  reviewLogs = [],
-  preset,
-  gateRule,
-  sessionCreditsRequired,
-  ignoreNewCardsLimit = false,
-  includeReviewAhead = true,
-  excludeCardIds,
-  now = Date.now(),
-}: BuildUnlockSessionQueueOptions): string[] {
+function buildUnlockSessionCandidateIdsInternal(
+  {
+    cards,
+    deckId,
+    reviewLogs = [],
+    preset,
+    gateRule,
+    sessionCreditsRequired,
+    ignoreNewCardsLimit = false,
+    includeReviewAhead = true,
+    excludeCardIds,
+    now = Date.now(),
+  }: BuildUnlockSessionQueueOptions,
+  allowNewCardsAsFillers = false,
+  customReviewAheadHours?: number,
+): string[] {
   const resolvedPreset = migrateLearningPreset(preset);
   const resolvedGateRule = migrateGateRule(gateRule);
   const requiredCredits = sessionCreditsRequired ?? resolvedGateRule.sessionCreditsRequired;
@@ -317,11 +321,12 @@ export function buildUnlockSessionCandidateIds({
   });
 
   const dueCards = getDueSessionCards(scopedCards, undefined, now, true);
+  const reviewAheadHours = customReviewAheadHours ?? resolvedGateRule.reviewAheadHours;
   const reviewAheadCards = includeReviewAhead
     ? getReviewAheadCards(
         scopedCards,
         resolvedPreset,
-        resolvedGateRule.reviewAheadHours,
+        reviewAheadHours,
         now,
         true,
       )
@@ -396,8 +401,11 @@ export function buildUnlockSessionCandidateIds({
     const reviewAheadSelectionIds = new Set(reviewAheadSelection.map((card) => card.id));
     const fillerCards = dedupeSiblingCards(
       scopedCards.filter(c => {
-        if (c.state === 'suspended' || c.state === 'new' || selectedCandidateIds.has(c.id)) {
+        if (c.state === 'suspended' || selectedCandidateIds.has(c.id)) {
           return false;
+        }
+        if (c.state === 'new') {
+          return allowNewCardsAsFillers;
         }
         if ((c.state === 'learning' || c.state === 'relearning') && c.dueAt > now) {
           return false;
@@ -434,6 +442,57 @@ export function buildUnlockSessionCandidateIds({
   }
 
   return uniqueIds;
+}
+
+export function buildUnlockSessionCandidateIds(options: BuildUnlockSessionQueueOptions): string[] {
+  let candidateIds = buildUnlockSessionCandidateIdsInternal(options, false);
+
+  const resolvedGateRule = migrateGateRule(options.gateRule);
+  const requiredCredits = options.sessionCreditsRequired ?? resolvedGateRule.sessionCreditsRequired;
+
+  if (options.isBlockedFlow && candidateIds.length < requiredCredits) {
+    if (!options.includeReviewAhead) {
+      const fallbackIds = buildUnlockSessionCandidateIdsInternal(
+        {
+          ...options,
+          includeReviewAhead: true,
+        },
+        false,
+      );
+      if (fallbackIds.length > candidateIds.length) {
+        candidateIds = fallbackIds;
+      }
+    }
+  }
+
+  if (options.isBlockedFlow && candidateIds.length < requiredCredits) {
+    const fallbackIds = buildUnlockSessionCandidateIdsInternal(
+      {
+        ...options,
+        includeReviewAhead: true,
+      },
+      true,
+    );
+    if (fallbackIds.length > candidateIds.length) {
+      candidateIds = fallbackIds;
+    }
+  }
+
+  if (options.isBlockedFlow && candidateIds.length < requiredCredits) {
+    const fallbackIds = buildUnlockSessionCandidateIdsInternal(
+      {
+        ...options,
+        includeReviewAhead: true,
+      },
+      true,
+      720,
+    );
+    if (fallbackIds.length > candidateIds.length) {
+      candidateIds = fallbackIds;
+    }
+  }
+
+  return candidateIds;
 }
 
 export function buildUnlockSessionQueue(options: BuildUnlockSessionQueueOptions): string[] {

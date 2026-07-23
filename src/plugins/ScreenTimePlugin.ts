@@ -1,4 +1,8 @@
-import { registerPlugin, type PermissionState as CapacitorPermissionState } from "@capacitor/core";
+import {
+  registerPlugin,
+  type PermissionState as CapacitorPermissionState,
+  type PluginListenerHandle,
+} from "@capacitor/core";
 import type { BlockTargetType, GateRule } from "@/lib/learning";
 import type { ActiveModeId, TargetModeId } from "@/lib/targetModes";
 import type { NotificationPreferences } from "@/store/appStore.types";
@@ -176,6 +180,10 @@ export interface ForegroundRecheckResult {
 }
 
 export interface ScreenTimePlugin {
+  addListener(
+    eventName: 'pendingNavigationAvailable',
+    listenerFunc: () => void,
+  ): Promise<PluginListenerHandle>;
   getNotificationPermissionState(): Promise<NotificationPermissionStatus>;
   requestNotificationPermission(): Promise<NotificationPermissionStatus>;
   syncNotificationPreferences(options: NotificationSyncOptions): Promise<{
@@ -197,7 +205,14 @@ export interface ScreenTimePlugin {
     source?: 'accessibility' | 'usage' | '';
     observedAt?: number;
   }>;
-  getInstalledApps(): Promise<{ apps: InstalledApp[] }>;
+  getInstalledApps(options?: {
+    includeIcons?: boolean;
+    /**
+     * Return icons only for these packages. This keeps the native bridge from
+     * encoding every installed app when a screen renders only a small subset.
+     */
+    iconPackageNames?: string[];
+  }): Promise<{ apps: InstalledApp[] }>;
   hasOverlayPermission(): Promise<{ granted: boolean }>;
   requestOverlayPermission(): Promise<void>;
   startMonitoringService(options: { blockedPackages: string[] }): Promise<void>;

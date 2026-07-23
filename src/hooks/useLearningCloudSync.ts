@@ -39,8 +39,8 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useLearningStore } from '@/store/useLearningStore';
 
 const LOCAL_SAVE_DEBOUNCE_MS = 1200;
-const LEARNING_CLOUD_OPERATION_TIMEOUT_MS = 12_000;
-const LEARNING_CLOUD_BOOTSTRAP_SAVE_TIMEOUT_MS = 90_000;
+const LEARNING_CLOUD_OPERATION_TIMEOUT_MS = 120_000;
+const LEARNING_CLOUD_BOOTSTRAP_SAVE_TIMEOUT_MS = 180_000;
 const LEARNING_CLOUD_INIT_RETRY_MS = 3_000;
 
 export function __setLearningCloudSyncApiForTest(overrides: Partial<LearningCloudSyncApi> | null) {
@@ -199,7 +199,7 @@ export function useLearningCloudSync(enabled = true) {
           : readLearningCloudStateFromStore();
         const localSyncState = getLearningCloudLocalSyncState();
         const remoteCursor = await withTimeout(
-          learningCloudSyncApi.loadLearningCloudSyncCursor(authUserId),
+          learningCloudSyncApi.loadLearningCloudSyncCursor(authUserId, { source: 'server' }),
           LEARNING_CLOUD_OPERATION_TIMEOUT_MS,
           'learning cloud cursor load',
         );
@@ -221,22 +221,17 @@ export function useLearningCloudSync(enabled = true) {
         } else if (localRemoteCursor && areLearningCloudSyncCursorsEqual(localRemoteCursor, remoteCursor)) {
           remoteState = hasLocalPendingChanges ? null : localState;
         } else if (localRemoteCursor) {
-          const pulled = await withTimeout(
-            learningCloudSyncApi.pullLearningCloudMutations(authUserId, localRemoteCursor),
+          // Entity documents are a complete Firestore snapshot. Never rebuild a
+          // stale device from a retained mutation suffix: compaction can remove
+          // mutations before this device's cursor and would silently skip data.
+          remoteState = await withTimeout(
+            learningCloudSyncApi.loadLearningCloudState(authUserId, { source: 'server' }),
             LEARNING_CLOUD_OPERATION_TIMEOUT_MS,
-            'learning cloud mutation pull',
+            'learning cloud state load',
           );
-          effectiveRemoteCursor = pulled.cursor || remoteCursor;
-          remoteState = pulled.mutations.length > 0
-            ? learningCloudSyncApi.applyLearningCloudMutations(localState, pulled.mutations)
-            : await withTimeout(
-                learningCloudSyncApi.loadLearningCloudState(authUserId),
-                LEARNING_CLOUD_OPERATION_TIMEOUT_MS,
-                'learning cloud state load',
-              );
         } else {
           remoteState = await withTimeout(
-            learningCloudSyncApi.loadLearningCloudState(authUserId),
+            learningCloudSyncApi.loadLearningCloudState(authUserId, { source: 'server' }),
             LEARNING_CLOUD_OPERATION_TIMEOUT_MS,
             'learning cloud state load',
           );
@@ -282,12 +277,18 @@ export function useLearningCloudSync(enabled = true) {
 
         if (savedMeta) {
           remoteMutationCursorRef.current = getRemoteMutationCursor(savedMeta) || remoteMutationCursorRef.current;
-          cacheLearningCloudSyncBaseline(authUserId, mergedState, remoteMutationCursorRef.current);
-          lastSyncedStateRef.current = mergedState;
+          const savedState = savedMeta.resolvedState || mergedState;
+          if (getLearningCloudStateSignature(savedState) !== getLearningCloudStateSignature(readLearningCloudStateFromStore())) {
+            applyingRemoteStateRef.current = true;
+            writeLearningCloudStateToStore(savedState);
+            applyingRemoteStateRef.current = false;
+          }
+          cacheLearningCloudSyncBaseline(authUserId, savedState, remoteMutationCursorRef.current);
+          lastSyncedStateRef.current = savedState;
           useLearningStore.getState().markLearningCloudSyncCompleted(
             savedMeta?.lastMutationAt || Date.now(),
             remoteMutationCursorRef.current,
-            getLearningCloudStateSignature(mergedState),
+            getLearningCloudStateSignature(savedState),
           );
           setLearningSyncRuntime({
             status: 'ready',
@@ -341,6 +342,7 @@ export function useLearningCloudSync(enabled = true) {
                   filteredDeckLiteDefinition: meta.filteredDeckLiteDefinition,
                   filteredDeckLiteDefinitions: meta.filteredDeckLiteDefinitions,
                   filteredDeckLiteRuns: meta.filteredDeckLiteRuns,
+                  entityTombstones: meta.entityTombstones,
                 });
 
                 lastSyncedStateRef.current = mergedRemoteState;
@@ -368,53 +370,10 @@ export function useLearningCloudSync(enabled = true) {
 
               if (remoteMutationCursor) {
                 remoteLoadCursorRef.current = remoteMutationCursor.mutationId;
-                const pulled = await withTimeout(
-                  learningCloudSyncApi.pullLearningCloudMutations(
-                    authUserId,
-                    remoteMutationCursorRef.current,
-                  ),
-                  LEARNING_CLOUD_OPERATION_TIMEOUT_MS,
-                  'learning cloud mutation pull',
-                );
-
-                if (activeUserIdRef.current !== authUserId) {
-                  if (remoteLoadCursorRef.current === remoteMutationCursor.mutationId) {
-                    remoteLoadCursorRef.current = null;
-                  }
-                  return;
-                }
-
-                if (pulled.mutations.length > 0) {
-                  const mergedRemoteState = learningCloudSyncApi.applyLearningCloudMutations(
-                    currentLocalState,
-                    pulled.mutations,
-                  );
-                  lastSyncedStateRef.current = mergedRemoteState;
-                  remoteMutationCursorRef.current = pulled.cursor || remoteMutationCursor;
-                  cacheLearningCloudSyncBaseline(authUserId, mergedRemoteState, remoteMutationCursorRef.current);
-                  remoteLoadCursorRef.current = null;
-
-                  if (
-                    getLearningCloudStateSignature(mergedRemoteState)
-                    === getLearningCloudStateSignature(currentLocalState)
-                  ) {
-                    return;
-                  }
-
-                  applyingRemoteStateRef.current = true;
-                  writeLearningCloudStateToStore(mergedRemoteState);
-                  applyingRemoteStateRef.current = false;
-                  setLearningSyncRuntime({
-                    status: 'ready',
-                    currentError: null,
-                    lastSuccessfulSyncAt: remoteMutationCursorRef.current?.mutationAt || Date.now(),
-                  });
-                  return;
-                }
               }
 
               const latestRemoteState = await withTimeout(
-                learningCloudSyncApi.loadLearningCloudState(authUserId),
+                learningCloudSyncApi.loadLearningCloudState(authUserId, { source: 'server' }),
                 LEARNING_CLOUD_OPERATION_TIMEOUT_MS,
                 'learning cloud snapshot reload',
               );

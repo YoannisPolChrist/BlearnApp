@@ -4,7 +4,8 @@ import {
   isNative,
   syncPolicies,
 } from '@/services/screenTimeService';
-import { buildDevicePolicySnapshot } from '@/lib/nativePolicy';
+import { areDevicePolicySnapshotsEqual, buildDevicePolicySnapshot } from '@/lib/nativePolicy';
+import type { DevicePolicySnapshot } from '@/plugins/ScreenTimePlugin';
 import { isPenaltyRuntimeActive } from '@/lib/penaltyRuntime';
 import { useAppStore } from '@/store/useAppStore';
 import { useLearningStore } from '@/store/useLearningStore';
@@ -79,7 +80,7 @@ export function useNativeSync(enabled = true) {
     albyConnection,
     albyConnectionTest,
   });
-  const lastSyncedSnapshotKeyRef = useRef<string | null>(null);
+  const lastSyncedSnapshotRef = useRef<DevicePolicySnapshot | null>(null);
   const retryTimerRef = useRef<number | null>(null);
   const [policyRetryNonce, setPolicyRetryNonce] = useState(0);
   const getNativeIssueMessage = useCallback((error: unknown) => {
@@ -128,7 +129,6 @@ export function useNativeSync(enabled = true) {
     remoteBlockingInstruction,
     resolvedRemoteBlockedApps,
   ]);
-  const snapshotKey = useMemo(() => JSON.stringify(snapshot), [snapshot]);
 
   useEffect(() => {
     if (learningHydrated || useLearningStore.persist.hasHydrated()) {
@@ -147,7 +147,7 @@ export function useNativeSync(enabled = true) {
   useEffect(() => {
     if (!isNative || !enabled) return;
     if (!appHydrated || !learningHydrated) return;
-    if (lastSyncedSnapshotKeyRef.current === snapshotKey) return;
+    if (areDevicePolicySnapshotsEqual(lastSyncedSnapshotRef.current, snapshot)) return;
 
     let cancelled = false;
     const hasMonitoringTargets = snapshot.targets.some(
@@ -155,7 +155,7 @@ export function useNativeSync(enabled = true) {
     );
     const hasWebsiteTargets = snapshot.targets.some((target) => target.type === 'website');
     const hasSearchTargets = snapshot.targets.some((target) => target.type === 'search');
-    lastSyncedSnapshotKeyRef.current = snapshotKey;
+    lastSyncedSnapshotRef.current = snapshot;
 
     void syncPolicies(snapshot)
       .then(() => {
@@ -174,8 +174,8 @@ export function useNativeSync(enabled = true) {
         // Den Key wieder freigeben und einen Retry planen: sonst bliebe der
         // native Blocking-Zustand nach einem transienten Fehler dauerhaft stale,
         // weil derselbe Snapshot nie erneut gepusht wuerde.
-        if (lastSyncedSnapshotKeyRef.current === snapshotKey) {
-          lastSyncedSnapshotKeyRef.current = null;
+        if (lastSyncedSnapshotRef.current === snapshot) {
+          lastSyncedSnapshotRef.current = null;
         }
         retryTimerRef.current = window.setTimeout(() => {
           retryTimerRef.current = null;
@@ -220,6 +220,5 @@ export function useNativeSync(enabled = true) {
     policyRetryNonce,
     setNativeRuntimeIssue,
     snapshot,
-    snapshotKey,
   ]);
 }

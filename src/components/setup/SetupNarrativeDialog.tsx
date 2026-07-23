@@ -1,6 +1,13 @@
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Check, ChevronLeft, ChevronRight, Sparkles, X, type LucideIcon } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Sparkles,
+  X,
+  type LucideIcon,
+} from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -59,7 +66,21 @@ export default function SetupNarrativeDialog({
 }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [actionBusy, setActionBusy] = useState(false);
+  const [isDocumentVisible, setIsDocumentVisible] = useState(
+    () => typeof document === 'undefined' || document.visibilityState === 'visible',
+  );
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const animateDecorations = !shouldReduceMotion && isDocumentVisible;
+
+  useEffect(() => {
+    if (!open || typeof document === 'undefined') return undefined;
+
+    const updateVisibility = () => setIsDocumentVisible(document.visibilityState === 'visible');
+    updateVisibility();
+    document.addEventListener('visibilitychange', updateVisibility);
+    return () => document.removeEventListener('visibilitychange', updateVisibility);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -74,12 +95,16 @@ export default function SetupNarrativeDialog({
   }, [currentIndex, open]);
 
   const currentStep = steps[currentIndex] ?? steps[0];
-  const progress = useMemo(() => ((currentIndex + 1) / Math.max(steps.length, 1)) * 100, [currentIndex, steps.length]);
+  const progress = useMemo(
+    () => ((currentIndex + 1) / Math.max(steps.length, 1)) * 100,
+    [currentIndex, steps.length],
+  );
   const allDone = useMemo(() => steps.every((step) => step.completed), [steps]);
   const isLast = currentIndex === steps.length - 1;
   const isFirst = currentIndex === 0;
   const finishReady = canFinish ?? allDone;
-  const nextDisabled = actionBusy || (isLast && lockUntilFinished && !finishReady);
+  const nextDisabled =
+    actionBusy || (isLast && lockUntilFinished && !finishReady);
   const StepIcon = currentStep?.icon || Sparkles;
 
   const handleDialogClose = () => {
@@ -123,35 +148,35 @@ export default function SetupNarrativeDialog({
         onEscapeKeyDown={(event) => {
           if (lockUntilFinished) event.preventDefault();
         }}
-        className="h-[92vh] max-h-[92vh] w-[calc(100vw-1rem)] max-w-3xl overflow-hidden rounded-[2rem] border-border bg-background p-0 shadow-[0_30px_120px_hsl(var(--foreground)/0.14)] sm:w-[calc(100vw-2rem)]"
+        className="h-[100dvh] max-h-[100dvh] w-screen max-w-none overflow-hidden rounded-none border-0 bg-background p-0 shadow-[0_30px_120px_hsl(var(--foreground)/0.14)] sm:h-[92vh] sm:max-h-[92vh] sm:w-[calc(100vw-2rem)] sm:max-w-3xl sm:rounded-[2rem] sm:border"
       >
         <div className="relative h-full overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.18),transparent_35%),radial-gradient(circle_at_bottom_right,hsl(var(--accent)/0.18),transparent_35%)]" />
 
           <motion.div
             className="absolute left-[-3rem] top-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl"
-            animate={{ x: [0, 18, 0], y: [0, -10, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+            animate={animateDecorations ? { x: [0, 18, 0], y: [0, -10, 0] } : { x: 0, y: 0 }}
+            transition={{ duration: 5, repeat: animateDecorations ? Infinity : 0, ease: 'easeInOut' }}
           />
           <motion.div
             className="absolute bottom-10 right-[-2rem] h-36 w-36 rounded-full bg-accent/10 blur-3xl"
-            animate={{ x: [0, -20, 0], y: [0, 12, 0] }}
-            transition={{ duration: 5.8, repeat: Infinity, ease: 'easeInOut' }}
+            animate={animateDecorations ? { x: [0, -20, 0], y: [0, 12, 0] } : { x: 0, y: 0 }}
+            transition={{ duration: 5.8, repeat: animateDecorations ? Infinity : 0, ease: 'easeInOut' }}
           />
 
           <div className="relative z-10 flex h-full flex-col">
-            <div className="border-b border-border/70 px-5 py-5 sm:px-8 sm:py-6">
+            <div className="border-b border-border/70 px-4 py-4 sm:px-8 sm:py-6">
               <DialogHeader className="gap-3 text-left">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <DialogTitle className="text-2xl font-black tracking-[-0.04em] text-foreground sm:text-3xl">
+                    <DialogTitle className="text-xl font-black tracking-[-0.04em] text-foreground sm:text-3xl">
                       {title}
                     </DialogTitle>
-                    <DialogDescription className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                    <DialogDescription className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:mt-2">
                       {description}
                     </DialogDescription>
                   </div>
-                  <div className="hidden rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-primary sm:block">
+                  <div className="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-primary sm:px-3 sm:text-[11px] sm:tracking-[0.16em]">
                     Schritt {currentIndex + 1}/{steps.length}
                   </div>
                   <button
@@ -159,14 +184,16 @@ export default function SetupNarrativeDialog({
                     onClick={handleDialogClose}
                     className={`${dialogCloseButtonClassName} ml-auto static h-11 w-11 disabled:opacity-40`}
                     aria-label={'Dialog schließen'}
-                    disabled={lockUntilFinished && !finishReady && !allowCloseWhenLocked}
+                    disabled={
+                      lockUntilFinished && !finishReady && !allowCloseWhenLocked
+                    }
                   >
                     <X size={18} />
                   </button>
                 </div>
               </DialogHeader>
 
-              <div className="mt-5">
+              <div className="mt-4 sm:mt-5">
                 <div className="mb-3 h-2 overflow-hidden rounded-full bg-muted/70">
                   <motion.div
                     className="h-full rounded-full bg-gradient-to-r from-primary via-accent to-primary"
@@ -176,7 +203,7 @@ export default function SetupNarrativeDialog({
                   />
                 </div>
 
-                <div className="flex gap-2 overflow-x-auto pb-1">
+                <div className="hidden gap-2 overflow-x-auto pb-1 sm:flex">
                   {steps.map((step, index) => {
                     const isActive = index === currentIndex;
                     const Icon = step.icon || Sparkles;
@@ -204,13 +231,19 @@ export default function SetupNarrativeDialog({
                                 : 'bg-background text-muted-foreground'
                           }`}
                         >
-                          {step.completed ? <Check size={18} /> : <Icon size={18} />}
+                          {step.completed ? (
+                            <Check size={18} />
+                          ) : (
+                            <Icon size={18} />
+                          )}
                         </div>
                         <div className="min-w-0">
                           <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground">
                             {step.eyebrow}
                           </p>
-                          <p className="line-clamp-2 text-sm font-bold leading-tight text-foreground">{step.title}</p>
+                          <p className="line-clamp-2 text-sm font-bold leading-tight text-foreground">
+                            {step.title}
+                          </p>
                         </div>
                       </motion.button>
                     );
@@ -219,7 +252,10 @@ export default function SetupNarrativeDialog({
               </div>
             </div>
 
-            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-5 py-5 sm:px-8 sm:py-6">
+            <div
+              ref={scrollContainerRef}
+              className="flex-1 overflow-y-auto px-4 py-4 sm:px-8 sm:py-6"
+            >
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentStep?.id ?? 'step'}
@@ -230,14 +266,20 @@ export default function SetupNarrativeDialog({
                   transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
                   className="space-y-5 pb-2"
                 >
-                  <div className="rounded-[1.75rem] border border-border/70 bg-card/70 p-5 shadow-[0_18px_48px_hsl(var(--foreground)/0.06)] sm:p-6">
+                  <div className="rounded-[1.5rem] border border-border/70 bg-card/70 p-4 shadow-[0_18px_48px_hsl(var(--foreground)/0.06)] sm:rounded-[1.75rem] sm:p-6">
                     <div className="flex items-start gap-4">
                       <motion.div
-                        className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.4rem] ${
-                          currentStep?.completed ? 'bg-success/12 text-success' : 'bg-primary/12 text-primary'
+                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl sm:h-14 sm:w-14 sm:rounded-[1.4rem] ${
+                          currentStep?.completed
+                            ? 'bg-success/12 text-success'
+                            : 'bg-primary/12 text-primary'
                         }`}
-                        animate={{ scale: [1, 1.04, 1] }}
-                        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+                        animate={animateDecorations ? { scale: [1, 1.04, 1] } : { scale: 1 }}
+                        transition={{
+                          duration: 1.8,
+                          repeat: animateDecorations ? Infinity : 0,
+                          ease: 'easeInOut',
+                        }}
                       >
                         <StepIcon size={24} />
                       </motion.div>
@@ -245,10 +287,10 @@ export default function SetupNarrativeDialog({
                         <p className="text-[11px] font-black uppercase tracking-[0.18em] text-muted-foreground">
                           {currentStep?.eyebrow}
                         </p>
-                        <h3 className="mt-2 text-xl font-black tracking-[-0.04em] text-foreground sm:text-[1.7rem]">
+                        <h3 className="mt-1 text-xl font-black tracking-[-0.04em] text-foreground sm:mt-2 sm:text-[1.7rem]">
                           {currentStep?.title}
                         </h3>
-                        <p className="mt-3 text-sm leading-6 text-foreground/86 sm:text-[0.95rem]">
+                        <p className="mt-2 text-sm leading-6 text-foreground/86 sm:mt-3 sm:text-[0.95rem]">
                           {currentStep?.description}
                         </p>
                       </div>
@@ -256,23 +298,29 @@ export default function SetupNarrativeDialog({
                   </div>
 
                   {currentStep?.bullets?.length ? (
-                    <div className="rounded-[1.75rem] border border-border/70 bg-background/55 p-4 sm:p-5">
+                    <div className="rounded-[1.5rem] border border-border/70 bg-background/55 p-3.5 sm:rounded-[1.75rem] sm:p-5">
                       <p className="text-[11px] font-black uppercase tracking-[0.18em] text-muted-foreground">
                         Was passiert jetzt?
                       </p>
-                      <div className="mt-4 space-y-3">
+                      <div className="mt-3 space-y-2.5 sm:mt-4 sm:space-y-3">
                         {currentStep.bullets.map((bullet, index) => (
                           <motion.div
                             key={bullet}
-                            className="flex items-start gap-3 rounded-[1.15rem] bg-card/80 px-4 py-3"
+                            className="flex items-start gap-3 rounded-[1.15rem] bg-card/80 px-3.5 py-3 sm:px-4"
                             initial={{ opacity: 0, x: 14, scale: 0.98 }}
                             animate={{ opacity: 1, x: 0, scale: 1 }}
                             transition={{ delay: index * 0.05, duration: 0.22 }}
                           >
-                            <span className={`mt-1 h-2.5 w-2.5 rounded-full ${
-                              currentStep.completed ? 'bg-success' : 'bg-primary'
-                            }`} />
-                            <span className="text-sm leading-6 text-foreground/82 sm:text-[0.95rem]">{bullet}</span>
+                            <span
+                              className={`mt-1 h-2.5 w-2.5 rounded-full ${
+                                currentStep.completed
+                                  ? 'bg-success'
+                                  : 'bg-primary'
+                              }`}
+                            />
+                            <span className="text-sm leading-6 text-foreground/82 sm:text-[0.95rem]">
+                              {bullet}
+                            </span>
                           </motion.div>
                         ))}
                       </div>
@@ -317,7 +365,9 @@ export default function SetupNarrativeDialog({
                       onClick={handleNext}
                       disabled={nextDisabled}
                       className={`btn-press inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold disabled:opacity-50 sm:w-auto ${
-                        isLast && finishReady ? 'bg-success text-success-foreground' : 'bg-primary text-primary-foreground'
+                        isLast && finishReady
+                          ? 'bg-success text-success-foreground'
+                          : 'bg-primary text-primary-foreground'
                       }`}
                     >
                       {isLast ? finishLabel : 'Weiter'}

@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Settings2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { BrandLockup } from '@/components/brand/BrandMark';
+import { BrandMark } from '@/components/brand/BrandMark';
 import PageTransition from '@/components/PageTransition';
 import { SettingsLockBanner } from '@/components/settings/SettingsSections';
 import { AccountCloudSection } from '@/components/settings/AccountCloudSection';
@@ -12,16 +12,11 @@ import { AppearanceSettingsSection } from '@/components/settings/AppearanceSetti
 import { BlockingSettingsSection } from '@/components/settings/BlockingSettingsSection';
 import { LearningSettingsSection } from '@/components/settings/LearningSettingsSection';
 import { PermissionsSettingsSection } from '@/components/settings/PermissionsSettingsSection';
+import { RemoteBlockingReviewGateDialog } from '@/components/settings/RemoteBlockingReviewGateDialog';
 import { useAppTour } from '@/components/setup/appTourContext';
 import { useI18n } from '@/hooks/useI18n';
 import { useManualLearningCloudSync } from '@/hooks/useManualLearningCloudSync';
 import { useCloudSyncRuntimeStore } from '@/lib/cloudSyncRuntime';
-import { ensureLanguagePackAvailable } from '@/lib/i18n';
-import {
-  APP_LANGUAGE_PACKS,
-  getSelectableAppLanguageOptions,
-  isLanguagePackBundled,
-} from '@/lib/languages';
 import { premiumEase, sectionStagger } from '@/lib/motion';
 import { showSuccessFeedback } from '@/lib/successFeedback';
 import { getNotificationStatusLabel, getSettingsSectionIds } from '@/lib/view-models/settings';
@@ -37,7 +32,8 @@ import {
   type NotificationPermissionState,
 } from '@/services/notificationService';
 import { isNative } from '@/services/screenTimeService';
-import type { AppLanguage } from '@/store/useAppStore';
+import { useAppStore } from '@/store/useAppStore';
+import { useLearningStore } from '@/store/useLearningStore';
 import {
   useModeActions,
   useModeSettings,
@@ -51,26 +47,20 @@ export default function AppSettings() {
   const location = useLocation();
   const navigate = useNavigate();
   const { theme } = useTheme();
-  const { t, locale } = useI18n();
+  const { t, locale, language } = useI18n();
   const {
     activeMode,
-    blockedSearchTermsCount,
-    userProfile,
     isStrictLocked,
     strictLockScope,
-    penaltyAmountSats,
-    penaltyEnabled,
-    appLanguage,
-    installedAppLanguagePacks,
     notificationsEnabled,
     blockedWebsites,
     remoteBlockingEnabled,
   } = usePermissionStatus();
   const {
-    setAppLanguage,
-    installAppLanguagePack,
     setNotificationsEnabled,
     setRemoteBlockingEnabled,
+    startRemoteBlockingDisableGate,
+    clearRemoteBlockingDisableGate,
   } = usePreferenceActions();
   const { forceReleaseLock } = useModeActions();
   const { strictStartTime, strictEndTime } = useModeSettings();
@@ -84,9 +74,9 @@ export default function AppSettings() {
   const learningSyncRuntime = useCloudSyncRuntimeStore((state) => state.learning);
   const progressSyncRuntime = useCloudSyncRuntimeStore((state) => state.progress);
   const { openTour } = useAppTour();
-  const [downloadingLanguage, setDownloadingLanguage] = useState<AppLanguage | null>(null);
   const [headerCollapsed, setHeaderCollapsed] = useState(false);
   const [showLanguagePackDialog, setShowLanguagePackDialog] = useState(false);
+  const [showRemoteBlockingGate, setShowRemoteBlockingGate] = useState(false);
   const [showNotificationDialog, setShowNotificationDialog] = useState(false);
   const [showLearningCloudSnapshotDialog, setShowLearningCloudSnapshotDialog] = useState(false);
   const [notificationPermissionState, setNotificationPermissionState] = useState<NotificationPermissionState>('unsupported');
@@ -106,18 +96,26 @@ export default function AppSettings() {
   const isGerman = locale.toLowerCase().startsWith('de');
   const locked = isStrictLocked();
   const showForceReleaseEscape = locked && !isInsideStrictScheduleWindow(strictStartTime, strictEndTime);
-  const modeLabel =
-    activeMode === 'normal'
-      ? t('common.modes.normal')
-      : activeMode === 'strict'
-        ? t('common.modes.reflection')
-        : activeMode === 'learn'
-          ? t('common.modes.learn')
-          : activeMode === 'penalty'
-            ? t('common.modes.penalty')
-            : t('common.modes.strict');
   const appIntroActionLabel = isGerman ? 'App-Einfuehrung ansehen' : 'Open app intro';
   const permissionsTitle = isGerman ? 'Systemberechtigungen' : 'System permissions';
+  const remoteBlockingDisableGate = useAppStore((state) => state.remoteBlockingDisableGate);
+  const activeLearningDeck = useLearningStore((state) => state.activeDeckId ? state.decks[state.activeDeckId] : undefined);
+  const remoteGateDeck = useLearningStore((state) =>
+    remoteBlockingDisableGate ? state.decks[remoteBlockingDisableGate.deckId] : undefined,
+  );
+  const remoteBlockingGateProgress = useLearningStore((state) => {
+    if (!remoteBlockingDisableGate) return 0;
+    return new Set(
+      Object.values(state.reviewLogs)
+        .filter((log) =>
+          log.deckId === remoteBlockingDisableGate.deckId
+          && log.reviewedAt >= remoteBlockingDisableGate.startedAt
+          && log.wasCorrect
+          && log.rating !== 'again',
+        )
+        .map((log) => log.cardId),
+    ).size;
+  });
 
   const refreshNotificationPermissionState = useCallback(() => {
     getNotificationPermissionState().then(setNotificationPermissionState).catch(() => {
@@ -132,6 +130,8 @@ export default function AppSettings() {
     permissionStatus,
     permissionSummaryLabel,
     permissionsNeedAttention,
+    monitoringStatus,
+    openAccessibilitySettings,
     refreshPermissions,
     setShowPermissionGuide,
     showPermissionGuide,
@@ -160,20 +160,7 @@ export default function AppSettings() {
     progressSyncRuntime,
     syncCapabilityReason,
   });
-  const selectableLanguageOptions = useMemo(
-    () => getSelectableAppLanguageOptions(installedAppLanguagePacks),
-    [installedAppLanguagePacks],
-  );
-  const visibleLanguagePackTiles = useMemo(
-    () =>
-      APP_LANGUAGE_PACKS
-        .filter((pack) => isLanguagePackBundled(pack.value) || installedAppLanguagePacks.includes(pack.value))
-        .sort((left, right) => Number(right.value === appLanguage) - Number(left.value === appLanguage)),
-    [appLanguage, installedAppLanguagePacks],
-  );
   const notificationStatusLabel = getNotificationStatusLabel(notificationPermissionState);
-  const getLanguageLabel = (language: AppLanguage) =>
-    APP_LANGUAGE_PACKS.find((pack) => pack.value === language)?.label ?? language.toUpperCase();
 
   const scrollToSection = (sectionId: (typeof settingsSections)[number]['id']) => {
     if (sectionId === 'permissions') {
@@ -226,27 +213,6 @@ export default function AppSettings() {
     };
   }, [location.hash]);
 
-  const handleLanguagePackInstall = async (language: AppLanguage) => {
-    setDownloadingLanguage(language);
-
-    try {
-      await ensureLanguagePackAvailable(language);
-      installAppLanguagePack(language);
-      setAppLanguage(language);
-      showSuccessFeedback({
-        eyebrow: 'Sprachpaket hinzugefügt',
-        title: `${getLanguageLabel(language)} hinzugefügt`,
-        description: 'Das Sprachpaket wurde heruntergeladen und direkt aktiviert.',
-        detail: 'Sprache gespeichert',
-        emoji: '🌍',
-      });
-    } catch (error) {
-      console.warn(`Language pack install failed for ${language}:`, error);
-    } finally {
-      setDownloadingLanguage(null);
-    }
-  };
-
   const handleThemeChange = (nextTheme: 'light' | 'dark') => {
     showSuccessFeedback({
       eyebrow: 'Blearn',
@@ -262,25 +228,35 @@ export default function AppSettings() {
     });
   };
 
-  const handleAppLanguageChange = (language: AppLanguage) => {
-    setAppLanguage(language);
-    showSuccessFeedback({
-      eyebrow: isGerman ? 'Sprache' : 'Language',
-      title: isGerman ? 'Sprache gespeichert' : 'Language saved',
-      description: isGerman
-        ? `${getLanguageLabel(language)} ist jetzt aktiv.`
-        : `${getLanguageLabel(language)} is now active.`,
-    });
+  const handleRemoteBlockingToggle = (enabled: boolean) => {
+    if (enabled) {
+      clearRemoteBlockingDisableGate();
+      setRemoteBlockingEnabled(true);
+      return;
+    }
+
+    if (!remoteBlockingDisableGate) {
+      if (!activeLearningDeck) {
+        navigate('/learn');
+        return;
+      }
+      startRemoteBlockingDisableGate(activeLearningDeck.id);
+      setShowRemoteBlockingGate(true);
+      return;
+    }
+
+    setShowRemoteBlockingGate(true);
   };
 
-  const handleLanguagePackActivate = (language: AppLanguage) => {
-    setAppLanguage(language);
+  const disableRemoteBlockingAfterReview = () => {
+    if (remoteBlockingGateProgress < 15) return;
+    setRemoteBlockingEnabled(false);
+    clearRemoteBlockingDisableGate();
+    setShowRemoteBlockingGate(false);
     showSuccessFeedback({
-      eyebrow: 'Sprache aktiviert',
-      title: `${getLanguageLabel(language)} aktiviert`,
-      description: 'Die Sprache wurde direkt umgestellt und gespeichert.',
-      detail: 'Sprache gespeichert',
-      emoji: '🌍',
+      eyebrow: 'Coach-Remote-Sperre',
+      title: 'Sperre ausgeschaltet',
+      description: '15 Vokabeln aus deinem ausgewählten Deck wurden gelernt.',
     });
   };
 
@@ -330,23 +306,35 @@ export default function AppSettings() {
           </button>
 
           <motion.div
-            className="min-w-0 flex-1 overflow-visible"
+            data-tour-id="tour-settings-overview"
+            data-testid="settings-page-hero"
+            className="relative min-w-0 flex-1 overflow-hidden rounded-[1.65rem] border border-border/70 bg-[linear-gradient(135deg,hsl(var(--card)/0.98),hsl(var(--primary)/0.09))] px-4 py-3 shadow-[0_18px_48px_hsl(var(--foreground)/0.07)] sm:px-5"
             initial={false}
             animate={{
               opacity: headerCollapsed ? 0 : 1,
-              maxHeight: headerCollapsed ? 0 : 144,
+              maxHeight: headerCollapsed ? 0 : 168,
               y: headerCollapsed ? -8 : 0,
             }}
             transition={{ duration: 0.2, ease: premiumEase }}
           >
-            <h1 className="page-header-title text-left sm:text-center">{t('settings.page.title')}</h1>
-            {!headerCollapsed ? (
-              <BrandLockup
-                compact
-                className="mt-3 justify-start overflow-visible sm:justify-center"
-                subtitle="Eigene Steuerung für Fokus, Rechte und Aussehen"
-              />
-            ) : null}
+            <div className="absolute -right-8 -top-9 h-28 w-28 rounded-full bg-primary/14 blur-3xl" aria-hidden="true" />
+            <div className="relative flex min-w-0 items-center gap-3 sm:gap-4">
+              <div className="hidden shrink-0 sm:block">
+                <BrandMark size={46} withHalo />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 text-primary">
+                  <Settings2 size={14} strokeWidth={2.4} aria-hidden="true" />
+                  <p className="text-[10px] font-black uppercase tracking-[0.18em]">Blearn</p>
+                </div>
+                <h1 className="mt-1 text-2xl font-black tracking-[-0.05em] text-foreground sm:text-3xl">
+                  {t('settings.page.title')}
+                </h1>
+                <p className="mt-1 max-w-xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                  {t('settings.page.description')}
+                </p>
+              </div>
+            </div>
           </motion.div>
 
           {showPermissionGuideCta ? (
@@ -407,39 +395,37 @@ export default function AppSettings() {
           />
 
           <AppearanceSettingsSection
-            appLanguage={appLanguage}
+            activeLanguage={language}
             isGerman={isGerman}
             notificationPermissionState={notificationPermissionState}
             notificationStatusLabel={notificationStatusLabel}
             notificationsEnabled={notificationsEnabled}
-            onAppLanguageChange={handleAppLanguageChange}
             onManageLanguages={() => setShowLanguagePackDialog(true)}
             onNotificationsToggle={handleNotificationsToggle}
             onOpenNotificationDialog={() => setShowNotificationDialog(true)}
             onThemeChange={handleThemeChange}
-            selectableLanguageOptions={selectableLanguageOptions}
             t={t}
             theme={theme}
-            visibleLanguagePackTiles={visibleLanguagePackTiles}
           />
 
           <BlockingSettingsSection
-            blockedSearchTermsCount={blockedSearchTermsCount}
             isGerman={isGerman}
-            locked={locked}
             remoteBlockingEnabled={remoteBlockingEnabled}
-            onRemoteBlockingToggle={setRemoteBlockingEnabled}
+            onRemoteBlockingToggle={handleRemoteBlockingToggle}
             onForceReleaseLock={forceReleaseLock}
-            onOpenModes={() => navigate('/modes')}
             onOpenWallet={() => navigate('/wallet')}
             showForceReleaseEscape={showForceReleaseEscape}
             t={t}
-            userProfile={userProfile}
           />
 
           {showPermissionsSection ? (
             <PermissionsSettingsSection
               expandedSettingsPanel={expandedSettingsPanel}
+              locale={locale}
+              monitoringStatus={monitoringStatus}
+              onOpenAccessibilitySettings={() => {
+                void openAccessibilitySettings();
+              }}
               onOpenModes={() => navigate('/modes')}
               onOpenPermissionGuide={() => setShowPermissionGuide(true)}
               onRefreshPermissions={() => {
@@ -458,28 +444,15 @@ export default function AppSettings() {
           ) : null}
 
           <LearningSettingsSection
-            allPermissionsGranted={allPermissionsGranted}
             appIntroActionLabel={appIntroActionLabel}
-            isGerman={isGerman}
-            modeLabel={modeLabel}
             onOpenTour={openTour}
-            penaltyAmountSats={penaltyAmountSats}
-            penaltyEnabled={penaltyEnabled}
-            t={t}
           />
         </motion.div>
       </div>
 
       <AppSettingsDialogs
-        appLanguage={appLanguage}
         authUser={authUser}
-        downloadingLanguage={downloadingLanguage}
-        installedAppLanguagePacks={installedAppLanguagePacks}
         locale={locale}
-        onActivateLanguage={handleLanguagePackActivate}
-        onInstallLanguage={(language) => {
-          void handleLanguagePackInstall(language);
-        }}
         onLanguagePackDialogChange={setShowLanguagePackDialog}
         onLearningCloudSnapshotDialogChange={setShowLearningCloudSnapshotDialog}
         onNotificationDialogChange={setShowNotificationDialog}
@@ -492,6 +465,19 @@ export default function AppSettings() {
         showNotificationDialog={showNotificationDialog}
         showPermissionGuide={showPermissionGuide}
       />
+      {remoteBlockingDisableGate && remoteGateDeck ? (
+        <RemoteBlockingReviewGateDialog
+          deckName={remoteGateDeck.name}
+          onContinueLearning={() => {
+            setShowRemoteBlockingGate(false);
+            navigate(`/learn/review?deckId=${encodeURIComponent(remoteBlockingDisableGate.deckId)}`);
+          }}
+          onOpenChange={setShowRemoteBlockingGate}
+          onUnlock={disableRemoteBlockingAfterReview}
+          open={showRemoteBlockingGate}
+          progress={remoteBlockingGateProgress}
+        />
+      ) : null}
     </PageTransition>
   );
 }

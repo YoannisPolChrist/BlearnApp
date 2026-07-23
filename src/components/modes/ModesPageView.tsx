@@ -51,15 +51,12 @@ export function ModesPageView(props: ModesPageViewProps) {
     displayedAvailableApps,
     draftBlockedSearchTermModes,
     draftBlockedSearchTerms,
-    draftBlockedWebsiteModes,
-    draftBlockedWebsites,
     draftBlockSchedules,
     endTime,
     expandedApp,
     gateRule,
     handleActivate,
     handleAddSearchTerm,
-    handleAddWebsite,
     handleAssignAppsToSelectedMode,
     handleBreathingRoundsDraftChange,
     handleClearAppsFromSelectedMode,
@@ -68,12 +65,10 @@ export function ModesPageView(props: ModesPageViewProps) {
     handlePenaltyReadyConfirm,
     handleRemoveDraftBlockSchedule,
     handleRemoveSearchTerm,
-    handleRemoveWebsite,
     handleSessionCreditsRequiredDraftChange,
     handleSetDraftBlockSchedule,
     handleToggleAppTarget,
     handleToggleSearchTarget,
-    handleToggleWebsiteTarget,
     handleUnlockDurationMinutesDraftChange,
     isGerman,
     isSaving,
@@ -87,7 +82,6 @@ export function ModesPageView(props: ModesPageViewProps) {
     navigate,
     needsPenaltyActivation,
     newSearchTerm,
-    newWebsite,
     penaltyAmountSats,
     penaltyReadyConfirmed,
     penaltySetupReady,
@@ -121,7 +115,6 @@ export function ModesPageView(props: ModesPageViewProps) {
     setLocalPatternId,
     setLocalTypedAnswerEnabled,
     setNewSearchTerm,
-    setNewWebsite,
     setSelectedMode,
     setSelectedModeStrictAddonEnabled,
     setSelectedModeStrictWindowEnd,
@@ -161,11 +154,23 @@ export function ModesPageView(props: ModesPageViewProps) {
         </div>
 
         <motion.div variants={container} initial="hidden" animate="show">
-          <ModeChooserSection modes={modeDefinitions} activeModes={activeModes} savedModeSelection={savedModeSelection} selectedMode={selectedMode} setSelectedMode={setSelectedMode} getModeSelectionClasses={getModeSelectionClasses} variants={item} />
-          <PenaltySetupSection selectedMode={selectedMode} variants={item} albyReady={albyReady} recipientVerified={recipientVerified} walletLabel={albyConnection?.walletLabel} recipientName={recipientName} recipientAddress={recipientAddress} penaltyAmountLabel={penaltyAmountSats ? `${satsFormatter.format(penaltyAmountSats)} sats` : 'Noch nicht gesetzt'} connectionStatusLabel={connectionStatusMessage} penaltySetupReady={penaltySetupReady} penaltyReadyConfirmed={penaltyReadyConfirmed} confirmFeedbackVisible={confirmFeedbackVisible} strictAddonEnabled={strictAddonEnabledForSelectedMode} onStrictAddonChange={setSelectedModeStrictAddonEnabled} strictAddonLocked={strictAddonActiveForSelectedMode} strictDurationHours={strictDurationHours} strictDurationTooLong={strictDurationTooLong} assignedAppCount={selectedModeAssignedAppCount} startTime={selectedModeStrictWindowStart} setStartTime={setSelectedModeStrictWindowStart} endTime={selectedModeStrictWindowEnd} setEndTime={setSelectedModeStrictWindowEnd} onOpenWallet={() => navigate(penaltySetupReady ? '/wallet' : '/wallet?setup=penalty&return=/modes')} onConfirm={handlePenaltyReadyConfirm} />
-          {currentModeConfig?.showBlockConfig ? <BlockingTargetsSection variants={item} selectedMode={selectedMode} showBlockConfig={showBlockConfig} setShowBlockConfig={setShowBlockConfig} totalBlocked={totalBlocked} totalAssignedToSelectedMode={selectedModeCount} blockedWebsites={draftBlockedWebsites} blockedWebsiteModes={draftBlockedWebsiteModes} blockedSearchTerms={draftBlockedSearchTerms} blockedSearchTermModes={draftBlockedSearchTermModes} blockTabs={blockTabs} blockTab={blockTab} setBlockTab={setBlockTab} appSearch={appSearch} setAppSearch={setAppSearch} availableApps={availableApps} displayedAvailableApps={displayedAvailableApps} assignedToSelectedMode={assignedToSelectedMode} assignedToOtherModes={assignedToOtherModes} remainingAvailableCount={remainingAvailableCount} expandedApp={expandedApp} setExpandedApp={setExpandedApp} blockSchedules={draftBlockSchedules} toggleBlockedApp={handleToggleAppTarget} setBlockedAppsMode={handleAssignAppsToSelectedMode} clearBlockedAppsMode={handleClearAppsFromSelectedMode} toggleBlockedWebsite={handleToggleWebsiteTarget} setBlockSchedule={handleSetDraftBlockSchedule} removeBlockSchedule={handleRemoveDraftBlockSchedule} getAppBadge={getAppBadge} shouldShowFullAppList={shouldShowFullAppList} setShowAllApps={setShowAllApps} newWebsite={newWebsite} setNewWebsite={setNewWebsite} handleAddWebsite={handleAddWebsite} removeBlockedWebsite={handleRemoveWebsite} newSearchTerm={newSearchTerm} setNewSearchTerm={setNewSearchTerm} handleAddSearchTerm={handleAddSearchTerm} toggleBlockedSearchTerm={handleToggleSearchTarget} removeBlockedSearchTerm={handleRemoveSearchTerm} assignmentsLocked={strictAddonActiveForSelectedMode} lockedAppIdsByMode={lockedAppIdsByMode} /> : null}
-          <StrictProtectionSection selectedMode={selectedMode} strictAddonEnabled={strictAddonEnabledForSelectedMode} onStrictAddonChange={setSelectedModeStrictAddonEnabled} strictAddonLocked={strictAddonActiveForSelectedMode} assignedAppCount={selectedModeAssignedAppCount} variants={item} startTime={selectedModeStrictWindowStart} setStartTime={setSelectedModeStrictWindowStart} endTime={selectedModeStrictWindowEnd} setEndTime={setSelectedModeStrictWindowEnd} strictDurationHours={strictDurationHours} strictDurationTooLong={strictDurationTooLong} localPatternId={localPatternId} setLocalPatternId={setLocalPatternId} localBreathingRoundsDraft={localBreathingRoundsDraft} setLocalBreathingRoundsDraft={handleBreathingRoundsDraftChange} commitLocalBreathingRoundsDraft={commitBreathingRoundsDraft} localIntervalDraft={localIntervalDraft} setLocalIntervalDraft={handleIntervalDraftChange} commitLocalIntervalDraft={commitIntervalDraft} breathingPatterns={BREATHING_PATTERNS} />
-          <LearnModeSection selectedMode={selectedMode} variants={item} resolvedLearnDeck={resolvedLearnDeck} onUseLatestDeck={() => { if (resolvedLearnDeck) setLocalActiveDeckId(resolvedLearnDeck.id); }} onOpenLibrary={() => setLearnLibraryOpen(true)} onOpenLearnHub={() => navigate('/learn')} onReviewMixChange={(reviewsBetweenNewCards) => { if (resolvedLearnDeck) setDeckReviewMix(resolvedLearnDeck.id, reviewsBetweenNewCards); }} gateRule={gateRule} strictAddonEnabled={strictAddonEnabledForSelectedMode} onStrictAddonChange={setSelectedModeStrictAddonEnabled} strictAddonLocked={strictAddonActiveForSelectedMode} strictDurationHours={strictDurationHours} strictDurationTooLong={strictDurationTooLong} assignedAppCount={selectedModeAssignedAppCount} startTime={selectedModeStrictWindowStart} setStartTime={setSelectedModeStrictWindowStart} endTime={selectedModeStrictWindowEnd} setEndTime={setSelectedModeStrictWindowEnd} sessionCreditsRequiredDraft={sessionCreditsRequiredDraft} setSessionCreditsRequiredDraft={handleSessionCreditsRequiredDraftChange} commitSessionCreditsRequiredDraft={commitSessionCreditsRequiredDraft} unlockDurationMinutesDraft={unlockDurationMinutesDraft} setUnlockDurationMinutesDraft={handleUnlockDurationMinutesDraftChange} commitUnlockDurationMinutesDraft={commitUnlockDurationMinutesDraft} typedAnswerEnabledDraft={localTypedAnswerEnabled} setTypedAnswerEnabledDraft={setLocalTypedAnswerEnabled} />
+          <ModeChooserSection
+            modes={modeDefinitions}
+            activeModes={activeModes}
+            savedModeSelection={savedModeSelection}
+            selectedMode={selectedMode}
+            setSelectedMode={setSelectedMode}
+            getModeSelectionClasses={getModeSelectionClasses}
+            variants={item}
+            settings={(
+              <>
+                <PenaltySetupSection selectedMode={selectedMode} variants={item} albyReady={albyReady} recipientVerified={recipientVerified} walletLabel={albyConnection?.walletLabel} recipientName={recipientName} recipientAddress={recipientAddress} penaltyAmountLabel={penaltyAmountSats ? `${satsFormatter.format(penaltyAmountSats)} sats` : 'Noch nicht gesetzt'} connectionStatusLabel={connectionStatusMessage} penaltySetupReady={penaltySetupReady} penaltyReadyConfirmed={penaltyReadyConfirmed} confirmFeedbackVisible={confirmFeedbackVisible} strictAddonEnabled={strictAddonEnabledForSelectedMode} onStrictAddonChange={setSelectedModeStrictAddonEnabled} strictAddonLocked={strictAddonActiveForSelectedMode} strictDurationHours={strictDurationHours} strictDurationTooLong={strictDurationTooLong} assignedAppCount={selectedModeAssignedAppCount} startTime={selectedModeStrictWindowStart} setStartTime={setSelectedModeStrictWindowStart} endTime={selectedModeStrictWindowEnd} setEndTime={setSelectedModeStrictWindowEnd} onOpenWallet={() => navigate(penaltySetupReady ? '/wallet' : '/wallet?setup=penalty&return=/modes')} onConfirm={handlePenaltyReadyConfirm} />
+                <StrictProtectionSection selectedMode={selectedMode} strictAddonEnabled={strictAddonEnabledForSelectedMode} onStrictAddonChange={setSelectedModeStrictAddonEnabled} strictAddonLocked={strictAddonActiveForSelectedMode} assignedAppCount={selectedModeAssignedAppCount} variants={item} startTime={selectedModeStrictWindowStart} setStartTime={setSelectedModeStrictWindowStart} endTime={selectedModeStrictWindowEnd} setEndTime={setSelectedModeStrictWindowEnd} strictDurationHours={strictDurationHours} strictDurationTooLong={strictDurationTooLong} localPatternId={localPatternId} setLocalPatternId={setLocalPatternId} localBreathingRoundsDraft={localBreathingRoundsDraft} setLocalBreathingRoundsDraft={handleBreathingRoundsDraftChange} commitLocalBreathingRoundsDraft={commitBreathingRoundsDraft} localIntervalDraft={localIntervalDraft} setLocalIntervalDraft={handleIntervalDraftChange} commitLocalIntervalDraft={commitIntervalDraft} breathingPatterns={BREATHING_PATTERNS} />
+                <LearnModeSection selectedMode={selectedMode} variants={item} resolvedLearnDeck={resolvedLearnDeck} onUseLatestDeck={() => { if (resolvedLearnDeck) setLocalActiveDeckId(resolvedLearnDeck.id); }} onOpenLibrary={() => setLearnLibraryOpen(true)} onOpenLearnHub={() => navigate('/learn')} onReviewMixChange={(reviewsBetweenNewCards) => { if (resolvedLearnDeck) setDeckReviewMix(resolvedLearnDeck.id, reviewsBetweenNewCards); }} gateRule={gateRule} strictAddonEnabled={strictAddonEnabledForSelectedMode} onStrictAddonChange={setSelectedModeStrictAddonEnabled} strictAddonLocked={strictAddonActiveForSelectedMode} strictDurationHours={strictDurationHours} strictDurationTooLong={strictDurationTooLong} assignedAppCount={selectedModeAssignedAppCount} startTime={selectedModeStrictWindowStart} setStartTime={setSelectedModeStrictWindowStart} endTime={selectedModeStrictWindowEnd} setEndTime={setSelectedModeStrictWindowEnd} sessionCreditsRequiredDraft={sessionCreditsRequiredDraft} setSessionCreditsRequiredDraft={handleSessionCreditsRequiredDraftChange} commitSessionCreditsRequiredDraft={commitSessionCreditsRequiredDraft} unlockDurationMinutesDraft={unlockDurationMinutesDraft} setUnlockDurationMinutesDraft={handleUnlockDurationMinutesDraftChange} commitUnlockDurationMinutesDraft={commitUnlockDurationMinutesDraft} typedAnswerEnabledDraft={localTypedAnswerEnabled} setTypedAnswerEnabledDraft={setLocalTypedAnswerEnabled} />
+              </>
+            )}
+          />
+          {currentModeConfig?.showBlockConfig ? <BlockingTargetsSection variants={item} selectedMode={selectedMode} showBlockConfig={showBlockConfig} setShowBlockConfig={setShowBlockConfig} totalBlocked={totalBlocked} totalAssignedToSelectedMode={selectedModeCount} blockedSearchTerms={draftBlockedSearchTerms} blockedSearchTermModes={draftBlockedSearchTermModes} blockTabs={blockTabs} blockTab={blockTab} setBlockTab={setBlockTab} appSearch={appSearch} setAppSearch={setAppSearch} availableApps={availableApps} displayedAvailableApps={displayedAvailableApps} assignedToSelectedMode={assignedToSelectedMode} assignedToOtherModes={assignedToOtherModes} remainingAvailableCount={remainingAvailableCount} expandedApp={expandedApp} setExpandedApp={setExpandedApp} blockSchedules={draftBlockSchedules} toggleBlockedApp={handleToggleAppTarget} setBlockedAppsMode={handleAssignAppsToSelectedMode} clearBlockedAppsMode={handleClearAppsFromSelectedMode} setBlockSchedule={handleSetDraftBlockSchedule} removeBlockSchedule={handleRemoveDraftBlockSchedule} getAppBadge={getAppBadge} shouldShowFullAppList={shouldShowFullAppList} setShowAllApps={setShowAllApps} newSearchTerm={newSearchTerm} setNewSearchTerm={setNewSearchTerm} handleAddSearchTerm={handleAddSearchTerm} toggleBlockedSearchTerm={handleToggleSearchTarget} removeBlockedSearchTerm={handleRemoveSearchTerm} assignmentsLocked={strictAddonActiveForSelectedMode} lockedAppIdsByMode={lockedAppIdsByMode} /> : null}
 
           <ActiveUnlocksSection activeUnlocks={activeUnlocks} isGerman={isGerman} variants={item} />
 

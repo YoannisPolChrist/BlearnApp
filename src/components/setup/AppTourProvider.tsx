@@ -8,7 +8,10 @@ import {
 import { useLocation } from 'react-router-dom';
 import { AppTourContext, type AppTourContextValue } from '@/components/setup/appTourContext';
 import type { AppTourStep } from '@/components/setup/appTourSteps';
-import { APP_TOUR_DISMISSED_STORAGE_KEY } from '@/components/setup/appTourStorage';
+import {
+  APP_TOUR_DISMISSED_STORAGE_KEY,
+  FIRST_LAUNCH_ANIMATION_SEEN_STORAGE_KEY,
+} from '@/components/setup/appTourStorage';
 import { isBlockingOverlayRoute } from '@/lib/blockingOverlayRoutes';
 import { useAppStore } from '@/store/useAppStore';
 
@@ -30,6 +33,22 @@ function persistAppTourDismissed() {
   window.localStorage.setItem(APP_TOUR_DISMISSED_STORAGE_KEY, 'true');
 }
 
+function hasSeenFirstLaunchAnimation() {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  return window.localStorage.getItem(FIRST_LAUNCH_ANIMATION_SEEN_STORAGE_KEY) === 'true';
+}
+
+function persistFirstLaunchAnimationSeen() {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.localStorage.setItem(FIRST_LAUNCH_ANIMATION_SEEN_STORAGE_KEY, 'true');
+}
+
 function isNativeHandoffActive() {
   if (typeof window === 'undefined') {
     return false;
@@ -49,6 +68,9 @@ export function AppTourProvider({ children, steps }: Props) {
   const hasHydrated = useAppStore((state) => state.hasHydrated);
   const setAppIntroSeen = useAppStore((state) => state.setAppIntroSeen);
   const [dismissedInStorage, setDismissedInStorage] = useState(() => hasDismissedAppTour());
+  const [firstLaunchAnimationSeen, setFirstLaunchAnimationSeen] = useState(() =>
+    hasSeenFirstLaunchAnimation(),
+  );
   const isBlockingOverlayRouteActive = isBlockingOverlayRoute(location.pathname, location.search);
   const shouldAutoOpen =
     hasHydrated
@@ -57,6 +79,7 @@ export function AppTourProvider({ children, steps }: Props) {
     && location.pathname === '/'
     && !isBlockingOverlayRouteActive;
   const [isOpen, setIsOpen] = useState(false);
+  const [isFirstLaunchAnimationActive, setIsFirstLaunchAnimationActive] = useState(false);
   const [autoOpenReady, setAutoOpenReady] = useState(() => !shouldAutoOpen);
   const [currentStepIndex, setCurrentStepIndexState] = useState(0);
 
@@ -72,6 +95,13 @@ export function AppTourProvider({ children, steps }: Props) {
     setCurrentStepIndexState(0);
     setIsOpen(true);
   }, []);
+
+  const completeFirstLaunchAnimation = useCallback(() => {
+    setIsFirstLaunchAnimationActive(false);
+    if (shouldAutoOpen) {
+      openTour();
+    }
+  }, [openTour, shouldAutoOpen]);
 
   const setCurrentStepIndex = useCallback(
     (index: number) => {
@@ -128,15 +158,44 @@ export function AppTourProvider({ children, steps }: Props) {
   }, [shouldAutoOpen]);
 
   useEffect(() => {
-    if (!shouldAutoOpen || !autoOpenReady || isOpen) return;
+    if (
+      !shouldAutoOpen ||
+      !autoOpenReady ||
+      isOpen ||
+      isFirstLaunchAnimationActive
+    ) {
+      return;
+    }
+
+    if (!firstLaunchAnimationSeen) {
+      persistFirstLaunchAnimationSeen();
+      setFirstLaunchAnimationSeen(true);
+      setIsFirstLaunchAnimationActive(true);
+      return;
+    }
+
     openTour();
-  }, [autoOpenReady, isOpen, openTour, shouldAutoOpen]);
+  }, [
+    autoOpenReady,
+    firstLaunchAnimationSeen,
+    isFirstLaunchAnimationActive,
+    isOpen,
+    openTour,
+    shouldAutoOpen,
+  ]);
+
+  useEffect(() => {
+    if (!shouldAutoOpen) {
+      setIsFirstLaunchAnimationActive(false);
+    }
+  }, [shouldAutoOpen]);
 
   const currentStep = isOpen ? steps[currentStepIndex] ?? null : null;
 
   const value = useMemo<AppTourContextValue>(
     () => ({
       isOpen,
+      isFirstLaunchAnimationActive,
       currentStep,
       currentStepId: currentStep?.id ?? null,
       currentStepIndex,
@@ -145,10 +204,21 @@ export function AppTourProvider({ children, steps }: Props) {
       totalSteps: steps.length,
       openTour,
       closeTour,
+      completeFirstLaunchAnimation,
       setCurrentStepIndex,
       isTargetActive: (targetId: string) => Boolean(isOpen && currentStep?.targetId === targetId),
     }),
-    [closeTour, currentStep, currentStepIndex, isOpen, openTour, setCurrentStepIndex, steps.length],
+    [
+      closeTour,
+      completeFirstLaunchAnimation,
+      currentStep,
+      currentStepIndex,
+      isFirstLaunchAnimationActive,
+      isOpen,
+      openTour,
+      setCurrentStepIndex,
+      steps.length,
+    ],
   );
 
   return <AppTourContext.Provider value={value}>{children}</AppTourContext.Provider>;

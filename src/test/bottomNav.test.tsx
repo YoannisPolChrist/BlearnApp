@@ -33,7 +33,7 @@ describe('BottomNav', () => {
     expect(screen.getByText('nav.modes')).toBeInTheDocument();
     const learnButton = screen.getByRole('button', { name: 'nav.learn' });
     expect(learnButton).toHaveAttribute('aria-current', 'page');
-    expect(learnButton.className).toMatch(/bg-primary\/10/);
+    expect(learnButton.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
     expect(screen.getByText('nav.stats')).toBeInTheDocument();
     expect(screen.getByText('nav.settings')).toBeInTheDocument();
   });

@@ -372,7 +372,8 @@ function getDayBoundsLocal(daysAgo: number) {
   start.setHours(0, 0, 0, 0);
 
   const end = new Date(date);
-  end.setHours(23, 59, 59, 999);
+  end.setDate(end.getDate() + 1);
+  end.setHours(0, 0, 0, 0);
 
   const year = start.getFullYear();
   const month = String(start.getMonth() + 1).padStart(2, '0');

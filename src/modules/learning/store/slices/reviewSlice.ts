@@ -288,6 +288,7 @@ export const createLearningReviewSlice: StateCreator<LearningStore, [], [], Lear
       reviewLogs: deckReviewLogs,
       preset: state.getResolvedPresetForDeck(deck.id),
       gateRule: state.gateRule,
+      cardsAreScopedAndNormalized: true,
     });
   },
 

@@ -55,6 +55,7 @@ export default function CheckinPage() {
   const overlaySessionId = blockingFlow.overlaySessionId;
   const unlockDurationMinutes = parsePositiveInteger(searchParams.get('unlockDurationMinutes'));
   const isBlockedFlow = blockingFlow.isBlockedFlow;
+  const breathingCompleted = searchParams.get('breathingCompleted') === '1';
   const isOverlayUnlockFlow = isAndroidPlatform && blockingFlow.isOverlayBlockingFlow;
   const {
     addCheckin,
@@ -79,8 +80,6 @@ export default function CheckinPage() {
   const checkinClasses = reflectionCheckinClasses;
 
   const [step, setStep] = useState(0);
-  const [whatAnswer, setWhatAnswer] = useState('');
-  const [whyAnswer, setWhyAnswer] = useState('');
   const [selectedEmotions, setSelectedEmotions] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [emotionContext, setEmotionContext] = useState('');
@@ -109,16 +108,24 @@ export default function CheckinPage() {
       return;
     }
 
-    const reflection = [whatAnswer.trim(), whyAnswer.trim(), emotionContext.trim()].filter(Boolean).join(' - ');
+    const reflection = emotionContext.trim();
     const completedAt = Date.now();
+    const blockingContext = isBlockedFlow ? {
+      flow: breathingCompleted ? 'breathing' as const : 'reflection' as const,
+      targetId: resolvedTargetId || undefined,
+      targetType,
+      targetLabel: targetLabel || undefined,
+      overlaySessionId,
+    } : undefined;
     const entry = {
       id: completedAt.toString(),
       timestamp: completedAt,
       emotions: selectedEmotions,
       reflection,
       chatHistory: [],
-      breathingCompleted: false,
+      breathingCompleted,
       targetApp: targetApp || undefined,
+      blockingContext,
     };
 
     addCheckin(entry);
@@ -129,6 +136,7 @@ export default function CheckinPage() {
       intention: reflection,
       completed: true,
       targetApp: targetApp || undefined,
+      blockingContext,
     });
     incrementCheckins();
     updateStreak();
@@ -140,9 +148,11 @@ export default function CheckinPage() {
       
       // Push Emotion Log
       void createEmotionLog({
+        id: entry.id,
         userId,
+        interaction_id: entry.id,
         timestamp: completedAt,
-        trigger_type: targetId ? 'after_app_usage' : 'manual',
+        trigger_type: isBlockedFlow ? 'app_prompt' : targetId ? 'after_app_usage' : 'manual',
         context: {
           location_type: 'unknown',
           activity: targetId ? 'pause' : 'unknown',
@@ -170,8 +180,15 @@ export default function CheckinPage() {
           intensity: targetId ? 7 : 0,
           resisted: false,
         },
+        blocking_context: blockingContext ? {
+          flow: blockingContext.flow,
+          target_id: blockingContext.targetId,
+          target_type: blockingContext.targetType,
+          target_label: blockingContext.targetLabel,
+          overlay_session_id: blockingContext.overlaySessionId,
+        } : undefined,
         metadata: {
-          entry_mode: 'manual',
+          entry_mode: isBlockedFlow ? 'prompted' : 'manual',
         },
       }).catch(err => console.warn('[HermesSync] Emotion log push failed:', err));
 
@@ -179,6 +196,7 @@ export default function CheckinPage() {
       if (targetId) {
         const usageDuration = unlockDurationMinutes || defaultUnlockDurationMinutes || 15;
         void createAppUsageEvent({
+          interaction_id: entry.id,
           userId,
           started_at: completedAt,
           ended_at: completedAt + usageDuration * 60 * 1000,
@@ -231,10 +249,8 @@ export default function CheckinPage() {
   };
 
   const handleBack = () => {
-    if (targetApp && step > 0) {
+    if (step > 0) {
       setStep(0);
-      setWhatAnswer('');
-      setWhyAnswer('');
       setSelectedEmotions([]);
       setSelectedCategories([]);
       setEmotionContext('');
@@ -290,38 +306,6 @@ export default function CheckinPage() {
         >
           <AnimatePresence mode="wait">
             {step === 0 ? (
-              <CheckinTextStep
-                stepKey="what"
-                title="Was möchtest du tun?"
-                prompt="Beschreibe kurz, was du gerade vorhast."
-                placeholder="z.B. Social Media öffnen, YouTube schauen..."
-                value={whatAnswer}
-                onChange={setWhatAnswer}
-                onContinue={() => setStep(1)}
-                buttonLabel="Weiter"
-                inputClassName={checkinClasses.input}
-                buttonClassName={checkinPalette.button}
-                autoFocus
-              />
-            ) : null}
-
-            {step === 1 ? (
-              <CheckinTextStep
-                stepKey="why"
-                title="Warum möchtest du das tun?"
-                prompt="Nimm dir einen Moment, um darüber nachzudenken."
-                placeholder="Was ist der Grund dahinter?"
-                value={whyAnswer}
-                onChange={setWhyAnswer}
-                onContinue={() => setStep(2)}
-                buttonLabel="Weiter"
-                inputClassName={checkinClasses.input}
-                buttonClassName={checkinPalette.button}
-                autoFocus
-              />
-            ) : null}
-
-            {step === 2 ? (
               <CheckinEmotionStep
                 stepKey="emotions"
                 categories={EMOTION_CATEGORIES}
@@ -329,7 +313,7 @@ export default function CheckinPage() {
                 selectedEmotions={selectedEmotions}
                 onToggleCategory={toggleCategory}
                 onToggleEmotion={toggleEmotion}
-                onFinish={() => setStep(3)}
+                onFinish={() => setStep(1)}
                 canComplete={canComplete}
                 isBlockedFlow={isBlockedFlow}
                 isContinuingToTarget={isContinuingToTarget}
@@ -337,11 +321,11 @@ export default function CheckinPage() {
                 cardClassName={checkinPalette.button}
                 summaryClassName={cn(checkinClasses.summary, checkinPalette.card)}
                 chipClassName={checkinClasses.chip}
-                finishLabel={isBlockedFlow ? 'Weiter zur App' : 'Weiter'}
+                finishLabel="Weiter"
               />
             ) : null}
 
-            {step === 3 ? (
+            {step === 1 ? (
               <CheckinTextStep
                 stepKey="emotion-context"
                 title="Kontext zu deinen Emotionen"
@@ -358,7 +342,7 @@ export default function CheckinPage() {
               />
             ) : null}
 
-            {step === 4 ? (
+            {step === 2 ? (
               <CheckinCompletionStep
                 targetApp={targetApp}
                 targetId={targetId}

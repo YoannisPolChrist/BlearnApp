@@ -1,34 +1,32 @@
+export type HapticFeedback = 'selection' | 'action' | 'success';
+
+const HAPTIC_DURATIONS: Record<HapticFeedback, number> = {
+  selection: 8,
+  action: 12,
+  success: 18,
+};
+
 /**
- * Leichte Haptik (Masterplan 4b.4) — „billig, großer Gefühlseffekt". Nutzt die
- * Web-Vibration-API (keine neue Capacitor-Abhängigkeit, D.4). Respektiert
- * `prefers-reduced-motion` und scheitert still, wo nicht unterstützt.
+ * Small, optional Android-WebView haptics for intentional actions. This stays
+ * silent on unsupported devices and follows the user's reduced-motion choice.
  */
-
-function reducedMotion(): boolean {
-  return typeof window !== 'undefined'
-    && typeof window.matchMedia === 'function'
-    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
-function vibrate(pattern: number | number[]): void {
-  if (reducedMotion()) {
+export function triggerHapticFeedback(kind: HapticFeedback = 'selection') {
+  if (
+    typeof window === 'undefined'
+    || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+  ) {
     return;
   }
+
   try {
-    if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-      navigator.vibrate(pattern);
-    }
+    window.navigator.vibrate?.(HAPTIC_DURATIONS[kind]);
   } catch {
-    // Vibration ist Komfort, nie kritisch.
+    // Vibration is optional feedback. A blocked browser or WebView must never
+    // affect the user's action.
   }
 }
 
-/** Kurzes Tick bei einer Review-Antwort. */
-export function hapticTick(): void {
-  vibrate(12);
-}
-
-/** Belohnungs-Muster bei erfolgreicher Freischaltung. */
-export function hapticSuccess(): void {
-  vibrate([0, 20, 40, 30]);
-}
+// Named aliases keep learning-flow feedback declarative without introducing a
+// second haptic implementation.
+export const hapticTick = () => triggerHapticFeedback('selection');
+export const hapticSuccess = () => triggerHapticFeedback('success');

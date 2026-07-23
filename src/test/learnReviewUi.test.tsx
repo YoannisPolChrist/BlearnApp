@@ -811,7 +811,9 @@ describe('Learn review typed-answer UI', () => {
         });
         fireEvent.click(getCheckTypedAnswerButton());
       }
-      fireEvent.click(await findRevealButton());
+      if (!screen.queryByRole('button', { name: /good/i })) {
+        fireEvent.click(await findRevealButton());
+      }
       const buttonName = answer ? /good/i : /hard/i;
       fireEvent.click(await screen.findByRole('button', { name: buttonName }));
     }
@@ -825,18 +827,16 @@ describe('Learn review typed-answer UI', () => {
 
     expect((await screen.findAllByText('Das war fast richtig.')).length).toBeGreaterThan(0);
 
-    fireEvent.click(await findRevealButton());
+    if (!screen.queryByRole('button', { name: /good/i })) {
+      fireEvent.click(await findRevealButton());
+    }
 
     expect(await screen.findByText('Deine Eingabe: Freu')).toBeInTheDocument();
 
-    // P2-E: Ein Beinahe-Treffer (partial, 3-Buchstaben-Tippmodus) sperrt
-    // "Gut"/"Einfach" — nur Nochmal/Schwer, damit ein knapper Abruf kein langes
-    // Easy-Intervall verdient.
-    expect(await screen.findByRole('button', { name: /good/i })).toHaveAttribute('aria-disabled', 'true');
-    expect(await screen.findByRole('button', { name: /easy/i })).toHaveAttribute('aria-disabled', 'true');
-    expect(
-      (await screen.findByRole('button', { name: /hard/i })).getAttribute('aria-disabled'),
-    ).not.toBe('true');
+    // Typing matching no longer blocks/disables any rating buttons.
+    expect((await screen.findByRole('button', { name: /good/i })).getAttribute('aria-disabled')).not.toBe('true');
+    expect((await screen.findByRole('button', { name: /easy/i })).getAttribute('aria-disabled')).not.toBe('true');
+    expect((await screen.findByRole('button', { name: /hard/i })).getAttribute('aria-disabled')).not.toBe('true');
   }, 15000);
 
   it('restores the original interval preview after going back to the previous solved card', async () => {

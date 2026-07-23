@@ -1,7 +1,6 @@
 import { lazy, Suspense } from 'react';
 import type { SetupStep } from '@/components/setup/SetupNarrativeDialog';
 import type { AuthUser } from '@/store/useAuthStore';
-import type { AppLanguage } from '@/store/useAppStore';
 
 const SetupNarrativeDialog = lazy(() => import('@/components/setup/SetupNarrativeDialog'));
 const NotificationPermissionDialog = lazy(() => import('@/components/settings/NotificationPermissionDialog'));
@@ -9,13 +8,8 @@ const SettingsLanguagePackDialog = lazy(() => import('@/components/settings/Sett
 const LearningCloudSnapshotDialog = lazy(() => import('@/components/settings/LearningCloudSnapshotDialog'));
 
 interface AppSettingsDialogsProps {
-  appLanguage: AppLanguage;
   authUser: AuthUser | null;
-  downloadingLanguage: AppLanguage | null;
-  installedAppLanguagePacks: AppLanguage[];
   locale: string;
-  onActivateLanguage: (language: AppLanguage) => void;
-  onInstallLanguage: (language: AppLanguage) => void;
   onLearningCloudSnapshotDialogChange: (open: boolean) => void;
   onLanguagePackDialogChange: (open: boolean) => void;
   onNotificationDialogChange: (open: boolean) => void;
@@ -30,13 +24,8 @@ interface AppSettingsDialogsProps {
 }
 
 export function AppSettingsDialogs({
-  appLanguage,
   authUser,
-  downloadingLanguage,
-  installedAppLanguagePacks,
   locale,
-  onActivateLanguage,
-  onInstallLanguage,
   onLearningCloudSnapshotDialogChange,
   onLanguagePackDialogChange,
   onNotificationDialogChange,
@@ -76,11 +65,6 @@ export function AppSettingsDialogs({
           <SettingsLanguagePackDialog
             open={showLanguagePackDialog}
             onOpenChange={onLanguagePackDialogChange}
-            appLanguage={appLanguage}
-            installedAppLanguagePacks={installedAppLanguagePacks}
-            downloadingLanguage={downloadingLanguage}
-            onActivateLanguage={onActivateLanguage}
-            onInstallLanguage={onInstallLanguage}
           />
         </Suspense>
       ) : null}

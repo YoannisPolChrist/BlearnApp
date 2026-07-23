@@ -198,7 +198,7 @@ describe('useLearningCloudSync account isolation', () => {
 
     expect(Object.values(useLearningStore.getState().cards)).toHaveLength(1);
     expect(Object.values(useLearningStore.getState().cards)[0]?.deckId).toBe(remoteEntities.decks[0].id);
-    expect(loadLearningCloudStateMock).toHaveBeenCalledWith('user-b');
+    expect(loadLearningCloudStateMock).toHaveBeenCalledWith('user-b', expect.anything());
     expect(window.localStorage.getItem(LEARNING_STORAGE_OWNER_KEY)).toBe('user-b');
     expect(Object.values(useLearningStore.getState().decks).some((deck) => deck.id === localEntities.decks[0].id)).toBe(false);
 
@@ -323,7 +323,7 @@ describe('useLearningCloudSync account isolation', () => {
       await renderHarness(Harness);
 
       await waitFor(() => {
-        expect(loadLearningCloudStateMock).toHaveBeenCalledWith('user-sync');
+        expect(loadLearningCloudStateMock).toHaveBeenCalledWith('user-sync', expect.anything());
       });
 
       await act(async () => {
@@ -394,7 +394,7 @@ describe('useLearningCloudSync account isolation', () => {
     await renderHarness(Harness);
 
     await waitFor(() => {
-      expect(loadLearningCloudStateMock).toHaveBeenCalledWith('user-sync');
+      expect(loadLearningCloudStateMock).toHaveBeenCalledWith('user-sync', expect.anything());
     });
 
     await act(async () => {
@@ -435,6 +435,13 @@ describe('useLearningCloudSync account isolation', () => {
       now,
     );
     const { Harness, useAuthStore, useLearningStore } = await loadHarness();
+    useLearningStore.setState(
+      {
+        ...useLearningStore.getInitialState(),
+        presets: toRecordById(getDefaultLearningPresets()),
+      },
+      true,
+    );
     const remoteCursor = {
       mutationId: 'cursor-1',
       mutationAt: now + 1_000,
@@ -477,7 +484,7 @@ describe('useLearningCloudSync account isolation', () => {
       expect(Object.values(useLearningStore.getState().decks).map((deck) => deck.name)).toEqual(['French']);
     });
 
-    expect(loadLearningCloudSyncCursorMock).toHaveBeenCalledWith('user-cached');
+    expect(loadLearningCloudSyncCursorMock).toHaveBeenCalledWith('user-cached', expect.anything());
     expect(loadLearningCloudStateMock).not.toHaveBeenCalled();
   });
 
@@ -547,7 +554,7 @@ describe('useLearningCloudSync account isolation', () => {
     await renderHarness(Harness);
 
     await waitFor(() => {
-      expect(loadLearningCloudStateMock).toHaveBeenCalledWith('user-cursor');
+      expect(loadLearningCloudStateMock).toHaveBeenCalledWith('user-cursor', expect.anything());
     });
 
     await act(async () => {
@@ -565,7 +572,7 @@ describe('useLearningCloudSync account isolation', () => {
     });
 
     expect(pullLearningCloudMutationsMock).toHaveBeenCalledTimes(1);
-    expect(pullLearningCloudMutationsMock).toHaveBeenCalledWith('user-cursor', null);
+    expect(pullLearningCloudMutationsMock).toHaveBeenCalledWith('user-cursor', null, expect.anything());
     expect(loadLearningCloudStateMock).toHaveBeenCalledTimes(1);
 
     await act(async () => {
@@ -792,7 +799,7 @@ describe('useLearningCloudSync account isolation', () => {
     await renderHarness(Harness);
 
     await waitFor(() => {
-      expect(loadLearningCloudStateMock).toHaveBeenCalledWith('user-sync');
+      expect(loadLearningCloudStateMock).toHaveBeenCalledWith('user-sync', expect.anything());
     });
 
     loadLearningCloudStateMock.mockClear();

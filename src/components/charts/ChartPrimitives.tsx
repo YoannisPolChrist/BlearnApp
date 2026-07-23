@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { triggerHapticFeedback } from '@/lib/haptics';
 import {
   buildSmoothLinePath,
   clampIndex,
@@ -68,6 +69,10 @@ export function ComparisonLineChart({
     paddingTop + chartHeight - (((selected?.series[0].value) ?? 0) / maxValue) * chartHeight;
   const selectedSecondaryY =
     paddingTop + chartHeight - (((selected?.series[1].value) ?? 0) / maxValue) * chartHeight;
+  const selectColumn = (index: number) => {
+    triggerHapticFeedback('selection');
+    setSelectedIndex(index);
+  };
 
   return (
     <div className="relative">
@@ -223,7 +228,7 @@ export function ComparisonLineChart({
               className="h-full w-full"
               onFocus={() => setSelectedIndex(column.index)}
               onMouseEnter={() => setSelectedIndex(column.index)}
-              onClick={() => setSelectedIndex(column.index)}
+              onClick={() => selectColumn(column.index)}
             />
           ))}
         </div>
@@ -256,6 +261,10 @@ export function GroupedBarChart({
     [chartWidth, data, paddingLeft],
   );
   const selected = data[safeIndex];
+  const selectColumn = (index: number) => {
+    triggerHapticFeedback('selection');
+    setSelectedIndex(index);
+  };
 
   return (
     <div className="relative">
@@ -380,7 +389,7 @@ export function GroupedBarChart({
               className="h-full w-full"
               onFocus={() => setSelectedIndex(column.index)}
               onMouseEnter={() => setSelectedIndex(column.index)}
-              onClick={() => setSelectedIndex(column.index)}
+              onClick={() => selectColumn(column.index)}
             />
           ))}
         </div>

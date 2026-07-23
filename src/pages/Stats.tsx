@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, RefreshCcw } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import PageTransition from '@/components/PageTransition';
@@ -8,7 +8,7 @@ import { StatsSectionTabs } from '@/components/stats/StatsSectionTabs';
 import { UsageAppListSection, UsageOverviewSection } from '@/components/stats/UsageStatsSections';
 import { VocabStatsSection } from '@/components/stats/VocabStatsSection';
 import { useEmotionStatsData } from '@/modules/stats/emotions';
-import { useScreenStatsSnapshot, useUsageStatsData } from '@/modules/stats/screenTime';
+import { getUsageRangeBounds, useScreenStatsSnapshot, useUsageStatsData } from '@/modules/stats/screenTime';
 import type { StatsSection, TimeRange } from '@/modules/stats/types';
 import { useReviewMomentum, useVocabChartData } from '@/modules/stats/vocab';
 import { useAppStore } from '@/store/useAppStore';
@@ -28,8 +28,27 @@ const EMPTY_LEARNING_REVIEW_LOGS: Array<{
   deckId: string;
 }> = [];
 
+function getStatsSectionFromSearch(search: string): StatsSection {
+  const requested = new URLSearchParams(search).get('section');
+  return requested === 'usage' || requested === 'emotions' || requested === 'vocab'
+    ? requested
+    : 'usage';
+}
+
+function getStatsPeriodLabel(range: TimeRange, month: Date) {
+  if (range === 'day') return 'Heute';
+  if (range === 'week') return 'Diese Woche';
+  if (range === 'total') return 'Gesamte Historie';
+  const isCurrentMonth = month.getFullYear() === new Date().getFullYear()
+    && month.getMonth() === new Date().getMonth();
+  return isCurrentMonth
+    ? 'Dieser Monat'
+    : new Intl.DateTimeFormat('de-DE', { month: 'long', year: 'numeric' }).format(month);
+}
+
 export default function StatsPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const authUserId = useAuthStore((state) => state.user?.uid);
   const {
     checkins,
@@ -42,12 +61,19 @@ export default function StatsPage() {
       unlockHistory: state.unlockHistory,
     })),
   );
-  const unlocksToday = useMemo(() => {
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-    const dayStart = startOfDay.getTime();
-    return (unlockHistory ?? []).filter((ts) => ts >= dayStart).length;
-  }, [unlockHistory]);
+  const [usageRange, setUsageRange] = useState<TimeRange>('day');
+  const [usageMonth, setUsageMonth] = useState(() => {
+    const current = new Date();
+    return new Date(current.getFullYear(), current.getMonth(), 1);
+  });
+  const usagePeriodLabel = useMemo(() => getStatsPeriodLabel(usageRange, usageMonth), [usageMonth, usageRange]);
+  const unlocks = useMemo(() => {
+    // Unlocks are local Blearn events. Keep the complete selected calendar period
+    // visible, while Android usage itself is capped at the current instant natively.
+    const referenceDate = usageRange === 'month' ? usageMonth : new Date();
+    const { startMs, endMs } = getUsageRangeBounds(usageRange, referenceDate, Number.MAX_SAFE_INTEGER);
+    return (unlockHistory ?? []).filter((timestamp) => timestamp >= startMs && timestamp <= endMs).length;
+  }, [unlockHistory, usageMonth, usageRange]);
   const { learningDeckMap, learningCardMap, learningReviewLogMap, getDeckStats } = useLearningStore(
     useShallow((state) => ({
       learningDeckMap: state.decks,
@@ -56,8 +82,14 @@ export default function StatsPage() {
       getDeckStats: state.getDeckStats,
     })),
   );
-  const [section, setSection] = useState<StatsSection>('usage');
-  const [range, setRange] = useState<TimeRange>('week');
+  const [section, setSection] = useState<StatsSection>(() => getStatsSectionFromSearch(location.search));
+  const [emotionRange, setEmotionRange] = useState<TimeRange>('week');
+  const [vocabRange, setVocabRange] = useState<TimeRange>('day');
+  const [vocabMonth, setVocabMonth] = useState(() => {
+    const current = new Date();
+    return new Date(current.getFullYear(), current.getMonth(), 1);
+  });
+  const vocabPeriodLabel = useMemo(() => getStatsPeriodLabel(vocabRange, vocabMonth), [vocabMonth, vocabRange]);
   const learningDecks = useMemo(
     () => (section === 'vocab' ? Object.values(learningDeckMap) : EMPTY_LEARNING_DECKS),
     [learningDeckMap, section],
@@ -77,7 +109,7 @@ export default function StatsPage() {
     isRefreshing,
     refresh,
     usage,
-  } = useScreenStatsSnapshot();
+  } = useScreenStatsSnapshot(usageRange, usageMonth);
   const {
     appDetails,
     strongestEntryTime,
@@ -91,21 +123,25 @@ export default function StatsPage() {
     moodData,
     recentMoodEntries,
     topEmotions,
-  } = useEmotionStatsData(range, checkins, userProfile);
+  } = useEmotionStatsData(emotionRange, checkins, userProfile);
   const { deckComparison, reviewTrend, stateDistribution } = useVocabChartData(
     learningDecks,
     learningCards,
     learningReviewLogs,
     getDeckStats,
   );
-  const reviewMomentum = useReviewMomentum(learningReviewLogs);
-  const lineLabelStep = range === 'total' ? 2 : range === 'month' ? 6 : range === 'day' ? 5 : 1;
-  const barLabelStep = range === 'total' ? 2 : range === 'month' ? 6 : range === 'day' ? 5 : 1;
+  const reviewMomentum = useReviewMomentum(learningReviewLogs, vocabRange, vocabMonth);
+  const lineLabelStep = emotionRange === 'total' ? 2 : emotionRange === 'month' ? 6 : emotionRange === 'day' ? 5 : 1;
+  const barLabelStep = emotionRange === 'total' ? 2 : emotionRange === 'month' ? 6 : emotionRange === 'day' ? 5 : 1;
   const vocabDueNowTotal = deckComparison.reduce(
     (sum, deck) => sum + (deck.series.find((series) => series.key === 'due')?.value ?? 0),
     0,
   );
   const showDeckComparison = deckComparison.length > 1;
+
+  useEffect(() => {
+    setSection(getStatsSectionFromSearch(location.search));
+  }, [location.search]);
 
   useEffect(() => {
     if (authUserId) {
@@ -139,7 +175,7 @@ export default function StatsPage() {
               <p className="text-[11px] font-black uppercase tracking-[0.18em] text-muted-foreground/80">
                 Monitoring und Lernverlauf
               </p>
-              <h1 className="whitespace-nowrap text-3xl font-black tracking-[-0.05em] text-foreground">Deine Stats</h1>
+              <h1 data-tour-id="tour-stats-title" className="whitespace-nowrap text-3xl font-black tracking-[-0.05em] text-foreground">Deine Stats</h1>
             </div>
           </div>
 
@@ -154,7 +190,7 @@ export default function StatsPage() {
           </button>
         </div>
 
-        <div className="section-stack">
+        <div data-tour-id="tour-stats-overview" className="section-stack">
           <StatsSectionTabs section={section} onSectionChange={setSection} />
 
           {section === 'usage' ? (
@@ -162,13 +198,19 @@ export default function StatsPage() {
               <UsageOverviewSection
                 error={error}
                 onOpenPermissions={() => navigate('/settings#permissions')}
+                onNextMonth={() => setUsageMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))}
+                onPreviousMonth={() => setUsageMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))}
                 onRefresh={handleRefresh}
+                onRangeChange={setUsageRange}
+                periodLabel={usagePeriodLabel}
+                range={usageRange}
                 topUsageEntry={topUsageEntry}
-                unlocksToday={unlocksToday}
+                unlocks={unlocks}
                 usage={usage}
               />
               <UsageAppListSection
                 appDetails={appDetails}
+                periodLabel={usagePeriodLabel}
                 strongestEntryTime={strongestEntryTime}
                 topEntries={topEntries}
               />
@@ -178,6 +220,11 @@ export default function StatsPage() {
           {section === 'vocab' ? (
             <VocabStatsSection
               deckComparison={deckComparison}
+              onNextMonth={() => setVocabMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))}
+              onPreviousMonth={() => setVocabMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))}
+              onRangeChange={setVocabRange}
+              periodLabel={vocabPeriodLabel}
+              range={vocabRange}
               reviewMomentum={reviewMomentum}
               reviewTrend={reviewTrend}
               showDeckComparison={showDeckComparison}
@@ -194,8 +241,8 @@ export default function StatsPage() {
               lineLabelStep={lineLabelStep}
               maxCount={maxCount}
               moodData={moodData}
-              onRangeChange={setRange}
-              range={range}
+              onRangeChange={setEmotionRange}
+              range={emotionRange}
               recentMoodEntries={recentMoodEntries}
               topEmotions={topEmotions}
             />

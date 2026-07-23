@@ -18,6 +18,7 @@ const queryMock = vi.hoisted(() => vi.fn((firstArg: unknown) => firstArg));
 const whereMock = vi.hoisted(() => vi.fn());
 const getDocsMock = vi.hoisted(() => vi.fn());
 const setDocMock = vi.hoisted(() => vi.fn());
+const serverTimestampMock = vi.hoisted(() => vi.fn(() => ({ __serverTimestamp: true })));
 
 vi.mock('firebase/firestore', () => ({
   doc: docMock,
@@ -26,6 +27,7 @@ vi.mock('firebase/firestore', () => ({
   where: whereMock,
   getDocs: getDocsMock,
   setDoc: setDocMock,
+  serverTimestamp: serverTimestampMock,
   Timestamp: {
     fromDate: (date: Date) => ({ seconds: Math.floor(date.getTime() / 1000), nanoseconds: 0 }),
   },
@@ -147,6 +149,7 @@ describe('Hermes Sync Service - Datacollection Writers', () => {
     expect(docRef.path).toContain('emotion_logs');
     expect(data.schema_version).toBe('1.0');
     expect(data.emotion.primary).toBe('content');
+    expect(data.ingested_at).toEqual({ __serverTimestamp: true });
   });
 
   it('should write updateSyncState correctly', async () => {

@@ -57,10 +57,18 @@ const getDocMock = vi.hoisted(() => vi.fn(async () => ({
   exists: () => false,
   data: () => ({}),
 })));
+const getDocFromServerMock = vi.hoisted(() => vi.fn(async () => ({
+  exists: () => false,
+  data: () => ({}),
+})));
 const getDocsMock = vi.hoisted(() => vi.fn(async () => ({ docs: [] })));
+const getDocsFromServerMock = vi.hoisted(() => vi.fn(async () => ({ docs: [] })));
 const onSnapshotMock = vi.hoisted(() => vi.fn());
+const orderByMock = vi.hoisted(() => vi.fn((...args: unknown[]) => ({ kind: 'orderBy', args })));
 const serverTimestampMock = vi.hoisted(() => vi.fn(() => ({ __serverTimestamp: true })));
+const queryMock = vi.hoisted(() => vi.fn((ref: unknown) => ref));
 const waitForPendingWritesMock = vi.hoisted(() => vi.fn(async () => undefined));
+const whereMock = vi.hoisted(() => vi.fn((...args: unknown[]) => ({ kind: 'where', args })));
 const setDocMock = vi.hoisted(() => vi.fn(async (ref: unknown, data: unknown, options: unknown) => {
   firestoreMockState.assertNoUndefined(data);
   firestoreMockState.setDocWrites.push({ ref, data, options });
@@ -106,66 +114,86 @@ vi.mock('firebase/firestore', () => ({
   collection: collectionMock,
   doc: docMock,
   getDoc: getDocMock,
+  getDocFromServer: getDocFromServerMock,
   getDocs: getDocsMock,
+  getDocsFromServer: getDocsFromServerMock,
   onSnapshot: onSnapshotMock,
+  orderBy: orderByMock,
+  query: queryMock,
   serverTimestamp: serverTimestampMock,
   setDoc: setDocMock,
   waitForPendingWrites: waitForPendingWritesMock,
+  where: whereMock,
   writeBatch: writeBatchMock,
 }));
 
 import {
+  pullLearningCloudMutations,
   pushLearningCloudMutation,
+  loadLearningCloudState,
   subscribeToLearningCloudMetadata,
   saveLearningCloudState,
   saveLearningCloudSyncCursor,
 } from '@/services/firebaseLearningSyncService';
 
-function getBucketItems(write: { data: unknown }) {
-  const items = (write.data as { items?: Array<{ id?: string }> }).items;
-  return Array.isArray(items) ? items : [];
+/**
+ * Helper: extract the collection path segments from a write's ref.
+ * Returns array of path segments, e.g. ['users', 'uid', 'learningDecks', 'deckId', 'cards', 'cardId'].
+ */
+function getRefSegments(write: { ref: unknown }): string[] {
+  const segments = (write.ref as { segments?: unknown[] }).segments;
+  return Array.isArray(segments) ? segments.map(String) : [];
 }
 
-function findBucketWriteByItemId(itemId: string) {
-  return firestoreMockState.batchSetWrites.find((write) => (
-    getBucketItems(write).some((item) => item.id === itemId)
-  ));
+/**
+ * Helper: find a batch set-write for a specific entity ID.
+ * Works for both deck-scoped subcollection writes (cardId, noteId, reviewLogId)
+ * and top-level collection writes (deckId, presetId, mutationId).
+ */
+function findWriteByEntityId(entityId: string) {
+  return firestoreMockState.batchSetWrites.find((write) => {
+    const segments = getRefSegments(write);
+    return segments[segments.length - 1] === entityId;
+  });
 }
 
-function getBucketWriteItemIds() {
-  return firestoreMockState.batchSetWrites.flatMap((write) => (
-    getBucketItems(write)
-      .map((item) => item.id)
-      .filter((id): id is string => typeof id === 'string')
-  ));
+/**
+ * Helper: find a batch set-write whose path includes a specific subcollection name.
+ */
+function findWritesInSubcollection(subcollectionName: string) {
+  return firestoreMockState.batchSetWrites.filter((write) => {
+    const segments = getRefSegments(write);
+    return segments.includes(subcollectionName);
+  });
 }
 
-function getDirectWriteIds() {
+/**
+ * Helper: get all entity IDs written to a deck-scoped subcollection.
+ */
+function getDeckScopedWriteIds(subcollectionName: string) {
   return firestoreMockState.batchSetWrites
-    .map((write) => (write.data as { id?: string }).id)
+    .filter((write) => {
+      const segments = getRefSegments(write);
+      return segments.includes(subcollectionName);
+    })
+    .map((write) => {
+      const segments = getRefSegments(write);
+      return segments[segments.length - 1];
+    })
+    .filter((id): id is string => Boolean(id));
+}
+
+/**
+ * Helper: get all write IDs that are direct entity docs in a top-level collection
+ * (decks, presets, mutations, etc. — not bucket docs, not deck-scoped subcollection docs).
+ */
+function getTopLevelDirectWriteIds() {
+  return firestoreMockState.batchSetWrites
+    .map((write) => {
+      const data = write.data as { id?: string };
+      return data?.id;
+    })
     .filter((id): id is string => typeof id === 'string');
-}
-
-function getBucketIndex(entityId: string) {
-  let hash = 0;
-  for (let index = 0; index < entityId.length; index += 1) {
-    hash = Math.imul(hash, 31) + entityId.charCodeAt(index);
-    hash |= 0;
-  }
-
-  return Math.abs(hash) % 64;
-}
-
-function createMatchingBucketId(seedId: string, prefix: string) {
-  const targetBucketIndex = getBucketIndex(seedId);
-  for (let attempt = 0; attempt < 20_000; attempt += 1) {
-    const candidate = `${prefix}-${attempt}`;
-    if (getBucketIndex(candidate) === targetBucketIndex) {
-      return candidate;
-    }
-  }
-
-  throw new Error(`Could not find matching bucket id for ${seedId}`);
 }
 
 describe('firebaseLearningSyncService', () => {
@@ -182,18 +210,25 @@ describe('firebaseLearningSyncService', () => {
     collectionMock.mockClear();
     docMock.mockClear();
     getDocMock.mockClear();
+    getDocFromServerMock.mockClear();
     getDocsMock.mockClear();
+    getDocsFromServerMock.mockClear();
     onSnapshotMock.mockClear();
+    orderByMock.mockClear();
+    queryMock.mockClear();
     serverTimestampMock.mockClear();
     setDocMock.mockClear();
     waitForPendingWritesMock.mockClear();
+    whereMock.mockClear();
     writeBatchMock.mockClear();
 
     getDocMock.mockResolvedValue({
       exists: () => false,
       data: () => ({}),
     });
+    getDocFromServerMock.mockImplementation(() => getDocMock());
     getDocsMock.mockResolvedValue({ docs: [] });
+    getDocsFromServerMock.mockImplementation(() => getDocsMock());
   });
 
   it('removes undefined fields before writing entities, mutations, and metadata', async () => {
@@ -219,12 +254,15 @@ describe('firebaseLearningSyncService', () => {
     expect(firestoreMockState.batchSetWrites.length).toBeGreaterThan(0);
     expect(firestoreMockState.setDocWrites).toHaveLength(0);
 
-    const noteWrite = findBucketWriteByItemId(notes[0].id);
+    // Entity documents remain in the complete legacy collections. This keeps
+    // pre-migration vocabularies readable and prevents partial deck-scoped
+    // copies from becoming authoritative.
+    const noteWrite = findWriteByEntityId(notes[0].id);
     expect(noteWrite).toBeDefined();
-    expect(noteWrite?.data).not.toHaveProperty('items.0.frontHtml');
-    expect(noteWrite?.data).not.toHaveProperty('items.0.backHtml');
-    expect(noteWrite?.data).not.toHaveProperty('items.0.templateCss');
-    expect(noteWrite?.data).not.toHaveProperty('items.0.templateCardClass');
+    expect(noteWrite?.data).not.toHaveProperty('frontHtml');
+    expect(noteWrite?.data).not.toHaveProperty('backHtml');
+    expect(noteWrite?.data).not.toHaveProperty('templateCss');
+    expect(noteWrite?.data).not.toHaveProperty('templateCardClass');
 
     const mutationWrite = firestoreMockState.batchSetWrites.find(
       (write) => typeof (write.data as { id?: string }).id === 'string'
@@ -243,11 +281,69 @@ describe('firebaseLearningSyncService', () => {
     expect(waitForPendingWritesMock).toHaveBeenCalled();
 
     const metaWrite = mutationBatch?.setWrites.find((write) => {
-      const segments = (write.ref as { segments?: string[] }).segments || [];
+      const segments = getRefSegments(write);
       return segments.at(-2) === 'learningMeta' && segments.at(-1) === 'profile';
     });
 
     expect(metaWrite).toBeDefined();
+  });
+
+  it('skips every deck-scoped collection read for the repaired legacy-backed format', async () => {
+    const now = 1_700_000_000_000;
+    const { decks, notes, cards } = buildEntitiesFromRows(
+      [{ deck: 'French', front: 'bonjour', back: 'hello', type: 'basic' }],
+      now,
+    );
+    const toSnapshotDocument = <T,>(value: T) => ({ data: () => value });
+
+    getDocMock.mockResolvedValue({
+      exists: () => true,
+      data: () => ({ schemaVersion: 2, deckScopedMigrationCompleted: false }),
+    });
+    getDocsMock.mockImplementation(async (ref: { segments?: unknown[] }) => {
+      const path = (ref.segments || []).map(String);
+      const collectionName = path.at(-1);
+      if (collectionName === 'learningDecks') return { docs: decks.map(toSnapshotDocument) };
+      if (collectionName === 'learningNotes') return { docs: notes.map(toSnapshotDocument) };
+      if (collectionName === 'learningCards') return { docs: cards.map(toSnapshotDocument) };
+      return { docs: [] };
+    });
+
+    const loaded = await loadLearningCloudState('user-sync');
+
+    expect(loaded?.notes).toHaveLength(1);
+    expect(loaded?.cards).toHaveLength(1);
+    expect(collectionMock.mock.calls.some((args) => ['notes', 'cards', 'reviewLogs'].includes(String(args.at(-1))))).toBe(false);
+  });
+
+  it('keeps the compatibility reader enabled for an old partially migrated account', async () => {
+    const now = 1_700_000_000_000;
+    const { decks, notes, cards } = buildEntitiesFromRows(
+      [{ deck: 'French', front: 'bonjour', back: 'hello', type: 'basic' }],
+      now,
+    );
+    const nextState = normalizeLearningCloudState({
+      activeDeckId: decks[0].id,
+      activeDeckUpdatedAt: decks[0].updatedAt,
+      decks,
+      notes,
+      cards,
+      reviewLogs: [],
+      presets: getDefaultLearningPresets(),
+    });
+
+    getDocMock.mockResolvedValueOnce({
+      exists: () => true,
+      data: () => ({ schemaVersion: 2, deckScopedMigrationCompleted: true }),
+    });
+
+    await saveLearningCloudState('user-sync', nextState, null, 'device-test');
+
+    const metaWrite = firestoreMockState.batchSetWrites.find((write) => {
+      const segments = getRefSegments(write);
+      return segments.at(-2) === 'learningMeta' && segments.at(-1) === 'profile';
+    });
+    expect(metaWrite?.data).toHaveProperty('deckScopedMigrationCompleted', true);
   });
 
   it('persists learn configuration in cloud metadata', async () => {
@@ -333,13 +429,27 @@ describe('firebaseLearningSyncService', () => {
     expect(mutationBatch?.commitCount).toBe(1);
     expect(
       mutationBatch?.setWrites.some((write) => {
-        const segments = (write.ref as { segments?: string[] }).segments || [];
+        const segments = getRefSegments(write);
         return segments.at(-2) === 'learningMeta' && segments.at(-1) === 'profile';
       }),
     ).toBe(true);
   });
 
-  it('deletes removed entities from Firestore so a full reload sees only the latest state', async () => {
+  it('queries only the mutation window starting at the local cursor', async () => {
+    const cursor = {
+      mutationId: 'mutation_1700000000000_local',
+      mutationAt: 1_700_000_000_000,
+    };
+
+    await pullLearningCloudMutations('user-sync', cursor);
+
+    expect(whereMock).toHaveBeenCalledWith('mutationAt', '>=', cursor.mutationAt);
+    expect(orderByMock).toHaveBeenCalledWith('mutationAt', 'asc');
+    expect(queryMock).toHaveBeenCalledTimes(1);
+    expect(getDocsMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('archives removed entities before deleting their active Firestore documents', async () => {
     const now = 1_700_000_000_000;
     const previous = buildEntitiesFromRows(
       [
@@ -367,16 +477,40 @@ describe('firebaseLearningSyncService', () => {
       presets: getDefaultLearningPresets(),
     });
 
-    await saveLearningCloudState('user-sync', nextState, previousState, 'device-test');
+    await saveLearningCloudState('user-sync', nextState, previousState, 'device-test', {
+      localSyncState: {
+        version: 1,
+        lastSuccessfulSyncAt: now - 10_000,
+        deletedDecks: [],
+        deletedNotes: [{ id: previous.notes[1].id, deletedAt: now + 1 }],
+        deletedCards: [{ id: previous.cards[1].id, deletedAt: now + 1 }],
+        deletedReviewLogs: [],
+        deletedPresets: [],
+      },
+    });
 
-    const writtenBucketItemIds = getBucketWriteItemIds();
+    // In deck-scoped format, deleted entities should produce delete writes.
+    // The deleted note/card IDs should not appear in set writes.
+    const writtenNoteIds = getDeckScopedWriteIds('notes');
+    const writtenCardIds = getDeckScopedWriteIds('cards');
 
-    expect(writtenBucketItemIds).not.toContain(previous.notes[1].id);
-    expect(writtenBucketItemIds).not.toContain(previous.cards[1].id);
+    expect(writtenNoteIds).not.toContain(previous.notes[1].id);
+    expect(writtenCardIds).not.toContain(previous.cards[1].id);
     expect(
       firestoreMockState.batchDeleteWrites.length
-      + firestoreMockState.batchSetWrites.filter((write) => getBucketItems(write).length > 0).length,
+      + firestoreMockState.batchSetWrites.length,
     ).toBeGreaterThan(0);
+    const archiveWrites = firestoreMockState.batchSetWrites.filter((write) =>
+      Boolean((write.data as { entityType?: string }).entityType),
+    );
+    expect(archiveWrites).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        data: expect.objectContaining({ entityId: previous.notes[1].id, entityType: 'notes' }),
+      }),
+      expect.objectContaining({
+        data: expect.objectContaining({ entityId: previous.cards[1].id, entityType: 'cards' }),
+      }),
+    ]));
   });
 
   it('waits for pending writes after each committed chunk', async () => {
@@ -444,20 +578,26 @@ describe('firebaseLearningSyncService', () => {
 
     await saveLearningCloudState('user-sync', nextState, previousState, 'device-test');
 
+    // No entity writes should happen since nothing actually changed.
+    const deckScopedCardWrites = findWritesInSubcollection('cards');
+    const deckScopedNoteWrites = findWritesInSubcollection('notes');
+    const deckScopedReviewLogWrites = findWritesInSubcollection('reviewLogs');
+
     const entityDocIds = new Set([
       ...nextState.decks.map((deck) => deck.id),
       ...nextState.presets.map((preset) => preset.id),
     ]);
-    const entityWrites = getDirectWriteIds().filter((id) => entityDocIds.has(id));
+    const topLevelEntityWrites = getTopLevelDirectWriteIds().filter((id) => entityDocIds.has(id));
     const mutationWrites = firestoreMockState.batchSetWrites.filter((write) => {
       const id = (write.data as { id?: string }).id;
       return typeof id === 'string' && id.startsWith('mutation_');
     });
-    const bucketWrites = firestoreMockState.batchSetWrites.filter((write) => getBucketItems(write).length > 0);
 
-    expect(entityWrites).toHaveLength(0);
+    expect(topLevelEntityWrites).toHaveLength(0);
     expect(mutationWrites).toHaveLength(0);
-    expect(bucketWrites).toHaveLength(0);
+    expect(deckScopedCardWrites).toHaveLength(0);
+    expect(deckScopedNoteWrites).toHaveLength(0);
+    expect(deckScopedReviewLogWrites).toHaveLength(0);
   });
 
   it('does not rewrite notes when Firestore omitted null optional fields', async () => {
@@ -484,20 +624,22 @@ describe('firebaseLearningSyncService', () => {
 
     await saveLearningCloudState('user-sync', nextState, previousState, 'device-test');
 
+    const deckScopedNoteWrites = findWritesInSubcollection('notes');
     const entityDocIds = new Set([
       ...nextState.decks.map((deck) => deck.id),
       ...nextState.presets.map((preset) => preset.id),
     ]);
-    const entityWrites = getDirectWriteIds().filter((id) => entityDocIds.has(id));
+    const topLevelEntityWrites = getTopLevelDirectWriteIds().filter((id) => entityDocIds.has(id));
     const mutationWrites = firestoreMockState.batchSetWrites.filter((write) => {
       const id = (write.data as { id?: string }).id;
       return typeof id === 'string' && id.startsWith('mutation_');
     });
-    const bucketWrites = firestoreMockState.batchSetWrites.filter((write) => getBucketItems(write).length > 0);
+    const deckScopedCardWrites = findWritesInSubcollection('cards');
 
-    expect(entityWrites).toHaveLength(0);
+    expect(topLevelEntityWrites).toHaveLength(0);
     expect(mutationWrites).toHaveLength(0);
-    expect(bucketWrites).toHaveLength(0);
+    expect(deckScopedNoteWrites).toHaveLength(0);
+    expect(deckScopedCardWrites).toHaveLength(0);
   });
 
   it('avoids mutation snapshots for large states but still writes entity snapshots and metadata', async () => {
@@ -530,13 +672,14 @@ describe('firebaseLearningSyncService', () => {
     expect(mutationWrite?.data).not.toHaveProperty('snapshot');
 
     const metaWrite = firestoreMockState.batchSetWrites.find((write) => {
-      const segments = (write.ref as { segments?: string[] }).segments || [];
+      const segments = getRefSegments(write);
       return segments.at(-2) === 'learningMeta' && segments.at(-1) === 'profile';
     });
     expect(metaWrite).toBeDefined();
     expect(metaWrite?.data).toHaveProperty('mutationCursor.mutationId');
 
-    const noteWrite = findBucketWriteByItemId(notes[0].id);
+    // Notes are now in deck-scoped subcollection paths.
+    const noteWrite = findWriteByEntityId(notes[0].id);
     expect(noteWrite).toBeDefined();
   }, 15_000);
 
@@ -580,22 +723,27 @@ describe('firebaseLearningSyncService', () => {
         },
       }),
     });
-    getDocMock.mockResolvedValueOnce({
-      exists: () => true,
-      data: () => ({
-        schemaVersion: 2,
-        snapshotCursor: {
-          mutationId: 'snapshot-1',
-          mutationAt: now - 10_000,
+    await saveLearningCloudState(
+      'user-sync',
+      nextState,
+      previousState,
+      'device-test',
+      {
+        localSyncState: {
+          version: 1,
+          lastSuccessfulSyncAt: now - 10_000,
+          lastRemoteCursor: {
+            mutationId: 'snapshot-1',
+            mutationAt: now - 10_000,
+          },
+          deletedDecks: [],
+          deletedNotes: [],
+          deletedCards: [],
+          deletedReviewLogs: [],
+          deletedPresets: [],
         },
-        mutationCursor: {
-          mutationId: 'snapshot-1',
-          mutationAt: now - 10_000,
-        },
-      }),
-    });
-
-    await saveLearningCloudState('user-sync', nextState, previousState, 'device-test');
+      },
+    );
 
     const mutationWrite = firestoreMockState.batchSetWrites.find(
       (write) => typeof (write.data as { id?: string }).id === 'string'
@@ -607,24 +755,29 @@ describe('firebaseLearningSyncService', () => {
     expect(mutationWrite?.data).not.toHaveProperty('delta.notes');
     expect(mutationWrite?.data).not.toHaveProperty('snapshot');
 
-    const bucketWrites = firestoreMockState.batchSetWrites.filter((write) => getBucketItems(write).length > 0);
-    const directEntityWrites = getDirectWriteIds().filter((id) => (
+    // The changed card is written to the durable complete collection, while
+    // unchanged notes are not rewritten.
+    const cardWrite = findWriteByEntityId(updatedCard.id);
+    const noteWrite = findWriteByEntityId(previous.notes[0].id);
+    const topLevelEntityWrites = getTopLevelDirectWriteIds().filter((id) => (
       nextState.decks.some((deck) => deck.id === id)
       || nextState.presets.some((preset) => preset.id === id)
       || nextState.reviewLogs.some((log) => log.id === id)
     ));
-    expect(bucketWrites).toHaveLength(0);
-    expect(directEntityWrites).toHaveLength(0);
+
+    expect(cardWrite).toBeDefined();
+    expect(noteWrite).toBeUndefined();
+    expect(topLevelEntityWrites).toHaveLength(0);
 
     const metaWrite = firestoreMockState.batchSetWrites.find((write) => {
-      const segments = (write.ref as { segments?: string[] }).segments || [];
+      const segments = getRefSegments(write);
       return segments.at(-2) === 'learningMeta' && segments.at(-1) === 'profile';
     });
     expect(metaWrite?.data).toHaveProperty('snapshotCursor.mutationId', 'snapshot-1');
     expect(metaWrite?.data).toHaveProperty('mutationCursor.mutationId');
   });
 
-  it('rewrites affected card buckets from tombstones even when the local previous snapshot already dropped the deleted card', async () => {
+  it('does not hard-delete a tombstone when no recoverable entity snapshot exists', async () => {
     const now = 1_700_000_000_000;
     const previous = buildEntitiesFromRows(
       [{ deck: 'Spanish', front: 'hola', back: 'hello', type: 'basic' }],
@@ -639,8 +792,12 @@ describe('firebaseLearningSyncService', () => {
       reviewLogs: [],
       presets: getDefaultLearningPresets(),
     });
-    const deletedCardId = createMatchingBucketId(previous.cards[0].id, 'stale-card');
+    const deletedCardId = 'stale-card-tombstone-test';
 
+    // Simulate a tombstone deletion: the deleted card is NOT in previousState,
+    // but the local sync state has it in the tombstones list.
+    // The save must not issue a destructive delete: without a snapshot the
+    // document cannot be placed in the cloud archive for later recovery.
     await saveLearningCloudState(
       'user-sync',
       previousState,
@@ -659,9 +816,17 @@ describe('firebaseLearningSyncService', () => {
       },
     );
 
-    const bucketWrite = findBucketWriteByItemId(previous.cards[0].id);
-    expect(bucketWrite).toBeDefined();
-    expect(firestoreMockState.batchDeleteWrites.length).toBeGreaterThan(0);
+    // The unchanged card must not be rewritten merely because another card was
+    // removed. That avoids unnecessary Firestore writes.
+    const cardWrite = findWriteByEntityId(previous.cards[0].id);
+    expect(cardWrite).toBeUndefined();
+
+    // A stale tombstone without its payload must not remove data from another
+    // device. It is intentionally left for a later, recoverable reconciliation.
+    const deleteRefSegments = firestoreMockState.batchDeleteWrites.map(
+      (write) => getRefSegments(write),
+    );
+    expect(deleteRefSegments.some((segments) => segments.at(-1) === deletedCardId)).toBe(false);
   });
 
   it('reuses the in-flight save for identical concurrent requests', async () => {
@@ -767,30 +932,43 @@ describe('firebaseLearningSyncService', () => {
       }),
     });
 
-    expect(onChange).toHaveBeenCalledWith({
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({
       schemaVersion: 1,
       activeDeckId: 'deck_1',
-      activeDeckUpdatedAt: undefined,
-      deckCount: undefined,
-      noteCount: undefined,
-      cardCount: undefined,
-      reviewLogCount: undefined,
-      presetCount: undefined,
-      cardBrowser: undefined,
-      savedCardQueries: undefined,
-      filteredDeckLiteDefinition: undefined,
-      filteredDeckLiteDefinitions: undefined,
-      filteredDeckLiteRuns: undefined,
+      deckScopedMigrationCompleted: false,
       mutationCursor: undefined,
-      mutationCount: undefined,
-      updatedByDeviceId: undefined,
-      clientUpdatedAt: undefined,
-      lastMutationId: undefined,
-      lastMutationAt: undefined,
-    });
+    }));
     expect(onError).not.toHaveBeenCalled();
 
     unsubscribe();
     expect(unsubscribeMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not write per-deck meta documents after saving', async () => {
+    const now = 1_700_000_000_000;
+    const { decks, notes, cards } = buildEntitiesFromRows(
+      [{ deck: 'Spanish', front: 'hola', back: 'hello', type: 'basic' }],
+      now,
+    );
+    const nextState = normalizeLearningCloudState({
+      activeDeckId: decks[0].id,
+      activeDeckUpdatedAt: decks[0].updatedAt,
+      decks,
+      notes,
+      cards,
+      reviewLogs: [],
+      presets: getDefaultLearningPresets(),
+    });
+
+    await saveLearningCloudState('user-sync', nextState, null, 'device-test');
+
+    // The per-deck format was the incomplete migration path. It must not be
+    // touched by normal saves anymore.
+    const deckMetaWrite = firestoreMockState.batchSetWrites.find((write) => {
+      const segments = getRefSegments(write);
+      return segments.includes('learningDecks') && segments.at(-1) === 'meta';
+    });
+
+    expect(deckMetaWrite).toBeUndefined();
   });
 });

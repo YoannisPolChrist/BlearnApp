@@ -89,6 +89,12 @@ function normalizeCheckin(checkin: CheckinEntry): CheckinEntry {
       ? checkin.chatHistory.map((message) => ({ ...message }))
       : [],
     timestamp: normalizeTimestamp(checkin.timestamp),
+    blockingContext: checkin.blockingContext ? {
+      ...checkin.blockingContext,
+      targetId: normalizeText(checkin.blockingContext.targetId) || undefined,
+      targetLabel: normalizeText(checkin.blockingContext.targetLabel) || undefined,
+      overlaySessionId: normalizeText(checkin.blockingContext.overlaySessionId) || undefined,
+    } : undefined,
   };
 }
 
@@ -115,6 +121,12 @@ function normalizeInteraction(interaction: UserInteraction): UserInteraction {
       ? Math.max(0, Math.round(interaction.durationMinutes as number))
       : undefined,
     timestamp: normalizeTimestamp(interaction.timestamp),
+    blockingContext: interaction.blockingContext ? {
+      ...interaction.blockingContext,
+      targetId: normalizeText(interaction.blockingContext.targetId) || undefined,
+      targetLabel: normalizeText(interaction.blockingContext.targetLabel) || undefined,
+      overlaySessionId: normalizeText(interaction.blockingContext.overlaySessionId) || undefined,
+    } : undefined,
   };
 }
 
@@ -294,6 +306,7 @@ export function getProgressCloudStateSignature(state?: Partial<ProgressCloudStat
       reflection: entry.reflection,
       targetApp: entry.targetApp,
       breathingCompleted: entry.breathingCompleted,
+      blockingContext: entry.blockingContext,
     })),
     interactions: normalized.interactions.map((entry) => ({
       id: entry.id,
@@ -305,6 +318,7 @@ export function getProgressCloudStateSignature(state?: Partial<ProgressCloudStat
       targetApp: entry.targetApp,
       challenge: entry.challenge,
       durationMinutes: entry.durationMinutes,
+      blockingContext: entry.blockingContext,
     })),
   });
 }

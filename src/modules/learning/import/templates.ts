@@ -79,6 +79,8 @@ const FEATURED_DECK_TEMPLATES: FeaturedDeckTemplate[] = [
   },
 ];
 
+// Keep only in-flight loads. Retaining a resolved 28 MB template here keeps a
+// second full copy of it alive after the import has already populated the store.
 const featuredDeckTemplateRowsCache = new Map<string, Promise<ImportableRow[]>>();
 
 export function getStarterDeckRows(): ImportableRow[] {
@@ -132,7 +134,7 @@ export function getFeaturedDeckTemplates(): FeaturedDeckTemplate[] {
   return FEATURED_DECK_TEMPLATES;
 }
 
-function resolveStaticAssetUrl(assetPath: string): string {
+export function resolveStaticAssetUrl(assetPath: string): string {
   let baseUrl = import.meta.env.BASE_URL || '/';
   if (baseUrl === './') baseUrl = '/';
   else if (baseUrl.startsWith('./')) baseUrl = baseUrl.substring(1);
@@ -165,7 +167,7 @@ export async function loadFeaturedDeckTemplateRows(templateId: string): Promise<
     return cachedRows;
   }
 
-  const nextRows = fetch(`${resolveStaticAssetUrl(template.assetPath)}?t=${Date.now()}`, { cache: 'no-store' })
+  const nextRows = fetch(resolveStaticAssetUrl(template.assetPath))
     .then(async (response) => {
       if (!response.ok) {
         throw new Error(`Template download failed: ${response.status}`);
@@ -177,6 +179,9 @@ export async function loadFeaturedDeckTemplateRows(templateId: string): Promise<
     .catch((error) => {
       featuredDeckTemplateRowsCache.delete(templateId);
       throw error;
+    })
+    .finally(() => {
+      featuredDeckTemplateRowsCache.delete(templateId);
     });
 
   featuredDeckTemplateRowsCache.set(templateId, nextRows);

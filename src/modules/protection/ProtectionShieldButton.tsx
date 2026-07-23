@@ -9,9 +9,9 @@ import { useProtectionHealth } from './useProtectionHealth';
  * zur Schutzstatus-Karte.
  */
 export function ProtectionShieldButton({ isGerman }: { isGerman: boolean }) {
-  const { health, supported, active } = useProtectionHealth();
+  const { health, isReady, supported, active } = useProtectionHealth();
 
-  if (!supported || !active) {
+  if (!isReady || !supported || !active) {
     return null;
   }
 

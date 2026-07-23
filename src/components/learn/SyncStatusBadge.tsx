@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { AlertTriangle, Check, CloudOff, Loader2 } from 'lucide-react';
 import { useCloudSyncRuntimeStore } from '@/lib/cloudSyncRuntime';
 import { cn } from '@/lib/utils';
@@ -40,20 +41,30 @@ export function SyncStatusBadge({ busy = false, onRetry, className }: SyncStatus
 
   if (busy || learning.status === 'starting') {
     return (
-      <span
+      <motion.span
+        key="syncing"
         data-testid="sync-status-badge"
+        aria-live="polite"
+        initial={{ opacity: 0, y: 3 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.16 }}
         className={cn('inline-flex items-center gap-1.5 text-xs text-muted-foreground', className)}
       >
         <Loader2 size={13} className="animate-spin" aria-hidden />
         Synchronisiert …
-      </span>
+      </motion.span>
     );
   }
 
   if (learning.status === 'error') {
     return (
-      <span
+      <motion.span
+        key="error"
         data-testid="sync-status-badge"
+        aria-live="polite"
+        initial={{ opacity: 0, y: 3 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.16 }}
         className={cn('inline-flex items-center gap-1.5 text-xs text-destructive', className)}
       >
         <AlertTriangle size={13} aria-hidden />
@@ -67,43 +78,58 @@ export function SyncStatusBadge({ busy = false, onRetry, className }: SyncStatus
             Erneut versuchen
           </button>
         ) : null}
-      </span>
+      </motion.span>
     );
   }
 
   if (learning.status === 'blocked-signed-out') {
     return (
-      <span
+      <motion.span
+        key="signed-out"
         data-testid="sync-status-badge"
+        aria-live="polite"
+        initial={{ opacity: 0, y: 3 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.16 }}
         className={cn('inline-flex items-center gap-1.5 text-xs text-muted-foreground', className)}
       >
         <CloudOff size={13} aria-hidden />
         Nicht angemeldet
-      </span>
+      </motion.span>
     );
   }
 
   if (learning.status === 'blocked-firebase-missing' || learning.status === 'blocked-writes-disabled') {
     return (
-      <span
+      <motion.span
+        key="unavailable"
         data-testid="sync-status-badge"
+        aria-live="polite"
+        initial={{ opacity: 0, y: 3 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.16 }}
         className={cn('inline-flex items-center gap-1.5 text-xs text-muted-foreground', className)}
       >
         <CloudOff size={13} aria-hidden />
         Sync nicht verfügbar
-      </span>
+      </motion.span>
     );
   }
 
   if (learning.status === 'ready' && learning.lastSuccessfulSyncAt) {
     return (
-      <span
+      <motion.span
+        key={`ready-${learning.lastSuccessfulSyncAt}`}
         data-testid="sync-status-badge"
+        aria-live="polite"
+        initial={{ opacity: 0, y: 3 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.16 }}
         className={cn('inline-flex items-center gap-1.5 text-xs text-muted-foreground', className)}
       >
         <Check size={13} className="text-success" aria-hidden />
         Synchronisiert {formatRelativeTime(learning.lastSuccessfulSyncAt, now)}
-      </span>
+      </motion.span>
     );
   }
 

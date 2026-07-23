@@ -44,6 +44,7 @@ export interface AppUsageEvent {
   device_id: string;
   created_at: TimestampField;
   updated_at?: TimestampField;
+  interaction_id?: string;
 
   started_at: TimestampField;
   ended_at: TimestampField;
@@ -96,6 +97,7 @@ export interface LearningLog {
   device_id: string;
   created_at: TimestampField;
   updated_at?: TimestampField;
+  interaction_id?: string;
 
   started_at: TimestampField;
   ended_at: TimestampField;
@@ -150,8 +152,11 @@ export interface EmotionLog {
 
   device_id: string;
   created_at: TimestampField;
+  /** Server receipt time. Hermes uses this as its monotonic incremental cursor. */
+  ingested_at: TimestampField;
   timestamp: TimestampField;
   timezone: string;
+  interaction_id?: string;
 
   trigger_type: 'manual' | 'app_prompt' | 'after_app_usage' | 'learning_session' | 'daily_checkin' | 'other';
 
@@ -189,6 +194,14 @@ export interface EmotionLog {
 
   related_app_usage_id?: string;
   related_learning_session_id?: string;
+
+  blocking_context?: {
+    flow: 'breathing' | 'learning' | 'reflection';
+    target_id?: string;
+    target_type?: 'app' | 'website' | 'search';
+    target_label?: string;
+    overlay_session_id?: string;
+  };
 
   metadata: {
     entry_mode: 'manual' | 'prompted';
@@ -414,7 +427,7 @@ export async function createLearningLog(log: Omit<LearningLog, 'source' | 'schem
   );
 }
 
-export async function createEmotionLog(log: Omit<EmotionLog, 'source' | 'schema_version' | 'timezone' | 'created_at' | 'device_id'>): Promise<void> {
+export async function createEmotionLog(log: Omit<EmotionLog, 'source' | 'schema_version' | 'timezone' | 'created_at' | 'ingested_at' | 'device_id'>): Promise<void> {
   assertFirebaseWritesEnabled('Emotion Log');
   const sdk = await loadFirestoreSdk();
   const db = await ensureFirebaseFirestore();
@@ -423,13 +436,14 @@ export async function createEmotionLog(log: Omit<EmotionLog, 'source' | 'schema_
   const id = log.id || `emotion_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
   const docRef = sdk.doc(db, USERS_COLLECTION, log.userId, 'emotion_logs', id);
 
-  const finalLog: EmotionLog = {
+  const finalLog = {
     ...log,
     source: 'mobile_app',
     schema_version: '1.0',
     device_id: getDeviceId(),
     timezone: getTimezone(),
     created_at: sdk.Timestamp.fromDate(new Date()),
+    ingested_at: sdk.serverTimestamp(),
     timestamp: sdk.Timestamp.fromDate(toDate(log.timestamp)),
   };
 

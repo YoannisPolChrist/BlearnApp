@@ -6,7 +6,8 @@ import { InlineConfirmationBadge } from '@/components/ui/InlineConfirmationBadge
 import { useI18n } from '@/hooks/useI18n';
 import { getModePalette, tonePalettes } from '@/lib/semanticTones';
 import { cn } from '@/lib/utils';
-import { ModeStrictAddonBlock, type ModeId } from './shared';
+import { ModeStrictAddonBlock } from './shared';
+import type { ModeId } from './modeShared';
 
 export function PenaltySetupSection({
   selectedMode,

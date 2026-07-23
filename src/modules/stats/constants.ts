@@ -2,6 +2,7 @@ import { EMOTION_CATEGORIES } from '@/store/useAppStore';
 import type { LearningCardState } from '@/lib/learning';
 
 export const ALL_EMOTIONS = EMOTION_CATEGORIES.flatMap((category) => category.emotions);
+export const TOP_EMOTIONS_LIMIT = 12;
 export const MS_DAY = 86_400_000;
 
 export const TIME_LABEL_FORMATTER = new Intl.DateTimeFormat('de-DE', {

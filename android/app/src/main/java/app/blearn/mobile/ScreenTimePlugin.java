@@ -5,6 +5,7 @@ import android.app.AppOpsManager;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
+import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
@@ -96,6 +97,25 @@ public class ScreenTimePlugin extends Plugin {
                     }
                 });
             }
+        }
+    }
+
+    static void notifyPendingNavigationAvailable(PendingNativeNavigation navigation) {
+        ScreenTimePlugin plugin = instance;
+        if (plugin == null || navigation == null || !navigation.isValid()) {
+            return;
+        }
+
+        Runnable notify = () -> plugin.notifyListeners(
+            "pendingNavigationAvailable",
+            plugin.buildPendingNavigationResult(navigation),
+            true
+        );
+        Activity activity = plugin.getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(notify);
+        } else {
+            notify.run();
         }
     }
 
@@ -269,7 +289,10 @@ public class ScreenTimePlugin extends Plugin {
     public void getUsageForRange(PluginCall call) {
         Long requestedStartMs = call.getLong("startMs");
         Long requestedEndMs = call.getLong("endMs");
-        long end = requestedEndMs != null && requestedEndMs > 0L ? requestedEndMs : System.currentTimeMillis();
+        long now = System.currentTimeMillis();
+        // A day may be displayed as 00:00-24:00, but its open portion must
+        // never attribute future time to the current foreground app.
+        long end = requestedEndMs != null && requestedEndMs > 0L ? Math.min(requestedEndMs, now) : now;
         long fallbackStart = Math.max(0L, end - DAY_MS);
         long start =
             requestedStartMs != null && requestedStartMs >= 0L && requestedStartMs < end
@@ -280,32 +303,64 @@ public class ScreenTimePlugin extends Plugin {
 
     private void resolveUsageForRange(PluginCall call, long start, long end) {
         UsageStatsManager usageStatsManager = (UsageStatsManager) getContext().getSystemService(Context.USAGE_STATS_SERVICE);
-        List<UsageStats> stats = usageStatsManager == null
-            ? new ArrayList<>()
-            : usageStatsManager.queryUsageStats(resolveUsageInterval(start, end), start, end);
         JSArray entries = new JSArray();
         long totalScreenTime = 0L;
         PackageManager packageManager = getContext().getPackageManager();
         Map<String, UsageSummary> summarizedEntries = new HashMap<>();
 
-        if (stats != null) {
-            for (UsageStats entry : stats) {
-                long totalTimeInForeground = entry.getTotalTimeInForeground();
-                String packageName = entry.getPackageName();
-                if (totalTimeInForeground <= 0 || TextUtils.isEmpty(packageName)) continue;
+        if (usageStatsManager != null) {
+            // UsageStats aggregates cannot tell whether the display was off or
+            // whether another app had focus. Reconstruct the active session from
+            // events for every range instead of falling back to those aggregates.
+            long queryStart = Math.max(0L, start - DAY_MS);
+            UsageEvents events = usageStatsManager.queryEvents(queryStart, end);
+            if (events != null) {
+                ScreenTimeUsageTracker tracker = new ScreenTimeUsageTracker(start, end);
+                UsageEvents.Event event = new UsageEvents.Event();
+                while (events.hasNextEvent()) {
+                    events.getNextEvent(event);
+                    int eventType = event.getEventType();
+                    long timestamp = event.getTimeStamp();
+                    String packageName = event.getPackageName();
 
-                totalScreenTime += totalTimeInForeground;
-                UsageSummary current = summarizedEntries.get(packageName);
-                if (current == null) {
-                    summarizedEntries.put(
-                        packageName,
-                        new UsageSummary(packageName, totalTimeInForeground, entry.getLastTimeUsed())
-                    );
-                } else {
-                    current.totalTimeMs += totalTimeInForeground;
-                    current.lastUsedTimestamp = Math.max(current.lastUsedTimestamp, entry.getLastTimeUsed());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        if (eventType == UsageEvents.Event.SCREEN_INTERACTIVE || eventType == UsageEvents.Event.KEYGUARD_HIDDEN) {
+                            tracker.onScreenInteractive(timestamp);
+                            continue;
+                        }
+                        if (eventType == UsageEvents.Event.SCREEN_NON_INTERACTIVE || eventType == UsageEvents.Event.KEYGUARD_SHOWN) {
+                            tracker.onScreenNonInteractive(timestamp);
+                            continue;
+                        }
+                        if (eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
+                            tracker.onForeground(packageName, timestamp);
+                            continue;
+                        }
+                        if (eventType == UsageEvents.Event.ACTIVITY_PAUSED || eventType == UsageEvents.Event.ACTIVITY_STOPPED) {
+                            tracker.onBackground(packageName, timestamp);
+                            continue;
+                        }
+                    }
+
+                    // Android versions before Q do not expose resumed activity
+                    // events. This is the closest available foreground signal.
+                    if (eventType == UsageEvents.Event.MOVE_TO_FOREGROUND) {
+                        tracker.onForeground(packageName, timestamp);
+                    } else if (eventType == UsageEvents.Event.MOVE_TO_BACKGROUND) {
+                        tracker.onBackground(packageName, timestamp);
+                    }
+                }
+                tracker.finish();
+
+                for (Map.Entry<String, ScreenTimeUsageTracker.Summary> entry : tracker.getSummaries().entrySet()) {
+                    ScreenTimeUsageTracker.Summary summary = entry.getValue();
+                    summarizedEntries.put(entry.getKey(), new UsageSummary(entry.getKey(), summary.totalTimeMs, summary.lastUsedTimestamp));
                 }
             }
+        }
+
+        for (UsageSummary entry : summarizedEntries.values()) {
+            totalScreenTime += entry.totalTimeMs;
         }
 
         List<UsageSummary> sortedEntries = new ArrayList<>(summarizedEntries.values());
@@ -328,17 +383,6 @@ public class ScreenTimePlugin extends Plugin {
         call.resolve(result);
     }
 
-    private int resolveUsageInterval(long start, long end) {
-        long durationMs = Math.max(0L, end - start);
-        if (durationMs <= 7L * DAY_MS) {
-            return UsageStatsManager.INTERVAL_DAILY;
-        }
-        if (durationMs <= 90L * DAY_MS) {
-            return UsageStatsManager.INTERVAL_WEEKLY;
-        }
-        return UsageStatsManager.INTERVAL_MONTHLY;
-    }
-
     @PluginMethod
     public void getCurrentApp(PluginCall call) {
         PendingNavigationStore.ForegroundObservation foregroundObservation = resolveForegroundObservation();
@@ -356,6 +400,21 @@ public class ScreenTimePlugin extends Plugin {
 
     @PluginMethod
     public void getInstalledApps(PluginCall call) {
+        boolean includeIcons = call.getBoolean("includeIcons", false);
+        JSArray requestedIconPackageNames = call.getArray("iconPackageNames");
+        Set<String> iconPackageNames = new HashSet<>();
+        if (requestedIconPackageNames != null) {
+            for (int index = 0; index < requestedIconPackageNames.length(); index++) {
+                String packageName = requestedIconPackageNames.optString(index, "").trim();
+                if (!TextUtils.isEmpty(packageName)) {
+                    iconPackageNames.add(packageName);
+                }
+            }
+        }
+        // `includeIcons` retains the legacy all-icons behavior. A non-null
+        // package list opts into the efficient subset mode, including an empty
+        // list when a screen only needs labels.
+        boolean includeAllIcons = includeIcons && requestedIconPackageNames == null;
         PackageManager packageManager = getContext().getPackageManager();
         Intent launchIntent = new Intent(Intent.ACTION_MAIN, null);
         launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -371,7 +430,12 @@ public class ScreenTimePlugin extends Plugin {
             String packageName = app.activityInfo.packageName;
             if (seen.contains(packageName) || packageName.equals(getContext().getPackageName()) || !shouldIncludePackage(packageManager, packageName, true)) continue;
             seen.add(packageName);
-            resultApps.put(buildInstalledAppItem(packageManager, packageName, app.loadLabel(packageManager).toString()));
+            resultApps.put(buildInstalledAppItem(
+                packageManager,
+                packageName,
+                app.loadLabel(packageManager).toString(),
+                includeAllIcons || iconPackageNames.contains(packageName)
+            ));
             if (resultApps.length() >= MAX_INSTALLED_APPS) {
                 break;
             }
@@ -383,7 +447,12 @@ public class ScreenTimePlugin extends Plugin {
             }
             if (seen.contains(packageName) || packageName.equals(getContext().getPackageName()) || !shouldIncludePackage(packageManager, packageName, false)) continue;
             seen.add(packageName);
-            resultApps.put(buildInstalledAppItem(packageManager, packageName, getApplicationLabel(packageManager, packageName)));
+            resultApps.put(buildInstalledAppItem(
+                packageManager,
+                packageName,
+                getApplicationLabel(packageManager, packageName),
+                includeAllIcons || iconPackageNames.contains(packageName)
+            ));
         }
 
         JSObject result = new JSObject();
@@ -408,23 +477,14 @@ public class ScreenTimePlugin extends Plugin {
 
     @PluginMethod
     public void startMonitoringService(PluginCall call) {
-        if (!saveJsonArray("blocked_packages", call.getArray("blockedPackages"))) {
-            call.reject("Blocked packages could not be persisted");
-            return;
-        }
-        if (!prefs().edit().putBoolean("monitoring_active", true).commit()) {
-            call.reject("Monitoring state could not be persisted");
-            return;
-        }
+        saveJsonArray("blocked_packages", call.getArray("blockedPackages"));
+        prefs().edit().putBoolean("monitoring_active", true).apply();
         call.resolve();
     }
 
     @PluginMethod
     public void stopMonitoringService(PluginCall call) {
-        if (!prefs().edit().putBoolean("monitoring_active", false).commit()) {
-            call.reject("Monitoring state could not be persisted");
-            return;
-        }
+        prefs().edit().putBoolean("monitoring_active", false).apply();
         call.resolve();
     }
 
@@ -470,10 +530,7 @@ public class ScreenTimePlugin extends Plugin {
 
     @PluginMethod
     public void stopVpnFilter(PluginCall call) {
-        if (!prefs().edit().putBoolean("vpn_active", false).commit()) {
-            call.reject("VPN state could not be persisted");
-            return;
-        }
+        prefs().edit().putBoolean("vpn_active", false).apply();
         BlearnVpnService.stop(getContext());
         call.resolve();
     }
@@ -526,26 +583,32 @@ public class ScreenTimePlugin extends Plugin {
                 || !parsedSnapshot.searchTargets.isEmpty());
         boolean hasWebsiteRules = (parsedSnapshot.remoteBlockingActive || !parsedSnapshot.activeModes.isEmpty()) && !parsedSnapshot.websiteTargets.isEmpty();
 
-        if (!saveJsonArray("blocked_packages", snapshot == null ? null : snapshot.optJSONArray("blockedPackages"))) {
-            call.reject("Blocked packages could not be persisted");
-            return;
+        SharedPreferences.Editor editor = prefs().edit();
+
+        String packagesSerialized = "[]";
+        Object packagesArray = snapshot == null ? null : snapshot.optJSONArray("blockedPackages");
+        if (packagesArray instanceof JSArray || packagesArray instanceof org.json.JSONArray) {
+            packagesSerialized = packagesArray.toString();
         }
-        if (!saveJsonArray("blocked_domains", snapshot == null ? null : snapshot.optJSONArray("blockedDomains"))) {
-            call.reject("Blocked domains could not be persisted");
-            return;
+        editor.putString("blocked_packages", packagesSerialized);
+
+        String domainsSerialized = "[]";
+        Object domainsArray = snapshot == null ? null : snapshot.optJSONArray("blockedDomains");
+        if (domainsArray instanceof JSArray || domainsArray instanceof org.json.JSONArray) {
+            domainsSerialized = domainsArray.toString();
         }
-        if (!saveJsonArray("blocked_search_terms", snapshot == null ? null : snapshot.optJSONArray("blockedSearchTerms"))) {
-            call.reject("Blocked search terms could not be persisted");
-            return;
+        editor.putString("blocked_domains", domainsSerialized);
+
+        String searchTermsSerialized = "[]";
+        Object searchTermsArray = snapshot == null ? null : snapshot.optJSONArray("blockedSearchTerms");
+        if (searchTermsArray instanceof JSArray || searchTermsArray instanceof org.json.JSONArray) {
+            searchTermsSerialized = searchTermsArray.toString();
         }
-        if (!prefs()
-            .edit()
-            .putString("policy_snapshot", rawSnapshot)
-            .putBoolean("monitoring_active", hasMonitoringRules)
-            .commit()) {
-            call.reject("Policy snapshot could not be persisted");
-            return;
-        }
+        editor.putString("blocked_search_terms", searchTermsSerialized);
+
+        editor.putString("policy_snapshot", rawSnapshot);
+        editor.putBoolean("monitoring_active", hasMonitoringRules);
+        editor.apply();
         debug(
             "policy synced monitoring="
                 + hasMonitoringRules
@@ -1315,7 +1378,8 @@ public class ScreenTimePlugin extends Plugin {
         if (array instanceof JSArray || array instanceof org.json.JSONArray) {
             serialized = array.toString();
         }
-        return prefs().edit().putString(key, serialized).commit();
+        prefs().edit().putString(key, serialized).apply();
+        return true;
     }
 
     private String getApplicationLabel(PackageManager packageManager, String packageName) {
@@ -1327,7 +1391,7 @@ public class ScreenTimePlugin extends Plugin {
         }
     }
 
-    private JSObject buildInstalledAppItem(PackageManager packageManager, String packageName, String fallbackLabel) {
+    private JSObject buildInstalledAppItem(PackageManager packageManager, String packageName, String fallbackLabel, boolean includeIcons) {
         JSObject item = new JSObject();
         String label = fallbackLabel;
 
@@ -1345,9 +1409,11 @@ public class ScreenTimePlugin extends Plugin {
         item.put("appId", packageName);
         item.put("label", label);
         item.put("appName", label);
-        String icon = getApplicationIconBase64(packageManager, packageName);
-        if (!TextUtils.isEmpty(icon)) {
-            item.put("icon", icon);
+        if (includeIcons) {
+            String icon = getApplicationIconBase64(packageManager, packageName);
+            if (!TextUtils.isEmpty(icon)) {
+                item.put("icon", icon);
+            }
         }
         return item;
     }

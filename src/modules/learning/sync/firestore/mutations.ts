@@ -79,7 +79,18 @@ export async function loadMutationRecords(
   afterCursor?: LearningCloudSyncCursor | null,
   options?: LearningCloudReadOptions,
 ): Promise<LearningCloudMutationRecord[]> {
-  const query = getMutationCollectionRef(sdk, firestore, userId);
+  const collection = getMutationCollectionRef(sdk, firestore, userId);
+  // Normal syncs must read only the change window starting at the local
+  // cursor. The final cursor comparison below discards the cursor record
+  // itself (and any same-millisecond predecessor), while avoiding a composite
+  // Firestore index that a two-field cursor query would require.
+  const query = afterCursor
+    ? sdk.query(
+        collection,
+        sdk.where('mutationAt', '>=', afterCursor.mutationAt),
+        sdk.orderBy('mutationAt', 'asc'),
+      )
+    : collection;
   const snapshot = options?.source === 'server' && typeof sdk.getDocsFromServer === 'function'
     ? await sdk.getDocsFromServer(query).catch(() => sdk.getDocs(query))
     : await sdk.getDocs(query);
@@ -204,6 +215,9 @@ export function buildLearningCloudMutationDelta(
       previousState.filteredDeckLiteRuns,
       nextState.filteredDeckLiteRuns,
     );
+  }
+  if (stableStringify(previousState.entityTombstones) !== stableStringify(nextState.entityTombstones)) {
+    delta.entityTombstones = nextState.entityTombstones;
   }
 
   return delta;
@@ -352,6 +366,7 @@ export function buildLearningCloudMutationRecord(
     && !delta.filteredDeckLiteDefinition
     && !delta.filteredDeckLiteDefinitions
     && !delta.filteredDeckLiteRuns
+    && !delta.entityTombstones
     && !hasMeaningfulTombstones(delta)
     && getLearningCloudStateSignature(normalizedNextState) === getLearningCloudStateSignature(normalizedPreviousState)
   ) {
@@ -405,6 +420,13 @@ export async function writeLearningCloudMutationAndMeta(
   meta: LearningCloudMeta,
 ): Promise<void> {
   const batch = sdk.writeBatch(firestore);
+  const metaPayload = sanitizeFirestoreValue({
+    ...meta,
+    updatedAt: null,
+  });
+  console.info(
+    `[LearningCloud] committing metadata: ${getApproximateFirestorePayloadBytes(metaPayload)} bytes${mutation ? ' with mutation' : ''}`,
+  );
 
   if (mutation) {
     batch.set(

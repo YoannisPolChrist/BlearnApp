@@ -188,6 +188,48 @@ public class PendingNavigationStoreTest {
     }
 
     @Test
+    public void replacesTheCompletedSessionWhenTheSingleTaskBlockingHostIsReused() {
+        PendingNativeNavigation firstNavigation = new PendingNativeNavigation(
+            "/breathing?targetId=com.google.android.keep",
+            "com.google.android.keep",
+            "app",
+            "strict",
+            "session-first",
+            "Keep",
+            "",
+            15,
+            null
+        );
+        PendingNativeNavigation secondNavigation = new PendingNativeNavigation(
+            "/learn/review?targetId=com.todoist",
+            "com.todoist",
+            "app",
+            "learn",
+            "session-second",
+            "Todoist",
+            "deck-1",
+            12,
+            null
+        );
+
+        assertEquals(PendingNavigationStore.SaveOutcome.SAVED, PendingNavigationStore.save(context, firstNavigation));
+        assertNotNull(PendingNavigationStore.consume(context));
+        PendingNavigationStore.completeActiveHandoff(context, "session-first");
+
+        assertEquals(PendingNavigationStore.SaveOutcome.SAVED, PendingNavigationStore.save(context, secondNavigation));
+        PendingNativeNavigation promoted = PendingNavigationStore.promoteToActive(
+            context,
+            secondNavigation,
+            "blocking host reused for a later launch payload"
+        );
+
+        assertNotNull(promoted);
+        assertEquals("session-second", promoted.sessionId);
+        assertEquals("session-second", PendingNavigationStore.getActiveSessionId(context));
+        assertEquals("consumed", PendingNavigationStore.getActiveStage(context));
+    }
+
+    @Test
     public void exposesCompletedHandoffSessionWhenForegroundLeavesBlockingHost() {
         PendingNativeNavigation navigation = new PendingNativeNavigation(
             "/learn/review?targetId=com.google.android.gm",

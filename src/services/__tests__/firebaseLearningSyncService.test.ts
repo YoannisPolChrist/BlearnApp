@@ -52,7 +52,20 @@ vi.mock('firebase/firestore', () => ({
   collection: (...args: unknown[]) => ({ path: args.slice(1).map(String).join('/') }),
   doc: (...args: unknown[]) => ({ path: pathFromDocArgs(args) }),
   getDoc: async (ref: { path: string }) => makeSnapshot(ref.path),
+  getDocFromServer: async (ref: { path: string }) => makeSnapshot(ref.path),
   getDocs: async (ref: { path: string }) => {
+    const prefix = `${ref.path}/`;
+    const docs = Array.from(testState.db.entries())
+      .filter(([path]) => path.startsWith(prefix) && path.split('/').length === ref.path.split('/').length + 1)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([path, data]) => ({
+        id: path.split('/').at(-1) || path,
+        data: () => clone(data),
+      }));
+
+    return { docs };
+  },
+  getDocsFromServer: async (ref: { path: string }) => {
     const prefix = `${ref.path}/`;
     const docs = Array.from(testState.db.entries())
       .filter(([path]) => path.startsWith(prefix) && path.split('/').length === ref.path.split('/').length + 1)
@@ -197,7 +210,7 @@ describe('firebaseLearningSyncService', () => {
     expect((pulled.mutations[0]?.delta.cardBrowser?.searchText)).toBe('hola');
   });
 
-  it('pulls newer mutation deltas on top of the snapshot state', async () => {
+  it('does not treat a mutation without a committed Firestore snapshot as authoritative', async () => {
     const now = 1_700_000_000_000;
     vi.spyOn(Date, 'now').mockReturnValue(now);
     const { decks, notes, cards } = buildEntitiesFromRows(
@@ -349,10 +362,9 @@ describe('firebaseLearningSyncService', () => {
 
     const loaded = await loadLearningCloudState('user-2');
 
-    expect(loaded?.cardBrowser.searchText).toBe('bonjour');
-    expect(loaded?.savedCardQueries).toHaveLength(1);
-    expect(loaded?.savedCardQueries[0]?.id).toBe('remote-search');
-    expect(loaded?.cardBrowser.sortBy).toBe('deck');
+    expect(loaded?.cardBrowser.searchText).toBe('');
+    expect(loaded?.savedCardQueries).toHaveLength(0);
+    expect(loaded?.cardBrowser.sortBy).toBe('due');
   });
 
   it('compacts acknowledged mutations without breaking the current cursor or delta state', async () => {

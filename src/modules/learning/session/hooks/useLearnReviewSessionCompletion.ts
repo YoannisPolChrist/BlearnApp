@@ -34,6 +34,7 @@ interface UseLearnReviewSessionCompletionInput {
   activeDeck: LearningDeck | undefined;
   addCheckin: ReturnType<typeof useAppStore.getState>['addCheckin'];
   addInteraction: ReturnType<typeof useAppStore.getState>['addInteraction'];
+  isBlockedFlow: boolean;
   awaitingEmotionSelection: boolean;
   blockedFlowExhausted: boolean;
   blockedUnlockSignal: number;
@@ -60,6 +61,7 @@ export function useLearnReviewSessionCompletion({
   activeDeck,
   addCheckin,
   addInteraction,
+  isBlockedFlow,
   awaitingEmotionSelection,
   blockedFlowExhausted,
   blockedUnlockSignal,
@@ -247,6 +249,12 @@ export function useLearnReviewSessionCompletion({
     const sessionSummary = textContext
       ? `${activeDeck?.name || 'Lernsession'}: ${textContext}`
       : (activeDeck?.name || 'Lernsession abgeschlossen');
+    const blockingContext = isBlockedFlow ? {
+      flow: 'learning' as const,
+      targetId: targetId || undefined,
+      targetType,
+      targetLabel: targetId || undefined,
+    } : undefined;
 
     pendingCompletionKindRef.current = null;
     setAwaitingEmotionContext(false);
@@ -265,6 +273,7 @@ export function useLearnReviewSessionCompletion({
         chatHistory: [],
         breathingCompleted: false,
         targetApp: targetId || undefined,
+        blockingContext,
       });
       addInteraction({
         timestamp: completedAt,
@@ -273,6 +282,7 @@ export function useLearnReviewSessionCompletion({
         intention: sessionSummary,
         completed: true,
         targetApp: targetId || undefined,
+        blockingContext,
       });
       recordFeedback('toast', 'Emotion gespeichert.');
 
@@ -280,12 +290,14 @@ export function useLearnReviewSessionCompletion({
       const userId = useAuthStore.getState().user?.uid;
       if (userId && isFirebaseWriteEnabled()) {
         const metrics = mapEmotionsToValenceArousalEnergy(sessionEmotions);
+        const interactionId = `learning_${completedAt}_${activeDeck?.id || 'deck'}`;
         
         // Push Emotion Log
         void createEmotionLog({
           userId,
+          interaction_id: interactionId,
           timestamp: completedAt,
-          trigger_type: targetId ? 'after_app_usage' : 'manual',
+          trigger_type: isBlockedFlow ? 'app_prompt' : targetId ? 'after_app_usage' : 'manual',
           context: {
             location_type: 'unknown',
             activity: 'learning',
@@ -313,8 +325,14 @@ export function useLearnReviewSessionCompletion({
             intensity: targetId ? 7 : 0,
             resisted: true,
           },
+          blocking_context: blockingContext ? {
+            flow: blockingContext.flow,
+            target_id: blockingContext.targetId,
+            target_type: blockingContext.targetType,
+            target_label: blockingContext.targetLabel,
+          } : undefined,
           metadata: {
-            entry_mode: 'manual',
+            entry_mode: isBlockedFlow ? 'prompted' : 'manual',
           },
         }).catch(err => console.warn('[HermesSync] Emotion log push failed:', err));
 
@@ -325,6 +343,7 @@ export function useLearnReviewSessionCompletion({
 
         void createLearningLog({
           userId,
+          interaction_id: interactionId,
           started_at: sessionStartedAt || (completedAt - 5 * 60 * 1000),
           ended_at: completedAt,
           duration_minutes: durationMinutes,
@@ -385,7 +404,9 @@ export function useLearnReviewSessionCompletion({
     setCompletedSessionVisible,
     setSelectedSessionCategories,
     setSelectedSessionEmotions,
+    isBlockedFlow,
     targetId,
+    targetType,
     sessionStartedAt,
   ]);
 

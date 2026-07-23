@@ -19,7 +19,7 @@ const BASE64_CHUNK_SIZE = 0x8000;
 const SQLITE_HEADER = 'SQLite format 3';
 const SUPPORTED_IMAGE_EXTENSIONS = new Set(['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg']);
 
-interface ParsedAnkiImport {
+export interface ParsedAnkiImport {
   rows: ImportableRow[];
   reviewLogs: Array<Omit<ReviewLog, 'id' | 'deckId' | 'cardId'> & {
     sourceCardId: string;

@@ -218,6 +218,33 @@ export async function consumePendingNavigation(): Promise<{
   return result ?? null;
 }
 
+export function subscribeToPendingNavigationAvailable(listener: () => void): () => void {
+  if (!isAndroidPlatform) {
+    return () => undefined;
+  }
+
+  let removed = false;
+  let handle: { remove: () => Promise<void> } | null = null;
+
+  void ScreenTime.addListener('pendingNavigationAvailable', listener)
+    .then((nextHandle) => {
+      handle = nextHandle;
+      if (removed) {
+        void handle.remove();
+      }
+    })
+    .catch((error) => {
+      console.warn('Pending navigation listener could not be registered:', error);
+    });
+
+  return () => {
+    removed = true;
+    if (handle) {
+      void handle.remove();
+    }
+  };
+}
+
 export async function peekPendingNavigation(): Promise<PendingNativeNavigationPayload | null> {
   ensureAndroidSupport("Pending native navigation");
   const result = await ScreenTime.peekPendingNavigation();

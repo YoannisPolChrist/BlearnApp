@@ -44,6 +44,9 @@ export interface LearningManualCardInput {
 export interface LearningStoreState {
   activeDeckId?: string;
   activeDeckUpdatedAt?: number;
+  /** Local library membership. Hidden decks stay in local/cloud storage so a
+   * library removal never becomes a cloud deletion. */
+  hiddenDeckIds: string[];
   decks: Record<string, LearningDeck>;
   notes: Record<string, LearningNote>;
   cards: Record<string, LearningCard>;
@@ -65,6 +68,8 @@ export interface LearningStoreState {
 export interface LearningBaseSlice {
   hydrateLearningState: (state: Partial<LearningStoreState>) => void;
   setActiveDeck: (deckId?: string) => void;
+  removeDeckFromLibrary: (deckId: string) => void;
+  restoreDeckToLibrary: (deckId: string) => void;
   setGateRule: (rule: Partial<GateRule>) => void;
   markLearningCloudSyncCompleted: (
     syncedAt?: number,

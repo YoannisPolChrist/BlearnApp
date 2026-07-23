@@ -148,6 +148,8 @@ export function usePreferenceActions() {
       setNotificationPreference: state.setNotificationPreference,
       setNotificationPermissionPromptSeen: state.setNotificationPermissionPromptSeen,
       setRemoteBlockingEnabled: state.setRemoteBlockingEnabled,
+      startRemoteBlockingDisableGate: state.startRemoteBlockingDisableGate,
+      clearRemoteBlockingDisableGate: state.clearRemoteBlockingDisableGate,
     })),
   );
 }
@@ -247,7 +249,7 @@ export function useLearnHubSummary() {
   return useLearningStore(
     useShallow((state) => ({
       activeDeckId: state.activeDeckId,
-      decks: Object.values(state.decks),
+      decks: Object.values(state.decks).filter((deck) => !state.hiddenDeckIds.includes(deck.id)),
       getDeckStats: state.getDeckStats,
       getResolvedPresetForDeck: state.getResolvedPresetForDeck,
     })),
@@ -260,6 +262,7 @@ export function useLearnHubActions() {
       seedStarterDeck: state.seedStarterDeck,
       exportDeckToJson: state.exportDeckToJson,
       setActiveDeck: state.setActiveDeck,
+      removeDeckFromLibrary: state.removeDeckFromLibrary,
       setDeckReviewMix: state.setDeckReviewMix,
     })),
   );

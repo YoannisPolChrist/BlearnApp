@@ -108,6 +108,8 @@ export const createModeSlice: AppStoreSlice<Partial<AppState>> = (set, get) => (
     const { strictStartTime, strictEndTime } = get();
     const now = Date.now();
     const preserveActiveMode = options?.preserveActiveMode ?? false;
+    // The global strict lock is a full lock. Settings-only protection is used
+    // only when a caller explicitly preserves the current target mode.
     const scope = options?.scope ?? (preserveActiveMode ? 'settings' : 'full');
 
     // Beruecksichtigt Nacht-Fenster korrekt – inklusive Aktivierung nach
@@ -144,7 +146,11 @@ export const createModeSlice: AppStoreSlice<Partial<AppState>> = (set, get) => (
     // Same hard cap as the main strict lock: never more than 20 hours.
     const addonLockUntil = clampStrictLockEnd(now, end);
 
-    const uniqueLockedApps = Array.from(new Set(lockedAppIds));
+    // An add-on is a commitment to the assignments already made in this
+    // specific mode. Do not let it freeze an app from another mode.
+    const uniqueLockedApps = Array.from(new Set(lockedAppIds))
+      .map((appId) => appId.trim().toLowerCase())
+      .filter((appId) => appId && get().blockedAppModes[appId] === mode);
 
     set((state) => applyModeState(state, {
       strictAddons: {

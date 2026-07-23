@@ -1,4 +1,6 @@
+import { type ReactNode, useLayoutEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { useAppTour } from '@/components/setup/appTourContext';
 import GlassCard from '@/components/GlassCard';
 import { useI18n } from '@/hooks/useI18n';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -6,7 +8,8 @@ import { denseListItem, denseListStagger, heroTimeline, heroTimelineItem, premiu
 import { getModePalette } from '@/lib/semanticTones';
 import type { ActiveModeId } from '@/lib/targetModes';
 import { cn } from '@/lib/utils';
-import { ModeBadge, type ModeDefinition, type ModeId, type SelectionClasses } from './shared';
+import { ModeBadge } from './shared';
+import type { ModeDefinition, ModeId, SelectionClasses } from './modeShared';
 
 export function ModeChooserSection({
   modes,
@@ -15,6 +18,7 @@ export function ModeChooserSection({
   selectedMode,
   setSelectedMode,
   getModeSelectionClasses,
+  settings,
   variants,
 }: {
   modes: ModeDefinition[];
@@ -23,11 +27,14 @@ export function ModeChooserSection({
   selectedMode: ModeId;
   setSelectedMode: (mode: ModeId) => void;
   getModeSelectionClasses: (modeId: ModeId) => SelectionClasses;
+  settings?: ReactNode;
   variants?: Record<string, unknown>;
 }) {
   const { t } = useI18n();
+  const { currentStep, isOpen: isAppTourOpen } = useAppTour();
   const reducedMotion = useReducedMotion();
   const isMobile = useIsMobile();
+  const settingsPanelRef = useRef<HTMLDivElement>(null);
   const allowHoverMotion = !reducedMotion && !isMobile;
   const allowTapMotion = !reducedMotion;
   const allowModeCascade = shouldAnimateDenseList({
@@ -36,6 +43,25 @@ export function ModeChooserSection({
     itemCount: modes.length,
     maxAnimatedItems: 6,
   });
+  const tourSelectedMode = currentStep?.modeId;
+
+  useLayoutEffect(() => {
+    if (isAppTourOpen && tourSelectedMode && selectedMode !== tourSelectedMode) {
+      setSelectedMode(tourSelectedMode);
+    }
+  }, [isAppTourOpen, selectedMode, setSelectedMode, tourSelectedMode]);
+
+  const selectMode = (modeId: ModeId) => {
+    setSelectedMode(modeId);
+
+    window.requestAnimationFrame(() => {
+      settingsPanelRef.current?.scrollIntoView?.({
+        block: 'nearest',
+        behavior: reducedMotion ? 'auto' : 'smooth',
+      });
+    });
+  };
+
   return (
     <motion.section variants={variants} className="space-y-4">
       <div data-tour-id="tour-modes-selector" className="rounded-[1.9rem]">
@@ -44,7 +70,7 @@ export function ModeChooserSection({
             <motion.div variants={heroTimelineItem} className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p className="text-[11px] font-black uppercase tracking-[0.18em] text-muted-foreground">{t('modes.chooser.eyebrow')}</p>
-                <h2 className="mt-2 text-2xl font-black tracking-[-0.04em] text-foreground">{t('modes.chooser.title')}</h2>
+                <h2 data-tour-id="tour-mode-chooser-title" className="mt-2 text-2xl font-black tracking-[-0.04em] text-foreground">{t('modes.chooser.title')}</h2>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">{t('modes.chooser.description')}</p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -82,9 +108,22 @@ export function ModeChooserSection({
               return (
                 <motion.button
                   key={mode.id}
+                  data-tour-id={
+                    mode.id === 'strict'
+                      ? 'tour-mode-reflection'
+                      : mode.id === 'learn'
+                        ? 'tour-mode-learn'
+                        : mode.id === 'penalty'
+                          ? 'tour-mode-penalty'
+                        : mode.id === 'lock'
+                              ? 'tour-mode-lock'
+                            : undefined
+                  }
                   variants={allowModeCascade ? denseListItem : undefined}
                   type="button"
-                  onClick={() => setSelectedMode(mode.id)}
+                  onClick={() => selectMode(mode.id)}
+                  aria-pressed={selected}
+                  aria-controls="mode-settings-panel"
                   whileHover={allowHoverMotion ? { y: -4, scale: 1.01 } : undefined}
                   whileTap={allowTapMotion ? { y: 1, scale: 0.985 } : undefined}
                   transition={{ duration: 0.24, ease: premiumEase }}
@@ -124,6 +163,19 @@ export function ModeChooserSection({
                 </motion.button>
               );
             })}
+            </motion.div>
+
+            <motion.div
+              ref={settingsPanelRef}
+              id="mode-settings-panel"
+              key={selectedMode}
+              data-tour-id="tour-mode-settings-panel"
+              aria-live="polite"
+              initial={reducedMotion ? false : { opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.26, ease: premiumEase }}
+            >
+              {settings}
             </motion.div>
           </motion.div>
         </GlassCard>

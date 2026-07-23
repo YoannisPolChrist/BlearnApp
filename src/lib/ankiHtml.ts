@@ -187,8 +187,8 @@ export function scopeAnkiCss(css: string, scopeSelector: string): string {
   }
   const cacheKey = `${scopeSelector}\u0000${trimmed}`;
 
-  return readFromCache(scopedCssCache, cacheKey, () =>
-    trimmed.replace(/(^|})\s*([^@}{][^{}]*)\{/g, (_match, boundary, selectors) => {
+  return readFromCache(scopedCssCache, cacheKey, () => {
+    const scopedTemplateCss = trimmed.replace(/(^|})\s*([^@}{][^{}]*)\{/g, (_match, boundary, selectors) => {
       const scopedSelectors = selectors
         .split(',')
         .map((selector) => selector.trim())
@@ -203,8 +203,27 @@ export function scopeAnkiCss(css: string, scopeSelector: string): string {
         .join(', ');
 
       return `${boundary} ${scopedSelectors} {`;
-    }),
-  );
+    });
+
+    // Imported Anki templates regularly ship fixed light or dark colors. Those colors
+    // can turn into unreadable text when the app theme changes, so Dark Mode keeps the
+    // semantic structure while taking back foreground and surface control.
+    const darkModeContrastCss = `
+.dark ${scopeSelector} .anki-render-root,
+.dark ${scopeSelector} .anki-render-root #qa,
+.dark ${scopeSelector} .anki-render-root :where(p, div, span, li, td, th, h1, h2, h3, h4, h5, h6) {
+  color: hsl(var(--foreground)) !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  text-shadow: none !important;
+}
+.dark ${scopeSelector} .anki-render-root :is(a, .cloze) {
+  color: hsl(var(--primary)) !important;
+}
+`;
+
+    return `${scopedTemplateCss}\n${darkModeContrastCss}`;
+  });
 }
 
 export function buildAnkiCardHtml(

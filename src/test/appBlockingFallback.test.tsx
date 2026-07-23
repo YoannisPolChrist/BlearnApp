@@ -251,6 +251,34 @@ describe('App blocking fallback', () => {
     expect(await findTextInAct('Index screen')).toBeInTheDocument();
   }, 10_000);
 
+  it('does not mount a second loading shell while a blocking route lazy-loads', async () => {
+    vi.resetModules();
+    completeNativeRouteHandoffMock.mockReset();
+    completeNativeRouteHandoffMock.mockResolvedValue(undefined);
+    recordNativeOverlayRuntimeEventMock.mockClear();
+    const pendingRef = { current: { active: false, priming: false } };
+    let resolveInterventionLoader!: (value: { default: () => ReactNode }) => void;
+    const interventionLoader = new Promise<{ default: () => ReactNode }>((resolve) => {
+      resolveInterventionLoader = resolve;
+    });
+    mockSharedAppShell(pendingRef, {
+      intervention: async () => interventionLoader,
+    });
+    window.location.hash = '#/intervention?overlaySessionId=session-loading';
+
+    await renderAppShell();
+
+    expect(screen.queryByTestId('blocking-loading-shell')).toBeNull();
+    expect(screen.queryByTestId('route-loading-fallback')).toBeNull();
+
+    await act(async () => {
+      resolveInterventionLoader({ default: () => <div>Intervention screen</div> });
+      await settleAsyncUi();
+    });
+
+    expect(await findTextInAct('Intervention screen')).toBeInTheDocument();
+  }, 10_000);
+
   it('shows a stable loading shell once a concrete blocking route is already known', async () => {
     vi.resetModules();
     completeNativeRouteHandoffMock.mockReset();

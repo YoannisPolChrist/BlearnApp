@@ -140,6 +140,22 @@ describe('useAppStore behavior', () => {
     expect(store.isTargetUnlocked('com.example.youtube', 'app')).toBe(true);
   });
 
+  it('records the active deck and start time for the remote-blocking learning gate', () => {
+    const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(1_700_000_000_000);
+    const store = useAppStore.getState();
+
+    store.startRemoteBlockingDisableGate('deck-spanish');
+
+    expect(useAppStore.getState().remoteBlockingDisableGate).toEqual({
+      deckId: 'deck-spanish',
+      startedAt: 1_700_000_000_000,
+    });
+
+    store.setRemoteBlockingEnabled(true);
+
+    expect(useAppStore.getState().remoteBlockingDisableGate).toBeNull();
+  });
+
   it('zählt Freischaltungen für "Entsperrungen heute"', () => {
     useAppStore.setState({ unlockHistory: [] });
     const store = useAppStore.getState();

@@ -6,6 +6,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { isBlockingRouteForBottomNav } from '@/lib/blockingOverlayRoutes';
 import { ctaFollowThrough } from '@/lib/motion';
+import { triggerHapticFeedback } from '@/lib/haptics';
 import { preloadRoute } from '@/lib/routeLoaders';
 
 const BottomNav = forwardRef<HTMLDivElement>((_, ref) => {
@@ -29,7 +30,7 @@ const BottomNav = forwardRef<HTMLDivElement>((_, ref) => {
   if (isBlockingRouteForBottomNav(location.pathname, location.search)) return null;
 
   return (
-    <nav ref={ref} data-testid="bottom-nav" className="fixed bottom-0 left-0 right-0 z-50" aria-label="Primary navigation">
+    <nav ref={ref} data-testid="bottom-nav" data-tour-id="tour-bottom-nav" className="fixed bottom-0 left-0 right-0 z-50" aria-label="Primary navigation">
       <div
         data-testid="bottom-nav-shell"
         className="bottom-nav-shell px-2"
@@ -48,23 +49,34 @@ const BottomNav = forwardRef<HTMLDivElement>((_, ref) => {
               <motion.button
                 key={item.path}
                 type="button"
-                onClick={() => navigate(item.path)}
+                onClick={() => {
+                  if (!isActive) {
+                    triggerHapticFeedback('selection');
+                    navigate(item.path);
+                  }
+                }}
                 onPointerEnter={() => preloadRoute(item.path)}
                 onTouchStart={() => preloadRoute(item.path)}
                 onFocus={() => preloadRoute(item.path)}
                 aria-current={isActive ? 'page' : undefined}
                 aria-label={item.label}
-                className={`relative flex min-h-[3.25rem] min-w-0 flex-col items-center justify-center gap-0.5 rounded-[1.1rem] px-1.5 py-1 transition-[background-color,box-shadow,color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 ${
-                  isActive ? 'bg-primary/10 shadow-[0_10px_28px_hsl(var(--primary)/0.1)]' : 'bg-transparent'
-                }`}
+                className="relative flex min-h-[3.25rem] min-w-0 flex-col items-center justify-center gap-0.5 rounded-[1.1rem] px-1.5 py-1 transition-[color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                 initial="rest"
                 animate="rest"
                 whileHover={allowHoverMotion ? 'hover' : 'rest'}
                 whileTap={allowTapMotion ? 'tap' : 'rest'}
                 variants={ctaFollowThrough}
               >
+                {isActive ? (
+                  <motion.span
+                    layoutId="bottom-nav-active"
+                    aria-hidden="true"
+                    className="absolute inset-0 rounded-[1.1rem] bg-primary/10 shadow-[0_10px_28px_hsl(var(--primary)/0.1)]"
+                    transition={{ type: 'spring', stiffness: 430, damping: 34, mass: 0.72 }}
+                  />
+                ) : null}
                 <motion.div
-                  className={`flex h-8 w-8 items-center justify-center rounded-full transition-[background-color,box-shadow] duration-300 ${
+                  className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full transition-[background-color,box-shadow] duration-300 ${
                     isActive ? 'bg-primary/16 shadow-[0_10px_24px_hsl(var(--primary)/0.12)]' : 'bg-transparent'
                   }`}
                   animate={isActive && allowActiveMotion
@@ -85,7 +97,7 @@ const BottomNav = forwardRef<HTMLDivElement>((_, ref) => {
                 <span
                   className={`max-w-full truncate text-[10px] font-bold uppercase tracking-[0.08em] transition-colors duration-300 ${
                     isActive ? 'text-primary' : 'text-foreground/62'
-                  }`}
+                  } relative z-10`}
                 >
                   {item.label}
                 </span>

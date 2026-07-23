@@ -1,9 +1,18 @@
-import { createJSONStorage, type StateStorage } from 'zustand/middleware';
+import {
+  createJSONStorage,
+  type PersistStorage,
+  type StateStorage,
+  type StorageValue,
+} from 'zustand/middleware';
 
 const DB_NAME = 'blearn-persist';
 const STORE_NAME = 'zustand';
 const STORAGE_IDLE_POLL_MS = 10;
 const pendingStorageWrites = new Map<string, Set<Promise<unknown>>>();
+const deferredStorageFlushers = new Map<string, {
+  flush: () => Promise<void>;
+  hasPendingWrite: () => boolean;
+}>();
 let cachedPersistDbPromise: Promise<IDBDatabase> | null = null;
 let cachedPersistDb: IDBDatabase | null = null;
 
@@ -277,12 +286,140 @@ export function createQuotaResilientJsonStorage(
   }));
 }
 
+export function createDebouncedIndexedDbJsonStorage<T>(storageKey: string, debounceMs = 350): PersistStorage<T> {
+  const stateStorage = createIndexedDbBackedStateStorage(storageKey);
+  const pendingValues = new Map<string, {
+    value: StorageValue<T>;
+    waiters: Array<{ resolve: () => void; reject: (error: unknown) => void }>;
+  }>();
+  let timerId: number | null = null;
+  let idleCallbackId: number | null = null;
+  let flushPromise: Promise<void> | null = null;
+
+  const cancelScheduledFlush = () => {
+    if (timerId !== null) {
+      window.clearTimeout(timerId);
+      timerId = null;
+    }
+
+    if (idleCallbackId !== null) {
+      const idleWindow = window as Window & {
+        cancelIdleCallback?: (handle: number) => void;
+      };
+      idleWindow.cancelIdleCallback?.(idleCallbackId);
+      idleCallbackId = null;
+    }
+  };
+
+  const flush = async () => {
+    // Explicit flushes (for example on app hide) bypass idle scheduling so the
+    // write-ahead log can be folded into IndexedDB before Android pauses us.
+    cancelScheduledFlush();
+    if (flushPromise) {
+      return flushPromise;
+    }
+    if (pendingValues.size === 0) {
+      return;
+    }
+
+    const writes = [...pendingValues.entries()];
+    pendingValues.clear();
+    flushPromise = Promise.all(
+      writes.map(async ([name, pending]) => {
+        try {
+          await stateStorage.setItem(name, JSON.stringify(pending.value));
+          pending.waiters.forEach(({ resolve }) => resolve());
+        } catch (error) {
+          pending.waiters.forEach(({ reject }) => reject(error));
+          throw error;
+        }
+      }),
+    ).then(() => undefined);
+
+    try {
+      await flushPromise;
+    } finally {
+      flushPromise = null;
+      if (pendingValues.size > 0 && timerId === null && idleCallbackId === null) {
+        scheduleFlush();
+      }
+    }
+  };
+
+  const scheduleFlush = () => {
+    if (timerId !== null || idleCallbackId !== null || flushPromise) {
+      return;
+    }
+
+    timerId = window.setTimeout(() => {
+      timerId = null;
+      const idleWindow = window as Window & {
+        requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+      };
+
+      if (typeof idleWindow.requestIdleCallback === 'function') {
+        idleCallbackId = idleWindow.requestIdleCallback(() => {
+          idleCallbackId = null;
+          void flush();
+        }, { timeout: 1_000 });
+        return;
+      }
+
+      void flush();
+    }, debounceMs);
+  };
+
+  deferredStorageFlushers.set(storageKey, {
+    flush,
+    hasPendingWrite: () => pendingValues.size > 0 || flushPromise !== null,
+  });
+
+  return {
+    getItem: async (name) => {
+      const rawValue = await stateStorage.getItem(name);
+      if (!rawValue) {
+        return null;
+      }
+
+      try {
+        return JSON.parse(rawValue) as StorageValue<T>;
+      } catch (error) {
+        console.warn(`Failed to parse persisted storage "${name}":`, error);
+        return null;
+      }
+    },
+    setItem: (name, value) => new Promise<void>((resolve, reject) => {
+      const pending = pendingValues.get(name);
+      if (pending) {
+        pending.value = value;
+        pending.waiters.push({ resolve, reject });
+      } else {
+        pendingValues.set(name, {
+          value,
+          waiters: [{ resolve, reject }],
+        });
+      }
+
+      scheduleFlush();
+    }),
+    removeItem: async (name) => {
+      await flush();
+      await stateStorage.removeItem(name);
+    },
+  };
+}
+
 export async function waitForPersistStorageIdle(storageKey: string, timeoutMs = 2500) {
   const deadline = Date.now() + timeoutMs;
+  const flusher = deferredStorageFlushers.get(storageKey);
 
   while (true) {
+    if (flusher?.hasPendingWrite()) {
+      await flusher.flush();
+    }
+
     const pendingWrites = pendingStorageWrites.get(storageKey);
-    if (!pendingWrites || pendingWrites.size === 0) {
+    if ((!pendingWrites || pendingWrites.size === 0) && (!flusher || !flusher.hasPendingWrite())) {
       return;
     }
 
@@ -292,7 +429,7 @@ export async function waitForPersistStorageIdle(storageKey: string, timeoutMs = 
     }
 
     await Promise.race([
-      Promise.allSettled([...pendingWrites]),
+      pendingWrites ? Promise.allSettled([...pendingWrites]) : Promise.resolve(),
       new Promise((resolve) => {
         window.setTimeout(resolve, Math.min(STORAGE_IDLE_POLL_MS, remainingMs));
       }),
@@ -311,7 +448,12 @@ export async function flushAllPersistStorage(timeoutMs = 1500): Promise<{
   flushedKeys: string[];
   timedOutKeys: string[];
 }> {
-  const storageKeys = [...pendingStorageWrites.keys()];
+  const storageKeys = [...new Set([
+    ...pendingStorageWrites.keys(),
+    ...[...deferredStorageFlushers.entries()]
+      .filter(([, flusher]) => flusher.hasPendingWrite())
+      .map(([storageKey]) => storageKey),
+  ])];
   const flushedKeys: string[] = [];
   const timedOutKeys: string[] = [];
 

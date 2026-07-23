@@ -63,7 +63,7 @@ export function useModesPersistence({
   const commitDraftBlockingState = useCallback((nextGateRule: GateRuleDraft) => {
     const nextDraftState = blockingDraftRef.current;
     useAppStore.getState().replaceBlockingState(nextDraftState);
-    commitLearningState({
+    return commitLearningState({
       localActiveDeckId,
       setLocalActiveDeckId,
       nextGateRule,
@@ -87,7 +87,7 @@ export function useModesPersistence({
     const nextSessionCreditsRequired = commitSessionCreditsRequiredDraft();
     const nextUnlockDurationMinutes = commitUnlockDurationMinutesDraft();
 
-    commitDraftBlockingState({
+    const learningStateChanged = commitDraftBlockingState({
       sessionCreditsRequired: nextSessionCreditsRequired,
       unlockDurationMinutes: nextUnlockDurationMinutes,
       typedAnswerEnabled: localTypedAnswerEnabled,
@@ -105,6 +105,8 @@ export function useModesPersistence({
     setBreathingRounds(nextBreathingRounds);
     setInterventionInterval(nextInterval);
     setInterventionPatternId(localPatternId);
+
+    return learningStateChanged;
   }, [
     commitBreathingRoundsDraft,
     commitDraftBlockingState,

@@ -31,6 +31,10 @@ describe('learn view models', () => {
         deckId === 'deck-1'
           ? {
               totalCards: 120,
+              neverLearnedCount: 5,
+              reviewsThisWeek: 12,
+              activeDaysThisWeek: 3,
+              reviewedDaysThisWeek: [true, false, true, true, false, false, false],
               dueNowCount: 7,
               dueCount: 9,
               overdueCount: 2,
@@ -42,6 +46,10 @@ describe('learn view models', () => {
             }
           : {
               totalCards: 60,
+              neverLearnedCount: 2,
+              reviewsThisWeek: 4,
+              activeDaysThisWeek: 2,
+              reviewedDaysThisWeek: [true, true, false, false, false, false, false],
               dueNowCount: 3,
               dueCount: 3,
               overdueCount: 1,

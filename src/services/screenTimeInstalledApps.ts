@@ -5,13 +5,14 @@ import { UnsupportedPlatformError } from '@/services/screenTimePlatformError';
 
 const INSTALLED_APPS_CACHE_TTL_MS = 60_000;
 
-let installedAppsCache:
-  | {
-      value: InstalledApp[];
-      expiresAt: number;
-    }
-  | null = null;
-let installedAppsRequest: Promise<InstalledApp[]> | null = null;
+export type InstalledAppsOptions = {
+  includeIcons?: boolean;
+  iconPackageNames?: string[];
+};
+type InstalledAppsCacheEntry = { value: InstalledApp[]; expiresAt: number };
+
+const installedAppsCache = new Map<string, InstalledAppsCacheEntry>();
+const installedAppsRequests = new Map<string, Promise<InstalledApp[]>>();
 
 function ensureAndroidSupport(feature: string) {
   if (!isAndroidPlatform) {
@@ -19,29 +20,46 @@ function ensureAndroidSupport(feature: string) {
   }
 }
 
-export async function getInstalledApps(): Promise<InstalledApp[]> {
+export async function getInstalledApps(options: InstalledAppsOptions = {}): Promise<InstalledApp[]> {
   ensureAndroidSupport('Installed apps');
+  const iconPackageNames = [...new Set(
+    (options.iconPackageNames ?? [])
+      .map((packageName) => packageName.trim())
+      .filter(Boolean),
+  )].sort();
+  const includeIcons = options.includeIcons === true;
+  const cacheKey = includeIcons
+    ? 'icons:all'
+    : iconPackageNames.length > 0
+      ? `icons:${iconPackageNames.join('|')}`
+      : 'icons:none';
   const now = Date.now();
-  if (installedAppsCache && installedAppsCache.expiresAt > now) {
-    return installedAppsCache.value;
+  const cached = installedAppsCache.get(cacheKey);
+  if (cached && cached.expiresAt > now) {
+    return cached.value;
   }
 
-  if (installedAppsRequest) {
-    return installedAppsRequest;
+  const pendingRequest = installedAppsRequests.get(cacheKey);
+  if (pendingRequest) {
+    return pendingRequest;
   }
 
-  installedAppsRequest = ScreenTime.getInstalledApps()
+  const request = ScreenTime.getInstalledApps({
+    includeIcons,
+    iconPackageNames: iconPackageNames.length > 0 ? iconPackageNames : undefined,
+  })
     .then((result) => {
       const normalizedApps = ensureArray(result.apps).map(normalizeAppEntry);
-      installedAppsCache = {
+      installedAppsCache.set(cacheKey, {
         value: normalizedApps,
         expiresAt: Date.now() + INSTALLED_APPS_CACHE_TTL_MS,
-      };
+      });
       return normalizedApps;
     })
     .finally(() => {
-      installedAppsRequest = null;
+      installedAppsRequests.delete(cacheKey);
     });
 
-  return installedAppsRequest;
+  installedAppsRequests.set(cacheKey, request);
+  return request;
 }

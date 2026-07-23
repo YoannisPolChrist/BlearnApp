@@ -1,10 +1,36 @@
 import { describe, expect, it } from 'vitest';
-import { buildDevicePolicySnapshot } from '@/lib/nativePolicy';
+import { areDevicePolicySnapshotsEqual, buildDevicePolicySnapshot } from '@/lib/nativePolicy';
 import { createDefaultStrictAddonMap } from '@/lib/targetModes';
 import { resolveUnlockedTargets } from '@/lib/unlockedTargets';
 import * as screenTimeService from '@/services/screenTimeService';
 
 describe('native policy helpers', () => {
+  it('compares native policy snapshots without serializing the full payload', () => {
+    const snapshot = buildDevicePolicySnapshot({
+      activeModes: ['learn'],
+      gateRule: {
+        requiredCorrectReviews: 3,
+        unlockDurationMinutes: 15,
+        typedAnswerMaxWords: 3,
+        typedAnswerEnabled: true,
+      },
+      blockedApps: ['com.instagram.android'],
+      blockedAppModes: { 'com.instagram.android': 'learn' },
+      blockedWebsites: [],
+      blockedWebsiteModes: {},
+      blockedSearchTerms: [],
+      blockedSearchTermModes: {},
+      assignments: [],
+      unlockedTargets: { 'app:com.instagram.android': 1_800_000_000_000 },
+    });
+    const sameSnapshot = structuredClone(snapshot);
+    const changedSnapshot = structuredClone(snapshot);
+    changedSnapshot.targets[0].requiredCorrectReviews = 4;
+
+    expect(areDevicePolicySnapshotsEqual(snapshot, sameSnapshot)).toBe(true);
+    expect(areDevicePolicySnapshotsEqual(snapshot, changedSnapshot)).toBe(false);
+  });
+
   it('omits inactive penalty targets from the stable device policy snapshot shape', () => {
     const snapshot = buildDevicePolicySnapshot({
       activeModes: ['lock', 'learn'],
@@ -281,7 +307,7 @@ describe('native policy helpers', () => {
     expect(snapshot.strictLockUntil).toBeUndefined();
   });
 
-  it('adds strict add-on system protection packages while add-ons are active', () => {
+  it('keeps the selected mode for add-on-frozen apps while protecting system settings', () => {
     const strictAddons = createDefaultStrictAddonMap();
     const strictAddonUntil = Date.now() + 60_000;
     strictAddons.learn = {
@@ -328,6 +354,15 @@ describe('native policy helpers', () => {
       ]),
     );
     expect(snapshot.strictAddonProtectionUntil).toBe(strictAddonUntil);
+    expect(snapshot.targets).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 'com.google.android.youtube',
+          type: 'app',
+          mode: 'learn',
+        }),
+      ]),
+    );
     expect(snapshot.targets).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -391,7 +426,7 @@ describe('native policy helpers', () => {
     );
   });
 
-  it('overrides local target modes with higher priority modes from strict addons and remote instructions', () => {
+  it('preserves local target modes for strict add-ons while remote instructions still take priority', () => {
     const strictAddonUntil = Date.now() + 60_000;
     const strictAddons = createDefaultStrictAddonMap({
       strict: {
@@ -437,8 +472,9 @@ describe('native policy helpers', () => {
     const instagramTarget = snapshot.targets.find(t => t.id === 'com.instagram.android');
     const netflixTarget = snapshot.targets.find(t => t.id === 'com.netflix.mediaclient');
 
-    // Instagram local 'learn' overridden by strict addon's 'strict'
-    expect(instagramTarget?.mode).toBe('strict');
+    // A strict add-on freezes the assignment; it must not turn a Learn app
+    // into a Strict intervention flow.
+    expect(instagramTarget?.mode).toBe('learn');
 
     // Netflix local 'penalty' overridden by remote blocking's 'strict'
     expect(netflixTarget?.mode).toBe('strict');

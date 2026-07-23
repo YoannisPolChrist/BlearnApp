@@ -13,7 +13,6 @@ import { getBlockingFlowQueryContext } from '@/lib/blockingFlowContext';
 import { waitForBlockingFlowPersistence } from '@/lib/blockingFlowPersistence';
 import { primeNativeUnlockHandoff } from '@/lib/nativeUnlockHandoff';
 import { createBlockingFlowSearchParams } from '@/lib/nativeOverlayRuntime';
-import { getActiveStrictAddonLockedAppsByMode } from '@/lib/targetModes';
 import { buildUnlockedTargetKey } from '@/lib/unlockedTargets';
 import { abandonPendingNavigation } from '@/services/screenTimeService';
 import { useModeSettings, usePenaltyActions, usePenaltyStatus } from '@/store/selectors';
@@ -139,7 +138,6 @@ export default function InterventionPage() {
   const blockedSearchTermModes = useAppStore((state) => state.blockedSearchTermModes);
   const strictLockUntil = useAppStore((state) => state.strictLockUntil);
   const strictLockScope = useAppStore((state) => state.strictLockScope);
-  const strictAddons = useAppStore((state) => state.strictAddons);
   const unlockedTargets = useAppStore((state) => state.unlockedTargets);
 
   const isUnlocked = useMemo(() => {
@@ -160,12 +158,6 @@ export default function InterventionPage() {
         Date.now() < strictLockUntil &&
         strictLockScope === 'full';
       if (isFullStrictLockActive) {
-        return true;
-      }
-
-      const strictAddonLockedApps = getActiveStrictAddonLockedAppsByMode(strictAddons);
-      const isLockedByAddon = Object.values(strictAddonLockedApps).some((appSet) => appSet.has(normalized));
-      if (isLockedByAddon) {
         return true;
       }
 
@@ -203,7 +195,6 @@ export default function InterventionPage() {
     blockedSearchTermModes,
     strictLockUntil,
     strictLockScope,
-    strictAddons,
   ]);
 
   const wasRemoteBlockedRef = useRef(false);

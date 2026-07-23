@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/lib/ankiImport', () => ({
-  parseAnkiPackage: vi.fn(async () => ({
+vi.mock('@/modules/learning/workers/ankiImportWorker', () => ({
+  parseAnkiPackageInWorker: vi.fn(async () => ({
     rows: [
       {
         deck: 'Jean Paul',

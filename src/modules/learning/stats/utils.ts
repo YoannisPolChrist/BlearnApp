@@ -35,3 +35,25 @@ export function countNewCardsIntroducedToday(reviewLogs: ReviewLog[], deckId: st
     (log) => log.deckId === deckId && log.reviewedAt >= todayStart && log.previousState === 'new',
   ).length;
 }
+
+export function getWeeklyReviewActivity(reviewLogs: ReviewLog[], deckId: string, now = Date.now()) {
+  const weekStart = new Date(now);
+  const daysSinceMonday = (weekStart.getDay() + 6) % 7;
+  weekStart.setDate(weekStart.getDate() - daysSinceMonday);
+  weekStart.setHours(0, 0, 0, 0);
+
+  const weekDayKeys = Array.from({ length: 7 }, (_, index) => {
+    const day = new Date(weekStart);
+    day.setDate(day.getDate() + index);
+    return getLocalDateKey(day.getTime());
+  });
+  const weeklyLogs = reviewLogs.filter(
+    (log) => log.deckId === deckId && log.reviewedAt >= weekStart.getTime() && log.reviewedAt <= now,
+  );
+  const activeDayKeys = new Set(weeklyLogs.map((log) => getLocalDateKey(log.reviewedAt)));
+
+  return {
+    reviewsThisWeek: weeklyLogs.length,
+    reviewedDaysThisWeek: weekDayKeys.map((dayKey) => activeDayKeys.has(dayKey)),
+  };
+}

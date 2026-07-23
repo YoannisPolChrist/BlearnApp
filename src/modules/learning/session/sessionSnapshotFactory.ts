@@ -1,5 +1,5 @@
 import { buildReviewQueue, buildUnlockSessionQueue } from '@/lib/learning';
-import type { LearningCard, LearningDeck } from '@/lib/learning';
+import type { LearningCard, LearningDeck, LearningNote } from '@/lib/learning';
 import type {
   LearningSessionContext,
   LearningSessionKind,
@@ -32,13 +32,20 @@ export function resolveAvailableDeckId({
   preferredDeckIds,
   decks,
   cards,
+  notes,
 }: {
   preferredDeckIds: Array<string | undefined>;
   decks: LearningDeck[];
   cards: LearningCard[];
+  notes?: LearningNote[];
 }) {
   const existingDeckIds = new Set(decks.map((deck) => deck.id));
-  const deckIdsWithCards = new Set(cards.map((card) => card.deckId));
+  const noteIds = notes ? new Set(notes.map((note) => note.id)) : null;
+  const deckIdsWithCards = new Set(
+    cards
+      .filter((card) => !noteIds || noteIds.has(card.noteId))
+      .map((card) => card.deckId),
+  );
   const uniquePreferredDeckIds = preferredDeckIds
     .map((deckId) => deckId?.trim())
     .filter((deckId, index, allDeckIds): deckId is string => Boolean(deckId) && allDeckIds.indexOf(deckId) === index);
@@ -81,6 +88,7 @@ export function createLearningSessionSnapshot(
             ignoreNewCardsLimit: context.ignoreNewCardsLimit,
             includeReviewAhead: context.includeReviewAhead,
             excludeCardIds: context.excludeCardIds,
+            isBlockedFlow: context.isBlockedFlow,
             now: context.now,
           })
         : buildReviewQueue(context.cards, context.sessionCreditsRequired, context.now);

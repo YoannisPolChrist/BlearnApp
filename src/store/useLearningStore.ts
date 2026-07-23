@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+﻿import { create } from 'zustand';
 import { persist, subscribeWithSelector } from 'zustand/middleware';
 import {
   createLearningBaseSlice,
@@ -77,6 +77,7 @@ function createLearningInitialState(): LearningStoreState {
   return {
     activeDeckId: undefined,
     activeDeckUpdatedAt: undefined,
+    hiddenDeckIds: [],
     decks: {},
     notes: {},
     cards: {},
@@ -151,6 +152,9 @@ function mergePersistedLearningState(
   const sourceAssignments = hasRecordEntries(persisted.assignments)
     ? recordValues(persisted.assignments as Record<string, unknown>)
     : currentState.assignments;
+  const hiddenDeckIds = Array.isArray(persisted.hiddenDeckIds)
+    ? persisted.hiddenDeckIds.filter((deckId): deckId is string => typeof deckId === 'string' && deckId.trim().length > 0)
+    : currentState.hiddenDeckIds;
   const sourceUnlockGrants = persisted.unlockGrants?.length ? persisted.unlockGrants : currentState.unlockGrants;
   const sourceMediaRegistry = persisted.mediaRegistry ?? currentState.mediaRegistry;
   const sourceMediaTransferQueue = persisted.mediaTransferQueue ?? currentState.mediaTransferQueue;
@@ -165,7 +169,7 @@ function mergePersistedLearningState(
     persisted.filteredDeckLiteDefinitions ?? currentState.filteredDeckLiteDefinitions;
   const sourceFilteredDeckLiteRuns = persisted.filteredDeckLiteRuns ?? currentState.filteredDeckLiteRuns;
 
-  // Migrate all entities (dict→dict)
+  // Migrate all entities (dict��'dict)
   const normalizedNotes: Record<string, LearningNote> = {};
   for (const note of recordValues(sourceNotes)) {
     const migrated = migrateLearningNote(note as Partial<LearningNote>);
@@ -202,6 +206,7 @@ function mergePersistedLearningState(
     ...currentState,
     ...persisted,
     activeDeckUpdatedAt: persisted.activeDeckUpdatedAt ?? currentState.activeDeckUpdatedAt,
+    hiddenDeckIds,
     presets: mergedPresets,
     decks: mergedDecks,
     notes: createIndexedRecordView(Object.values(normalizedNotes)),
@@ -261,6 +266,7 @@ export const useLearningStore = create<LearningStoreWithPhase3>()(
         partialize: (state) => ({
           activeDeckId: state.activeDeckId,
           activeDeckUpdatedAt: state.activeDeckUpdatedAt,
+          hiddenDeckIds: state.hiddenDeckIds,
           decks: state.decks,
           notes: state.notes,
           cards: state.cards,

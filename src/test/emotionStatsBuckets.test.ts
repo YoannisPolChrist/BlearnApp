@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useEmotionStatsData } from '@/modules/stats/emotions';
+import { TOP_EMOTIONS_LIMIT } from '@/modules/stats/constants';
 import type { CheckinEntry, UserInteraction, UserProfile } from '@/store/useAppStore';
 
 // Verankert die Tages-Grenzen der Stimmungs-Charts. Der Bug: Bei Wochen-/Monats-
@@ -198,5 +199,23 @@ describe('useEmotionStatsData bucketing (day boundaries)', () => {
     const { result: resultTotal } = renderHook(() => useEmotionStatsData('total', checkins, makeUserProfile()));
     expect(resultTotal.current.recentMoodEntries).toHaveLength(2);
     expect(resultTotal.current.topEmotions.find((e) => e.id === 'stressed')).toBeDefined();
+  });
+
+  it('shows up to twelve of the most frequent emotions', () => {
+    const now = new Date('2026-06-14T12:00:00Z').getTime();
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+    const emotionIds = [
+      'happy', 'calm', 'grateful', 'relieved', 'motivated', 'confident',
+      'stressed', 'bored', 'sad', 'angry', 'anxious', 'overwhelmed', 'lonely',
+    ];
+
+    const checkins = emotionIds.map((emotion, index) => (
+      makeCheckin(emotion, now - index, [emotion])
+    ));
+    const { result } = renderHook(() => useEmotionStatsData('total', checkins, makeUserProfile()));
+
+    expect(TOP_EMOTIONS_LIMIT).toBe(12);
+    expect(result.current.topEmotions).toHaveLength(TOP_EMOTIONS_LIMIT);
+    expect(result.current.emotionRadar).toHaveLength(TOP_EMOTIONS_LIMIT);
   });
 });

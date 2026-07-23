@@ -3,42 +3,32 @@ import {
   getLearningCloudStateSignature,
   getLearningCloudEntitySignature,
   isLearningCloudStateEmpty,
+  mergeLearningCloudStates,
   normalizeLearningCloudState,
+  withLearningCloudDeletionTombstones,
   type LearningCloudState,
 } from '@/lib/learningCloudSync';
 import {
-  getCardRevision,
-  getDeckRevision,
-  getNoteRevision,
-  getPresetRevision,
-  getReviewLogRevision,
-} from '@/modules/learning/sync/learningSyncMappers';
-import {
-  compareSyncCursors,
   createSyntheticLearningCloudCursor,
   normalizeSyncCursor,
 } from './cursors';
 import {
+  archiveEntityChunks,
   commitEntityChunks,
   deleteEntityChunks,
   getChangedItems,
   getDeletedIds,
   getDeletedIdsFromTombstones,
-  getTimestampChangedItems,
   loadCollection,
-  loadEntityCollectionWithBucketFallback,
-  saveBucketedEntityChunks,
+  loadEntitiesWithMigrationFallback,
 } from './entities';
 import {
   loadLearningCloudMetaWithSdk,
   normalizeLearningCloudMeta,
-  loadLearningCloudSyncCursorWithSdk,
 } from './metadata';
 import {
   buildLearningCloudMutationRecord,
   getPersistableLearningCloudMutationRecord,
-  loadMutationRecords,
-  mergeLearningStateWithMutations,
   writeLearningCloudMutationAndMeta,
 } from './mutations';
 import {
@@ -59,6 +49,26 @@ import {
 const inFlightLearningCloudSavePromises = new Map<string, Promise<LearningCloudMeta>>();
 const inFlightLearningCloudSaveKeys = new Map<string, string>();
 
+function getRecoverableDeletedEntities<T extends { id: string }>(
+  ids: string[],
+  ...sources: Array<Record<string, T> | undefined | null>
+): T[] {
+  const entitiesById = new Map<string, T>();
+  for (const source of sources) {
+    if (!source) continue;
+    for (const entity of Object.values(source)) {
+      if (!entitiesById.has(entity.id)) {
+        entitiesById.set(entity.id, entity);
+      }
+    }
+  }
+
+  return ids.flatMap((id) => {
+    const entity = entitiesById.get(id);
+    return entity ? [entity] : [];
+  });
+}
+
 export async function loadLearningCloudState(
   userId: string,
   options?: LearningCloudReadOptions,
@@ -66,25 +76,41 @@ export async function loadLearningCloudState(
   const sdk = await loadFirestoreSdk();
   const firestore = await ensureFirestore();
   const metaRef = getMetaDoc(sdk, firestore, userId);
-  const [metaSnapshot, decks, notes, cards, reviewLogs, presets, mutations] = await Promise.all([
+
+  // Load the root metadata and deck list first. The metadata tells us whether
+  // an old account can still contain deck-scoped compatibility data.
+  const [metaSnapshot, decks] = await Promise.all([
     options?.source === 'server' && typeof sdk.getDocFromServer === 'function'
       ? sdk.getDocFromServer(metaRef).catch(() => sdk.getDoc(metaRef))
       : sdk.getDoc(metaRef),
     loadCollection<LearningCloudState['decks'][number]>(sdk, firestore, userId, 'decks', options),
-    loadEntityCollectionWithBucketFallback<LearningCloudState['notes'][number]>(sdk, firestore, userId, 'notes', options),
-    loadEntityCollectionWithBucketFallback<LearningCloudState['cards'][number]>(sdk, firestore, userId, 'cards', options),
-    loadCollection<LearningCloudState['reviewLogs'][number]>(sdk, firestore, userId, 'reviewLogs', options),
-    loadCollection<LearningCloudState['presets'][number]>(sdk, firestore, userId, 'presets', options),
-    loadMutationRecords(sdk, firestore, userId, undefined, options),
   ]);
-
   const meta = metaSnapshot.exists()
     ? normalizeLearningCloudMeta(metaSnapshot.data() as LearningCloudMeta)
     : null;
+  const deckIds = decks.map((d) => d.id);
+  const readDeckScopedCompatibilityData = meta?.deckScopedMigrationCompleted === true;
+
+  // Entity documents plus the metadata document are the complete Firestore
+  // snapshot. Mutation records are an optimization/audit trail, never a
+  // required reconstruction source for a device returning after compaction.
+  const [notes, cards, reviewLogs, presets] = await Promise.all([
+    loadEntitiesWithMigrationFallback<LearningCloudState['notes'][number]>(
+      sdk, firestore, userId, deckIds, 'notes', 'notes', options, readDeckScopedCompatibilityData,
+    ),
+    loadEntitiesWithMigrationFallback<LearningCloudState['cards'][number]>(
+      sdk, firestore, userId, deckIds, 'cards', 'cards', options, readDeckScopedCompatibilityData,
+    ),
+    loadEntitiesWithMigrationFallback<LearningCloudState['reviewLogs'][number]>(
+      sdk, firestore, userId, deckIds, 'reviewLogs', 'reviewLogs', options, readDeckScopedCompatibilityData,
+    ),
+    loadCollection<LearningCloudState['presets'][number]>(sdk, firestore, userId, 'presets', options),
+  ]);
+
   const snapshotState = normalizeLearningCloudState({
     activeDeckId: meta?.activeDeckId,
     activeDeckUpdatedAt: meta?.activeDeckUpdatedAt,
-    decks: Object.fromEntries(decks.map(d => [d.id, d])),
+    decks,
     notes: Object.fromEntries(notes.map(n => [n.id, n])),
     cards: Object.fromEntries(cards.map(c => [c.id, c])),
     reviewLogs: Object.fromEntries(reviewLogs.map(l => [l.id, l])),
@@ -97,17 +123,9 @@ export async function loadLearningCloudState(
     filteredDeckLiteDefinition: meta?.filteredDeckLiteDefinition,
     filteredDeckLiteDefinitions: meta?.filteredDeckLiteDefinitions,
     filteredDeckLiteRuns: meta?.filteredDeckLiteRuns,
+    entityTombstones: meta?.entityTombstones,
   });
-  const snapshotCursor = normalizeSyncCursor(meta?.snapshotCursor)
-    || normalizeSyncCursor(meta?.mutationCursor)
-    || normalizeSyncCursor({
-      mutationId: meta?.lastMutationId || '',
-      mutationAt: meta?.lastMutationAt || meta?.clientUpdatedAt,
-    });
-  const pulledMutations = snapshotCursor
-    ? mutations.filter((mutation) => compareSyncCursors(mutation.cursor, snapshotCursor) > 0)
-    : mutations;
-  const mergedState = mergeLearningStateWithMutations(snapshotState, pulledMutations);
+  const mergedState = snapshotState;
 
   if (!meta && isLearningCloudStateEmpty(mergedState)) {
     return null;
@@ -124,7 +142,11 @@ export async function saveLearningCloudState(
   options?: LearningCloudSaveOptions,
 ): Promise<LearningCloudMeta> {
   assertFirebaseWritesEnabled('Learn-Cloud-Schreibzugriffe');
-  const normalizedNextState = normalizeLearningCloudState(nextState);
+  const normalizedNextState = withLearningCloudDeletionTombstones(
+    previousState ? normalizeLearningCloudState(previousState) : null,
+    normalizeLearningCloudState(nextState),
+    Date.now(),
+  );
   const normalizedPreviousState = previousState
     ? normalizeLearningCloudState(previousState)
     : null;
@@ -155,7 +177,26 @@ export async function saveLearningCloudState(
     const sdk = await loadFirestoreSdk();
     const firestore = await ensureFirestore();
     const now = Date.now();
-    const currentMeta = await loadLearningCloudMetaWithSdk(sdk, firestore, userId);
+    const currentMeta = await loadLearningCloudMetaWithSdk(sdk, firestore, userId, { source: 'server' });
+    let authoritativeRemoteState: LearningCloudState | null = null;
+    if (currentMeta) {
+      const remoteCursor = normalizeSyncCursor(currentMeta.snapshotCursor)
+        || normalizeSyncCursor(currentMeta.mutationCursor)
+        || normalizeSyncCursor({
+          mutationId: currentMeta.lastMutationId || '',
+          mutationAt: currentMeta.lastMutationAt || currentMeta.clientUpdatedAt,
+        });
+      // Firestore entity documents form the durable source of truth. A local
+      // cursor can predate compacted mutations, so a mutation suffix is never
+      // sufficient evidence for resolving a concurrent save.
+      authoritativeRemoteState = await loadLearningCloudState(userId, { source: 'server' });
+    }
+
+    const authoritativeState = authoritativeRemoteState
+      ? normalizeLearningCloudState(authoritativeRemoteState)
+      : normalizedPreviousState;
+    const resolvedNextState = mergeLearningCloudStates(normalizedNextState, authoritativeState);
+
     const localSyncSince = Number.isFinite(localSyncState?.lastSuccessfulSyncAt)
       ? Math.max(0, Math.round(localSyncState?.lastSuccessfulSyncAt as number))
       : null;
@@ -168,21 +209,11 @@ export async function saveLearningCloudState(
         || currentMeta?.lastMutationId
       ),
     );
-    const changedDecks = canUseLocalEntitySelection && localSyncSince !== null
-      ? getTimestampChangedItems(Object.values(normalizedNextState.decks), localSyncSince, getDeckRevision)
-      : getChangedItems(Object.values(normalizedPreviousState?.decks || {}), Object.values(normalizedNextState.decks));
-    const changedNotes = canUseLocalEntitySelection && localSyncSince !== null
-      ? getTimestampChangedItems(Object.values(normalizedNextState.notes), localSyncSince, getNoteRevision)
-      : getChangedItems(Object.values(normalizedPreviousState?.notes || {}), Object.values(normalizedNextState.notes));
-    const changedCards = canUseLocalEntitySelection && localSyncSince !== null
-      ? getTimestampChangedItems(Object.values(normalizedNextState.cards), localSyncSince, getCardRevision)
-      : getChangedItems(Object.values(normalizedPreviousState?.cards || {}), Object.values(normalizedNextState.cards));
-    const changedReviewLogs = canUseLocalEntitySelection && localSyncSince !== null
-      ? getTimestampChangedItems(Object.values(normalizedNextState.reviewLogs), localSyncSince, getReviewLogRevision)
-      : getChangedItems(Object.values(normalizedPreviousState?.reviewLogs || {}), Object.values(normalizedNextState.reviewLogs));
-    const changedPresets = canUseLocalEntitySelection && localSyncSince !== null
-      ? getTimestampChangedItems(Object.values(normalizedNextState.presets), localSyncSince, getPresetRevision)
-      : getChangedItems(Object.values(normalizedPreviousState?.presets || {}), Object.values(normalizedNextState.presets));
+    const changedDecks = getChangedItems(Object.values(authoritativeState?.decks || {}), Object.values(resolvedNextState.decks));
+    const changedNotes = getChangedItems(Object.values(authoritativeState?.notes || {}), Object.values(resolvedNextState.notes));
+    const changedCards = getChangedItems(Object.values(authoritativeState?.cards || {}), Object.values(resolvedNextState.cards));
+    const changedReviewLogs = getChangedItems(Object.values(authoritativeState?.reviewLogs || {}), Object.values(resolvedNextState.reviewLogs));
+    const changedPresets = getChangedItems(Object.values(authoritativeState?.presets || {}), Object.values(resolvedNextState.presets));
     const deletedDeckIds = canUseLocalEntitySelection && localSyncSince !== null
       ? getDeletedIdsFromTombstones(localSyncState?.deletedDecks || [], localSyncSince)
       : getDeletedIds(Object.values(normalizedPreviousState?.decks || {}), Object.values(normalizedNextState.decks));
@@ -198,19 +229,45 @@ export async function saveLearningCloudState(
     const deletedPresetIds = canUseLocalEntitySelection && localSyncSince !== null
       ? getDeletedIdsFromTombstones(localSyncState?.deletedPresets || [], localSyncSince)
       : getDeletedIds(Object.values(normalizedPreviousState?.presets || {}), Object.values(normalizedNextState.presets));
-    const affectedNoteEntityIds = Array.from(
-      new Set([...changedNotes.map((note) => note.id), ...deletedNoteIds]),
+    const archivedDecks = getRecoverableDeletedEntities(
+      deletedDeckIds,
+      authoritativeState?.decks,
+      normalizedPreviousState?.decks,
     );
-    const affectedCardEntityIds = Array.from(
-      new Set([...changedCards.map((card) => card.id), ...deletedCardIds]),
+    const archivedNotes = getRecoverableDeletedEntities(
+      deletedNoteIds,
+      authoritativeState?.notes,
+      normalizedPreviousState?.notes,
+    );
+    const archivedCards = getRecoverableDeletedEntities(
+      deletedCardIds,
+      authoritativeState?.cards,
+      normalizedPreviousState?.cards,
+    );
+    const archivedReviewLogs = getRecoverableDeletedEntities(
+      deletedReviewLogIds,
+      authoritativeState?.reviewLogs,
+      normalizedPreviousState?.reviewLogs,
+    );
+    const archivedPresets = getRecoverableDeletedEntities(
+      deletedPresetIds,
+      authoritativeState?.presets,
+      normalizedPreviousState?.presets,
     );
     const snapshotCursor = normalizeSyncCursor(currentMeta?.snapshotCursor)
       || normalizeSyncCursor(currentMeta?.mutationCursor)
       || null;
-    const baseCursor = await loadLearningCloudSyncCursorWithSdk(sdk, firestore, userId);
+    const baseCursor = currentMeta
+      ? (normalizeSyncCursor(currentMeta.snapshotCursor)
+        || normalizeSyncCursor(currentMeta.mutationCursor)
+        || normalizeSyncCursor({
+          mutationId: currentMeta.lastMutationId || '',
+          mutationAt: currentMeta.lastMutationAt || currentMeta.clientUpdatedAt,
+        }))
+      : null;
     const mutation = buildLearningCloudMutationRecord(
-      normalizedNextState,
-      normalizedPreviousState,
+      resolvedNextState,
+      authoritativeState,
       deviceId,
       baseCursor,
       now,
@@ -230,77 +287,76 @@ export async function saveLearningCloudState(
       );
     }
 
-    if (!canUseMutationOnlySave) {
+    // Entity documents are the durable source of truth. Keep notes, cards and
+    // review logs in the established complete collections until a future
+    // migration can prove a full copy before switching readers. The earlier
+    // deck-scoped writer marked partial copies as complete and stranded cards
+    // without their notes.
+    {
       await commitEntityChunks(sdk, firestore, userId, 'decks', changedDecks, deviceId);
-      await saveBucketedEntityChunks(
-        sdk,
-        firestore,
-        userId,
-        'noteBuckets',
-        Object.values(normalizedNextState.notes),
-        Object.values(normalizedPreviousState?.notes || {}),
-        deviceId,
-        canUseLocalEntitySelection
-          ? {
-              affectedEntityIds: affectedNoteEntityIds,
-              forceRewriteAffectedBuckets: deletedNoteIds.length > 0,
-            }
-          : undefined,
-      );
-      await saveBucketedEntityChunks(
-        sdk,
-        firestore,
-        userId,
-        'cardBuckets',
-        Object.values(normalizedNextState.cards),
-        Object.values(normalizedPreviousState?.cards || {}),
-        deviceId,
-        canUseLocalEntitySelection
-          ? {
-              affectedEntityIds: affectedCardEntityIds,
-              forceRewriteAffectedBuckets: deletedCardIds.length > 0,
-            }
-          : undefined,
-      );
+      await commitEntityChunks(sdk, firestore, userId, 'notes', changedNotes, deviceId);
+      await commitEntityChunks(sdk, firestore, userId, 'cards', changedCards, deviceId);
       await commitEntityChunks(sdk, firestore, userId, 'reviewLogs', changedReviewLogs, deviceId);
       await commitEntityChunks(sdk, firestore, userId, 'presets', changedPresets, deviceId);
-      await deleteEntityChunks(sdk, firestore, userId, 'cards', deletedCardIds);
-      await deleteEntityChunks(sdk, firestore, userId, 'notes', deletedNoteIds);
-      await deleteEntityChunks(sdk, firestore, userId, 'reviewLogs', deletedReviewLogIds);
-      await deleteEntityChunks(sdk, firestore, userId, 'decks', deletedDeckIds);
-      await deleteEntityChunks(sdk, firestore, userId, 'presets', deletedPresetIds);
+
+      // Never remove a cloud entity unless the exact payload has first been
+      // copied to the user's archive. A stale tombstone without its payload is
+      // deliberately a no-op: preserving another device's data is safer than
+      // irreversible deletion.
+      await archiveEntityChunks(sdk, firestore, userId, 'notes', archivedNotes, deviceId, now);
+      await archiveEntityChunks(sdk, firestore, userId, 'cards', archivedCards, deviceId, now);
+      await archiveEntityChunks(sdk, firestore, userId, 'reviewLogs', archivedReviewLogs, deviceId, now);
+      await archiveEntityChunks(sdk, firestore, userId, 'decks', archivedDecks, deviceId, now);
+      await archiveEntityChunks(sdk, firestore, userId, 'presets', archivedPresets, deviceId, now);
+
+      await deleteEntityChunks(sdk, firestore, userId, 'notes', archivedNotes.map((entity) => entity.id));
+      await deleteEntityChunks(sdk, firestore, userId, 'cards', archivedCards.map((entity) => entity.id));
+      await deleteEntityChunks(sdk, firestore, userId, 'reviewLogs', archivedReviewLogs.map((entity) => entity.id));
+      await deleteEntityChunks(sdk, firestore, userId, 'decks', archivedDecks.map((entity) => entity.id));
+      await deleteEntityChunks(sdk, firestore, userId, 'presets', archivedPresets.map((entity) => entity.id));
     }
 
     const meta: LearningCloudMeta = {
       schemaVersion: 2,
-      activeDeckId: normalizedNextState.activeDeckId,
-      activeDeckUpdatedAt: normalizedNextState.activeDeckUpdatedAt,
-      assignments: normalizedNextState.assignments,
-      gateRule: normalizedNextState.gateRule,
-      gateRuleUpdatedAt: normalizedNextState.gateRuleUpdatedAt,
-      cardBrowser: normalizedNextState.cardBrowser,
-      savedCardQueries: normalizedNextState.savedCardQueries,
-      filteredDeckLiteDefinition: normalizedNextState.filteredDeckLiteDefinition,
-      filteredDeckLiteDefinitions: normalizedNextState.filteredDeckLiteDefinitions,
-      filteredDeckLiteRuns: normalizedNextState.filteredDeckLiteRuns,
-      snapshotCursor: canUseMutationOnlySave ? (snapshotCursor || undefined) : effectiveCursor,
+      activeDeckId: resolvedNextState.activeDeckId,
+      activeDeckUpdatedAt: resolvedNextState.activeDeckUpdatedAt,
+      assignments: resolvedNextState.assignments,
+      gateRule: resolvedNextState.gateRule,
+      gateRuleUpdatedAt: resolvedNextState.gateRuleUpdatedAt,
+      cardBrowser: resolvedNextState.cardBrowser,
+      savedCardQueries: resolvedNextState.savedCardQueries,
+      filteredDeckLiteDefinition: resolvedNextState.filteredDeckLiteDefinition,
+      filteredDeckLiteDefinitions: resolvedNextState.filteredDeckLiteDefinitions,
+      filteredDeckLiteRuns: resolvedNextState.filteredDeckLiteRuns,
+      entityTombstones: resolvedNextState.entityTombstones,
+      // Every save commits the changed entity documents before this metadata
+      // batch. Advancing the snapshot cursor keeps the metadata honest: it
+      // always points at a complete Firestore entity snapshot, not a partial
+      // mutation window that an older device may no longer be able to replay.
+      snapshotCursor: effectiveCursor,
       mutationCursor: effectiveCursor,
       mutationCount: persistedMutation ? 1 : 0,
       updatedByDeviceId: deviceId,
       clientUpdatedAt: now,
       lastMutationId: effectiveCursor.mutationId,
       lastMutationAt: effectiveCursor.mutationAt,
-      deckCount: normalizedNextState.decks.length,
-      noteCount: normalizedNextState.notes.length,
-      cardCount: normalizedNextState.cards.length,
-      reviewLogCount: normalizedNextState.reviewLogs.length,
-      presetCount: normalizedNextState.presets.length,
-      entitySignature: getLearningCloudEntitySignature(normalizedNextState),
+      deckCount: Object.keys(resolvedNextState.decks).length,
+      noteCount: Object.keys(resolvedNextState.notes).length,
+      cardCount: Object.keys(resolvedNextState.cards).length,
+      reviewLogCount: Object.keys(resolvedNextState.reviewLogs).length,
+      presetCount: Object.keys(resolvedNextState.presets).length,
+      entitySignature: getLearningCloudEntitySignature(resolvedNextState),
+      // A historic account may have unique cards only in the old deck-scoped
+      // collections. Do not turn off its compatibility reader during an
+      // unrelated review save; that would make those cards disappear on the
+      // next load. A future explicit migration may flip this only after it
+      // has proven and copied the complete legacy data set.
+      deckScopedMigrationCompleted: currentMeta?.deckScopedMigrationCompleted === true,
     };
 
     await writeLearningCloudMutationAndMeta(sdk, firestore, userId, persistedMutation, meta);
 
-    return meta;
+    return { ...meta, resolvedState: resolvedNextState };
   })();
 
   inFlightLearningCloudSavePromises.set(userId, savePromise);

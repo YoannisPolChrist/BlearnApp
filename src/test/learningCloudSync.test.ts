@@ -6,6 +6,7 @@ import {
   getLearningCloudStateSignature,
   mergeLearningCloudStates,
   normalizeLearningCloudState,
+  withLearningCloudDeletionTombstones,
 } from '@/lib/learningCloudSync';
 
 describe('learningCloudSync', () => {
@@ -136,6 +137,72 @@ describe('learningCloudSync', () => {
     expect(merged.reviewLogs).toHaveLength(1);
     expect(merged.activeDeckId).toBe(localEntities.decks[0].id);
     expect(merged.activeDeckUpdatedAt).toBe(now + 30_000);
+  });
+
+  it('never rolls a reviewed card back when an old snapshot has a newer document timestamp', () => {
+    const now = 1_700_000_000_000;
+    const { decks, notes, cards } = buildEntitiesFromRows(
+      [{ deck: 'Spanish', front: 'hola', back: 'hello', type: 'basic' }],
+      now,
+    );
+    const currentCard = {
+      ...cards[0],
+      state: 'review' as const,
+      reps: 9,
+      lapses: 2,
+      dueAt: now + 86_400_000,
+      lastReviewedAt: now + 60_000,
+      updatedAt: now + 60_000,
+    };
+    const staleImportedCopy = {
+      ...cards[0],
+      state: 'new' as const,
+      reps: 0,
+      lapses: 0,
+      dueAt: now,
+      // Import/reload time is deliberately newer, but it is not a review.
+      updatedAt: now + 120_000,
+    };
+
+    const merged = mergeLearningCloudStates(
+      { decks, notes, cards: [currentCard], reviewLogs: [], presets: getDefaultLearningPresets() },
+      { decks, notes, cards: [staleImportedCopy], reviewLogs: [], presets: getDefaultLearningPresets() },
+    );
+
+    expect(merged.cards[0]).toMatchObject({
+      id: currentCard.id,
+      state: 'review',
+      reps: 9,
+      lapses: 2,
+      lastReviewedAt: now + 60_000,
+    });
+  });
+
+  it('does not resurrect a card deleted on another device from an offline copy', () => {
+    const now = 1_700_000_000_000;
+    const { decks, notes, cards } = buildEntitiesFromRows(
+      [{ deck: 'Spanish', front: 'hola', back: 'hello', type: 'basic' }],
+      now,
+    );
+    const base = normalizeLearningCloudState({
+      activeDeckId: decks[0].id,
+      activeDeckUpdatedAt: now,
+      decks,
+      notes,
+      cards,
+      reviewLogs: [],
+      presets: getDefaultLearningPresets(),
+    });
+    const deletedRemotely = withLearningCloudDeletionTombstones(
+      base,
+      normalizeLearningCloudState({ ...base, cards: [] }),
+      now + 1_000,
+    );
+
+    const merged = mergeLearningCloudStates(base, deletedRemotely);
+
+    expect(merged.cards).toEqual([]);
+    expect(merged.entityTombstones?.cards?.[cards[0].id]).toBe(now + 1_000);
   });
 
   it('prefers the most recently selected active deck across devices', () => {

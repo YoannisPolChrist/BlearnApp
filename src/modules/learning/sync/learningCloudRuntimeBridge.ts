@@ -5,6 +5,7 @@ import type {
   LearningCloudSyncCursor,
 } from '@/services/firebaseLearningSyncService';
 import { useLearningStore } from '@/store/useLearningStore';
+import { waitForPersistStorageIdle } from '@/lib/persistStorage';
 
 const LEARNING_STORAGE_KEY = 'blearn-learning-storage';
 const LEARNING_STORAGE_OWNER_KEY = 'blearn-learning-storage-owner';
@@ -171,6 +172,10 @@ function readLearningCloudStateFromPersistedSnapshot(snapshot: unknown): Learnin
 
 export async function preparePersistedLearningAccountSwitch(previousUserId: string, nextUserId: string) {
   const storageName = getPersistedLearningStorageName();
+  // Account switching reads the persisted snapshot directly. Flush the short
+  // performance debounce first so the outgoing account is backed up from its
+  // latest state instead of an earlier snapshot.
+  await waitForPersistStorageIdle(storageName);
   const currentSnapshot = await readPersistedLearningSnapshot(storageName);
   if (currentSnapshot) {
     await writePersistedLearningSnapshot(getLearningStorageBackupKey(previousUserId), currentSnapshot);

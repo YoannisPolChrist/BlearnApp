@@ -329,6 +329,7 @@ export interface BuildUnlockSessionQueueOptions {
   ignoreNewCardsLimit?: boolean;
   includeReviewAhead?: boolean;
   excludeCardIds?: Set<string>;
+  isBlockedFlow?: boolean;
   now?: number;
 }
 

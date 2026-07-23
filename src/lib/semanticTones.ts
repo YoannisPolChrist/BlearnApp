@@ -133,7 +133,7 @@ export const tonePalettes: Record<Exclude<SemanticTone, 'default'>, TonePalette>
     icon: 'border border-[hsl(var(--mode-learn-border)/0.38)] bg-[hsl(var(--mode-learn-surface)/0.96)] text-[hsl(var(--mode-learn-foreground))] shadow-[0_16px_32px_hsl(var(--mode-learn-glow)/0.14)]',
     line: 'from-[hsl(var(--mode-learn))] via-[hsl(var(--mode-learn)/0.86)] to-[hsl(var(--mode-learn-glow)/0.24)]',
     glow: 'bg-[hsl(var(--mode-learn-glow)/0.26)]',
-    button: 'bg-[hsl(var(--mode-learn))] text-[hsl(var(--mode-learn-foreground))] shadow-[0_20px_44px_hsl(var(--mode-learn-glow)/0.28)]',
+    button: 'bg-[hsl(var(--mode-learn))] text-[hsl(var(--mode-learn-foreground))] shadow-[0_20px_44px_hsl(var(--mode-learn-glow)/0.28)] dark:bg-[linear-gradient(145deg,hsl(45_78%_28%),hsl(38_72%_26%))] dark:text-[hsl(var(--card-foreground))] dark:shadow-[0_20px_44px_hsl(44_98%_58%/0.22)]',
     indicator: 'border-[hsl(var(--mode-learn-border))] bg-[hsl(var(--mode-learn))]',
     ring: 'ring-1 ring-[hsl(var(--mode-learn-border)/0.44)]',
     text: 'text-[hsl(var(--mode-learn-foreground))]',

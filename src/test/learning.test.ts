@@ -448,7 +448,7 @@ describe('learning scheduler', () => {
     expect(isTypedAnswerCorrect(cards[0], notes[0], '   ')).toBe(false);
   });
 
-  it('accepts typed answers once the first 3 letters match (Tip-Modus)', () => {
+  it('accepts three typed letters from anywhere in the main word (Tip-Modus)', () => {
     const { cards, notes } = buildEntitiesFromRows(
       [{ deck: 'Deck', front: 'focus', back: 'konzentriert', type: 'basic' }],
       1_700_000_000_000,
@@ -456,7 +456,8 @@ describe('learning scheduler', () => {
 
     expect(isTypedAnswerCorrect(cards[0], notes[0], 'kon')).toBe(true);
     expect(isTypedAnswerCorrect(cards[0], notes[0], 'ko')).toBe(false);
-    expect(isTypedAnswerCorrect(cards[0], notes[0], 'zent')).toBe(false);
+    expect(isTypedAnswerCorrect(cards[0], notes[0], 'zent')).toBe(true);
+    expect(isTypedAnswerCorrect(cards[0], notes[0], 'ZENT')).toBe(true);
   });
 
   it('accepts German transliterations in typed answers', () => {
@@ -611,14 +612,19 @@ describe('learning scheduler', () => {
     ]);
   });
 
-  it('requires typed answers only up to the configured word limit for basic cards', () => {
+  it('requires typed answers for a basic card when its headword fits the configured limit', () => {
     const { cards, notes } = buildEntitiesFromRows(
-      [{ deck: 'Deck', front: 'focus', back: 'ich bleibe heute konzentriert', type: 'basic' }],
+      [{
+        deck: 'Deck',
+        front: 'focus',
+        back: 'ich bleibe heute konzentriert',
+        backHtml: '<p><strong>concentré</strong></p><p>ich bleibe heute konzentriert</p>',
+        type: 'basic',
+      }],
       1_700_000_000_000,
     );
 
-    expect(shouldRequireTypedAnswer(cards[0], notes[0], 5)).toBe(true);
-    expect(shouldRequireTypedAnswer(cards[0], notes[0], 3)).toBe(false);
+    expect(shouldRequireTypedAnswer(cards[0], notes[0], 3)).toBe(true);
   });
 
   it('can disable typed answers globally for review cards', () => {
@@ -1112,10 +1118,15 @@ describe('learning scheduler', () => {
     );
     const reviewedCard = buildReviewResult(cards[0], 'good', true, now).updatedCard;
     reviewedCard.dueAt = now - 60_000;
+    const neverLearnedCard = {
+      ...cards[0],
+      id: 'never-learned-card',
+      dueAt: now + 24 * 60 * 60 * 1000,
+    };
 
     const stats = getDeckLearningStats({
       deck: decks[0],
-      cards: [reviewedCard],
+      cards: [reviewedCard, neverLearnedCard],
       reviewLogs: [],
       preset: getDefaultLearningPreset(),
       gateRule: getDefaultGateRule(),
@@ -1123,6 +1134,10 @@ describe('learning scheduler', () => {
     });
 
     expect(stats.dueNowCount).toBe(1);
+    expect(stats.neverLearnedCount).toBe(1);
+    expect(stats.reviewsThisWeek).toBe(0);
+    expect(stats.activeDaysThisWeek).toBe(0);
+    expect(stats.reviewedDaysThisWeek).toEqual([false, false, false, false, false, false, false]);
     expect(stats.newLeftToday).toBe(3);
     expect(stats.optimizerStatus).toBe('collecting');
   });

@@ -9,35 +9,27 @@ export function useLearnReviewReviewActions({
   activeDeck,
   countedReviews,
   currentCard,
-  easyRatingBlocked,
-  hardRatingBlocked,
   enqueueDeferredWrite,
   handleRevealAnswer,
   isBlockedFlow,
   pendingCompletionKindRef,
   recordFeedback,
-  requiresTypedAnswer,
   reviewedCardIdsRef,
   revealed,
   sessionControllerRef,
   sessionCreditsRequired,
   setAwaitingEmotionSelection,
   setBlockedUnlockSignal,
-  setBlockedEasyHintVisible,
-  setBlockedEasyPulseKey,
   setCompletedSessionVisible,
   setSelectedSessionCategories,
   setSelectedSessionEmotions,
   submitReview,
   syncSessionSnapshot,
   targetId,
-  typedCorrect,
 }: {
   activeDeck?: LearningDeck;
   countedReviews: number;
   currentCard?: LearningCard;
-  easyRatingBlocked: boolean;
-  hardRatingBlocked: boolean;
   enqueueDeferredWrite: (write: () => void) => void;
   handleRevealAnswer: () => void;
   isBlockedFlow: boolean;
@@ -47,22 +39,18 @@ export function useLearnReviewReviewActions({
     message: string,
     payload?: Record<string, unknown>,
   ) => LearningReviewFeedbackEvent;
-  requiresTypedAnswer: boolean;
   reviewedCardIdsRef: MutableRefObject<Set<string>>;
   revealed: boolean;
   sessionControllerRef: MutableRefObject<LearningSessionController | null>;
   sessionCreditsRequired: number;
   setAwaitingEmotionSelection: Dispatch<SetStateAction<boolean>>;
   setBlockedUnlockSignal: Dispatch<SetStateAction<number>>;
-  setBlockedEasyHintVisible: Dispatch<SetStateAction<boolean>>;
-  setBlockedEasyPulseKey: Dispatch<SetStateAction<number>>;
   setCompletedSessionVisible: Dispatch<SetStateAction<boolean>>;
   setSelectedSessionCategories: Dispatch<SetStateAction<string[]>>;
   setSelectedSessionEmotions: Dispatch<SetStateAction<string[]>>;
   submitReview: ReturnType<typeof useLearningStore.getState>['submitReview'];
   syncSessionSnapshot: () => LearningSessionSnapshot | null;
   targetId?: string;
-  typedCorrect: boolean | null;
 }) {
   const handleUndoReview = useCallback(() => {
     const events = sessionControllerRef.current?.undo() ?? [];
@@ -115,22 +103,7 @@ export function useLearnReviewReviewActions({
     (rating: ReviewRating) => {
       if (!currentCard || !activeDeck) return;
 
-      // Nach einer falschen Tipp-Eingabe (oder leerem Abruf) ist nur "Nochmal" erlaubt.
-      if (hardRatingBlocked && rating === 'hard') {
-        setBlockedEasyHintVisible(true);
-        setBlockedEasyPulseKey((current) => current + 1);
-        recordFeedback('toast', 'Nur Nochmal möglich.');
-        return;
-      }
-
-      if (easyRatingBlocked && (rating === 'easy' || rating === 'good')) {
-        setBlockedEasyHintVisible(true);
-        setBlockedEasyPulseKey((current) => current + 1);
-        recordFeedback('toast', hardRatingBlocked ? 'Nur Nochmal möglich.' : 'Nur Nochmal oder Schwer möglich.');
-        return;
-      }
-
-      const wasCorrect = requiresTypedAnswer ? typedCorrect === true : rating !== 'again';
+      const wasCorrect = rating !== 'again';
       reviewedCardIdsRef.current.add(currentCard.id);
 
       const events =
@@ -192,25 +165,19 @@ export function useLearnReviewReviewActions({
     [
       activeDeck,
       currentCard,
-      easyRatingBlocked,
-      hardRatingBlocked,
       enqueueDeferredWrite,
       isBlockedFlow,
       pendingCompletionKindRef,
       recordFeedback,
-      requiresTypedAnswer,
       reviewedCardIdsRef,
       sessionControllerRef,
       setAwaitingEmotionSelection,
-      setBlockedEasyHintVisible,
-      setBlockedEasyPulseKey,
       setCompletedSessionVisible,
       setSelectedSessionCategories,
       setSelectedSessionEmotions,
       submitReview,
       syncSessionSnapshot,
       targetId,
-      typedCorrect,
     ],
   );
 

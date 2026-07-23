@@ -97,7 +97,7 @@ export function useLearnReviewTypedAnswerFlow({
           typedAnswerMaxWords,
         });
         controller?.setTypedCorrect(evaluation.correct);
-        controller?.setAttemptMessage(evaluation.correct ? evaluation.message : null);
+        controller?.setAttemptMessage(evaluation.message);
       }
     } else {
       controller?.setTypedCorrect(null);
@@ -106,7 +106,7 @@ export function useLearnReviewTypedAnswerFlow({
 
     controller?.reveal(Date.now());
     syncSessionSnapshot();
-    recordFeedback('toast', 'Lösung angezeigt');
+    recordFeedback('toast', requiresTypedAnswer ? 'Eingabe geprüft.' : 'Lösung angezeigt');
   }, [
     currentCard,
     currentNote,

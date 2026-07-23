@@ -248,6 +248,20 @@ describe('screenTimeService behavior', () => {
     expect(third).toEqual(first);
   });
 
+  it('requests only the visible packages when a caller needs a subset of icons', async () => {
+    pluginMock.getInstalledApps.mockResolvedValueOnce({ apps: [] });
+    const service = await loadService();
+
+    await service.getInstalledApps({
+      iconPackageNames: ['com.example.reader', 'com.example.music', 'com.example.reader'],
+    });
+
+    expect(pluginMock.getInstalledApps).toHaveBeenCalledWith({
+      includeIcons: false,
+      iconPackageNames: ['com.example.music', 'com.example.reader'],
+    });
+  });
+
   it('normalizes manual override targets before delegating to the native plugin', async () => {
     const service = await loadService();
     pluginMock.getManualOverrideStatus.mockResolvedValueOnce({

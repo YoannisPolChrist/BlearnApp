@@ -55,6 +55,7 @@ export const createPreferencesSlice: AppStoreSlice<Partial<AppState>> = (set, ge
   appIntroSeen: false,
   hasHydrated: false,
   remoteBlockingEnabled: true,
+  remoteBlockingDisableGate: null,
   remoteBlockingInstruction: null,
   resolvedRemoteBlockedApps: [],
 
@@ -98,10 +99,14 @@ export const createPreferencesSlice: AppStoreSlice<Partial<AppState>> = (set, ge
       const instruction = nextEnabled ? state.remoteBlockingInstruction : null;
       return {
         remoteBlockingEnabled: nextEnabled,
+        remoteBlockingDisableGate: nextEnabled ? null : state.remoteBlockingDisableGate,
         remoteBlockingInstruction: instruction,
         resolvedRemoteBlockedApps: instruction ? state.resolvedRemoteBlockedApps : [],
       };
     }),
+  startRemoteBlockingDisableGate: (deckId) =>
+    set({ remoteBlockingDisableGate: { deckId, startedAt: Date.now() } }),
+  clearRemoteBlockingDisableGate: () => set({ remoteBlockingDisableGate: null }),
 
   setRemoteBlockingInstruction: async (instruction: RemoteBlockingInstruction | null) => {
     const enabled = get().remoteBlockingEnabled ?? true;

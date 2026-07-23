@@ -10,7 +10,9 @@ import {
   INTER_BATCH_COMMIT_DELAY_MS,
   META_COLLECTION,
   META_DOCUMENT_ID,
+  SUBCOLLECTIONS,
   USERS_COLLECTION,
+  type DeckScopedSyncCollectionKey,
   type SyncCollectionKey,
 } from './constants';
 import type { FirestoreSdk } from './types';
@@ -21,6 +23,11 @@ export function getMetaDoc(sdk: FirestoreSdk, firestore: Firestore, userId: stri
   return sdk.doc(firestore, USERS_COLLECTION, userId, META_COLLECTION, META_DOCUMENT_ID);
 }
 
+/**
+ * Returns a top-level collection reference (old format).
+ * Used for decks, presets, mutations, and backward-compatible reads of
+ * the old bucket / flat collections.
+ */
 export function getCollectionRef(
   sdk: FirestoreSdk,
   firestore: Firestore,
@@ -28,6 +35,49 @@ export function getCollectionRef(
   key: SyncCollectionKey,
 ) {
   return sdk.collection(firestore, USERS_COLLECTION, userId, COLLECTIONS[key]);
+}
+
+/**
+ * Returns a deck-scoped subcollection reference (new format):
+ *
+ *   users/{uid}/learningDecks/{deckId}/{subcollection}/{docId}
+ */
+export function getDeckScopedCollectionRef(
+  sdk: FirestoreSdk,
+  firestore: Firestore,
+  userId: string,
+  deckId: string,
+  subcollectionKey: DeckScopedSyncCollectionKey,
+) {
+  return sdk.collection(
+    firestore,
+    USERS_COLLECTION,
+    userId,
+    COLLECTIONS.decks,
+    deckId,
+    SUBCOLLECTIONS[subcollectionKey],
+  );
+}
+
+/**
+ * Returns the per-deck "meta" document reference:
+ *
+ *   users/{uid}/learningDecks/{deckId}/meta
+ */
+export function getDeckMetaDoc(
+  sdk: FirestoreSdk,
+  firestore: Firestore,
+  userId: string,
+  deckId: string,
+) {
+  return sdk.doc(
+    firestore,
+    USERS_COLLECTION,
+    userId,
+    COLLECTIONS.decks,
+    deckId,
+    SUBCOLLECTIONS.meta,
+  );
 }
 
 export function getMutationCollectionRef(sdk: FirestoreSdk, firestore: Firestore, userId: string) {

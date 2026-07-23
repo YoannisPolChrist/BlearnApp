@@ -19,6 +19,8 @@ describe('AnkiRenderedContent', () => {
     expect(container.querySelector('[data-anki-scope="card-1"] .card.card1')).not.toBeNull();
     expect(container.querySelector('[data-anki-scope="card-1"] #qa')).not.toBeNull();
     expect(container.querySelector('style')?.textContent).toContain('[data-anki-scope="card-1"] .cloze');
+    expect(container.querySelector('style')?.textContent).toContain('.dark [data-anki-scope="card-1"] .anki-render-root');
+    expect(container.querySelector('style')?.textContent).toContain('background-image: none !important;');
   });
 
   it('keeps structured headings and tables visible when Anki html relied on hidden script toggles', () => {

@@ -10,6 +10,7 @@ import { QuickActionCard } from '@/components/ui/QuickActionCard';
 import { useManualLearningCloudSync } from '@/hooks/useManualLearningCloudSync';
 import { SyncStatusBadge } from '@/components/learn/SyncStatusBadge';
 import { ctaFollowThrough, heroContent, heroStat, sectionItem, sectionStagger } from '@/lib/motion';
+import { triggerHapticFeedback } from '@/lib/haptics';
 import { buildLearnHubSummary } from '@/lib/view-models/learn';
 import { useLearnHubActions } from '@/store/selectors';
 import { useLearningStore } from '@/store/useLearningStore';
@@ -24,15 +25,16 @@ export default function LearnPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [libraryOpen, setLibraryOpen] = useState(false);
-  const { activeDeckId, deckMap, getDeckStats, getResolvedPresetForDeck } = useLearningStore(
+  const { activeDeckId, deckMap, hiddenDeckIds, getDeckStats, getResolvedPresetForDeck } = useLearningStore(
     useShallow((state) => ({
       activeDeckId: state.activeDeckId,
       deckMap: state.decks,
+      hiddenDeckIds: state.hiddenDeckIds,
       getDeckStats: state.getDeckStats,
       getResolvedPresetForDeck: state.getResolvedPresetForDeck,
     })),
   );
-  const { seedStarterDeck, exportDeckToJson, setActiveDeck, setDeckReviewMix } = useLearnHubActions();
+  const { seedStarterDeck, exportDeckToJson, setActiveDeck, setDeckReviewMix, removeDeckFromLibrary } = useLearnHubActions();
   const {
     canSync,
     syncError,
@@ -40,7 +42,10 @@ export default function LearnPage() {
     syncLearningCloud,
   } = useManualLearningCloudSync();
   const reduceMotion = useReducedMotion();
-  const decks = useMemo(() => Object.values(deckMap), [deckMap]);
+  const decks = useMemo(
+    () => Object.values(deckMap).filter((deck) => !hiddenDeckIds.includes(deck.id)),
+    [deckMap, hiddenDeckIds],
+  );
 
 
 
@@ -81,6 +86,21 @@ export default function LearnPage() {
     window.URL.revokeObjectURL(url);
   };
 
+  const handleLearningSync = () => {
+    if (learningCloudSyncBusy) {
+      return;
+    }
+
+    if (!canSync) {
+      triggerHapticFeedback('selection');
+      navigate('/settings#account');
+      return;
+    }
+
+    triggerHapticFeedback('action');
+    void syncLearningCloud();
+  };
+
   return (
     <PageTransition variant="hero">
       <div className="app-page overflow-x-hidden">
@@ -101,9 +121,7 @@ export default function LearnPage() {
               </h1>
               <SyncStatusBadge
                 busy={learningCloudSyncBusy}
-                onRetry={() => {
-                  void syncLearningCloud();
-                }}
+                onRetry={handleLearningSync}
                 className="mt-1"
               />
             </div>
@@ -114,15 +132,9 @@ export default function LearnPage() {
               whileHover={reduceMotion ? 'rest' : 'hover'}
               whileTap={reduceMotion ? 'rest' : 'tap'}
               variants={ctaFollowThrough}
-              onClick={() => {
-                if (!canSync) {
-                  navigate('/settings#account');
-                  return;
-                }
-
-                void syncLearningCloud();
-              }}
-              className="btn-press inline-flex min-h-[2.75rem] shrink-0 items-center gap-2 self-center rounded-full border border-border/80 bg-card/85 px-4 py-2.5 text-sm font-black text-foreground shadow-[0_14px_32px_hsl(var(--foreground)/0.08)]"
+              onClick={handleLearningSync}
+              disabled={learningCloudSyncBusy}
+              className="btn-press inline-flex min-h-[2.75rem] shrink-0 items-center gap-2 self-center rounded-full border border-border/80 bg-card/85 px-4 py-2.5 text-sm font-black text-foreground shadow-[0_14px_32px_hsl(var(--foreground)/0.08)] disabled:cursor-wait disabled:opacity-65"
             >
               <RefreshCw size={16} className={learningCloudSyncBusy ? 'animate-spin' : ''} />
               {learningCloudSyncBusy ? 'Sync laeuft' : canSync ? 'Sync' : 'Sync aktivieren'}
@@ -155,7 +167,7 @@ export default function LearnPage() {
                     <div className="max-w-2xl flex-1">
                       <span className="premium-pill">Learn Hub</span>
                       <div className="mt-4">
-                        <h2 className="max-w-xl break-words text-3xl font-black leading-tight tracking-[-0.05em] text-foreground sm:text-4xl">
+                        <h2 data-tour-id="tour-learn-manage-vocabulary" className="max-w-xl break-words text-3xl font-black leading-tight tracking-[-0.05em] text-foreground sm:text-4xl">
                           Vokabeln Verwalten
                         </h2>
                       </div>
@@ -182,20 +194,20 @@ export default function LearnPage() {
                           }
                           setLibraryOpen(true);
                         }}
-                        className="btn-press mt-5 flex w-full max-w-xl flex-col items-start rounded-[1.7rem] border border-[hsl(var(--mode-learn-border)/0.62)] bg-[linear-gradient(145deg,hsl(var(--mode-learn)/0.96),hsl(var(--accent)/0.92))] px-5 py-5 text-left text-[hsl(var(--mode-learn-foreground))] shadow-[0_28px_64px_hsl(var(--mode-learn-glow)/0.28)] sm:mt-6 sm:px-6 sm:py-6"
+                        className="btn-press mt-5 flex w-full max-w-xl flex-col items-start rounded-[1.7rem] border border-[hsl(var(--mode-learn-border)/0.62)] bg-[linear-gradient(145deg,hsl(var(--mode-learn)/0.96),hsl(var(--accent)/0.92))] px-5 py-5 text-left text-[hsl(var(--mode-learn-foreground))] shadow-[0_28px_64px_hsl(var(--mode-learn-glow)/0.28)] dark:border-[hsl(43_62%_42%/0.72)] dark:bg-[linear-gradient(145deg,hsl(45_78%_28%),hsl(38_72%_26%))] dark:text-[hsl(var(--card-foreground))] sm:mt-6 sm:px-6 sm:py-6"
                       >
-                        <span className="rounded-full border border-black/10 bg-white/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-[hsl(var(--mode-learn-foreground)/0.88)]">
+                        <span className="rounded-full border border-black/10 bg-white/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-[hsl(var(--mode-learn-foreground)/0.88)] dark:border-white/18 dark:bg-white/12 dark:text-[hsl(var(--card-foreground)/0.88)]">
                           Lernsession
                         </span>
                         <span className="mt-4 text-[1.5rem] font-black leading-tight tracking-[-0.05em] sm:text-[1.85rem]">
                           Jetzt Vokabeln lernen
                         </span>
-                        <span className="mt-2 max-w-lg text-sm leading-relaxed text-[hsl(var(--mode-learn-foreground)/0.84)] sm:text-base">
+                        <span className="mt-2 max-w-lg text-sm leading-relaxed text-[hsl(var(--mode-learn-foreground)/0.84)] dark:text-[hsl(var(--card-foreground)/0.82)] sm:text-base">
                           {activeDeck
                             ? `${activeDeck.name} ist aktiv. Starte direkt deine naechste Review-Session.`
                             : 'Waehle zuerst ein Deck aus deiner Bibliothek oder starte mit einem Template.'}
                         </span>
-                        <span className="mt-5 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[hsl(var(--mode-learn-foreground)/0.9)]">
+                        <span className="mt-5 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-[hsl(var(--mode-learn-foreground)/0.9)] dark:text-[hsl(var(--card-foreground)/0.9)]">
                           Direkt starten
                           <ArrowRight size={16} />
                         </span>
@@ -265,6 +277,7 @@ export default function LearnPage() {
               onReviewMixChange={setDeckReviewMix}
               onStartLearning={(deckId) => navigate(buildLearnReviewRoute(deckId))}
               onExportDeck={handleDeckDownload}
+              onRemoveDeck={removeDeckFromLibrary}
               title="Bibliothek"
               description="Waehle ein Deck mit einem Klick oder starte es direkt von hier."
             />

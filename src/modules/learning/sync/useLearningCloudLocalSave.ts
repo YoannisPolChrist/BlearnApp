@@ -1,4 +1,4 @@
-import { useEffect, type MutableRefObject } from 'react';
+import { useCallback, useEffect, type MutableRefObject } from 'react';
 import { useCloudSyncRuntimeStore } from '@/lib/cloudSyncRuntime';
 import {
   getLearningCloudStateSignature,
@@ -17,6 +17,7 @@ import {
   getLearningCloudSyncApi,
   getRemoteMutationCursor,
   readLearningCloudStateFromStore,
+  writeLearningCloudStateToStore,
 } from './learningCloudRuntimeBridge';
 
 export function useLearningCloudLocalSave({
@@ -70,6 +71,18 @@ export function useLearningCloudLocalSave({
     filteredDeckLiteRuns: unknown[];
   };
 }) {
+  const applyResolvedState = useCallback((
+    savedState: LearningCloudState,
+  ) => {
+    if (getLearningCloudStateSignature(savedState) === getLearningCloudStateSignature(readLearningCloudStateFromStore())) {
+      return;
+    }
+
+    applyingRemoteStateRef.current = true;
+    writeLearningCloudStateToStore(savedState);
+    applyingRemoteStateRef.current = false;
+  }, [applyingRemoteStateRef]);
+
   useEffect(() => {
     return setLearningCloudImmediateSaveHandler(async () => {
       if (
@@ -90,10 +103,7 @@ export function useLearningCloudLocalSave({
       }
 
       const nextState = readLearningCloudStateFromStore();
-      const nextSignature = getLearningCloudStateSignature(nextState);
-      const previousSignature = getLearningCloudStateSignature(lastSyncedStateRef.current);
-
-      if (nextSignature === previousSignature) {
+      if (getLearningCloudStateSignature(nextState) === getLearningCloudStateSignature(lastSyncedStateRef.current)) {
         return true;
       }
 
@@ -108,20 +118,20 @@ export function useLearningCloudLocalSave({
             nextState,
             lastSyncedStateRef.current,
             deviceIdRef.current || learningCloudSyncApi.getLearningSyncDeviceId(),
-            {
-              localSyncState: getLearningCloudLocalSyncState(),
-            },
+            { localSyncState: getLearningCloudLocalSyncState() },
           ),
           operationTimeoutMs,
           'learning cloud immediate save',
         );
         remoteMutationCursorRef.current = getRemoteMutationCursor(savedMeta) || remoteMutationCursorRef.current;
-        lastSyncedStateRef.current = nextState;
-        cacheLearningCloudSyncBaseline(authUserId, nextState, remoteMutationCursorRef.current);
+        const savedState = savedMeta?.resolvedState || nextState;
+        applyResolvedState(savedState);
+        lastSyncedStateRef.current = savedState;
+        cacheLearningCloudSyncBaseline(authUserId, savedState, remoteMutationCursorRef.current);
         useLearningStore.getState().markLearningCloudSyncCompleted(
           savedMeta?.lastMutationAt || Date.now(),
           remoteMutationCursorRef.current,
-          getLearningCloudStateSignature(nextState),
+          getLearningCloudStateSignature(savedState),
         );
         setLearningSyncRuntime({
           status: 'ready',
@@ -140,6 +150,7 @@ export function useLearningCloudLocalSave({
     });
   }, [
     activeUserIdRef,
+    applyResolvedState,
     applyingRemoteStateRef,
     authReady,
     authStatus,
@@ -170,20 +181,14 @@ export function useLearningCloudLocalSave({
     }
 
     const nextState = readLearningCloudStateFromStore();
-    const nextSignature = getLearningCloudStateSignature(nextState);
-    const previousSignature = getLearningCloudStateSignature(lastSyncedStateRef.current);
-    if (nextSignature === previousSignature) {
+    if (getLearningCloudStateSignature(nextState) === getLearningCloudStateSignature(lastSyncedStateRef.current)) {
       return;
     }
 
     clearWindowTimer(pendingSaveTimerRef.current);
     pendingSaveTimerRef.current = window.setTimeout(() => {
       void (async () => {
-        if (
-          !authUserId
-          || activeUserIdRef.current !== authUserId
-          || isManualLearningCloudSyncActive()
-        ) {
+        if (!authUserId || activeUserIdRef.current !== authUserId || isManualLearningCloudSyncActive()) {
           return;
         }
 
@@ -195,20 +200,20 @@ export function useLearningCloudLocalSave({
               nextState,
               lastSyncedStateRef.current,
               deviceIdRef.current || learningCloudSyncApi.getLearningSyncDeviceId(),
-              {
-                localSyncState: getLearningCloudLocalSyncState(),
-              },
+              { localSyncState: getLearningCloudLocalSyncState() },
             ),
             operationTimeoutMs,
             'learning cloud save',
           );
           remoteMutationCursorRef.current = getRemoteMutationCursor(savedMeta) || remoteMutationCursorRef.current;
-          lastSyncedStateRef.current = nextState;
-          cacheLearningCloudSyncBaseline(authUserId, nextState, remoteMutationCursorRef.current);
+          const savedState = savedMeta?.resolvedState || nextState;
+          applyResolvedState(savedState);
+          lastSyncedStateRef.current = savedState;
+          cacheLearningCloudSyncBaseline(authUserId, savedState, remoteMutationCursorRef.current);
           useLearningStore.getState().markLearningCloudSyncCompleted(
             savedMeta?.lastMutationAt || Date.now(),
             remoteMutationCursorRef.current,
-            getLearningCloudStateSignature(nextState),
+            getLearningCloudStateSignature(savedState),
           );
           setLearningSyncRuntime({
             status: 'ready',
@@ -231,6 +236,7 @@ export function useLearningCloudLocalSave({
     };
   }, [
     activeUserIdRef,
+    applyResolvedState,
     applyingRemoteStateRef,
     authReady,
     authStatus,

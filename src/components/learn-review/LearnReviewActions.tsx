@@ -4,16 +4,13 @@ import { ArrowLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { type ReviewRating, type TypedAnswerMatchKind } from '@/lib/learning';
 import { ctaFollowThrough, premiumEase, sectionItem } from '@/lib/motion';
+import { triggerHapticFeedback } from '@/lib/haptics';
 import { tonePalettes } from '@/lib/semanticTones';
 import { cn } from '@/lib/utils';
 import { ratingMeta } from '@/components/learn-review/meta';
 
 interface LearnReviewActionsProps {
   attemptMessage: string | null;
-  blockedEasyHintVisible: boolean;
-  blockedEasyPulseKey: number;
-  easyRatingBlocked: boolean;
-  hardRatingBlocked: boolean;
   canUndo: boolean;
   intervalPreviews: Record<ReviewRating, string> | null;
   onCheckTypedAnswer: () => void;
@@ -22,7 +19,6 @@ interface LearnReviewActionsProps {
   onReview: (rating: ReviewRating) => void;
   onTypedAnswerChange: (value: string) => void;
   reduceInterfaceMotion: boolean;
-  remainingAttempts: number;
   requiresTypedAnswer: boolean;
   latestFeedbackMessage?: string | null;
   isBlockedFlow: boolean;
@@ -34,10 +30,6 @@ interface LearnReviewActionsProps {
 
 function LearnReviewActionsInner({
   attemptMessage,
-  blockedEasyHintVisible,
-  blockedEasyPulseKey,
-  easyRatingBlocked,
-  hardRatingBlocked,
   canUndo,
   intervalPreviews,
   onCheckTypedAnswer,
@@ -46,7 +38,6 @@ function LearnReviewActionsInner({
   onReview,
   onTypedAnswerChange,
   reduceInterfaceMotion,
-  remainingAttempts,
   requiresTypedAnswer,
   latestFeedbackMessage,
   isBlockedFlow,
@@ -56,15 +47,28 @@ function LearnReviewActionsInner({
   typedCorrect,
 }: LearnReviewActionsProps) {
   const learnPalette = tonePalettes.learn;
+  const isBlockedTypedAnswerFlow = isBlockedFlow && requiresTypedAnswer && !revealed;
   const handleTypedAnswerFocus = (event: React.FocusEvent<HTMLInputElement>) => {
     event.currentTarget.scrollIntoView({
       block: 'nearest',
       inline: 'nearest',
     });
   };
+  const handleCheckTypedAnswer = () => {
+    triggerHapticFeedback('selection');
+    onCheckTypedAnswer();
+  };
+  const handleRevealAnswer = () => {
+    triggerHapticFeedback('action');
+    onRevealAnswer();
+  };
+  const handleReview = (rating: ReviewRating) => {
+    triggerHapticFeedback(rating === 'again' ? 'selection' : 'action');
+    onReview(rating);
+  };
   const panelClassName = reduceInterfaceMotion
-    ? 'rounded-[1.45rem] border border-[hsl(var(--mode-learn-border)/0.24)] bg-[hsl(var(--background)/0.97)] p-2.5 shadow-[0_12px_26px_hsl(var(--mode-learn-glow)/0.08)] sm:p-3'
-    : 'rounded-[1.45rem] border border-[hsl(var(--mode-learn-border)/0.28)] bg-[linear-gradient(180deg,hsl(var(--mode-learn-surface)/0.56),hsl(var(--background)/0.94))] p-2.5 shadow-[0_24px_60px_hsl(var(--mode-learn-glow)/0.14)] backdrop-blur-xl sm:p-3';
+    ? `rounded-[1.45rem] border border-[hsl(var(--mode-learn-border)/0.24)] bg-[hsl(var(--background)/0.97)] shadow-[0_12px_26px_hsl(var(--mode-learn-glow)/0.08)] ${isBlockedTypedAnswerFlow ? 'p-3.5 sm:p-4' : 'p-2.5 sm:p-3'}`
+    : `rounded-[1.45rem] border border-[hsl(var(--mode-learn-border)/0.28)] bg-[linear-gradient(180deg,hsl(var(--mode-learn-surface)/0.56),hsl(var(--background)/0.94))] shadow-[0_24px_60px_hsl(var(--mode-learn-glow)/0.14)] backdrop-blur-xl ${isBlockedTypedAnswerFlow ? 'p-3.5 sm:p-4' : 'p-2.5 sm:p-3'}`;
   const actionShellClassName = revealed
     ? 'fixed inset-x-3 bottom-[calc(0.8rem+env(safe-area-inset-bottom,0px))] z-30 mt-auto sm:sticky sm:inset-x-auto sm:bottom-0'
     : 'mt-auto';
@@ -88,7 +92,7 @@ function LearnReviewActionsInner({
           transition={{ duration: 0.24, ease: premiumEase }}
           className={panelClassName}
         >
-          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+          <div className={cn('flex flex-wrap items-center justify-between gap-2', isBlockedTypedAnswerFlow ? 'mb-3' : 'mb-2')}>
             <button
               type="button"
               onClick={onUndoReview}
@@ -114,8 +118,15 @@ function LearnReviewActionsInner({
           </div>
 
           {requiresTypedAnswer ? (
-            <div className="space-y-2.5">
-              <div className="grid grid-cols-[minmax(0,1fr)_auto_auto] items-stretch gap-1.5 sm:gap-2">
+            <div className={isBlockedFlow ? 'space-y-3' : 'space-y-2.5'}>
+              <div
+                className={cn(
+                  'gap-2 sm:gap-2.5',
+                  isBlockedFlow
+                    ? 'flex flex-col'
+                    : 'grid grid-cols-[minmax(0,1fr)_auto_auto] items-stretch',
+                )}
+              >
                 <Input
                   value={typedAnswer}
                   onChange={(event) => onTypedAnswerChange(event.target.value)}
@@ -123,39 +134,56 @@ function LearnReviewActionsInner({
                   onKeyDown={(event) => {
                     if (event.key === 'Enter') {
                       event.preventDefault();
-                      onCheckTypedAnswer();
+                      if (isBlockedFlow) {
+                        handleRevealAnswer();
+                      } else {
+                        handleCheckTypedAnswer();
+                      }
                     }
                   }}
                   placeholder="Antwort eingeben"
-                  className="h-10 min-w-0 rounded-[1.1rem] border-[hsl(var(--mode-learn-border)/0.46)] bg-background/94 px-3 text-sm text-foreground shadow-[inset_0_1px_0_hsl(0_0%_100%/0.16)] placeholder:text-foreground/42 focus-visible:ring-[hsl(var(--mode-learn)/0.44)] focus-visible:ring-offset-[hsl(var(--background)/0.98)] sm:h-11 sm:text-base"
+                  aria-label={isBlockedFlow ? 'Antwortwort eingeben' : undefined}
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  className={cn(
+                    'min-w-0 rounded-[1.1rem] border-[hsl(var(--mode-learn-border)/0.46)] bg-background/94 px-4 text-base text-foreground shadow-[inset_0_1px_0_hsl(0_0%_100%/0.16)] placeholder:text-foreground/42 focus-visible:ring-[hsl(var(--mode-learn)/0.44)] focus-visible:ring-offset-[hsl(var(--background)/0.98)]',
+                    isBlockedFlow ? 'h-14 w-full' : 'h-10 px-3 text-sm sm:h-11 sm:text-base',
+                  )}
                 />
+                {!isBlockedFlow ? (
+                  <motion.button
+                    onClick={handleCheckTypedAnswer}
+                    initial="rest"
+                    animate="rest"
+                    whileHover={reduceInterfaceMotion ? 'rest' : 'hover'}
+                    whileTap={reduceInterfaceMotion ? 'rest' : 'tap'}
+                    variants={ctaFollowThrough}
+                    className="btn-press rounded-[1.1rem] border border-[hsl(var(--mode-learn-border)/0.42)] bg-[hsl(var(--mode-learn-surface)/0.72)] px-2.5 py-2 text-xs font-bold text-[hsl(var(--mode-learn-foreground))] shadow-[0_14px_30px_hsl(var(--mode-learn-glow)/0.1)] sm:px-3 sm:py-2.5 sm:text-sm"
+                  >
+                    <span className="whitespace-nowrap">Antwort prüfen</span>
+                  </motion.button>
+                ) : null}
                 <motion.button
-                  onClick={onCheckTypedAnswer}
+                  onClick={handleRevealAnswer}
                   initial="rest"
                   animate="rest"
                   whileHover={reduceInterfaceMotion ? 'rest' : 'hover'}
                   whileTap={reduceInterfaceMotion ? 'rest' : 'tap'}
                   variants={ctaFollowThrough}
-                  className="btn-press rounded-[1.1rem] border border-[hsl(var(--mode-learn-border)/0.42)] bg-[hsl(var(--mode-learn-surface)/0.72)] px-2.5 py-2 text-xs font-bold text-[hsl(var(--mode-learn-foreground))] shadow-[0_14px_30px_hsl(var(--mode-learn-glow)/0.1)] sm:px-3 sm:py-2.5 sm:text-sm"
+                  className={cn(
+                    'btn-press rounded-[1.1rem] px-2.5 py-2 text-xs font-bold sm:px-3 sm:py-2.5 sm:text-sm',
+                    isBlockedFlow && 'h-14 w-full text-base',
+                    learnPalette.button,
+                  )}
                 >
-                  <span className="whitespace-nowrap">Antwort prüfen</span>
-                </motion.button>
-                <motion.button
-                  onClick={onRevealAnswer}
-                  initial="rest"
-                  animate="rest"
-                  whileHover={reduceInterfaceMotion ? 'rest' : 'hover'}
-                  whileTap={reduceInterfaceMotion ? 'rest' : 'tap'}
-                  variants={ctaFollowThrough}
-                  className={cn('btn-press rounded-[1.1rem] px-2.5 py-2 text-xs font-bold sm:px-3 sm:py-2.5 sm:text-sm', learnPalette.button)}
-                >
-                  <span className="whitespace-nowrap">Lösung zeigen</span>
+                  <span>Lösung zeigen</span>
                 </motion.button>
               </div>
             </div>
           ) : (
             <motion.button
-              onClick={onRevealAnswer}
+              onClick={handleRevealAnswer}
               initial="rest"
               animate="rest"
               whileHover={reduceInterfaceMotion ? 'rest' : 'hover'}
@@ -169,11 +197,6 @@ function LearnReviewActionsInner({
 
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
             <div className="flex flex-wrap gap-1.5">
-              {requiresTypedAnswer ? (
-                <span className="rounded-full border border-border/75 bg-background/96 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.14em] text-foreground/76">
-                  {remainingAttempts} Versuche frei
-                </span>
-              ) : null}
               {attemptMessage ? (
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.14em] ${attemptBadgeClassName}`}
@@ -218,32 +241,19 @@ function LearnReviewActionsInner({
 
           <div className="grid grid-cols-4 gap-1.5 sm:gap-2.5">
             {(['again', 'hard', 'good', 'easy'] as ReviewRating[]).map((rating, index) => {
-              // Nach falscher Tipp-Eingabe (oder leerem Abruf) nur "Nochmal" zulassen.
-              const isDisabled =
-                ((rating === 'easy' || rating === 'good') && easyRatingBlocked) ||
-                (rating === 'hard' && hardRatingBlocked);
-              const isBlockedEasy =
-                ((rating === 'easy' || rating === 'good') && easyRatingBlocked) ||
-                (rating === 'hard' && hardRatingBlocked);
-
               return (
                 <motion.button
                   key={rating}
-                  onClick={() => onReview(rating)}
+                  onClick={() => handleReview(rating)}
                   type="button"
-                  aria-disabled={isDisabled}
                   initial={reduceInterfaceMotion ? false : { opacity: 0, y: 16, scale: 0.97 }}
-                  animate={
-                    isBlockedEasy && blockedEasyPulseKey > 0 && !reduceInterfaceMotion
-                      ? { opacity: 1, y: 0, scale: 1, x: [0, -7, 7, -5, 5, -2, 2, 0] }
-                      : { opacity: 1, y: 0, scale: 1, x: 0 }
-                  }
-                  whileHover={reduceInterfaceMotion || isDisabled ? undefined : { y: -4, scale: 1.02 }}
-                  whileTap={reduceInterfaceMotion || isDisabled ? undefined : { y: 1, scale: 0.985 }}
+                  animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
+                  whileHover={reduceInterfaceMotion ? undefined : { y: -4, scale: 1.02 }}
+                  whileTap={reduceInterfaceMotion ? undefined : { y: 1, scale: 0.985 }}
                   transition={{ delay: index * 0.05, duration: 0.22, ease: premiumEase }}
                   className={`btn-press relative overflow-hidden rounded-[1.05rem] border border-[hsl(var(--mode-learn-border)/0.2)] bg-card/92 px-1.5 py-2.5 text-center text-foreground shadow-[0_18px_30px_rgba(0,0,0,0.12)] transition-[box-shadow,transform] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[hsl(var(--mode-learn)/0.6)] focus-visible:ring-offset-background ${
                     ratingMeta[rating].accent
-                  } ${isDisabled ? 'cursor-not-allowed opacity-45' : 'cursor-pointer'}`}
+                  } cursor-pointer`}
                 >
                   <div className={`absolute inset-x-0 top-0 h-1 ${ratingMeta[rating].stripe}`} />
                   <p className="mt-1 text-[0.9rem] font-black tracking-[-0.05em] sm:text-[1.05rem]">
@@ -256,16 +266,6 @@ function LearnReviewActionsInner({
               );
             })}
           </div>
-
-          {hardRatingBlocked ? (
-            <div className="mt-2 text-[10px] font-black uppercase tracking-[0.15em] text-foreground/68">
-              Nur Nochmal möglich.
-            </div>
-          ) : easyRatingBlocked || blockedEasyHintVisible ? (
-            <div className="mt-2 text-[10px] font-black uppercase tracking-[0.15em] text-foreground/68">
-              Nur Nochmal oder Schwer möglich.
-            </div>
-          ) : null}
         </motion.div>
       )}
     </motion.section>

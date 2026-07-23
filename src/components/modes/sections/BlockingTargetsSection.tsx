@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import type { Dispatch, ReactNode, SetStateAction } from 'react';
-import { ChevronDown, ChevronUp, Globe, Plus, Search, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Plus, Search, Trash2 } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import { useI18n } from '@/hooks/useI18n';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -9,7 +9,8 @@ import { getModePalette, tonePalettes } from '@/lib/semanticTones';
 import type { VisibleAppItem } from '@/lib/view-models/modes';
 import type { StrictAddonLockedAppsByMode, TargetModeId } from '@/lib/targetModes';
 import { cn } from '@/lib/utils';
-import { getModeLabelText, isAssignableMode, ModeBadge, type ModeId } from './shared';
+import { ModeBadge } from './shared';
+import { getModeLabelText, isAssignableMode, type ModeId } from './modeShared';
 import { AppTargetRow } from './AppTargetRow';
 
 export function BlockingTargetsSection({
@@ -19,8 +20,6 @@ export function BlockingTargetsSection({
   setShowBlockConfig,
   totalBlocked,
   totalAssignedToSelectedMode,
-  blockedWebsites,
-  blockedWebsiteModes,
   blockedSearchTerms,
   blockedSearchTermModes,
   blockTabs,
@@ -39,16 +38,11 @@ export function BlockingTargetsSection({
   toggleBlockedApp,
   setBlockedAppsMode,
   clearBlockedAppsMode,
-  toggleBlockedWebsite,
   setBlockSchedule,
   removeBlockSchedule,
   getAppBadge,
   shouldShowFullAppList,
   setShowAllApps,
-  newWebsite,
-  setNewWebsite,
-  handleAddWebsite,
-  removeBlockedWebsite,
   newSearchTerm,
   setNewSearchTerm,
   handleAddSearchTerm,
@@ -63,13 +57,11 @@ export function BlockingTargetsSection({
   setShowBlockConfig: Dispatch<SetStateAction<boolean>>;
   totalBlocked: number;
   totalAssignedToSelectedMode: number;
-  blockedWebsites: string[];
-  blockedWebsiteModes: Record<string, TargetModeId>;
   blockedSearchTerms: string[];
   blockedSearchTermModes: Record<string, TargetModeId>;
-  blockTabs: Array<{ id: 'apps' | 'websites' | 'search'; label: string; icon: ReactNode; count: number }>;
-  blockTab: 'apps' | 'websites' | 'search';
-  setBlockTab: Dispatch<SetStateAction<'apps' | 'websites' | 'search'>>;
+  blockTabs: Array<{ id: 'apps' | 'search'; label: string; icon: ReactNode; count: number }>;
+  blockTab: 'apps' | 'search';
+  setBlockTab: Dispatch<SetStateAction<'apps' | 'search'>>;
   appSearch: string;
   setAppSearch: Dispatch<SetStateAction<string>>;
   availableApps: VisibleAppItem[];
@@ -83,16 +75,11 @@ export function BlockingTargetsSection({
   toggleBlockedApp: (app: string, mode: TargetModeId) => void;
   setBlockedAppsMode: (apps: string[], mode: TargetModeId) => void;
   clearBlockedAppsMode: () => void;
-  toggleBlockedWebsite: (url: string, mode: TargetModeId) => void;
   setBlockSchedule: (app: string, from: string, to: string) => void;
   removeBlockSchedule: (app: string) => void;
   getAppBadge: (entry: { packageName?: string; appName?: string }) => string;
   shouldShowFullAppList: boolean;
   setShowAllApps: Dispatch<SetStateAction<boolean>>;
-  newWebsite: string;
-  setNewWebsite: Dispatch<SetStateAction<string>>;
-  handleAddWebsite: () => void;
-  removeBlockedWebsite: (url: string) => void;
   newSearchTerm: string;
   setNewSearchTerm: Dispatch<SetStateAction<string>>;
   handleAddSearchTerm: () => void;
@@ -121,12 +108,6 @@ export function BlockingTargetsSection({
     isMobile,
     itemCount: blockTabs.length,
     maxAnimatedItems: 6,
-  });
-  const allowWebsiteListMotion = shouldAnimateDenseList({
-    reducedMotion,
-    isMobile,
-    itemCount: blockedWebsites.length,
-    maxAnimatedItems: 16,
   });
   const allowSearchListMotion = shouldAnimateDenseList({
     reducedMotion,
@@ -186,8 +167,9 @@ export function BlockingTargetsSection({
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <span className="rounded-full border border-border/70 bg-background/75 px-3 py-1 text-[11px] font-bold text-muted-foreground">
-                {t('modes.blocking.totalLabel', { count: totalBlocked })}
+              <span className="inline-flex min-w-[4.75rem] flex-col rounded-2xl border border-border/70 bg-background/75 px-3 py-2 text-right shadow-[0_8px_20px_hsl(var(--foreground)/0.05)]">
+                <span className="text-xl font-black leading-none tracking-[-0.05em] text-foreground">{totalBlocked}</span>
+                <span className="mt-1 text-[10px] font-bold leading-tight text-muted-foreground">{t('modes.blocking.totalLabel')}</span>
               </span>
               {showBlockConfig ? <ChevronUp size={20} className="text-muted-foreground" /> : <ChevronDown size={20} className="text-muted-foreground" />}
             </div>
@@ -199,7 +181,7 @@ export function BlockingTargetsSection({
               variants={allowBlockTabsMotion ? denseListStagger : undefined}
               initial={allowBlockTabsMotion ? 'hidden' : false}
               animate={allowBlockTabsMotion ? 'show' : undefined}
-              className="grid gap-2 sm:grid-cols-3"
+              className="grid gap-2 sm:grid-cols-2"
             >
               {blockTabs.map((tab) => (
                 <motion.button
@@ -318,59 +300,6 @@ export function BlockingTargetsSection({
                     {t('modes.apps.loadMore', { count: remainingAvailableCount })}
                   </button>
                 ) : null}
-              </div>
-            ) : null}
-
-            {blockTab === 'websites' ? (
-              <div className="space-y-4">
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <input value={newWebsite} onChange={(event) => setNewWebsite(event.target.value)} placeholder={t('modes.websites.placeholder')} className="flex-1 rounded-2xl border border-border/70 bg-background/70 px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary/35" />
-                  <button
-                    type="button"
-                    onClick={handleAddWebsite}
-                    disabled={!editableMode || assignmentsLocked || !newWebsite.trim()}
-                    className={cn(
-                      'inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold disabled:opacity-35',
-                      editablePalette.button,
-                    )}
-                  >
-                    <Plus size={16} />
-                    {t('modes.websites.addButton')}
-                  </button>
-                </div>
-
-                <motion.div
-                  variants={allowWebsiteListMotion ? denseListStagger : undefined}
-                  initial={allowWebsiteListMotion ? 'hidden' : false}
-                  animate={allowWebsiteListMotion ? 'show' : undefined}
-                  className="space-y-3"
-                >
-                  {blockedWebsites.map((website) => {
-                    const currentMode = blockedWebsiteModes[website];
-                    return (
-                      <motion.div
-                        key={website}
-                        variants={allowWebsiteListMotion ? denseListItem : undefined}
-                        whileHover={allowHoverMotion ? { y: -2, scale: 1.004 } : undefined}
-                        transition={{ duration: 0.2, ease: premiumEase }}
-                        className="flex items-center gap-3 rounded-[1.4rem] border border-border/70 bg-background/65 px-4 py-3"
-                      >
-                        <div className={cn('flex h-11 w-11 items-center justify-center rounded-2xl', editablePalette.icon)}>
-                          <Globe size={18} />
-                        </div>
-                        <button type="button" onClick={() => { if (editableMode && !assignmentsLocked) toggleBlockedWebsite(website, editableMode); }} disabled={assignmentsLocked} className="min-w-0 flex-1 text-left disabled:cursor-not-allowed disabled:opacity-70">
-                          <p className="truncate text-sm font-black tracking-[-0.02em] text-foreground">{website}</p>
-                          <div className="mt-1 flex flex-wrap gap-2">
-                            {currentMode ? <ModeBadge mode={currentMode} /> : null}
-                          </div>
-                        </button>
-                        <button type="button" onClick={() => removeBlockedWebsite(website)} disabled={assignmentsLocked} className="rounded-full border border-border/70 p-2 text-muted-foreground transition hover:text-destructive disabled:cursor-not-allowed disabled:opacity-55">
-                          <Trash2 size={16} />
-                        </button>
-                      </motion.div>
-                    );
-                  })}
-                </motion.div>
               </div>
             ) : null}
 

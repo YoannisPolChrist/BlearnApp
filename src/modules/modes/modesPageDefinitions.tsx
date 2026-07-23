@@ -1,9 +1,9 @@
-import { Banknote, Brain, Globe, Search, Shield, Smartphone, Wind as WindIcon } from 'lucide-react';
+import { Banknote, Brain, Search, Shield, Smartphone, Wind as WindIcon } from 'lucide-react';
 import type { ModeDefinition, ModeId } from '@/components/modes/ModesSections';
 
 type Translate = (key: string, values?: Record<string, unknown>) => string;
 
-export type BlockTabId = 'apps' | 'websites' | 'search';
+export type BlockTabId = 'apps' | 'search';
 
 export function buildModeDefinitions(t: Translate): ModeDefinition[] {
   return [
@@ -22,12 +22,10 @@ export function getEditableMode(selectedMode: ModeId) {
 export function buildBlockTabs(options: {
   t: Translate;
   blockedAppsCount: number;
-  blockedWebsitesCount: number;
   blockedSearchTermsCount: number;
 }) {
   return [
     { id: 'apps' as const, label: options.t('modes.blocking.tabs.apps'), icon: <Shield size={14} />, count: options.blockedAppsCount },
-    { id: 'websites' as const, label: options.t('modes.blocking.tabs.websites'), icon: <Globe size={14} />, count: options.blockedWebsitesCount },
     { id: 'search' as const, label: options.t('modes.blocking.tabs.search'), icon: <Search size={14} />, count: options.blockedSearchTermsCount },
   ];
 }

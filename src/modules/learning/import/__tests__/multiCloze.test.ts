@@ -73,4 +73,22 @@ describe('Multi-Cloze (Masterplan 5.1)', () => {
     ]);
     expect(getCardPrompt(cards[0], notes[0])).toBe('Stadt liegt an der Spree.');
   });
+
+  it('uses the same portable IDs for a repeated Anki import', () => {
+    const row = {
+      deck: 'Italian', front: 'casa', back: 'Haus', type: 'basic', tags: [], language: 'it',
+      clozeText: '', expectedAnswer: 'Haus', mediaUrl: '',
+      anki: {
+        deck: { deckId: '42', originalName: 'Italian', collectionCreatedAt: 1_700_000_000_000 },
+        note: { noteId: '101', modelId: '1', tags: [], fields: [] },
+        card: { cardId: '202', noteId: '101', deckId: '42', templateOrdinal: 0, queue: 0, cardType: 0, due: 0, interval: 0, factor: 2500, reps: 0, lapses: 0, leftCount: 0 },
+      },
+    } satisfies ImportableRow;
+    const first = buildEntitiesFromRows([row], 1_700_000_000_000);
+    const second = buildEntitiesFromRows([row], 1_700_000_100_000);
+
+    expect(second.decks[0].id).toBe(first.decks[0].id);
+    expect(second.notes[0].id).toBe(first.notes[0].id);
+    expect(second.cards[0].id).toBe(first.cards[0].id);
+  });
 });

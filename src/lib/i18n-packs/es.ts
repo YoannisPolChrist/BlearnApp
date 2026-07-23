@@ -2,7 +2,7 @@ import type { TranslationTree } from '@/lib/i18n';
 
 const esPack: TranslationTree = {
   nav: {
-    focus: 'Foco',
+    focus: 'Inicio',
     modes: 'Modos',
     screen: 'Pantalla',
     learn: 'Learn',

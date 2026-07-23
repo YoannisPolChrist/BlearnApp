@@ -4,6 +4,7 @@ import {
   countDistinctActiveDays,
   countNewCardsIntroducedToday,
   countReviewsToday,
+  getWeeklyReviewActivity,
 } from '@/modules/learning/stats/utils';
 
 function buildLog(id: string, reviewedAt: number, overrides: Partial<ReviewLog> = {}): ReviewLog {
@@ -61,5 +62,21 @@ describe('Vokabeltracking utils', () => {
       buildLog('a', lateEvening),
       buildLog('b', earlyMorning),
     ])).toBe(2);
+  });
+
+  it('summarizes the current Monday-to-Sunday activity for one deck', () => {
+    const now = new Date(2026, 5, 12, 12, 0, 0).getTime(); // Friday
+    const monday = new Date(2026, 5, 8, 9, 0, 0).getTime();
+    const wednesday = new Date(2026, 5, 10, 9, 0, 0).getTime();
+
+    const activity = getWeeklyReviewActivity([
+      buildLog('monday-a', monday),
+      buildLog('monday-b', monday + 60_000),
+      buildLog('wednesday', wednesday),
+      buildLog('other-deck', wednesday, { deckId: 'other_deck' }),
+    ], 'deck_1', now);
+
+    expect(activity.reviewsThisWeek).toBe(3);
+    expect(activity.reviewedDaysThisWeek).toEqual([true, false, true, false, false, false, false]);
   });
 });

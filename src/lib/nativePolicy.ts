@@ -108,12 +108,6 @@ function getStrictAddonProtectionUntil(strictAddons?: StrictAddonMap): number | 
   }, null);
 }
 
-function getStrictAddonLockedApps(strictAddons?: StrictAddonMap) {
-  if (!strictAddons) return [];
-  const activeAddonModes = getActiveStrictAddonModes(strictAddons);
-  return activeAddonModes.flatMap((mode) => strictAddons[mode].lockedAppIds);
-}
-
 const TARGET_MODE_PRIORITY: Record<TargetModeId | "lock", number> = {
   lock: 5,
   strict: 4,
@@ -121,23 +115,6 @@ const TARGET_MODE_PRIORITY: Record<TargetModeId | "lock", number> = {
   learn: 2,
   reflection: 1,
 };
-
-function applyStrictAddonModeOverrides(
-  blockedAppModes: Record<string, TargetModeId>,
-  strictAddons?: StrictAddonMap,
-) {
-  if (!strictAddons) return blockedAppModes;
-  const next = { ...blockedAppModes };
-  getActiveStrictAddonModes(strictAddons).forEach((mode) => {
-    strictAddons[mode].lockedAppIds.forEach((appId) => {
-      const currentMode = next[appId];
-      if (!currentMode || TARGET_MODE_PRIORITY[mode] > TARGET_MODE_PRIORITY[currentMode]) {
-        next[appId] = mode;
-      }
-    });
-  });
-  return next;
-}
 
 function applyRemoteModeOverrides(
   blockedAppModes: Record<string, TargetModeId>,
@@ -152,6 +129,86 @@ function applyRemoteModeOverrides(
     }
   });
   return next;
+}
+
+function arePrimitiveRecordsEqual(
+  left: Record<string, unknown>,
+  right: Record<string, unknown>,
+) {
+  const leftKeys = Object.keys(left).sort();
+  const rightKeys = Object.keys(right).sort();
+  if (leftKeys.length !== rightKeys.length) {
+    return false;
+  }
+
+  return leftKeys.every((key, index) => key === rightKeys[index] && left[key] === right[key]);
+}
+
+function areArraysEqual<T>(left: T[] | undefined, right: T[] | undefined) {
+  if (left === right) {
+    return true;
+  }
+  if (!left || !right || left.length !== right.length) {
+    return false;
+  }
+
+  return left.every((value, index) => value === right[index]);
+}
+
+function areTargetsEqual(left: DevicePolicyTarget[], right: DevicePolicyTarget[]) {
+  if (left === right) {
+    return true;
+  }
+  if (left.length !== right.length) {
+    return false;
+  }
+
+  return left.every((target, index) => {
+    const other = right[index];
+    return target.id === other.id
+      && target.type === other.type
+      && target.mode === other.mode
+      && target.deckId === other.deckId
+      && target.requiredCorrectReviews === other.requiredCorrectReviews
+      && target.unlockDurationMinutes === other.unlockDurationMinutes
+      && target.enabled === other.enabled;
+  });
+}
+
+/**
+ * Compares only values that Android receives, avoiding JSON allocation for a
+ * full policy payload each time either store publishes a new object identity.
+ */
+export function areDevicePolicySnapshotsEqual(
+  left: DevicePolicySnapshot | null,
+  right: DevicePolicySnapshot | null,
+) {
+  if (left === right) {
+    return true;
+  }
+  if (!left || !right) {
+    return false;
+  }
+
+  return areArraysEqual(left.activeModes, right.activeModes)
+    && arePrimitiveRecordsEqual(
+      left.gateRule as Record<string, unknown>,
+      right.gateRule as Record<string, unknown>,
+    )
+    && areArraysEqual(left.blockedPackages, right.blockedPackages)
+    && areArraysEqual(left.blockedDomains, right.blockedDomains)
+    && areArraysEqual(left.blockedSearchTerms, right.blockedSearchTerms)
+    && arePrimitiveRecordsEqual(left.unlockedTargets ?? {}, right.unlockedTargets ?? {})
+    && left.strictLockUntil === right.strictLockUntil
+    && left.strictAddonProtectionUntil === right.strictAddonProtectionUntil
+    && left.strictLockScope === right.strictLockScope
+    && left.fullLockBlocksAllApps === right.fullLockBlocksAllApps
+    && left.penaltyAmountSats === right.penaltyAmountSats
+    && left.accountabilityPartnerName === right.accountabilityPartnerName
+    && left.remoteBlockingActive === right.remoteBlockingActive
+    && left.remoteBlockingExpiresAt === right.remoteBlockingExpiresAt
+    && areArraysEqual(left.remoteOnlyBlockedApps, right.remoteOnlyBlockedApps)
+    && areTargetsEqual(left.targets, right.targets);
 }
 
 export function buildDevicePolicySnapshot({
@@ -182,7 +239,6 @@ export function buildDevicePolicySnapshot({
   const initialActiveModes = strictLockExpiresAt
     ? activeModes
     : activeModes.filter((mode) => mode !== "lock");
-  const strictAddonLockedApps = getStrictAddonLockedApps(strictAddons);
   const strictAddonProtectionMode = getStrictAddonProtectionMode(strictAddons);
   const strictAddonProtectionUntil = getStrictAddonProtectionUntil(strictAddons);
   const strictAddonProtectedPackages = strictAddonProtectionMode
@@ -199,8 +255,8 @@ export function buildDevicePolicySnapshot({
 
   const effectiveActiveModes = initialActiveModes;
 
-  const extendedBlockedApps = [...blockedApps, ...strictAddonLockedApps, ...remoteBlockedApps];
-  let extendedBlockedAppModes = applyStrictAddonModeOverrides(blockedAppModes, strictAddons);
+  const extendedBlockedApps = [...blockedApps, ...remoteBlockedApps];
+  let extendedBlockedAppModes = { ...blockedAppModes };
   if (isRemoteActive) {
     extendedBlockedAppModes = applyRemoteModeOverrides(extendedBlockedAppModes, remoteBlockedApps, remoteMode);
   }
@@ -234,7 +290,7 @@ export function buildDevicePolicySnapshot({
   // Seite kann sie nach remoteBlockingExpiresAt selbst freigeben, auch wenn die
   // JS-Runtime (App gekillt / Geraet neu gestartet) keinen neuen Snapshot pusht.
   const locallyBlockedLower = new Set(
-    [...blockedApps, ...strictAddonLockedApps].map((appId) => appId.toLowerCase()),
+    blockedApps.map((appId) => appId.toLowerCase()),
   );
   const remoteOnlyBlockedApps = activeRemoteBlockedApps
     .map((appId) => appId.toLowerCase())

@@ -4,7 +4,6 @@ import {
   checkPermissions,
   getInstalledApps,
   getTodayUsage,
-  getUsageForRange,
   isUnsupportedPlatformError,
 } from '@/services/screenTimeService';
 import type { InstalledApp, ScreenTimeSummary } from '@/plugins/ScreenTimePlugin';
@@ -31,35 +30,23 @@ export function useModesRuntime({ isGerman }: UseModesRuntimeOptions) {
   const [permissionStatus, setPermissionStatus] = useState(EMPTY_PERMISSION_STATUS);
 
   const loadRuntimeData = useCallback(async () => {
-    const endMs = Date.now();
-    const startMs = endMs - 30 * 24 * 60 * 60 * 1000;
     let nextRuntimeError: string | null = null;
 
     try {
-      const monthlyUsage = await getUsageForRange(startMs, endMs);
-      setUsage(monthlyUsage);
+      setUsage(await getTodayUsage());
     } catch (error) {
-      try {
-        const todayUsage = await getTodayUsage();
-        setUsage(todayUsage);
-      } catch (todayError) {
-        setUsage(null);
-        nextRuntimeError = getModesRuntimeErrorMessage(
-          todayError,
-          isGerman,
-          isGerman
-            ? 'Android-Nutzungsdaten konnten nicht geladen werden. Pruefe dein Setup und versuche es erneut.'
-            : 'Android usage data could not be loaded. Check your setup and try again.',
-        );
-      }
-
-      if (!isUnsupportedPlatformError(error)) {
-        console.warn('Monthly usage failed, falling back to today:', error);
-      }
+      setUsage(null);
+      nextRuntimeError = getModesRuntimeErrorMessage(
+        error,
+        isGerman,
+        isGerman
+          ? 'Android-Nutzungsdaten konnten nicht geladen werden. Pruefe dein Setup und versuche es erneut.'
+          : 'Android usage data could not be loaded. Check your setup and try again.',
+      );
     }
 
     try {
-      const apps = await getInstalledApps();
+      const apps = await getInstalledApps({ includeIcons: true });
       setInstalledApps(apps);
     } catch (error) {
       setInstalledApps([]);
@@ -95,7 +82,33 @@ export function useModesRuntime({ isGerman }: UseModesRuntimeOptions) {
   }, [isGerman]);
 
   useEffect(() => {
-    void loadRuntimeData();
+    // App icons are part of the target-selection affordance, but encoding them
+    // across the native bridge is still non-critical. Let the Modes shell paint
+    // first, then load the catalogue while the browser is idle.
+    let cancelled = false;
+    const loadWhenIdle = () => {
+      if (!cancelled) {
+        void loadRuntimeData();
+      }
+    };
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    if (typeof idleWindow.requestIdleCallback === 'function') {
+      const idleHandle = idleWindow.requestIdleCallback(loadWhenIdle, { timeout: 1500 });
+      return () => {
+        cancelled = true;
+        idleWindow.cancelIdleCallback?.(idleHandle);
+      };
+    }
+
+    const timerId = window.setTimeout(loadWhenIdle, 250);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timerId);
+    };
   }, [loadRuntimeData]);
 
   useEffect(() => {

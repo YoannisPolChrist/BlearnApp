@@ -4,7 +4,8 @@ import GlassCard from '@/components/GlassCard';
 import { useI18n } from '@/hooks/useI18n';
 import { getModePalette } from '@/lib/semanticTones';
 import { cn } from '@/lib/utils';
-import { ModeStrictAddonBlock, type ModeId } from './shared';
+import { ModeStrictAddonBlock } from './shared';
+import type { ModeId } from './modeShared';
 
 export function StrictProtectionSection({
   selectedMode,
@@ -75,16 +76,18 @@ export function StrictProtectionSection({
 
         {showBreathingControls ? (
           <div className="grid gap-3 md:grid-cols-3">
-            <label className="rounded-[1.4rem] border border-border/70 bg-background/65 px-4 py-4">
-              <span className="text-[11px] font-black uppercase tracking-[0.16em] text-muted-foreground">{t('modes.strict.rounds')}</span>
-              <input type="number" min={1} max={12} value={localBreathingRoundsDraft} onChange={(event) => setLocalBreathingRoundsDraft(event.target.value)} onBlur={commitLocalBreathingRoundsDraft} className="mt-3 w-full rounded-xl border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none transition focus:border-primary/30" />
-            </label>
-            <label className="rounded-[1.4rem] border border-border/70 bg-background/65 px-4 py-4">
-              <span className="text-[11px] font-black uppercase tracking-[0.16em] text-muted-foreground">{t('modes.strict.interval')}</span>
-              <input type="number" min={5} max={240} step={5} value={localIntervalDraft} onChange={(event) => setLocalIntervalDraft(event.target.value)} onBlur={commitLocalIntervalDraft} className="mt-3 w-full rounded-xl border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none transition focus:border-primary/30" />
-              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t('modes.strict.unlockHint')}</p>
-            </label>
-            <label className="rounded-[1.4rem] border border-border/70 bg-background/65 px-4 py-4">
+            <div data-tour-id="tour-reflection-settings" className="grid gap-3 md:col-span-2 md:grid-cols-2">
+              <label className="rounded-[1.4rem] border border-border/70 bg-background/65 px-4 py-4">
+                <span className="text-[11px] font-black uppercase tracking-[0.16em] text-muted-foreground">{t('modes.strict.rounds')}</span>
+                <input type="number" min={1} max={12} value={localBreathingRoundsDraft} onChange={(event) => setLocalBreathingRoundsDraft(event.target.value)} onBlur={commitLocalBreathingRoundsDraft} className="mt-3 w-full rounded-xl border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none transition focus:border-primary/30" />
+              </label>
+              <label className="rounded-[1.4rem] border border-border/70 bg-background/65 px-4 py-4">
+                <span className="text-[11px] font-black uppercase tracking-[0.16em] text-muted-foreground">{t('modes.strict.interval')}</span>
+                <input type="number" min={5} max={240} step={5} value={localIntervalDraft} onChange={(event) => setLocalIntervalDraft(event.target.value)} onBlur={commitLocalIntervalDraft} className="mt-3 w-full rounded-xl border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none transition focus:border-primary/30" />
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t('modes.strict.unlockHint')}</p>
+              </label>
+            </div>
+            <label data-tour-id="tour-reflection-pattern" className="rounded-[1.4rem] border border-border/70 bg-background/65 px-4 py-4">
               <span className="text-[11px] font-black uppercase tracking-[0.16em] text-muted-foreground">{t('modes.strict.pattern')}</span>
               <select value={localPatternId} onChange={(event) => setLocalPatternId(event.target.value)} className="mt-3 w-full rounded-xl border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none transition focus:border-primary/30">
                 {breathingPatterns.map((pattern) => <option key={pattern.id} value={pattern.id}>{pattern.name}</option>)}
@@ -110,7 +113,7 @@ export function StrictProtectionSection({
         ) : null}
 
         {selectedMode === 'lock' ? (
-          <div className="grid gap-3 md:grid-cols-2">
+          <div data-tour-id="tour-lock-settings" className="grid gap-3 md:grid-cols-2">
             <label className="rounded-[1.4rem] border border-border/70 bg-background/65 px-4 py-4">
               <span className="text-[11px] font-black uppercase tracking-[0.16em] text-muted-foreground">{t('modes.strict.from')}</span>
               <input type="time" value={startTime} onChange={(event) => setStartTime(event.target.value)} className="mt-3 w-full rounded-xl border border-border/70 bg-background px-3 py-2 text-sm text-foreground outline-none transition focus:border-primary/30" />

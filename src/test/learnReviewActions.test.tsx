@@ -4,13 +4,37 @@ import { LearnReviewActions } from '@/components/learn-review/LearnReviewActions
 import { tonePalettes } from '@/lib/semanticTones';
 
 describe('LearnReviewActions', () => {
+  it('keeps the blocked typed-answer flow to one stacked reveal action', () => {
+    render(
+      <LearnReviewActions
+        attemptMessage={null}
+        canUndo={false}
+        intervalPreviews={null}
+        onCheckTypedAnswer={() => undefined}
+        onRevealAnswer={() => undefined}
+        onReview={() => undefined}
+        onTypedAnswerChange={() => undefined}
+        onUndoReview={() => undefined}
+        reduceInterfaceMotion
+        requiresTypedAnswer
+        isBlockedFlow
+        revealed={false}
+        typedAnswer=""
+        typedCorrect={null}
+      />,
+    );
+
+    const typedAnswerInput = screen.getByPlaceholderText('Antwort eingeben');
+    expect(typedAnswerInput.className).toContain('h-14');
+    expect(typedAnswerInput).not.toHaveAttribute('maxLength');
+    expect(screen.getByRole('button', { name: 'Lösung zeigen' }).className).toContain('w-full');
+    expect(screen.queryByRole('button', { name: 'Antwort prüfen' })).not.toBeInTheDocument();
+  });
+
   it('renders partial typed-answer feedback with the warning palette even when the answer counts as correct', () => {
     render(
       <LearnReviewActions
         attemptMessage="Das war fast richtig."
-        blockedEasyHintVisible={false}
-        blockedEasyPulseKey={0}
-        easyRatingBlocked={false}
         canUndo
         intervalPreviews={null}
         onCheckTypedAnswer={() => undefined}
@@ -19,7 +43,6 @@ describe('LearnReviewActions', () => {
         onTypedAnswerChange={() => undefined}
         onUndoReview={() => undefined}
         reduceInterfaceMotion
-        remainingAttempts={2}
         requiresTypedAnswer
         revealed={false}
         typedAnswer="Freu"
@@ -33,14 +56,10 @@ describe('LearnReviewActions', () => {
     expect(attemptBadge.className).not.toContain(tonePalettes.success.badge);
   });
 
-  it('disables Schwer, Good, and Easy and shows correct feedback when hardRatingBlocked is true', () => {
+  it('keeps every rating available after an unrecognized typed answer', () => {
     render(
       <LearnReviewActions
         attemptMessage="Falsch."
-        blockedEasyHintVisible={true}
-        blockedEasyPulseKey={0}
-        easyRatingBlocked={true}
-        hardRatingBlocked={true}
         canUndo={false}
         intervalPreviews={{ again: '10m', hard: '10m', good: '10m', easy: '10m' }}
         onCheckTypedAnswer={() => undefined}
@@ -49,7 +68,6 @@ describe('LearnReviewActions', () => {
         onTypedAnswerChange={() => undefined}
         onUndoReview={() => undefined}
         reduceInterfaceMotion
-        remainingAttempts={0}
         requiresTypedAnswer
         revealed
         typedAnswer="incorrect"
@@ -58,42 +76,9 @@ describe('LearnReviewActions', () => {
       />,
     );
 
-    expect(screen.getByRole('button', { name: /again/i })).not.toHaveAttribute('aria-disabled', 'true');
-    expect(screen.getByRole('button', { name: /hard/i })).toHaveAttribute('aria-disabled', 'true');
-    expect(screen.getByRole('button', { name: /good/i })).toHaveAttribute('aria-disabled', 'true');
-    expect(screen.getByRole('button', { name: /easy/i })).toHaveAttribute('aria-disabled', 'true');
-    expect(screen.getByText('Nur Nochmal möglich.')).toBeInTheDocument();
-  });
-
-  it('disables only Good and Easy and shows correct feedback when easyRatingBlocked is true but hardRatingBlocked is false', () => {
-    render(
-      <LearnReviewActions
-        attemptMessage="Das war fast richtig."
-        blockedEasyHintVisible={true}
-        blockedEasyPulseKey={0}
-        easyRatingBlocked={true}
-        hardRatingBlocked={false}
-        canUndo={false}
-        intervalPreviews={{ again: '10m', hard: '1d', good: '4d', easy: '8d' }}
-        onCheckTypedAnswer={() => undefined}
-        onRevealAnswer={() => undefined}
-        onReview={() => undefined}
-        onTypedAnswerChange={() => undefined}
-        onUndoReview={() => undefined}
-        reduceInterfaceMotion
-        remainingAttempts={2}
-        requiresTypedAnswer
-        revealed
-        typedAnswer="Freu"
-        typedAnswerMatchKind="partial"
-        typedCorrect
-      />,
-    );
-
-    expect(screen.getByRole('button', { name: /again/i })).not.toHaveAttribute('aria-disabled', 'true');
-    expect(screen.getByRole('button', { name: /hard/i })).not.toHaveAttribute('aria-disabled', 'true');
-    expect(screen.getByRole('button', { name: /good/i })).toHaveAttribute('aria-disabled', 'true');
-    expect(screen.getByRole('button', { name: /easy/i })).toHaveAttribute('aria-disabled', 'true');
-    expect(screen.getByText('Nur Nochmal oder Schwer möglich.')).toBeInTheDocument();
+    for (const rating of ['again', 'hard', 'good', 'easy']) {
+      expect(screen.getByRole('button', { name: new RegExp(rating, 'i') })).not.toHaveAttribute('aria-disabled');
+    }
+    expect(screen.queryByText(/Nur Nochmal möglich/)).not.toBeInTheDocument();
   });
 });

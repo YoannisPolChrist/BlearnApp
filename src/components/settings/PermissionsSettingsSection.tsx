@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
+import type { MonitoringStatus } from '@/plugins/ScreenTimePlugin';
 import type { PermissionStatus } from '@/services/screenTimeNormalization';
 import type { SettingsPermissionCard } from '@/modules/settings/useSettingsPermissions';
+import { AccessibilityHealthNotice } from '@/components/settings/AccessibilityHealthNotice';
 import GlassCard from '@/components/GlassCard';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { sectionItem } from '@/lib/motion';
@@ -10,6 +12,9 @@ type Translate = (key: string, vars?: Record<string, unknown>) => string;
 
 interface PermissionsSettingsSectionProps {
   expandedSettingsPanel: string;
+  locale: string;
+  monitoringStatus: MonitoringStatus;
+  onOpenAccessibilitySettings: () => void;
   onOpenModes: () => void;
   onOpenPermissionGuide: () => void;
   onRefreshPermissions: () => void;
@@ -26,6 +31,9 @@ interface PermissionsSettingsSectionProps {
 
 export function PermissionsSettingsSection({
   expandedSettingsPanel,
+  locale,
+  monitoringStatus,
+  onOpenAccessibilitySettings,
   onOpenModes,
   onOpenPermissionGuide,
   onRefreshPermissions,
@@ -118,6 +126,12 @@ export function PermissionsSettingsSection({
                     </button>
                   </div>
                 ) : null}
+
+                <AccessibilityHealthNotice
+                  locale={locale}
+                  monitoringStatus={monitoringStatus}
+                  onOpenAccessibilitySettings={onOpenAccessibilitySettings}
+                />
 
                 <div className="responsive-card-grid">
                   {permissionCards.map((card) => (

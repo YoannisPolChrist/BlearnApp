@@ -231,7 +231,7 @@ describe('AppSettings', () => {
     await renderSettings();
 
     expect(screen.getAllByText('Blearn').length).toBeGreaterThan(0);
-    expect(await screen.findByRole('button', { name: /dunkler modus|heller modus/i })).toBeInTheDocument();
+    expect(await screen.findAllByRole('button', { name: /dunkler modus|heller modus/i })).toHaveLength(2);
     const languagePackSummary = screen.getByTestId('language-pack-summary');
     expect(screen.queryByText(/Visuelle Themen/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Android Runtime/i)).not.toBeInTheDocument();
@@ -242,9 +242,9 @@ describe('AppSettings', () => {
     expect(screen.queryByText(/direkt verf/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/extra installiert/i)).not.toBeInTheDocument();
     expect(within(languagePackSummary).getByText('Deutsch')).toBeInTheDocument();
-    expect(within(languagePackSummary).queryByText(/^aktiv$/i)).not.toBeInTheDocument();
-    expect(within(languagePackSummary).queryByText(/^bereit$/i)).not.toBeInTheDocument();
-    expect(within(languagePackSummary).queryByText(/^extra$/i)).not.toBeInTheDocument();
+    expect(within(languagePackSummary).getByText('🇩🇪')).toBeInTheDocument();
+    expect(within(languagePackSummary).queryByText(/Deutsch installiert/i)).not.toBeInTheDocument();
+    expect(within(languagePackSummary).queryByText(/weitere sprachen folgen/i)).not.toBeInTheDocument();
     expect(document.getElementById('account')).not.toBeNull();
   });
 
@@ -254,10 +254,11 @@ describe('AppSettings', () => {
     fireEvent.click(screen.getByRole('button', { name: /sprachen verwalten/i }));
 
     const dialog = await screen.findByRole('dialog', { name: /sprachen verwalten/i });
-    expect(within(dialog).getByText(/^sprachpakete$/i)).toBeInTheDocument();
+    expect(within(dialog).getByText(/^sprache$/i)).toBeInTheDocument();
     expect(within(dialog).queryByText(/lade optionale sprachpakete/i)).not.toBeInTheDocument();
     expect(within(dialog).queryByText(/installiere .* nur bei bedarf/i)).not.toBeInTheDocument();
-    expect(within(dialog).getAllByRole('button', { name: /installieren/i }).length).toBeGreaterThan(0);
+    expect(within(dialog).getByText(/cloud-sprachpakete/i)).toBeInTheDocument();
+    expect(within(dialog).queryByRole('button', { name: /installieren/i })).not.toBeInTheDocument();
     
     // Close the dialog to prevent Radix UI global state leakage to subsequent tests
     fireEvent.keyDown(dialog, { key: 'Escape', code: 'Escape' });
@@ -275,7 +276,7 @@ describe('AppSettings', () => {
 
     await renderSettings();
 
-    expect(await screen.findByRole('button', { name: /dunkler modus|heller modus/i })).toBeInTheDocument();
+    expect(await screen.findAllByRole('button', { name: /dunkler modus|heller modus/i })).toHaveLength(2);
     expect(screen.getByText(/lernfortschritt sichern/i)).toBeInTheDocument();
   });
 
@@ -294,14 +295,14 @@ describe('AppSettings', () => {
 
     await renderSettings();
 
-    expect(await screen.findByRole('button', { name: /dunkler modus|heller modus/i })).toBeInTheDocument();
+    expect(await screen.findAllByRole('button', { name: /dunkler modus|heller modus/i })).toHaveLength(2);
     expect(screen.getByText(/lernfortschritt sichern/i)).toBeInTheDocument();
   });
 
   it('shows the global save tile when the theme toggle is pressed', async () => {
     await renderSettings();
 
-    fireEvent.click(await screen.findByRole('button', { name: /dunkler modus|heller modus/i }));
+    fireEvent.click(await screen.findByRole('button', { name: /dunkler modus/i }));
 
     expect(await screen.findByText(/theme gespeichert/i)).toBeInTheDocument();
     expect(screen.getByTestId('success-feedback-host')).toHaveAttribute('data-feedback-layout', 'compact');
@@ -637,6 +638,41 @@ describe('AppSettings', () => {
       expect(await screen.findByText('Systemberechtigungen')).toBeInTheDocument();
       fireEvent.click(screen.getByRole('button', { name: /Systemberechtigungen/i }));
       expect(await screen.findByRole('button', { name: 'Reparieren' })).toBeInTheDocument();
+    } finally {
+      dateNowSpy.mockRestore();
+    }
+  });
+
+  it('explains an accessibility service interruption and opens Android settings from the notice', async () => {
+    window.localStorage.setItem('blearn-permissions-guide-seen', 'true');
+    const now = new Date('2026-04-17T12:00:00.000Z').getTime();
+    const dateNowSpy = vi.spyOn(Date, 'now').mockReturnValue(now);
+    getMonitoringStatusMock.mockResolvedValue({
+      monitoringActive: true,
+      vpnActive: false,
+      overlayPermission: true,
+      accessibilityPermission: true,
+      accessibilityServiceReady: false,
+      accessibilityServiceDisconnectedAt: now - 50_000,
+      websiteBlockingAvailable: false,
+      websiteBlockingEnabled: false,
+      websiteBlockingPermission: false,
+      handoffInProgress: false,
+      overlayVisible: false,
+      pendingQueueLength: 0,
+      recentBlockingEvents: [],
+    });
+
+    try {
+      await renderSettings();
+      fireEvent.click(await screen.findByRole('button', { name: /Systemberechtigungen/i }));
+
+      expect(await screen.findByTestId('accessibility-health-notice')).toHaveTextContent(
+        'Android hat die Verbindung zum Blearn-Dienst',
+      );
+
+      fireEvent.click(screen.getByRole('button', { name: 'Bedienungshilfe-Einstellungen öffnen' }));
+      expect(requestAccessibilityPermissionMock).toHaveBeenCalledTimes(1);
     } finally {
       dateNowSpy.mockRestore();
     }

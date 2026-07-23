@@ -23,6 +23,7 @@ import {
   getPresetRevision,
   getReviewLogRevision,
   mergeById,
+  mergeCardsById,
   normalizeActiveDeckSelection,
   normalizeLearningNote,
   normalizeRevisionTimestamp,
@@ -37,6 +38,8 @@ import type {
   CardBrowserState,
   FilteredDeckLiteDefinition,
   FilteredDeckLiteRun,
+  LearningCloudEntityTombstoneCollection,
+  LearningCloudEntityTombstones,
   LearningCloudState,
 } from './learningCloudStateTypes';
 export type {
@@ -47,11 +50,122 @@ export type {
   CardBrowserState,
   FilteredDeckLiteDefinition,
   FilteredDeckLiteRun,
+  LearningCloudEntityTombstoneCollection,
+  LearningCloudEntityTombstones,
   LearningCloudState,
 } from './learningCloudStateTypes';
 
 // Keep cloud snapshots lean enough for mobile Firestore syncs on large decks.
 export const MAX_CLOUD_REVIEW_LOGS = 250;
+
+const TOMBSTONE_COLLECTIONS: LearningCloudEntityTombstoneCollection[] = [
+  'decks',
+  'notes',
+  'cards',
+  'reviewLogs',
+  'presets',
+];
+
+function normalizeEntityTombstones(
+  input?: LearningCloudEntityTombstones | null,
+): LearningCloudEntityTombstones | undefined {
+  const normalized: LearningCloudEntityTombstones = {};
+
+  for (const collection of TOMBSTONE_COLLECTIONS) {
+    const source = input?.[collection];
+    if (!source || typeof source !== 'object') {
+      continue;
+    }
+
+    const entries = Object.entries(source).flatMap(([id, deletedAt]) => (
+      id && Number.isFinite(deletedAt) && (deletedAt as number) > 0
+        ? [[id, Math.round(deletedAt as number)] as const]
+        : []
+    ));
+    if (entries.length > 0) {
+      normalized[collection] = Object.fromEntries(entries);
+    }
+  }
+
+  return Object.keys(normalized).length > 0 ? normalized : undefined;
+}
+
+function mergeEntityTombstones(
+  local?: LearningCloudEntityTombstones | null,
+  remote?: LearningCloudEntityTombstones | null,
+): LearningCloudEntityTombstones | undefined {
+  const normalizedLocal = normalizeEntityTombstones(local);
+  const normalizedRemote = normalizeEntityTombstones(remote);
+  const merged: LearningCloudEntityTombstones = {};
+
+  for (const collection of TOMBSTONE_COLLECTIONS) {
+    const values = new Map<string, number>();
+    for (const source of [normalizedLocal?.[collection], normalizedRemote?.[collection]]) {
+      for (const [id, deletedAt] of Object.entries(source || {})) {
+        values.set(id, Math.max(values.get(id) || 0, deletedAt));
+      }
+    }
+    if (values.size > 0) {
+      merged[collection] = Object.fromEntries(values);
+    }
+  }
+
+  return Object.keys(merged).length > 0 ? merged : undefined;
+}
+
+function removeTombstonedEntities<T extends { id: string }>(
+  items: T[],
+  tombstones?: Record<string, number>,
+): T[] {
+  if (!tombstones || Object.keys(tombstones).length === 0) {
+    return items;
+  }
+
+  return items.filter((item) => !tombstones[item.id]);
+}
+
+function applyEntityTombstones(
+  state: Omit<LearningCloudState, 'entityTombstones'> & {
+    entityTombstones?: LearningCloudEntityTombstones;
+  },
+): LearningCloudState {
+  const entityTombstones = normalizeEntityTombstones(state.entityTombstones);
+  return {
+    ...state,
+    decks: removeTombstonedEntities(state.decks, entityTombstones?.decks),
+    notes: removeTombstonedEntities(state.notes, entityTombstones?.notes),
+    cards: removeTombstonedEntities(state.cards, entityTombstones?.cards),
+    reviewLogs: removeTombstonedEntities(state.reviewLogs, entityTombstones?.reviewLogs),
+    presets: removeTombstonedEntities(state.presets, entityTombstones?.presets),
+    entityTombstones,
+  };
+}
+
+export function withLearningCloudDeletionTombstones(
+  previousState: LearningCloudState | null,
+  nextState: LearningCloudState,
+  deletedAt: number,
+): LearningCloudState {
+  if (!previousState) {
+    return nextState;
+  }
+
+  const tombstones: LearningCloudEntityTombstones = {};
+  for (const collection of TOMBSTONE_COLLECTIONS) {
+    const previous = previousState[collection];
+    const next = nextState[collection];
+    const nextIds = new Set(next.map((item) => item.id));
+    const deletedIds = previous.map((item) => item.id).filter((id) => !nextIds.has(id));
+    if (deletedIds.length > 0) {
+      tombstones[collection] = Object.fromEntries(deletedIds.map((id) => [id, deletedAt]));
+    }
+  }
+
+  return normalizeLearningCloudState({
+    ...nextState,
+    entityTombstones: mergeEntityTombstones(nextState.entityTombstones, tombstones),
+  });
+}
 
 function sortReviewLogs(reviewLogs: ReviewLog[]) {
   return [...reviewLogs].sort((left, right) => {
@@ -325,7 +439,7 @@ export function normalizeLearningCloudState(
   const gateRule = migrateGateRule(state?.gateRule ?? createDefaultGateRuleState());
   const gateRuleUpdatedAt = normalizeRevisionTimestamp(state?.gateRuleUpdatedAt) || undefined;
 
-  return {
+  return applyEntityTombstones({
     activeDeckId: activeDeckSelection.activeDeckId,
     activeDeckUpdatedAt: activeDeckSelection.activeDeckUpdatedAt,
     decks,
@@ -341,7 +455,8 @@ export function normalizeLearningCloudState(
     filteredDeckLiteDefinition,
     filteredDeckLiteDefinitions,
     filteredDeckLiteRuns,
-  };
+    entityTombstones: normalizeEntityTombstones(state?.entityTombstones),
+  });
 }
 
 export function mergeLearningCloudStates(
@@ -403,8 +518,10 @@ export function mergeLearningCloudStates(
       getFilteredDeckLiteRunRevision,
     ),
   );
-  const cards = sortById(
-    mergeById(normalizedLocal.cards, normalizedRemote.cards, getCardRevision),
+  const cards = sortById(mergeCardsById(normalizedLocal.cards, normalizedRemote.cards));
+  const entityTombstones = mergeEntityTombstones(
+    normalizedLocal.entityTombstones,
+    normalizedRemote.entityTombstones,
   );
   const cardCountByDeck = new Map<string, number>();
   for (const card of cards) {
@@ -449,5 +566,6 @@ export function mergeLearningCloudStates(
     filteredDeckLiteDefinition,
     filteredDeckLiteDefinitions,
     filteredDeckLiteRuns,
+    entityTombstones,
   });
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, Download, Play, Sparkles } from 'lucide-react';
+import { ChevronDown, Download, Play, Sparkles, Trash2 } from 'lucide-react';
 import GlassCard from '@/components/GlassCard';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
@@ -10,12 +10,37 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 
+const LANGUAGE_FLAGS: Record<string, { code: string; flag: string; label: string }> = {
+  ar: { code: 'AR', flag: '🇸🇦', label: 'Arabisch' },
+  de: { code: 'DE', flag: '🇩🇪', label: 'Deutsch' },
+  en: { code: 'EN', flag: '🇬🇧', label: 'Englisch' },
+  es: { code: 'ES', flag: '🇪🇸', label: 'Spanisch' },
+  fr: { code: 'FR', flag: '🇫🇷', label: 'Französisch' },
+  it: { code: 'IT', flag: '🇮🇹', label: 'Italienisch' },
+};
+
+function getLanguageFlag(language: string, sourceTemplateId?: string, deckName?: string) {
+  const normalizedDeckName = deckName?.trim().toLowerCase();
+  if (sourceTemplateId === 'jean-paul-spanish' || normalizedDeckName === 'jean paul spanisch' || normalizedDeckName === 'jean-paul spanisch') {
+    return LANGUAGE_FLAGS.es;
+  }
+  if (sourceTemplateId === 'jean-paul' || normalizedDeckName === 'jean paul' || normalizedDeckName === 'jean-paul') {
+    return LANGUAGE_FLAGS.fr;
+  }
+  return LANGUAGE_FLAGS[language.trim().toLowerCase()] ?? { code: language.toUpperCase(), flag: '🌐', label: language.toUpperCase() };
+}
+
 export interface LearnDeckLibraryItem {
   id: string;
   name: string;
   description: string;
   language: string;
+  sourceTemplateId?: string;
   totalCards: number;
+  neverLearnedCount: number;
+  reviewsThisWeek: number;
+  activeDaysThisWeek: number;
+  reviewedDaysThisWeek: boolean[];
   dueNowCount: number;
   dueCount: number;
   overdueCount: number;
@@ -35,12 +60,14 @@ interface LearnDeckLibraryDialogProps {
   onSelectDeck: (deckId: string) => void;
   onStartLearning?: (deckId: string) => void;
   onExportDeck?: (deckId: string) => void;
+  onRemoveDeck?: (deckId: string) => void;
   onReviewMixChange?: (deckId: string, reviewsBetweenNewCards: number) => void;
   title?: string;
   description?: string;
 }
 
 const REVIEW_MIX_OPTIONS = [5, 10, 15, 20];
+const WEEKDAY_LABELS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
 export default function LearnDeckLibraryDialog({
   open,
@@ -50,6 +77,7 @@ export default function LearnDeckLibraryDialog({
   onSelectDeck,
   onStartLearning,
   onExportDeck,
+  onRemoveDeck,
   onReviewMixChange,
   title = 'Bibliothek',
   description = 'Aktives Deck wählen, Session starten oder Paket wechseln.',
@@ -90,6 +118,11 @@ export default function LearnDeckLibraryDialog({
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {decks.map((deck) => {
                   const isActive = deck.id === activeDeckId;
+                  const language = getLanguageFlag(deck.language, deck.sourceTemplateId, deck.name);
+                  const learnedCardCount = Math.max(0, deck.totalCards - deck.neverLearnedCount);
+                  const learnedProgressPercent = deck.totalCards > 0
+                    ? Math.round((learnedCardCount / deck.totalCards) * 100)
+                    : 0;
 
                   return (
                     <GlassCard
@@ -108,7 +141,10 @@ export default function LearnDeckLibraryDialog({
                             </div>
                             <p className="mt-1.5 line-clamp-2 break-words text-xs leading-relaxed text-foreground/72">{deck.description}</p>
                           </div>
-                          <span className="premium-pill self-start">{deck.language.toUpperCase()}</span>
+                          <span className="premium-pill inline-flex self-start items-center gap-1.5">
+                            <span role="img" aria-label={language.label}>{language.flag}</span>
+                            {language.code}
+                          </span>
                         </div>
 
                         <div className="grid grid-cols-3 gap-2">
@@ -117,13 +153,13 @@ export default function LearnDeckLibraryDialog({
                             <p className="mt-1.5 text-xl font-black tracking-[-0.05em] text-foreground">{deck.totalCards}</p>
                           </div>
                           <div className="rounded-[1rem] bg-primary/8 px-2.5 py-2.5">
-                            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-primary/80">Due now</p>
+                            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-primary/80">Fällig</p>
                             <p className="mt-1.5 text-xl font-black tracking-[-0.05em] text-primary">{deck.dueNowCount}</p>
                           </div>
-                          <div className="rounded-[1rem] bg-success/8 px-2.5 py-2.5">
-                            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-success/80">Status</p>
+                          <div className="rounded-[1rem] bg-warning/12 px-2.5 py-2.5">
+                            <p className="text-[11px] font-black uppercase tracking-[0.16em] text-warning">Nie gelernt</p>
                             <p className="mt-1.5 text-sm font-black tracking-[-0.03em] text-foreground">
-                              {deck.optimizerStatus === 'ready' ? 'Bereit' : deck.dueNowCount > 0 ? 'Fällig' : 'Geplant'}
+                              {deck.neverLearnedCount}
                             </p>
                           </div>
                         </div>
@@ -144,6 +180,44 @@ export default function LearnDeckLibraryDialog({
                           <div className="rounded-[1rem] bg-background/65 px-2.5 py-2">
                             <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground">Retention</p>
                             <p className="mt-1 text-sm font-black text-foreground">{Math.round(deck.desiredRetention * 100)}%</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2.5 rounded-[1.1rem] border border-border/70 bg-background/68 px-3 py-3">
+                          <div className="flex items-center justify-between gap-3">
+                            <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground">Lernfortschritt</p>
+                            <p className="text-[11px] font-black text-foreground">{learnedProgressPercent}% gestartet</p>
+                          </div>
+                          <div
+                            className="h-1.5 overflow-hidden rounded-full bg-muted"
+                            role="progressbar"
+                            aria-label={`Lernfortschritt für ${deck.name}`}
+                            aria-valuemin={0}
+                            aria-valuemax={deck.totalCards}
+                            aria-valuenow={learnedCardCount}
+                          >
+                            <div className="h-full rounded-full bg-warning transition-[width]" style={{ width: `${learnedProgressPercent}%` }} />
+                          </div>
+                          <p className="text-[11px] leading-relaxed text-foreground/68">
+                            {learnedCardCount} gestartet · {deck.neverLearnedCount} noch nie gelernt
+                          </p>
+
+                          <div className="flex items-center justify-between gap-3 border-t border-border/60 pt-2.5">
+                            <div>
+                              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-muted-foreground">Diese Woche</p>
+                              <p className="mt-1 text-sm font-black tracking-[-0.03em] text-foreground">
+                                {deck.reviewsThisWeek} Wiederholungen
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-1" aria-label={`${deck.activeDaysThisWeek} von 7 Tagen diese Woche aktiv`}>
+                              {WEEKDAY_LABELS.map((day, index) => (
+                                <span
+                                  key={day}
+                                  className={`h-2 w-2 rounded-full ${deck.reviewedDaysThisWeek[index] ? 'bg-warning' : 'bg-muted-foreground/20'}`}
+                                  title={`${day}: ${deck.reviewedDaysThisWeek[index] ? 'aktiv' : 'keine Wiederholung'}`}
+                                />
+                              ))}
+                            </div>
                           </div>
                         </div>
 
@@ -200,7 +274,7 @@ export default function LearnDeckLibraryDialog({
                               onSelectDeck(deck.id);
                               onOpenChange(false);
                             }}
-                            className={`btn-press w-full rounded-[1.1rem] px-3.5 py-2.5 text-sm font-bold ${isActive ? 'bg-card text-foreground' : 'bg-primary text-primary-foreground'}`}
+                            className={`btn-press w-full rounded-[1.1rem] px-3.5 py-2.5 text-sm font-bold ${isActive ? 'gold-glow bg-warning text-warning-foreground' : 'bg-primary text-primary-foreground'}`}
                           >
                             {isActive ? 'Aktives Deck' : 'Deck wählen'}
                           </button>
@@ -217,7 +291,7 @@ export default function LearnDeckLibraryDialog({
                               Lernen
                             </button>
                           ) : null}
-                          {onExportDeck ? (
+                        {onExportDeck ? (
                             <button
                               onClick={() => onExportDeck(deck.id)}
                               className="btn-press inline-flex w-full items-center justify-center gap-1.5 rounded-[1.1rem] border border-border bg-card/70 px-3.5 py-2.5 text-sm font-bold text-foreground sm:w-auto"
@@ -225,7 +299,21 @@ export default function LearnDeckLibraryDialog({
                               <Download size={14} />
                               Export
                             </button>
-                          ) : null}
+                        ) : null}
+                        {onRemoveDeck ? (
+                          <button
+                            type="button"
+                            className="btn-press inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-destructive/25 bg-destructive/8 px-3 py-2.5 text-sm font-black text-destructive"
+                            onClick={() => {
+                              if (window.confirm(`„${deck.name}“ wirklich aus deiner Bibliothek entfernen? Die Cloud-Kopie bleibt unverändert.`)) {
+                                onRemoveDeck(deck.id);
+                              }
+                            }}
+                          >
+                            <Trash2 size={16} />
+                            Aus Bibliothek entfernen
+                          </button>
+                        ) : null}
                         </div>
                       </div>
                     </GlassCard>

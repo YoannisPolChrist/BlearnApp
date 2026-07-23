@@ -158,11 +158,10 @@ export function LearnTemplatesContent({
             <div className="max-w-2xl">
               <span className="premium-pill">On-demand Bibliothek</span>
               <h2 className="mt-4 max-w-2xl break-words text-3xl font-black leading-tight tracking-[-0.05em] text-foreground sm:text-4xl">
-                {templateCount} saubere Standardpakete, ohne duplizierte Restkarten.
+                Standardpakete
               </h2>
               <p className="mt-3 break-words text-sm leading-relaxed text-muted-foreground sm:text-base">
-                Die Templates bleiben leichtgewichtig sichtbar. Erst beim echten Import wird das
-                jeweilige 5000er-Deck geladen, damit Startzeit und Bundle klein bleiben.
+                Fertige Lernpakete für deinen Start.
               </p>
             </div>
 

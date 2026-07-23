@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Brain, Clock3 } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
-import { BrandLockup, BrandMark } from '@/components/brand/BrandMark';
-import { BlockedAppsDialog } from '@/components/dashboard/BlockedAppsDialog';
+import { BrandLockup } from '@/components/brand/BrandMark';
 import PageTransition from '@/components/PageTransition';
 import ThemeToggle from '@/components/ThemeToggle';
 import { MetricCard } from '@/components/ui/MetricCard';
@@ -23,12 +22,8 @@ import { countTargetsForMode } from '@/lib/targetModes';
 import { getDashboardModeLabel } from '@/modules/dashboard/dashboardModeLabels';
 import { ProtectionStatusCard } from '@/modules/protection/ProtectionStatusCard';
 import { ProtectionShieldButton } from '@/modules/protection/ProtectionShieldButton';
+import { formatScreenTime } from '@/services/screenTimeNormalization';
 import {
-  formatScreenTime,
-  getAppLabel,
-} from '@/services/screenTimeNormalization';
-import {
-  getInstalledApps,
   getTodayUsage,
   isUnsupportedPlatformError,
 } from '@/services/screenTimeService';
@@ -52,25 +47,17 @@ export default function IndexPage() {
     isStrictLocked,
   } = useDashboardSummary();
   const {
-    blockedApps,
-    blockedWebsites,
-    blockedSearchTerms,
     blockedAppModes,
     blockedWebsiteModes,
     blockedSearchTermModes,
   } = useAppStore(
     useShallow((state) => ({
-      blockedApps: state.blockedApps,
-      blockedWebsites: state.blockedWebsites,
-      blockedSearchTerms: state.blockedSearchTerms,
       blockedAppModes: state.blockedAppModes,
       blockedWebsiteModes: state.blockedWebsiteModes,
       blockedSearchTermModes: state.blockedSearchTermModes,
     })),
   );
   const [screenTimeLabel, setScreenTimeLabel] = useState('...');
-  const [blockedAppsDialogOpen, setBlockedAppsDialogOpen] = useState(false);
-  const [installedAppLabels, setInstalledAppLabels] = useState<Record<string, string>>({});
   const isGerman = locale.toLowerCase().startsWith('de');
   const locked = isStrictLocked();
   const allowRichMotion = !reducedMotion && !isMobile;
@@ -101,40 +88,7 @@ export default function IndexPage() {
     };
   }, [isGerman]);
 
-  useEffect(() => {
-    let mounted = true;
-
-    getInstalledApps()
-      .then((apps) => {
-        if (!mounted) return;
-
-        const nextLabels: Record<string, string> = {};
-        apps.forEach((app) => {
-          const label = getAppLabel(app);
-          if (app.appId) nextLabels[app.appId] = label;
-          if (app.packageName) nextLabels[app.packageName] = label;
-        });
-        startTransition(() => {
-          setInstalledAppLabels(nextLabels);
-        });
-      })
-      .catch(() => {
-        if (mounted) {
-          startTransition(() => {
-            setInstalledAppLabels({});
-          });
-        }
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
   const totalBlockedTargets = blockedAppsCount + blockedWebsitesCount + blockedSearchTermsCount;
-  const modeLabel = activeModes.length > 1
-    ? t('dashboard.modeHints.multi', { count: activeModes.length })
-    : getDashboardModeLabel(activeMode, t);
   const modeHint = locked
     ? strictLockScope === 'settings'
       ? t('dashboard.modeHints.settingsLock')
@@ -166,34 +120,6 @@ export default function IndexPage() {
       { id: 'penalty' as const, label: getDashboardModeLabel('penalty', t), count: modeCounts.penalty },
     ]),
     [modeCounts.learn, modeCounts.penalty, modeCounts.strict, t],
-  );
-
-  const dashboardSnapshot = useMemo(
-    () => [
-      {
-        id: 'mode-state',
-        label: t('dashboard.metrics.activeMode'),
-        value: modeLabel,
-      },
-      {
-        id: 'blocked-apps',
-        label: t('dashboard.cards.blocked'),
-        value: String(blockedAppsCount),
-      },
-    ],
-    [blockedAppsCount, modeLabel, t],
-  );
-
-  const blockedAppEntries = useMemo(
-    () =>
-      blockedApps
-        .map((appId) => ({
-          appId,
-          label: installedAppLabels[appId] || getAppLabel({ packageName: appId }) || appId,
-          mode: blockedAppModes[appId] ?? null,
-        }))
-        .sort((left, right) => left.label.localeCompare(right.label, locale)),
-    [blockedAppModes, blockedApps, installedAppLabels, locale],
   );
 
   const isFreshActivation = Boolean(
@@ -258,60 +184,16 @@ export default function IndexPage() {
                     className="relative z-10 grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(18rem,0.85fr)] lg:items-start"
                   >
                     <div className="flex min-w-0 flex-col gap-4 sm:gap-5">
-                      <motion.div variants={heroTimelineItem} className="flex items-start gap-4">
-                        <motion.div
-                          className={cn(
-                            'flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.35rem] p-2 sm:h-16 sm:w-16 sm:rounded-[1.6rem]',
-                            modesHeroPalette.icon,
-                          )}
-                          initial={allowRichMotion ? { scale: 0.92, rotate: -5 } : false}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={allowRichMotion ? { duration: 0.28, ease: [0.16, 1, 0.3, 1] } : { duration: 0 }}
-                        >
-                          <BrandMark size={40} withAnimation={allowRichMotion} />
-                        </motion.div>
-
-                        <div className="min-w-0">
-                          <div className="flex flex-wrap gap-2">
-                            <span
-                              className={cn(
-                                'rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em]',
-                                modesHeroPalette.badge,
-                              )}
-                            >
-                              {activeModes.length > 0 ? modeLabel : t('dashboard.metrics.activeMode')}
-                            </span>
-                            <span className="rounded-full border border-white/24 bg-white/10 px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-white/88">
-                              {t('dashboard.cards.blocked')} | {blockedAppsCount}
-                            </span>
-                          </div>
-
-                          <h2 className="mt-3 text-[1.85rem] font-black leading-tight tracking-[-0.06em] text-foreground sm:mt-4 sm:text-4xl">
-                            {dashboardOverviewTitle}
-                          </h2>
-                          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/86 sm:mt-3 sm:text-base">
-                            {t('dashboard.actions.modesDescription')}
-                          </p>
-                          <p className="mt-2 max-w-xl text-sm font-semibold text-foreground/80 sm:mt-3">
-                            {modeHint}
-                          </p>
-                        </div>
-                      </motion.div>
-
-                      <motion.div variants={heroTimelineItem} className="grid gap-2 sm:grid-cols-2">
-                        {dashboardSnapshot.map((item) => (
-                          <div
-                            key={item.id}
-                            className="min-w-0 rounded-[1.2rem] border border-white/14 bg-background/74 px-3 py-3 shadow-[0_12px_28px_hsl(var(--foreground)/0.08)] lg:backdrop-blur-xl"
-                          >
-                            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-foreground/64">
-                              {item.label}
-                            </p>
-                            <p className="mt-2 text-base font-black tracking-[-0.04em] text-foreground sm:text-lg">
-                              {item.value}
-                            </p>
-                          </div>
-                        ))}
+                      <motion.div variants={heroTimelineItem} className="min-w-0">
+                        <h2 className="text-[1.85rem] font-black leading-tight tracking-[-0.06em] text-foreground sm:text-4xl">
+                          {dashboardOverviewTitle}
+                        </h2>
+                        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-foreground/86 sm:mt-3 sm:text-base">
+                          {t('dashboard.actions.modesDescription')}
+                        </p>
+                        <p className="mt-2 max-w-xl text-sm font-semibold text-foreground/80 sm:mt-3">
+                          {modeHint}
+                        </p>
                       </motion.div>
 
                       <motion.div variants={heroTimelineItem} className="grid gap-3 sm:grid-cols-3">
@@ -337,7 +219,7 @@ export default function IndexPage() {
                       </motion.div>
                     </div>
 
-                    <motion.div variants={heroTimelineItem} className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                    <motion.div variants={heroTimelineItem} className="min-w-0">
                       <motion.button
                         variants={ctaFollowThrough}
                         initial="rest"
@@ -367,25 +249,6 @@ export default function IndexPage() {
                           <ArrowRight size={16} />
                         </div>
                       </motion.button>
-
-                      <button
-                        type="button"
-                        onClick={() => setBlockedAppsDialogOpen(true)}
-                        className="min-w-0 rounded-[1.5rem] border border-white/16 bg-background/78 px-4 py-4 text-left shadow-[0_16px_34px_hsl(var(--foreground)/0.08)] transition hover:border-white/28 lg:backdrop-blur-xl"
-                      >
-                        <p className="text-[11px] font-black uppercase tracking-[0.16em] text-foreground/68">
-                          {t('dashboard.cards.blocked')}
-                        </p>
-                        <p className="mt-2 text-3xl font-black tracking-[-0.06em] text-foreground">{blockedAppsCount}</p>
-                        <p className="mt-2 break-words text-sm leading-relaxed text-foreground/82">
-                          {isGerman
-                            ? 'Tippe hier für die Liste deiner blockierten Apps.'
-                            : 'Tap here to open the list of blocked apps.'}
-                        </p>
-                        <p className="mt-2 break-words text-xs text-foreground/76">
-                          {blockedWebsitesCount} {isGerman ? 'Websites' : 'websites'} · {blockedSearchTermsCount} {isGerman ? 'Suchbegriffe' : 'search terms'}
-                        </p>
-                      </button>
                     </motion.div>
                   </motion.div>
                 </motion.div>
@@ -420,17 +283,6 @@ export default function IndexPage() {
           </motion.div>
         </div>
       </PageTransition>
-
-      <BlockedAppsDialog
-        open={blockedAppsDialogOpen}
-        isGerman={isGerman}
-        blockedAppsCount={blockedAppsCount}
-        blockedWebsitesCount={blockedWebsites.length}
-        blockedSearchTermsCount={blockedSearchTerms.length}
-        blockedAppEntries={blockedAppEntries}
-        t={t}
-        onOpenChange={setBlockedAppsDialogOpen}
-      />
     </>
   );
 }

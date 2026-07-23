@@ -51,6 +51,7 @@ export function useLearnReviewSessionRequirements({
             gateRule,
             ignoreNewCardsLimit: true,
             includeReviewAhead: !isBlockedFlow,
+            isBlockedFlow,
             now: Date.now(),
           })
         : EMPTY_STRING_LIST,

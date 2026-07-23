@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 import type { CheckinEntry, UserInteraction, UserProfile } from '@/store/useAppStore';
-import { ALL_EMOTIONS, MS_DAY, NEGATIVE_EMOTION_IDS, POSITIVE_EMOTION_IDS } from './constants';
+import {
+  ALL_EMOTIONS,
+  MS_DAY,
+  NEGATIVE_EMOTION_IDS,
+  POSITIVE_EMOTION_IDS,
+  TOP_EMOTIONS_LIMIT,
+} from './constants';
 import type { EmotionCountEntry, MoodEntry, TimeRange, TopEmotion } from './types';
 
 export function buildMoodEntries(checkins: CheckinEntry[], interactions: UserInteraction[]): MoodEntry[] {
@@ -194,7 +200,7 @@ function useChartData(
 
     const emotionRadar = (Object.entries(emotionCounts) as EmotionCountEntry[])
       .sort(([, left], [, right]) => right - left)
-      .slice(0, 8)
+      .slice(0, TOP_EMOTIONS_LIMIT)
       .map(([id, count]) => {
         const emotion = ALL_EMOTIONS.find((entry) => entry.id === id);
         return { label: emotion?.label || id, value: count };
@@ -266,7 +272,7 @@ export function useEmotionStatsData(range: TimeRange, checkins: CheckinEntry[], 
   const topEmotions = useMemo(() => {
     return (Object.entries(emotionCounts) as EmotionCountEntry[])
       .sort(([, left], [, right]) => right - left)
-      .slice(0, 4)
+      .slice(0, TOP_EMOTIONS_LIMIT)
       .map<TopEmotion>(([id, count]) => {
         const emotion = ALL_EMOTIONS.find((entry) => entry.id === id);
         return emotion ? { ...emotion, count } : { id, emoji: '*', label: id, count };

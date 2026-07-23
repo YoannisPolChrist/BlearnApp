@@ -308,7 +308,7 @@ class ReviewSessionControllerImpl implements LearningSessionController {
       return [];
     }
 
-    const wasCorrect = input.wasCorrect ?? this.snapshot.typedCorrect ?? rating !== 'again';
+    const wasCorrect = input.wasCorrect ?? rating !== 'again';
     const correctCredit = wasCorrect && rating !== 'again';
     const isUnlock = this.snapshot.kind === 'unlock';
 

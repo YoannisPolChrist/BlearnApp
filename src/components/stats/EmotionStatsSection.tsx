@@ -47,7 +47,7 @@ export function EmotionStatsSection({
   const reducedMotion = useReducedMotion();
 
   return (
-    <motion.section id="stats-section-emotions" variants={sectionItem}>
+    <motion.section id="stats-section-emotions" data-tour-id="tour-stats-emotions" variants={sectionItem}>
       <GlassCard elevation="raised" className="space-y-5">
         <SectionHeader
           eyebrow="Stimmung"
@@ -112,7 +112,12 @@ export function EmotionStatsSection({
                       Noch keine Check-ins vorhanden
                     </p>
                   ) : (
-                    <motion.div variants={denseListStagger} initial="hidden" animate="show" className="space-y-4">
+                    <motion.div
+                      variants={denseListStagger}
+                      initial="hidden"
+                      animate="show"
+                      className="grid gap-x-5 gap-y-3 sm:grid-cols-2 xl:grid-cols-1"
+                    >
                       {topEmotions.map((emotion, index) => (
                         <motion.div key={emotion.id} variants={denseListItem} className="flex items-center gap-3">
                           <motion.span

@@ -22,7 +22,6 @@ import { useModesRuntimeIssueMessages } from '@/modules/modes/useModesRuntimeIss
 import { useModesInitialDraft } from '@/modules/modes/useModesInitialDraft';
 import { useI18n } from '@/hooks/useI18n';
 import { useModeDraftStore } from '@/store/useModeDraftStore';
-import { SuccessAnimation } from '@/components/ui/SuccessAnimation';
 
 export default function ModesPage() {
   const navigate = useNavigate();
@@ -98,7 +97,6 @@ export default function ModesPage() {
   const penaltyConfirmFeedback = useInlineFeedback<'confirmed'>();
   const [isSaving, setIsSaving] = useState(false);
   const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null);
-  const [showSuccessAnim, setShowSuccessAnim] = useState(false);
   const isGerman = locale.toLowerCase().startsWith('de');
   const confirmCode = useMemo(() => t('modes.confirm.finalCode').toUpperCase(), [t]);
   const {
@@ -122,7 +120,7 @@ export default function ModesPage() {
   }, []);
 
   useEffect(() => {
-    if (!isTourOpen || currentStepId !== 'modes-blocking') return;
+    if (!isTourOpen || currentStepId !== 'modes-targets') return;
     setShowBlockConfig(true);
   }, [currentStepId, isTourOpen]);
 
@@ -196,6 +194,7 @@ export default function ModesPage() {
     installedApps,
     interventionInterval,
     interventionPatternId,
+    learnLibraryOpen,
     localActiveDeckId,
     localBreathingRoundsDraft,
     localIntervalDraft,
@@ -440,7 +439,6 @@ export default function ModesPage() {
     enablePenaltyMode: () => setPenaltyEnabled(true),
     logModesDebug,
     missingPermissionsMessage: t('modes.toasts.missingPermissions'),
-    onSaveSuccess: () => setShowSuccessAnim(true),
   });
 
   const mainContent = locked ? (
@@ -489,17 +487,6 @@ export default function ModesPage() {
   return (
     <>
       {mainContent}
-      <SuccessAnimation
-        visible={showSuccessAnim}
-        eyebrow={isGerman ? 'Modi' : 'Modes'}
-        message={isGerman ? 'Gespeichert' : 'Saved'}
-        subMessage={
-          isGerman
-            ? 'Deine Fokusregeln sind jetzt aktiv.'
-            : 'Your focus rules are now active.'
-        }
-        onAnimationDone={() => setShowSuccessAnim(false)}
-      />
     </>
   );
 }

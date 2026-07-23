@@ -1,7 +1,6 @@
 import { useCallback, useMemo, type MutableRefObject } from 'react';
 import { stateMeta } from '@/components/learn-review/meta';
 import {
-  MAX_TYPED_ANSWER_ATTEMPTS,
   buildUnlockSessionCandidateIds,
   getCardAnswer,
   getCardAnswerHtml,
@@ -68,7 +67,7 @@ export function useLearnReviewDerivedState({
 }) {
   const previewCandidateIds = useMemo(
     () =>
-      learningHydrated && activeDeckId
+      learningHydrated && activeDeckId && !isBlockedFlow
         ? buildUnlockSessionCandidateIds({
             cards: activeDeckCards,
             deckId: activeDeckId,
@@ -116,7 +115,6 @@ export function useLearnReviewDerivedState({
   const typedAnswer = currentSnapshot?.typedAnswer ?? '';
   const revealed = currentSnapshot?.revealed ?? false;
   const typedCorrect = currentSnapshot?.typedCorrect ?? null;
-  const attemptCount = currentSnapshot?.attemptCount ?? 0;
   const attemptMessage = currentSnapshot?.attemptMessage ?? null;
   const countedReviews = currentSnapshot?.countedReviews ?? 0;
   const sessionStartedAt = currentSnapshot?.startedAt;
@@ -129,20 +127,6 @@ export function useLearnReviewDerivedState({
     currentCard && currentNote && requiresTypedAnswer && typedAnswer.trim()
       ? getTypedAnswerMatchKind(currentCard, currentNote, typedAnswer)
       : null;
-  const effectiveCorrect = requiresTypedAnswer ? typedCorrect === true : true;
-  const remainingAttempts = Math.max(0, MAX_TYPED_ANSWER_ATTEMPTS - attemptCount);
-  // "Gut"/"Einfach" sind nach einer falschen UND nach einer nur knapp ("partial",
-  // 3-Buchstaben-Tippmodus) richtigen Eingabe oder bei direktem Aufdecken ohne Antwort gesperrt:
-  // Ein Beinahe-Treffer ist kein voller Abruf und darf kein langes Easy/Good-Intervall verdienen.
-  const easyRatingBlocked =
-    requiresTypedAnswer &&
-    (typedCorrect === false || typedCorrect === null || typedAnswerMatchKind === 'partial');
-
-  // "Schwer" ist bei einer völlig falschen Antwort (oder bei direktem Aufdecken ohne Antwort)
-  // ebenfalls gesperrt: Es bleibt dann nur "Nochmal", um eine ehrliche Wiederholung zu erzwingen.
-  const hardRatingBlocked =
-    requiresTypedAnswer &&
-    (typedCorrect === false || typedCorrect === null);
   const cardPrompt = currentCard && currentNote ? getCardPrompt(currentCard, currentNote) : '';
   const cardAnswer = currentNote ? getCardAnswer(currentNote, currentCard ?? undefined) : '';
   const cardPromptHtml = currentCard && currentNote ? getCardPromptHtml(currentCard, currentNote) : '';
@@ -188,7 +172,7 @@ export function useLearnReviewDerivedState({
       ...currentSnapshot.candidateIds.slice(currentSnapshot.candidateCursor),
     ];
   }, [currentSnapshot]);
-  const remainingPreviewCandidateIds = isBlockedFlow ? previewCandidateIds : remainingCandidateIds;
+  const remainingPreviewCandidateIds = isBlockedFlow ? remainingCandidateIds : previewCandidateIds;
   const remainingNewCount = useMemo(
     () =>
       remainingPreviewCandidateIds.filter((cardId) => activeDeckCardStateById[cardId] === 'new').length,
@@ -246,9 +230,6 @@ export function useLearnReviewDerivedState({
     currentCardPosition,
     currentNote,
     currentStateMeta,
-    easyRatingBlocked,
-    hardRatingBlocked,
-    effectiveCorrect,
     hasRichTemplateHtml,
     hasUsableLearningDeck,
     latestFeedbackMessage,
@@ -256,7 +237,6 @@ export function useLearnReviewDerivedState({
     nextNewCardStatus,
     progressPercent,
     promptIsLong,
-    remainingAttempts,
     remainingCount,
     remainingNewCount,
     remainingReviewCount,

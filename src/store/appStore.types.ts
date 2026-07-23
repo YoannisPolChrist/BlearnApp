@@ -56,6 +56,15 @@ export interface CheckinEntry {
   chatHistory: { role: 'user' | 'ai'; text: string }[];
   breathingCompleted: boolean;
   targetApp?: string;
+  blockingContext?: BlockingEmotionContext;
+}
+
+export interface BlockingEmotionContext {
+  flow: 'breathing' | 'learning' | 'reflection';
+  targetId?: string;
+  targetType?: 'app' | 'website' | 'search';
+  targetLabel?: string;
+  overlaySessionId?: string;
 }
 
 export interface UserProfile {
@@ -78,6 +87,7 @@ export interface UserInteraction {
   targetApp?: string;
   challenge?: string;
   durationMinutes?: number;
+  blockingContext?: BlockingEmotionContext;
 }
 
 export interface DailyStats {
@@ -298,6 +308,9 @@ export interface AppState {
 
   remoteBlockingEnabled: boolean;
   setRemoteBlockingEnabled: (enabled: boolean) => void;
+  remoteBlockingDisableGate: { deckId: string; startedAt: number } | null;
+  startRemoteBlockingDisableGate: (deckId: string) => void;
+  clearRemoteBlockingDisableGate: () => void;
   remoteBlockingInstruction: RemoteBlockingInstruction | null;
   resolvedRemoteBlockedApps: string[];
   setRemoteBlockingInstruction: (instruction: RemoteBlockingInstruction | null) => Promise<void>;
