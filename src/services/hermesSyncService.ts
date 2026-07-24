@@ -3,6 +3,7 @@ import {
   assertFirebaseWritesEnabled,
   ensureFirebaseFirestore,
 } from '@/lib/firebase';
+import { enqueueFirestoreWrite } from '@/lib/firestoreWriteCoordinator';
 import { loadFirestoreSdk } from '@/lib/firestoreTransport';
 import { withTimeout } from '@/lib/promiseTimeout';
 import { sanitizeFirestoreValue } from '@/services/firebaseProgressSyncService';
@@ -392,11 +393,11 @@ export async function createAppUsageEvent(event: Omit<AppUsageEvent, 'source' | 
     updated_at: event.updated_at ? sdk.Timestamp.fromDate(toDate(event.updated_at)) : undefined,
   };
 
-  await withTimeout(
+  await enqueueFirestoreWrite(() => withTimeout(
     sdk.setDoc(docRef, sanitizeFirestoreValue(finalEvent)),
     WRITE_TIMEOUT_MS,
     'hermes app usage write',
-  );
+  ));
 }
 
 export async function createLearningLog(log: Omit<LearningLog, 'source' | 'schema_version' | 'timezone' | 'created_at' | 'device_id'>): Promise<void> {
@@ -420,11 +421,11 @@ export async function createLearningLog(log: Omit<LearningLog, 'source' | 'schem
     updated_at: log.updated_at ? sdk.Timestamp.fromDate(toDate(log.updated_at)) : undefined,
   };
 
-  await withTimeout(
+  await enqueueFirestoreWrite(() => withTimeout(
     sdk.setDoc(docRef, sanitizeFirestoreValue(finalLog)),
     WRITE_TIMEOUT_MS,
     'hermes learning log write',
-  );
+  ));
 }
 
 export async function createEmotionLog(log: Omit<EmotionLog, 'source' | 'schema_version' | 'timezone' | 'created_at' | 'ingested_at' | 'device_id'>): Promise<void> {
@@ -447,11 +448,11 @@ export async function createEmotionLog(log: Omit<EmotionLog, 'source' | 'schema_
     timestamp: sdk.Timestamp.fromDate(toDate(log.timestamp)),
   };
 
-  await withTimeout(
+  await enqueueFirestoreWrite(() => withTimeout(
     sdk.setDoc(docRef, sanitizeFirestoreValue(finalLog)),
     WRITE_TIMEOUT_MS,
     'hermes emotion log write',
-  );
+  ));
 }
 
 export async function updateSyncState(state: Omit<SyncState, 'source' | 'schema_version' | 'timezone' | 'device_id'>): Promise<void> {
@@ -476,11 +477,11 @@ export async function updateSyncState(state: Omit<SyncState, 'source' | 'schema_
     } : undefined,
   };
 
-  await withTimeout(
+  await enqueueFirestoreWrite(() => withTimeout(
     sdk.setDoc(docRef, sanitizeFirestoreValue(finalState)),
     WRITE_TIMEOUT_MS,
     'hermes sync state write',
-  );
+  ));
 }
 
 export async function syncBackgroundAppUsage(userId: string): Promise<void> {

@@ -1,4 +1,5 @@
 import type { DocumentData, Firestore } from 'firebase/firestore';
+import { enqueueFirestoreWrite } from '@/lib/firestoreWriteCoordinator';
 import type { LearningCloudTombstone } from '@/lib/learningCloudLocalSyncState';
 import {
   BUCKETED_ENTITY_DOCUMENT_COUNT,
@@ -385,8 +386,10 @@ export async function commitEntityChunks<T extends { id: string }>(
         );
       }
 
-      await batch.commit();
-      await waitForPendingChunkWrites(sdk, firestore);
+      await enqueueFirestoreWrite(async () => {
+        await batch.commit();
+        await waitForPendingChunkWrites(sdk, firestore);
+      });
 
       if (hasMoreChunks) {
         await waitForInterBatchCommitDelay();
@@ -420,8 +423,10 @@ export async function deleteEntityChunks(
         batch.delete(sdk.doc(getCollectionRef(sdk, firestore, userId, key), id));
       }
 
-      await batch.commit();
-      await waitForPendingChunkWrites(sdk, firestore);
+      await enqueueFirestoreWrite(async () => {
+        await batch.commit();
+        await waitForPendingChunkWrites(sdk, firestore);
+      });
 
       if (hasMoreChunks) {
         await waitForInterBatchCommitDelay();
@@ -469,8 +474,10 @@ export async function archiveEntityChunks<T extends { id: string }>(
         }),
       );
     }
-    await batch.commit();
-    await waitForPendingChunkWrites(sdk, firestore);
+    await enqueueFirestoreWrite(async () => {
+      await batch.commit();
+      await waitForPendingChunkWrites(sdk, firestore);
+    });
     if (index + 1 < chunks.length) {
       await waitForInterBatchCommitDelay();
     }
@@ -540,8 +547,10 @@ export async function commitDeckScopedEntityChunks<
         );
       }
 
-      await batch.commit();
-      await waitForPendingChunkWrites(sdk, firestore);
+      await enqueueFirestoreWrite(async () => {
+        await batch.commit();
+        await waitForPendingChunkWrites(sdk, firestore);
+      });
 
       if (hasMoreChunks) {
         await waitForInterBatchCommitDelay();

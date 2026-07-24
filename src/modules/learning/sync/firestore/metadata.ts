@@ -1,5 +1,6 @@
 import type { Firestore, Unsubscribe } from 'firebase/firestore';
 import { assertFirebaseWritesEnabled } from '@/lib/firebase';
+import { enqueueFirestoreWrite } from '@/lib/firestoreWriteCoordinator';
 import { normalizeSyncCursor } from './cursors';
 import {
   assertFirestore,
@@ -113,7 +114,7 @@ export async function saveLearningCloudSyncCursor(
   assertFirebaseWritesEnabled('Learn-Cloud-Schreibzugriffe');
   const sdk = await loadFirestoreSdk();
   const firestore = await ensureFirestore();
-  await sdk.setDoc(
+  await enqueueFirestoreWrite(() => sdk.setDoc(
     getMetaDoc(sdk, firestore, userId),
     sanitizeFirestoreValue({
       schemaVersion: 2,
@@ -126,7 +127,7 @@ export async function saveLearningCloudSyncCursor(
       updatedAt: sdk.serverTimestamp(),
     }),
     { merge: true },
-  );
+  ));
 }
 
 export function subscribeToLearningCloudMetadata(
@@ -176,13 +177,15 @@ export async function writeLearningCloudMeta(
   userId: string,
   meta: LearningCloudMeta,
 ): Promise<void> {
-  await sdk.setDoc(
+  await enqueueFirestoreWrite(async () => {
+    await sdk.setDoc(
     getMetaDoc(sdk, firestore, userId),
     sanitizeFirestoreValue({
       ...meta,
       updatedAt: sdk.serverTimestamp(),
     }),
-    { merge: true },
-  );
-  await waitForPendingChunkWrites(sdk, firestore);
+      { merge: true },
+    );
+    await waitForPendingChunkWrites(sdk, firestore);
+  });
 }

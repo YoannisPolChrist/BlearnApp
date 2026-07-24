@@ -1,5 +1,6 @@
 import type { Firestore, Unsubscribe } from 'firebase/firestore';
 import { assertFirebaseWritesEnabled } from '@/lib/firebase';
+import { enqueueFirestoreWrite } from '@/lib/firestoreWriteCoordinator';
 import {
   ensureFirestore,
   loadFirestoreSdk,
@@ -152,11 +153,11 @@ export async function saveProgressCloudState(
     ...normalizedState,
   });
 
-  await sdk.setDoc(
+  await enqueueFirestoreWrite(() => sdk.setDoc(
     getProgressDoc(sdk, firestore, userId),
     payload,
     { merge: false },
-  );
+  ));
 
   const uploadedIds = getUploadedIds(userId);
   const checkinsToSave = normalizedState.checkins.filter((c) => !uploadedIds.has(c.id));
@@ -185,7 +186,7 @@ export async function saveProgressCloudState(
     for (const op of chunk) {
       batch.set(op.ref, op.data);
     }
-    await batch.commit();
+    await enqueueFirestoreWrite(() => batch.commit());
 
     for (const op of chunk) {
       uploadedIds.add(op.id);
@@ -210,7 +211,7 @@ export async function registerDeviceFcmToken(
   const sdk = await loadFirestoreSdk();
   const firestore = await ensureFirestore();
   const docRef = sdk.doc(firestore, USERS_COLLECTION, userId, 'devices', deviceId);
-  await sdk.setDoc(
+  await enqueueFirestoreWrite(() => sdk.setDoc(
     docRef,
     sanitizeFirestoreValue({
       fcmToken: token,
@@ -218,7 +219,7 @@ export async function registerDeviceFcmToken(
       updatedAt: Date.now(),
     }),
     { merge: true },
-  );
+  ));
 }
 
 export function subscribeToProgressCloudState(
@@ -303,7 +304,7 @@ export async function syncAppUsageToFirestore(
       });
 
       if (deleteCount > 0) {
-        await batch.commit();
+        await enqueueFirestoreWrite(() => batch.commit());
       }
       if (typeof window !== 'undefined') {
         window.localStorage.setItem(lastCleanupStorageKey, now.toString());
@@ -345,14 +346,14 @@ export async function syncAppUsageToFirestore(
         const payloadStr = JSON.stringify(payload);
         const lastPayloadStr = typeof window !== 'undefined' ? window.localStorage.getItem(lastTodayPayloadStorageKey) : null;
         if (payloadStr !== lastPayloadStr) {
-          await sdk.setDoc(docRef, payload, { merge: true });
+          await enqueueFirestoreWrite(() => sdk.setDoc(docRef, payload, { merge: true }));
           if (typeof window !== 'undefined') {
             window.localStorage.setItem(lastTodayPayloadStorageKey, payloadStr);
           }
         }
       } else {
         // Past days: write directly since this full sync only runs once a day
-        await sdk.setDoc(docRef, payload, { merge: true });
+        await enqueueFirestoreWrite(() => sdk.setDoc(docRef, payload, { merge: true }));
       }
     } catch (err) {
       console.warn(`[AppUsageSync] Failed to sync usage for ${i} days ago:`, err);

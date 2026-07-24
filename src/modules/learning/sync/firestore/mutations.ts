@@ -1,5 +1,6 @@
 import type { Firestore } from 'firebase/firestore';
 import { assertFirebaseWritesEnabled } from '@/lib/firebase';
+import { enqueueFirestoreWrite } from '@/lib/firestoreWriteCoordinator';
 import {
   getLearningCloudStateSignature,
   getLearningCloudEntitySignature,
@@ -304,8 +305,10 @@ async function deleteMutationRecords(
       batch.delete(sdk.doc(getMutationCollectionRef(sdk, firestore, userId), mutationId));
     }
 
-    await batch.commit();
-    await waitForPendingChunkWrites(sdk, firestore);
+    await enqueueFirestoreWrite(async () => {
+      await batch.commit();
+      await waitForPendingChunkWrites(sdk, firestore);
+    });
   }
 }
 
@@ -448,8 +451,10 @@ export async function writeLearningCloudMutationAndMeta(
     { merge: true },
   );
 
-  await batch.commit();
-  await waitForPendingChunkWrites(sdk, firestore);
+  await enqueueFirestoreWrite(async () => {
+    await batch.commit();
+    await waitForPendingChunkWrites(sdk, firestore);
+  });
 }
 
 export async function pullLearningCloudMutations(
