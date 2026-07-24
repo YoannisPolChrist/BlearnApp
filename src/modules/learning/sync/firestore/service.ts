@@ -49,6 +49,14 @@ import {
 const inFlightLearningCloudSavePromises = new Map<string, Promise<LearningCloudMeta>>();
 const inFlightLearningCloudSaveKeys = new Map<string, string>();
 
+/**
+ * Exposes a currently running full snapshot save so an explicit manual sync
+ * can join it instead of queueing the same imported deck a second time.
+ */
+export function getInFlightLearningCloudSave(userId: string): Promise<LearningCloudMeta> | null {
+  return inFlightLearningCloudSavePromises.get(userId) || null;
+}
+
 function getRecoverableDeletedEntities<T extends { id: string }>(
   ids: string[],
   ...sources: Array<Record<string, T> | undefined | null>

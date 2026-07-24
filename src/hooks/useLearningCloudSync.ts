@@ -40,7 +40,10 @@ import { useLearningStore } from '@/store/useLearningStore';
 
 const LOCAL_SAVE_DEBOUNCE_MS = 1200;
 const LEARNING_CLOUD_OPERATION_TIMEOUT_MS = 120_000;
-const LEARNING_CLOUD_BOOTSTRAP_SAVE_TIMEOUT_MS = 180_000;
+// Initial imports can require many acknowledged batches on mobile data. Do
+// not declare the two-way bootstrap sync failed while its Firestore snapshot
+// is still progressing.
+const LEARNING_CLOUD_BOOTSTRAP_SAVE_TIMEOUT_MS = 600_000;
 const LEARNING_CLOUD_INIT_RETRY_MS = 3_000;
 
 export function __setLearningCloudSyncApiForTest(overrides: Partial<LearningCloudSyncApi> | null) {

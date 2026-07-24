@@ -7,6 +7,7 @@ const loadLearningCloudStateMock = vi.fn();
 const loadLearningCloudSyncCursorMock = vi.fn();
 const pullLearningCloudMutationsMock = vi.fn();
 const applyLearningCloudMutationsMock = vi.fn();
+const getInFlightLearningCloudSaveMock = vi.fn();
 const saveLearningCloudStateMock = vi.fn();
 const getLearningSyncDeviceIdMock = vi.fn(() => 'device-test');
 const showSuccessFeedbackMock = vi.fn();
@@ -23,6 +24,7 @@ describe('useManualLearningCloudSync', () => {
     loadLearningCloudSyncCursorMock.mockReset();
     pullLearningCloudMutationsMock.mockReset();
     applyLearningCloudMutationsMock.mockReset();
+    getInFlightLearningCloudSaveMock.mockReset();
     saveLearningCloudStateMock.mockReset();
     getLearningSyncDeviceIdMock.mockClear();
     showSuccessFeedbackMock.mockClear();
@@ -36,6 +38,7 @@ describe('useManualLearningCloudSync', () => {
     getCachedLearningCloudSyncBaselineMock.mockReturnValue(null);
     pullLearningCloudMutationsMock.mockResolvedValue({ cursor: null, mutations: [] });
     applyLearningCloudMutationsMock.mockImplementation((state) => state);
+    getInFlightLearningCloudSaveMock.mockReturnValue(null);
   });
 
   afterEach(() => {
@@ -48,6 +51,7 @@ describe('useManualLearningCloudSync', () => {
     }));
     vi.doMock('@/services/firebaseLearningSyncService', () => ({
       applyLearningCloudMutations: applyLearningCloudMutationsMock,
+      getInFlightLearningCloudSave: getInFlightLearningCloudSaveMock,
       getLearningSyncDeviceId: getLearningSyncDeviceIdMock,
       loadLearningCloudState: loadLearningCloudStateMock,
       loadLearningCloudSyncCursor: loadLearningCloudSyncCursorMock,
@@ -130,6 +134,7 @@ describe('useManualLearningCloudSync', () => {
     }));
     vi.doMock('@/services/firebaseLearningSyncService', () => ({
       applyLearningCloudMutations: applyLearningCloudMutationsMock,
+      getInFlightLearningCloudSave: getInFlightLearningCloudSaveMock,
       getLearningSyncDeviceId: getLearningSyncDeviceIdMock,
       loadLearningCloudState: loadLearningCloudStateMock,
       loadLearningCloudSyncCursor: loadLearningCloudSyncCursorMock,
@@ -206,6 +211,7 @@ describe('useManualLearningCloudSync', () => {
     }));
     vi.doMock('@/services/firebaseLearningSyncService', () => ({
       applyLearningCloudMutations: applyLearningCloudMutationsMock,
+      getInFlightLearningCloudSave: getInFlightLearningCloudSaveMock,
       getLearningSyncDeviceId: getLearningSyncDeviceIdMock,
       loadLearningCloudState: loadLearningCloudStateMock,
       loadLearningCloudSyncCursor: loadLearningCloudSyncCursorMock,
@@ -350,6 +356,7 @@ describe('useManualLearningCloudSync', () => {
     }));
     vi.doMock('@/services/firebaseLearningSyncService', () => ({
       applyLearningCloudMutations: applyLearningCloudMutationsMock,
+      getInFlightLearningCloudSave: getInFlightLearningCloudSaveMock,
       getLearningSyncDeviceId: getLearningSyncDeviceIdMock,
       loadLearningCloudState: loadLearningCloudStateMock,
       loadLearningCloudSyncCursor: loadLearningCloudSyncCursorMock,
@@ -565,6 +572,7 @@ describe('useManualLearningCloudSync', () => {
     }));
     vi.doMock('@/services/firebaseLearningSyncService', () => ({
       applyLearningCloudMutations: applyLearningCloudMutationsMock,
+      getInFlightLearningCloudSave: getInFlightLearningCloudSaveMock,
       getLearningSyncDeviceId: getLearningSyncDeviceIdMock,
       loadLearningCloudState: loadLearningCloudStateMock,
       loadLearningCloudSyncCursor: loadLearningCloudSyncCursorMock,

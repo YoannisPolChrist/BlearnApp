@@ -23,6 +23,7 @@ export {
   getLearningSyncDeviceId,
 } from './transport';
 export {
+  getInFlightLearningCloudSave,
   loadLearningCloudState,
   saveLearningCloudState,
 } from './service';

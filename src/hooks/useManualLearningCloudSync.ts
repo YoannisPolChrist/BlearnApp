@@ -20,6 +20,7 @@ import { withTimeout } from '@/lib/promiseTimeout';
 import { showSuccessFeedback } from '@/lib/successFeedback';
 import {
   applyLearningCloudMutations,
+  getInFlightLearningCloudSave,
   getLearningSyncDeviceId,
   loadLearningCloudState,
   loadLearningCloudSyncCursor,
@@ -36,7 +37,10 @@ const LEARNING_STORAGE_KEY = 'blearn-learning-storage';
 const MANUAL_LEARNING_STORAGE_IDLE_TIMEOUT_MS = 4_000;
 const MANUAL_LEARNING_CLOUD_REHYDRATE_TIMEOUT_MS = 20_000;
 const MANUAL_LEARNING_CLOUD_LOAD_TIMEOUT_MS = 30_000;
-const MANUAL_LEARNING_CLOUD_SAVE_TIMEOUT_MS = 90_000;
+// Large imported decks are deliberately written as small, acknowledged
+// Firestore batches. On a real phone that initial upload can take several
+// minutes; 90 seconds falsely reported a failure while it was still running.
+const MANUAL_LEARNING_CLOUD_SAVE_TIMEOUT_MS = 600_000;
 const MANUAL_LEARNING_CLOUD_CURSOR_TIMEOUT_MS = 12_000;
 
 export type ManualLearningCloudSyncCapabilityState =
@@ -218,6 +222,18 @@ export function useManualLearningCloudSync() {
       const finishManualSync = beginManualLearningCloudSync();
       try {
         await ensureLearningStoreReady();
+
+        // App startup can already be writing the same large imported deck.
+        // Joining that acknowledged snapshot avoids a second full upload that
+        // would otherwise exhaust Firestore's shared write stream.
+        const activeSave = getInFlightLearningCloudSave?.(authUserId);
+        if (activeSave) {
+          await withTimeout(
+            activeSave,
+            MANUAL_LEARNING_CLOUD_SAVE_TIMEOUT_MS,
+            'learning cloud save already in progress',
+          );
+        }
 
         const localState = readLearningCloudStateFromStore();
         const localSyncState = getLearningCloudLocalSyncState();
